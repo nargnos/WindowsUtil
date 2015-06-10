@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="LazyLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="EnvironmentBlock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
