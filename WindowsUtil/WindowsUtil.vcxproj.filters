@@ -21,7 +21,7 @@
     <ClInclude Include="EnvironmentBlock.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PeImage.h">
+    <ClInclude Include="PeDecoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
