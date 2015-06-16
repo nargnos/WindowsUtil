@@ -207,7 +207,7 @@ typedef struct _TEB_Ex {
 } TEB_Ex;
 typedef TEB_Ex *PTEB_Ex;
 
-#define NtCurrentPeb() (((PTEB_Ex)NtCurrentTeb())->ProcessEnvironmentBlock)
+#define NtCurrentPeb (((PTEB_Ex)NtCurrentTeb())->ProcessEnvironmentBlock)
 namespace Peb
 {
 	enum LdrDataTableModuleList
@@ -217,19 +217,19 @@ namespace Peb
 		InInitializationOrderModuleList
 	};
 	// ldrË«Á´±íµü´úÆ÷
-	class LdrDataTableEntryIterator
+	class LdrDataTableEntryReader
 	{
 	public:
 
-		LdrDataTableEntryIterator(LdrDataTableModuleList desList) 
-			:LdrDataTableEntryIterator(NtCurrentPeb()->Ldr, desList)
+		LdrDataTableEntryReader(LdrDataTableModuleList desList) 
+			:LdrDataTableEntryReader(NtCurrentPeb->Ldr, desList)
 		{}
 		
-		LdrDataTableEntryIterator(PPEB_Ex peb, LdrDataTableModuleList desList)
-			:LdrDataTableEntryIterator(peb->Ldr, desList)
+		LdrDataTableEntryReader(PPEB_Ex peb, LdrDataTableModuleList desList)
+			:LdrDataTableEntryReader(peb->Ldr, desList)
 		{}
 
-		LdrDataTableEntryIterator(PPEB_LDR_DATA_Ex ldr, LdrDataTableModuleList desList)
+		LdrDataTableEntryReader(PPEB_LDR_DATA_Ex ldr, LdrDataTableModuleList desList)
 		{
 			this->desList = desList;
 			switch (desList)
@@ -248,7 +248,7 @@ namespace Peb
 
 			Reset();
 		}
-		~LdrDataTableEntryIterator()
+		~LdrDataTableEntryReader()
 		{
 		}
 		bool Next()
@@ -299,7 +299,7 @@ namespace Peb
 	};
 	HMODULE __stdcall FindLoadedModuleHandle(PWCHAR name)
 	{
-		LdrDataTableEntryIterator iterator(InLoadOrderModuleList);
+		LdrDataTableEntryReader iterator(InLoadOrderModuleList);
 		while (iterator.Next())
 		{
 			auto current = iterator.Current();
