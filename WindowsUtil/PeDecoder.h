@@ -231,8 +231,8 @@ namespace PE{
 				return NULL;
 			}
 			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-		}
-		void ImageDirectoryEntryIat()
+		}*/
+		/*DWORD ImageDirectoryEntryIat()
 		{
 			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IAT);
 			if (!dir)
@@ -240,7 +240,8 @@ namespace PE{
 				return NULL;
 			}
 			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-		}
+		}*/
+		/*
 		void ImageDirectoryEntryDelayImport()
 		{
 			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT);
@@ -366,14 +367,18 @@ namespace PE{
 	class ExportDirectoryReader
 	{
 	public:
-		ExportDirectoryReader(PIMAGE_EXPORT_DIRECTORY exportDirectory) :exportDirectory(exportDirectory)
+		/*TODO: 把以前写的代码,改成迭代器形式
+		*/
+		ExportDirectoryReader(PIMAGE_EXPORT_DIRECTORY exportDirectory) 
+			:exportDirectory(exportDirectory), numberOfFunctions(exportDirectory->NumberOfFunctions)
 		{
-		
+			
 		}
 		~ExportDirectoryReader(){}
 
 	private:
 		PIMAGE_EXPORT_DIRECTORY exportDirectory;
+		DWORD numberOfFunctions;
 	};
 
 	// 节读取器
