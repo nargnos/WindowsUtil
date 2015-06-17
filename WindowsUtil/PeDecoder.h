@@ -132,103 +132,132 @@ namespace PE{
 			}
 			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
-		/*void ImageDirectoryEntryImport()
+		PIMAGE_IMPORT_DESCRIPTOR ImageDirectoryEntryImport()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IMPORT);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_IMPORT_DESCRIPTOR)GetRvaData(dir->VirtualAddress);
 		}
-		void ImageDirectoryEntryResource()
+		PIMAGE_RESOURCE_DIRECTORY ImageDirectoryEntryResource()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_RESOURCE);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_RESOURCE_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
-		void ImageDirectoryEntryException()
+		/*void ImageDirectoryEntryException()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
+		}*/
+		/*void ImageDirectoryEntrySecurity()
+		{
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_SECURITY);
+			if (!dir)
+			{
+				return NULL;
+			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
+		}*/
+		PIMAGE_RELOCATION ImageDirectoryEntryBasereloc()
+		{
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC);
+			if (!dir)
+			{
+				return NULL;
+			}
+			return (PIMAGE_RELOCATION)GetRvaData(dir->VirtualAddress);
 		}
-		void ImageDirectoryEntrySecurity()
+		/*void ImageDirectoryEntryDebug()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_DEBUG);
+			if (!dir)
 			{
+				return NULL;
 			}
-		}
-		void ImageDirectoryEntryBasereloc()
-		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
-			if (DataDirectoryExist(result))
-			{
-			}
-		}
-		void ImageDirectoryEntryDebug()
-		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG];
-			if (DataDirectoryExist(result))
-			{
-			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
 		void ImageDirectoryEntryArchitecture()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_ARCHITECTURE];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_ARCHITECTURE);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
 		void ImageDirectoryEntryGlobalptr()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_GLOBALPTR];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_GLOBALPTR);
+			if (!dir)
 			{
+				return NULL;
 			}
-		}
-		void ImageDirectoryEntryTls()
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
+		}*/
+
+		/*void ImageDirectoryEntryTls() // 这个有32 64区分
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_TLS];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_TLS);
+			if (!dir)
 			{
+				return NULL;
 			}
-		}
-		void ImageDirectoryEntryLoad_config()
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
+		}*/
+		//void ImageDirectoryEntryLoadConfig() //PIMAGE_LOAD_CONFIG_DIRECTORY64
+		//{
+		//	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+		//	if (!dir)
+		//	{
+		//		return NULL;
+		//	}
+		//	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
+		//}
+		/*void ImageDirectoryEntryBoundImport()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT);
+			if (!dir)
 			{
+				return NULL;
 			}
-		}
-		void ImageDirectoryEntryBound_import()
-		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT];
-			if (DataDirectoryExist(result))
-			{
-			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
 		void ImageDirectoryEntryIat()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_IAT];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IAT);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
 		void ImageDirectoryEntryDelayImport()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
 		void ImageDirectoryEntryComDescriptor()
 		{
-			auto result = &imageDataDirectory[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
-			if (DataDirectoryExist(result))
+			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR);
+			if (!dir)
 			{
+				return NULL;
 			}
+			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}*/
 		~PeDecoder()
 		{
@@ -332,6 +361,8 @@ namespace PE{
 			return base + offset;
 		}
 	};
+
+	// 导出表读取器
 	class ExportDirectoryReader
 	{
 	public:
@@ -343,6 +374,50 @@ namespace PE{
 
 	private:
 		PIMAGE_EXPORT_DIRECTORY exportDirectory;
+	};
+
+	// 节读取器
+	class SectionReader
+	{
+	public:
+		SectionReader(PIMAGE_SECTION_HEADER firstSectionHeader, WORD sectionCount)
+		{
+			this->firstSectionHeader = firstSectionHeader;
+			lastSectionHeader = firstSectionHeader + sectionCount;
+			Reset();
+		}
+		~SectionReader(){}
+		PIMAGE_SECTION_HEADER Current()
+		{
+			return sectionPointer;
+		}
+		bool Next()
+		{
+			if (sectionPointer)
+			{
+				if (sectionPointer != lastSectionHeader)
+				{
+					sectionPointer++;
+				}
+				else
+				{
+					return false;
+				}				
+			}
+			else
+			{
+				sectionPointer = firstSectionHeader;
+			}
+			return true;
+		}
+		void Reset()
+		{
+			sectionPointer = NULL;
+		}
+	private:
+		PIMAGE_SECTION_HEADER firstSectionHeader;
+		PIMAGE_SECTION_HEADER lastSectionHeader;
+		PIMAGE_SECTION_HEADER sectionPointer;
 	};
 
 }
