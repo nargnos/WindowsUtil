@@ -123,7 +123,8 @@ namespace PE{
 			}
 			return 0;
 		}
-		PIMAGE_EXPORT_DIRECTORY ImageDirectoryEntryExport()
+
+		PIMAGE_EXPORT_DIRECTORY ImageExport()
 		{
 			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_EXPORT);
 			if (!dir)
@@ -132,7 +133,8 @@ namespace PE{
 			}
 			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}
-		PIMAGE_IMPORT_DESCRIPTOR ImageDirectoryEntryImport()
+
+		PIMAGE_IMPORT_DESCRIPTOR ImageImport()
 		{
 			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IMPORT);
 			if (!dir)
@@ -141,7 +143,7 @@ namespace PE{
 			}
 			return (PIMAGE_IMPORT_DESCRIPTOR)GetRvaData(dir->VirtualAddress);
 		}
-		PIMAGE_RESOURCE_DIRECTORY ImageDirectoryEntryResource()
+		PIMAGE_RESOURCE_DIRECTORY ImageResource()
 		{
 			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_RESOURCE);
 			if (!dir)
@@ -168,7 +170,7 @@ namespace PE{
 			}
 			return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 		}*/
-		PIMAGE_RELOCATION ImageDirectoryEntryBasereloc()
+		PIMAGE_RELOCATION ImageBasereloc()
 		{
 			auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC);
 			if (!dir)
@@ -263,15 +265,42 @@ namespace PE{
 		~PeDecoder()
 		{
 		}
+		PVOID GetRvaData(DWORD rva)
+		{
+			DWORD offset;
+			if (isMapped)
+			{
+				offset = rva;
+			}
+			else
+			{
+				offset = RvaToOffset(rva);
+			}
+			return base + offset;
+		}
+		PIMAGE_DATA_DIRECTORY GetDataDirectory(DWORD index)
+		{
+			if (*imageDataDirectorySize > index && IMAGE_NUMBEROF_DIRECTORY_ENTRIES > index)
+			{
+				auto result = &imageDataDirectoryEntry[index];
+				if (result->VirtualAddress != NULL)
+				{
+					return result;
+				}
+			}
+			return NULL;
+		}
 	private:
 		PCHAR base;
-		PVOID ntHeader = NULL;
-		PIMAGE_DATA_DIRECTORY imageDataDirectory = NULL;
-		PDWORD imageDataDirectorySize = 0;
-		PIMAGE_SECTION_HEADER firstSectionHeader = NULL;
-		PIMAGE_SECTION_HEADER lastSectionHeader = NULL;
-		PDWORD sectionAlignment = 0;
-		PWORD sectionCount = 0;
+		PVOID ntHeader;
+		PIMAGE_DATA_DIRECTORY imageDataDirectoryEntry;
+		PDWORD imageDataDirectorySize;
+		PIMAGE_SECTION_HEADER firstSectionHeader;
+		PIMAGE_SECTION_HEADER lastSectionHeader;
+		PDWORD sectionAlignment;
+		PWORD sectionCount;
+
+
 		bool isMapped;
 		bool isPE;
 		PWORD imageType; //IMAGE_NT_OPTIONAL_HDR32_MAGIC IMAGE_NT_OPTIONAL_HDR64_MAGIC IMAGE_ROM_OPTIONAL_HDR_MAGIC
@@ -283,6 +312,16 @@ namespace PE{
 
 		void CheckImage()
 		{
+			// 设置初始值
+			ntHeader = NULL;
+			imageDataDirectoryEntry = NULL;
+			imageDataDirectorySize = NULL;
+			firstSectionHeader = NULL;
+			lastSectionHeader = NULL;
+			sectionAlignment = NULL;
+			sectionCount = NULL;
+			
+
 			//  32 64位共用一些字段, 所以可以用NtHeader32
 			if (DosHeader()->e_magic != IMAGE_DOS_SIGNATURE || NtHeader32()->Signature != IMAGE_NT_SIGNATURE)
 			{
@@ -299,7 +338,7 @@ namespace PE{
 			{
 			case IMAGE_NT_OPTIONAL_HDR32_MAGIC:
 				auto header32 = NtHeader32();
-				imageDataDirectory = header32->OptionalHeader.DataDirectory;
+				imageDataDirectoryEntry = header32->OptionalHeader.DataDirectory;
 				imageDataDirectorySize = &header32->OptionalHeader.NumberOfRvaAndSizes;
 				sectionAlignment = &header32->OptionalHeader.SectionAlignment;
 				firstSectionHeader = IMAGE_FIRST_SECTION(header32);
@@ -308,7 +347,7 @@ namespace PE{
 				break;
 			case IMAGE_NT_OPTIONAL_HDR64_MAGIC:
 				auto header64 = NtHeader64();
-				imageDataDirectory = header64->OptionalHeader.DataDirectory;
+				imageDataDirectoryEntry = header64->OptionalHeader.DataDirectory;
 				imageDataDirectorySize = &header64->OptionalHeader.NumberOfRvaAndSizes;
 				sectionAlignment = &header64->OptionalHeader.SectionAlignment;
 				firstSectionHeader = IMAGE_FIRST_SECTION(header64);
@@ -326,18 +365,7 @@ namespace PE{
 
 
 		}
-		PIMAGE_DATA_DIRECTORY GetDataDirectory(DWORD index)
-		{			
-			if (*imageDataDirectorySize > index && IMAGE_NUMBEROF_DIRECTORY_ENTRIES > index)
-			{
-				auto result = &imageDataDirectory[index];
-				if (result->VirtualAddress != NULL)
-				{
-					return result;
-				}
-			}			
-			return NULL;
-		}
+
 
 		
 		PVOID NtHeader()
@@ -348,40 +376,134 @@ namespace PE{
 			}
 			return ntHeader;
 		}
-		PVOID GetRvaData(DWORD rva)
+		
+	};
+	// 导入表读取器
+	class ImportThunkReader
+	{
+	public:
+		ImportThunkReader(){}
+		~ImportThunkReader(){}
+
+	private:
+
+	};
+	class ImportDescriptorReader
+	{
+	public:
+		ImportDescriptorReader(PeDecoder& pe)
 		{
-			DWORD offset;
-			if (isMapped)
+			descriptor = pe.ImageImport();
+			if (descriptor)
 			{
-				offset = rva;
+				descriptorLength = &pe.GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IMPORT)->Size;
 			}
 			else
 			{
-				offset = RvaToOffset(rva);
+				descriptorLength = 0;
 			}
-			return base + offset;
-		}
-	};
 
+		}
+		~ImportDescriptorReader(){}
+		bool Next()
+		{
+			if (descriptorLength)
+			{
+				if (++currentIndex < *descriptorLength)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		PIMAGE_IMPORT_DESCRIPTOR Current()
+		{
+			if (currentIndex == -1)
+			{
+				return NULL;
+			}
+			return &descriptor[currentIndex];
+		}
+
+		void Reset()
+		{
+			currentIndex = -1;
+		}
+	private:
+		PDWORD descriptorLength;
+		DWORD currentIndex;
+		PIMAGE_IMPORT_DESCRIPTOR descriptor;
+	};
 	// 导出表读取器
-	class ExportDirectoryReader
+	class ExportReader
 	{
 	public:
-		/*TODO: 把以前写的代码,改成迭代器形式
-		*/
-		ExportDirectoryReader(PIMAGE_EXPORT_DIRECTORY exportDirectory) 
-			:exportDirectory(exportDirectory), numberOfFunctions(exportDirectory->NumberOfFunctions)
+		ExportReader(PeDecoder& pe) :ExportReader(pe, pe.ImageExport())
 		{
-			
 		}
-		~ExportDirectoryReader(){}
+		ExportReader(PeDecoder& pe, PIMAGE_EXPORT_DIRECTORY exportDirectory)
+		{
+			this->exportDirectory = exportDirectory;
+			if (exportDirectory)
+			{
+				numberOfFunctions = &exportDirectory->NumberOfFunctions;
+				funcs = (PDWORD)pe.GetRvaData(exportDirectory->AddressOfFunctions);
+				names = (PDWORD)pe.GetRvaData(exportDirectory->AddressOfNames);
+				nameOrdinals = (PWORD)pe.GetRvaData(exportDirectory->AddressOfNameOrdinals);
+			}
+			else
+			{
+				numberOfFunctions = NULL;
+				currentIndex = -1;
+			}
 
+		}
+		~ExportReader(){}
+		PIMAGE_EXPORT_DIRECTORY GetExportDirectory()
+		{
+			return exportDirectory;
+		}
+		PDWORD CurrentFuncRva()
+		{
+			if (currentIndex == -1)
+			{
+				return NULL;
+			}
+			return &funcs[nameOrdinals[currentIndex]];
+		}
+		PDWORD CurrentNameRva()
+		{
+			if (currentIndex == -1)
+			{
+				return NULL;
+			}
+			return &names[nameOrdinals[currentIndex]];
+		}
+		bool Next()
+		{
+			if (numberOfFunctions)
+			{
+				if (++currentIndex < *numberOfFunctions)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		void Reset()
+		{
+			currentIndex = -1;
+		}
 	private:
 		PIMAGE_EXPORT_DIRECTORY exportDirectory;
-		DWORD numberOfFunctions;
+		PDWORD numberOfFunctions;
+		PDWORD funcs;
+		PDWORD names;
+		PWORD nameOrdinals;
+		DWORD currentIndex;
 	};
 
-	// 节读取器
+	// 节读取器, 使用比较频繁, 就不使用下标形式寻址了
 	class SectionReader
 	{
 	public:
