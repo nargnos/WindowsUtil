@@ -74,9 +74,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ExportReader.h" />
+    <ClInclude Include="ImportDescriptorReader.h" />
+    <ClInclude Include="ImportThunkReader.h" />
     <ClInclude Include="LazyLoad.h" />
     <ClInclude Include="EnvironmentBlock.h" />
     <ClInclude Include="PeDecoder.h" />
+    <ClInclude Include="PeImage.h" />
+    <ClInclude Include="SectionReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EnvironmentBlock.cpp" />
+    <ClCompile Include="ExportReader.cpp" />
+    <ClCompile Include="ImportDescriptorReader.cpp" />
+    <ClCompile Include="ImportThunkReader.cpp" />
+    <ClCompile Include="PeDecoder.cpp" />
+    <ClCompile Include="SectionReader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

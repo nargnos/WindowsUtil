@@ -24,5 +24,40 @@
     <ClInclude Include="PeDecoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ImportDescriptorReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportThunkReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EnvironmentBlock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PeDecoder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportDescriptorReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportThunkReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 #include <iomanip>
 //#include "../LazyLoad/LazyLoad.h"
 #include "../WindowsUtil/EnvironmentBlock.h"
-#include "../WindowsUtil/PeDecoder.h"
+#include "../WindowsUtil/PeImage.h"
 using namespace std;
 
 
@@ -282,8 +282,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	TestPeDecoder();
 
-
-
+	system("pause");
 	return 0;
 }
 #pragma region 导出表测试数据
