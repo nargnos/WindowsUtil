@@ -81,6 +81,7 @@
     <ClInclude Include="EnvironmentBlock.h" />
     <ClInclude Include="PeDecoder.h" />
     <ClInclude Include="PeImage.h" />
+    <ClInclude Include="ResourceDirectoryReader.h" />
     <ClInclude Include="SectionReader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +90,7 @@
     <ClCompile Include="ImportDescriptorReader.cpp" />
     <ClCompile Include="ImportThunkReader.cpp" />
     <ClCompile Include="PeDecoder.cpp" />
+    <ClCompile Include="ResourceDirectoryReader.cpp" />
     <ClCompile Include="SectionReader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

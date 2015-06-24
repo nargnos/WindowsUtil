@@ -39,6 +39,9 @@
     <ClInclude Include="PeImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceDirectoryReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnvironmentBlock.cpp">
@@ -57,6 +60,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SectionReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceDirectoryReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
