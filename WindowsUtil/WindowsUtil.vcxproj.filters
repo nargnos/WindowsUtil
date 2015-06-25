@@ -42,6 +42,12 @@
     <ClInclude Include="ResourceDirectoryReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BaseRelocationReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeOffsetReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnvironmentBlock.cpp">
@@ -63,6 +69,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ResourceDirectoryReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseRelocationReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeOffsetReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

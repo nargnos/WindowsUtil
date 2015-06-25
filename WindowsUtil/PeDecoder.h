@@ -26,7 +26,7 @@ namespace PE
 		PIMAGE_EXPORT_DIRECTORY GetImageExport();
 		PIMAGE_IMPORT_DESCRIPTOR GetImageImport();
 		PIMAGE_RESOURCE_DIRECTORY GetImageResource();
-		PIMAGE_RELOCATION GetImageBasereloc();
+		PIMAGE_BASE_RELOCATION GetImageBasereloc();
 		
 		PVOID GetRvaData(DWORD rva);
 		PIMAGE_DATA_DIRECTORY GetDataDirectory(DWORD index);

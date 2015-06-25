@@ -74,6 +74,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BaseRelocationReader.h" />
     <ClInclude Include="ExportReader.h" />
     <ClInclude Include="ImportDescriptorReader.h" />
     <ClInclude Include="ImportThunkReader.h" />
@@ -83,8 +84,10 @@
     <ClInclude Include="PeImage.h" />
     <ClInclude Include="ResourceDirectoryReader.h" />
     <ClInclude Include="SectionReader.h" />
+    <ClInclude Include="TypeOffsetReader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseRelocationReader.cpp" />
     <ClCompile Include="EnvironmentBlock.cpp" />
     <ClCompile Include="ExportReader.cpp" />
     <ClCompile Include="ImportDescriptorReader.cpp" />
@@ -92,6 +95,7 @@
     <ClCompile Include="PeDecoder.cpp" />
     <ClCompile Include="ResourceDirectoryReader.cpp" />
     <ClCompile Include="SectionReader.cpp" />
+    <ClCompile Include="TypeOffsetReader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

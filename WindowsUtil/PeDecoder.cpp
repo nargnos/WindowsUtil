@@ -171,14 +171,14 @@ namespace PE
 	}
 	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 	}*/
-	PIMAGE_RELOCATION PeDecoder::GetImageBasereloc()
+	PIMAGE_BASE_RELOCATION PeDecoder::GetImageBasereloc()
 	{
 		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC);
 		if (!dir)
 		{
 			return NULL;
 		}
-		return (PIMAGE_RELOCATION)GetRvaData(dir->VirtualAddress);
+		return (PIMAGE_BASE_RELOCATION)GetRvaData(dir->VirtualAddress);
 	}
 	/*void PeDecoder::ImageDirectoryEntryDebug()
 	{
