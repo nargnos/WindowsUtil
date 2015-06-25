@@ -3,35 +3,56 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 //#include "../LazyLoad/LazyLoad.h"
 #include "../WindowsUtil/EnvironmentBlock.h"
 #include "../WindowsUtil/PeImage.h"
 using namespace std;
+using namespace PE;
+
+ofstream of;
+#define DISPLAY_DES of
+
+#pragma region 导入表测试数据
+bool __stdcall HookBeep(DWORD val1, DWORD val2)
+{
+	DISPLAY_DES << "Hook Success. Params: " << val1 << " " << val2 << endl;
+	return true;
+}
+#pragma endregion
+
 
 
 void TestPeDecoder()
 {
+#pragma region 一些宏定义
 	const int maxSpace = 50;
 	const int minSpace = 2;
 	int space = minSpace;
+#define OUTPUT_FILENAME "\\output.txt"
+#define SHOW_FILE system("start"OUTPUT_FILENAME);
 	
+	of.open(OUTPUT_FILENAME, ios::out);
+
 #define TO_RIGHT space+=2;if(space>maxSpace){space=maxSpace;}{
 #define TO_LEFT }space-=2;if(space<minSpace){space=minSpace;}
-#define DISPLAY_STRUCT_HEX(structVal, name) cout <<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< structVal->name << endl
-#define DISPLAY_STRUCT_HEX2(structVal, name) cout <<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< structVal.name << endl
-#define DISPLAY_STRUCT_POINTER_HEX(structVal, name) cout<<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< &structVal->name << endl
+#define DISPLAY_STRUCT_HEX(structVal, name) DISPLAY_DES <<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< structVal->name << endl
+#define DISPLAY_STRUCT_HEX2(structVal, name) DISPLAY_DES <<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< structVal.name << endl
+#define DISPLAY_STRUCT_POINTER_HEX(structVal, name) DISPLAY_DES<<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< &structVal->name << endl
 
-#define DISPLAY_HEX(name,val) cout <<setw(space)<<""<<setw(maxSpace-space)<<name <<" - 0x"<< hex << val<< endl
-#define DISPLAY_MSG(msg) cout <<setw(space)<<""<<msg<< endl
+#define DISPLAY_HEX(name,val) DISPLAY_DES <<setw(space)<<""<<setw(maxSpace-space)<<name <<" - 0x"<< hex << val<< endl
+#define DISPLAY_MSG(msg) DISPLAY_DES <<setw(space)<<""<<msg<< endl
+#define DISPLAY_PAUSE DISPLAY_DES << "-- MORE --" << endl;system("pause");
 
-	cout.setf(ios::left | ios::boolalpha);
+	DISPLAY_DES.setf(ios::left | ios::boolalpha);
+#pragma endregion
 
 	// pe解析器测试, 只做测试怎么简单怎么编
 	PE::PeDecoder pe(GetModuleHandleA(NULL), true);
 	if (pe.IsPE())
 	{
-		// dosHeader
+#pragma region dosHeader
 		auto dosHeader = pe.DosHeader();		
 		DISPLAY_HEX("[Dos Header]", dosHeader);		
 		TO_RIGHT
@@ -56,8 +77,11 @@ void TestPeDecoder()
 			DISPLAY_STRUCT_HEX(dosHeader, e_lfanew);
 		TO_LEFT
 		cout << endl;
+#pragma endregion
+
 		if (pe.HasNtHeader32())
 		{
+#pragma region ntHeader
 			auto ntHeader = pe.NtHeader32();
 			//cout << "[Is 32 PE]" << endl;
 			// ntHeader
@@ -65,7 +89,7 @@ void TestPeDecoder()
 			TO_RIGHT
 				DISPLAY_STRUCT_HEX(ntHeader, Signature); 			
 				DISPLAY_STRUCT_POINTER_HEX(ntHeader, FileHeader);
-				// FileHeader
+#pragma region FileHeader
 				TO_RIGHT
 					auto fileHeader = ntHeader->FileHeader;
 					DISPLAY_STRUCT_HEX2(fileHeader, Machine);
@@ -77,7 +101,7 @@ void TestPeDecoder()
 					DISPLAY_STRUCT_HEX2(fileHeader, Characteristics);
 				TO_LEFT
 
-				// OptionalHeader
+#pragma region OptionalHeader
 				DISPLAY_STRUCT_POINTER_HEX(ntHeader, OptionalHeader);
 				auto optionalHeader = ntHeader->OptionalHeader;	
 				TO_RIGHT							
@@ -113,7 +137,7 @@ void TestPeDecoder()
 					DISPLAY_STRUCT_HEX2(optionalHeader, NumberOfRvaAndSizes);
 					DISPLAY_STRUCT_HEX2(optionalHeader, DataDirectory);
 
-					// 数据目录
+#pragma region 数据目录
 					TO_RIGHT						
 						auto dataDirectory = optionalHeader.DataDirectory;
 						for (int i = 0; i < optionalHeader.NumberOfRvaAndSizes; i++)
@@ -177,11 +201,17 @@ void TestPeDecoder()
 						}
 						TO_LEFT
 					// end dataDirectory
+#pragma endregion
 					TO_LEFT
 				// end optionalHeader
+#pragma endregion
 				TO_LEFT
 				// end ntheader
 				cout << endl;
+#pragma endregion
+
+#pragma endregion
+#pragma region Section
 				DISPLAY_MSG("[Section]");
 				PE::SectionReader sr(pe);
 				while (sr.Next())
@@ -202,6 +232,8 @@ void TestPeDecoder()
 					TO_LEFT
 				}
 				cout << endl;
+#pragma endregion
+#pragma region Export
 				DISPLAY_MSG("[Export]");
 				TO_RIGHT
 					auto export = pe.GetImageExport();
@@ -247,12 +279,132 @@ void TestPeDecoder()
 							TO_LEFT
 						}
 					TO_LEFT
-					// TODO: 导入表
+#pragma endregion
+#pragma region Import
+					// 导入表					
+					DISPLAY_MSG("[Import]");
+					TO_RIGHT
+						ImportDescriptorReader idr(pe);
+						ImportThunkReader itr;
+						while (idr.Next())
+						{
+							auto tmpDr = idr.Current();
+							DISPLAY_MSG(ImportDescriptorReader::GetDescriptorName(pe,tmpDr) <<" [OFT: 0x"<< tmpDr->OriginalFirstThunk << "] [FT: 0x"<< tmpDr->FirstThunk <<"]");
+							itr.Init(pe, tmpDr);
+							TO_RIGHT
+								while (itr.Next())
+								{
+									auto tmpThunk = itr.CurrentOriginalThunk32();
+									if (!ImportThunkReader::IsSnapByOrdinal(tmpThunk))
+									{
+										auto tmpName = ImportThunkReader::GetNameStruct(pe, tmpThunk);
+										
+										DISPLAY_MSG(tmpName->Name);
+										TO_RIGHT											
+											DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
+											DISPLAY_HEX("FT", itr.CurrentThunk32()->u1.AddressOfData);
+											DISPLAY_HEX("Hint", tmpName->Hint);
+										TO_LEFT
+										// 附加测试 iat hook - Beep
+										if (pe.IsMapped())
+										{
+											if (strcmp(tmpName->Name, "Beep") == 0)
+											{
+												auto hookAddr = itr.CurrentThunk32();
+												DWORD oldProtect;
+												VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect);
+												*(PDWORD)hookAddr = (DWORD)HookBeep;
+												VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), oldProtect, NULL);
+												DISPLAY_HEX("New - FT", itr.CurrentThunk32()->u1.AddressOfData);
+												DISPLAY_MSG(endl);
+												DISPLAY_MSG("[Run Iat Hook Function]");
+												Beep(0x1b8, 1000);
+												DISPLAY_MSG("[Run Iat Hook Function]");
+												Beep(0xdc, 1000);
+												DISPLAY_MSG(endl);
+												
+											}
+											
+										}										
+										// 附加测试结束
+									}
+									else
+									{
+										auto tmpOrdinal = ImportThunkReader::GetOrdinal(tmpThunk);
+										DISPLAY_MSG("Ordinal: " << tmpOrdinal);
+										TO_RIGHT
+										DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
+										DISPLAY_HEX("FT", itr.CurrentThunk32());										
+										TO_LEFT
+									}
+								}
+							TO_LEFT
+							
+						}
+					TO_LEFT
+#pragma endregion
+
+#pragma region Resource
+					// TODO:资源目录
+#pragma endregion
+#pragma region exception
+					// TODO:exception directory
+#pragma endregion
+#pragma region security
+					// TODO:security
+#pragma endregion
+#pragma region relocation
+					// TODO:relocation
+#pragma endregion
+#pragma region debug
+					// TODO:debug
+#pragma endregion
+#pragma region architecture
+					// TODO:architecture
+#pragma endregion
+#pragma region reserved
+					// TODO:reserved
+#pragma endregion
+#pragma region tls
+					// TODO:tls
+#pragma endregion
+#pragma region config
+					// TODO:config
+#pragma endregion
+#pragma region bound import
+					// TODO:bound import
+#pragma endregion
+					
+#pragma region iat
+					// TODO: iat
+#pragma endregion
+#pragma region delay import
+					// TODO: delay import
+#pragma endregion
+#pragma region meta
+					// TODO: meta
+#pragma endregion
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+
+
+
+
+
 
 				TO_LEFT
 		}
 		else
 		{
+			// 64位未测试
 			auto ntHeader = pe.NtHeader64();
 			DISPLAY_HEX("NtHeader64",ntHeader);
 			DISPLAY_STRUCT_HEX(ntHeader, Signature);
@@ -268,11 +420,14 @@ void TestPeDecoder()
 	{
 		cout << "Not a PE" << endl;
 	}
+	of.close();
+	SHOW_FILE
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
+	
 	//_asm pushad
 	//InitLazyLoad();
 	////InitLazyLoad();
@@ -282,7 +437,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	TestPeDecoder();
 
-	system("pause");
+	Beep(261, 1000);
 	return 0;
 }
 #pragma region 导出表测试数据

@@ -8,29 +8,31 @@ namespace PE
 	{
 	public:
 		ImportThunkReader(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor);
+		ImportThunkReader();
+		void Init(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor);
 
 		PIMAGE_THUNK_DATA32 CurrentThunk32();
 		PIMAGE_THUNK_DATA32 CurrentOriginalThunk32();
 		PIMAGE_THUNK_DATA64 CurrentThunk64();
-
 		PIMAGE_THUNK_DATA64 CurrentOriginalThunk64();
 
-		bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk);
-		bool IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk);
-		ULONGLONG GetOrdinal(PIMAGE_THUNK_DATA64 thunk);
-		DWORD GetOrdinal(PIMAGE_THUNK_DATA32 thunk);
-		PIMAGE_IMPORT_BY_NAME GetImportByNameStruct(PIMAGE_THUNK_DATA32 thunk);
-		PIMAGE_IMPORT_BY_NAME GetImportByNameStruct(PIMAGE_THUNK_DATA64 thunk);
+	
+		
 		bool Next();
 		void Reset();
 		~ImportThunkReader();
 
+		static PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA32 thunk);
+		static PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA64 thunk);
+		static bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk);
+		static bool IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk);
+		static ULONGLONG GetOrdinal(PIMAGE_THUNK_DATA64 thunk);
+		static DWORD GetOrdinal(PIMAGE_THUNK_DATA32 thunk);
 	private:
-		PIMAGE_IMPORT_DESCRIPTOR importDescriptor;
 		bool is32;
 		PVOID currentThunk;
 		PVOID currentOriginalThunk;
-		PeDecoder& pe;
+		
 		PVOID originalThunk;
 		PVOID thunk;
 

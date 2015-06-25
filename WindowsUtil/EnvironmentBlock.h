@@ -1,9 +1,10 @@
 #pragma once
 #include <Windows.h>
 #include <winternl.h>
-// struct定义修改自reactos源码
+
 namespace Peb
 {
+	// struct定义修改自reactos源码
 	//
 	// Loader Data Table Entry
 	//

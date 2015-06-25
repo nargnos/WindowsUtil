@@ -16,6 +16,10 @@ namespace PE
 	{
 		return isPE;
 	}
+	bool PeDecoder::IsMapped()
+	{
+		return isMapped;
+	}
 	PVOID PeDecoder::GetBase()
 	{
 		return base;

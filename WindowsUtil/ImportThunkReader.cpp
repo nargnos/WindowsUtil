@@ -4,9 +4,16 @@ namespace PE
 {
 	// 导入表Thunk结构读取器
 
-	ImportThunkReader::ImportThunkReader(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor) :
-		importDescriptor(importDescriptor),
-		pe(pe)
+	ImportThunkReader::ImportThunkReader(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
+	{
+		Init(pe, importDescriptor);		
+	}
+	ImportThunkReader::ImportThunkReader()
+	{
+		currentThunk = NULL;
+		currentOriginalThunk = NULL;
+	}
+	void ImportThunkReader::Init(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
 	{
 		is32 = pe.HasNtHeader32();
 		originalThunk = pe.GetRvaData(importDescriptor->OriginalFirstThunk);
@@ -18,7 +25,7 @@ namespace PE
 	{
 		if (is32)
 		{
-			return CONVERT_THUNK_POINTER(thunk, 32);
+			return CONVERT_THUNK_POINTER(currentThunk, 32);
 		}
 		return NULL;
 	}
@@ -26,7 +33,7 @@ namespace PE
 	{
 		if (is32)
 		{
-			return CONVERT_THUNK_POINTER(originalThunk, 32);
+			return CONVERT_THUNK_POINTER(currentOriginalThunk, 32);
 		}
 		return NULL;
 	}
@@ -36,7 +43,7 @@ namespace PE
 		{
 			return NULL;
 		}
-		return CONVERT_THUNK_POINTER(thunk, 64);
+		return CONVERT_THUNK_POINTER(currentThunk, 64);
 	}
 
 	PIMAGE_THUNK_DATA64 ImportThunkReader::CurrentOriginalThunk64()
@@ -45,7 +52,7 @@ namespace PE
 		{
 			return NULL;
 		}
-		return CONVERT_THUNK_POINTER(originalThunk, 64);
+		return CONVERT_THUNK_POINTER(currentOriginalThunk, 64);
 	}
 
 	bool ImportThunkReader::IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
@@ -64,25 +71,23 @@ namespace PE
 	{
 		return IMAGE_ORDINAL32(thunk->u1.Ordinal);
 	}
-	PIMAGE_IMPORT_BY_NAME ImportThunkReader::GetImportByNameStruct(PIMAGE_THUNK_DATA32 thunk)
-	{
-		return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
-	}
-	PIMAGE_IMPORT_BY_NAME ImportThunkReader::GetImportByNameStruct(PIMAGE_THUNK_DATA64 thunk)
-	{
-		return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
-	}
+
 	bool ImportThunkReader::Next()
 	{
-#define CHECK_THUNK(x) auto tmpThunk = CONVERT_THUNK_POINTER(currentThunk, x) + 1;\
-			if (CONVERT_THUNK_POINTER(currentThunk,x)->u1.AddressOfData == NULL)\
-																					{\
+#define CHECK_THUNK(x) auto tmpThunk = CONVERT_THUNK_POINTER(currentOriginalThunk, x) + 1;\
+			if (CONVERT_THUNK_POINTER(tmpThunk,x)->u1.AddressOfData == NULL)\
+			{\
 				return false;\
-																					}\
-			currentThunk = tmpThunk;\
-			currentOriginalThunk = CONVERT_THUNK_POINTER(currentOriginalThunk, x) + 1;
+			}\
+			currentThunk =  CONVERT_THUNK_POINTER(currentThunk, x) + 1;\
+			currentOriginalThunk = tmpThunk;
 
-
+		if (currentThunk == NULL && currentOriginalThunk == NULL)
+		{
+			currentThunk = thunk;
+			currentOriginalThunk = originalThunk;
+			return true;
+		}
 		if (is32)
 		{
 			CHECK_THUNK(32);
@@ -92,15 +97,21 @@ namespace PE
 			CHECK_THUNK(64);
 		}
 
-
 		return true;
 	}
 	void ImportThunkReader::Reset()
 	{
-		currentThunk = thunk;
-		currentOriginalThunk = originalThunk;
+		currentThunk = NULL;
+		currentOriginalThunk = NULL;
 	}
 	ImportThunkReader::~ImportThunkReader(){}
 
-
+	PIMAGE_IMPORT_BY_NAME ImportThunkReader::GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA32 thunk)
+	{
+		return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
+	}
+	PIMAGE_IMPORT_BY_NAME ImportThunkReader::GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA64 thunk)
+	{
+		return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
+	}
 }

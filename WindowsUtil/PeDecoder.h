@@ -12,6 +12,7 @@ namespace PE
 		~PeDecoder();
 		bool HasNtHeader32();
 		bool IsPE();
+		bool IsMapped();
 		PVOID GetBase();
 		PIMAGE_DOS_HEADER DosHeader();
 

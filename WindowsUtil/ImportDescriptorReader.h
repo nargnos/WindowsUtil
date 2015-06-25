@@ -10,7 +10,9 @@ namespace PE
 		~ImportDescriptorReader();
 		bool Next();
 		PIMAGE_IMPORT_DESCRIPTOR Current();
+		static PCHAR GetDescriptorName(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR descriptor);
 		void Reset();
+		
 	private:
 		PDWORD descriptorLength;
 		DWORD currentIndex;
