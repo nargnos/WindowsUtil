@@ -1,0 +1,9 @@
+#pragma once
+#include "PE\PeDecoder.h"
+#include "PE\Export\ExportReader.h"
+#include "PE\Import\ImportDescriptorReader.h"
+#include "PE\Import\ImportThunkReader.h"
+#include "PE\Section\SectionReader.h"
+#include "PE\Reloc\BaseRelocationReader.h"
+#include "PE\Reloc\TypeOffsetReader.h"
+#include "PE\Resource\ResourceDirectoryReader.h"

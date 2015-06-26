@@ -15,66 +15,66 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LazyLoad.h">
+    <ClInclude Include="Include\PE\Export\ExportReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="EnvironmentBlock.h">
+    <ClInclude Include="Include\PE\Import\ImportDescriptorReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PeDecoder.h">
+    <ClInclude Include="Include\PE\Import\ImportThunkReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ImportDescriptorReader.h">
+    <ClInclude Include="Include\PE\LazyLoad\LazyLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ImportThunkReader.h">
+    <ClInclude Include="Include\PE\Reloc\BaseRelocationReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ExportReader.h">
+    <ClInclude Include="Include\PE\Reloc\TypeOffsetReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SectionReader.h">
+    <ClInclude Include="Include\PE\Resource\ResourceDirectoryReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PeImage.h">
+    <ClInclude Include="Include\PE\Section\SectionReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceDirectoryReader.h">
+    <ClInclude Include="Include\PE\PeDecoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BaseRelocationReader.h">
+    <ClInclude Include="Include\Process\EnvironmentBlock.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="TypeOffsetReader.h">
+    <ClInclude Include="Include\PeImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnvironmentBlock.cpp">
+    <ClCompile Include="Src\EnvironmentBlock.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="PeDecoder.cpp">
+    <ClCompile Include="Src\PeDecoder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ImportDescriptorReader.cpp">
+    <ClCompile Include="Src\ResourceDirectoryReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ImportThunkReader.cpp">
+    <ClCompile Include="Src\TypeOffsetReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ExportReader.cpp">
+    <ClCompile Include="Src\BaseRelocationReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SectionReader.cpp">
+    <ClCompile Include="Src\ImportThunkReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceDirectoryReader.cpp">
+    <ClCompile Include="Src\ImportDescriptorReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BaseRelocationReader.cpp">
+    <ClCompile Include="Src\ExportReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TypeOffsetReader.cpp">
+    <ClCompile Include="Src\SectionReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

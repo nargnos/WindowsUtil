@@ -40,7 +40,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
@@ -74,28 +79,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BaseRelocationReader.h" />
-    <ClInclude Include="ExportReader.h" />
-    <ClInclude Include="ImportDescriptorReader.h" />
-    <ClInclude Include="ImportThunkReader.h" />
-    <ClInclude Include="LazyLoad.h" />
-    <ClInclude Include="EnvironmentBlock.h" />
-    <ClInclude Include="PeDecoder.h" />
-    <ClInclude Include="PeImage.h" />
-    <ClInclude Include="ResourceDirectoryReader.h" />
-    <ClInclude Include="SectionReader.h" />
-    <ClInclude Include="TypeOffsetReader.h" />
+    <ClInclude Include="Include\PE\Reloc\BaseRelocationReader.h" />
+    <ClInclude Include="Include\PE\Export\ExportReader.h" />
+    <ClInclude Include="Include\PE\Import\ImportDescriptorReader.h" />
+    <ClInclude Include="Include\PE\Import\ImportThunkReader.h" />
+    <ClInclude Include="Include\PE\LazyLoad\LazyLoad.h" />
+    <ClInclude Include="Include\Process\EnvironmentBlock.h" />
+    <ClInclude Include="Include\PE\PeDecoder.h" />
+    <ClInclude Include="Include\PeImage.h" />
+    <ClInclude Include="Include\PE\Resource\ResourceDirectoryReader.h" />
+    <ClInclude Include="Include\PE\Section\SectionReader.h" />
+    <ClInclude Include="Include\PE\Reloc\TypeOffsetReader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BaseRelocationReader.cpp" />
-    <ClCompile Include="EnvironmentBlock.cpp" />
-    <ClCompile Include="ExportReader.cpp" />
-    <ClCompile Include="ImportDescriptorReader.cpp" />
-    <ClCompile Include="ImportThunkReader.cpp" />
-    <ClCompile Include="PeDecoder.cpp" />
-    <ClCompile Include="ResourceDirectoryReader.cpp" />
-    <ClCompile Include="SectionReader.cpp" />
-    <ClCompile Include="TypeOffsetReader.cpp" />
+    <ClCompile Include="Src\BaseRelocationReader.cpp" />
+    <ClCompile Include="Src\EnvironmentBlock.cpp" />
+    <ClCompile Include="Src\ExportReader.cpp" />
+    <ClCompile Include="Src\ImportDescriptorReader.cpp" />
+    <ClCompile Include="Src\ImportThunkReader.cpp" />
+    <ClCompile Include="Src\PeDecoder.cpp" />
+    <ClCompile Include="Src\ResourceDirectoryReader.cpp" />
+    <ClCompile Include="Src\SectionReader.cpp" />
+    <ClCompile Include="Src\TypeOffsetReader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
