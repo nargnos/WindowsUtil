@@ -48,6 +48,7 @@
     <None Include="idok.bin">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="html1.htm" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">

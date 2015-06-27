@@ -2,7 +2,7 @@
 namespace PE
 {
 	PeDecoder::PeDecoder(PVOID pe, bool isMapped) :
-		base((PCHAR)pe),
+		base((PUINT8)pe),
 		isMapped(isMapped)
 	{
 		CheckImage();
@@ -153,24 +153,28 @@ namespace PE
 		}
 		return (PIMAGE_RESOURCE_DIRECTORY)GetRvaData(dir->VirtualAddress);
 	}
-	/*void PeDecoder::ImageDirectoryEntryException()
+	PIMAGE_RUNTIME_FUNCTION_ENTRY PeDecoder::ImageException()
 	{
-	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_EXCEPTION);
-	if (!dir)
-	{
-	return NULL;
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+		if (!dir)
+		{
+			return NULL;
+		}
+		return (PIMAGE_RUNTIME_FUNCTION_ENTRY)GetRvaData(dir->VirtualAddress);
 	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	}*/
-	/*void PeDecoder::ImageDirectoryEntrySecurity()
+	PUINT8 PeDecoder::ImageSecurity()
 	{
-	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_SECURITY);
-	if (!dir)
-	{
-	return NULL;
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_SECURITY);
+		if (!dir)
+		{
+			return NULL;
+		}
+		if (isMapped)
+		{
+			return NULL;
+		}
+		return (PUINT8)(base + dir->VirtualAddress);
 	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	}*/
 	PIMAGE_BASE_RELOCATION PeDecoder::GetImageBasereloc()
 	{
 		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC);
@@ -180,24 +184,26 @@ namespace PE
 		}
 		return (PIMAGE_BASE_RELOCATION)GetRvaData(dir->VirtualAddress);
 	}
-	/*void PeDecoder::ImageDirectoryEntryDebug()
+	PIMAGE_DEBUG_DIRECTORY PeDecoder::ImageDebug()
 	{
-	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_DEBUG);
-	if (!dir)
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_DEBUG);
+		if (!dir)
+		{
+			return NULL;
+		}
+
+		return (PIMAGE_DEBUG_DIRECTORY)GetRvaData(dir->VirtualAddress);
+	}
+	PIMAGE_ARCHITECTURE_HEADER PeDecoder::ImageArchitecture()
 	{
-	return NULL;
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_ARCHITECTURE);
+		if (!dir)
+		{
+			return NULL;
+		}
+		return (PIMAGE_ARCHITECTURE_HEADER)GetRvaData(dir->VirtualAddress);
 	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	}
-	void PeDecoder::ImageDirectoryEntryArchitecture()
-	{
-	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_ARCHITECTURE);
-	if (!dir)
-	{
-	return NULL;
-	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	}
+	/*
 	void PeDecoder::ImageDirectoryEntryGlobalptr()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_GLOBALPTR);
@@ -208,34 +214,74 @@ namespace PE
 	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 	}*/
 
-	/*void PeDecoder::ImageDirectoryEntryTls() // 这个有32 64区分
+	PIMAGE_TLS_DIRECTORY32 PeDecoder::ImageTls32()
 	{
-	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_TLS);
-	if (!dir)
-	{
-	return NULL;
+		if (!HasNtHeader32())
+		{
+			return NULL;
+		}
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_TLS);
+		if (!dir)
+		{
+			return NULL;
+		}
+		
+		return (PIMAGE_TLS_DIRECTORY32)GetRvaData(dir->VirtualAddress);
 	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	}*/
-	//void PeDecoder::ImageDirectoryEntryLoadConfig() //PIMAGE_LOAD_CONFIG_DIRECTORY64
-	//{
-	//	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
-	//	if (!dir)
-	//	{
-	//		return NULL;
-	//	}
-	//	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	//}
-	/*void PeDecoder::ImageDirectoryEntryBoundImport()
+	PIMAGE_TLS_DIRECTORY64 PeDecoder::ImageTls64()
+	{
+		if (HasNtHeader32())
+		{
+			return NULL;
+		}
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_TLS);
+		if (!dir)
+		{
+			return NULL;
+		}
+		
+		return (PIMAGE_TLS_DIRECTORY64)GetRvaData(dir->VirtualAddress);
+	}
+
+	PIMAGE_LOAD_CONFIG_DIRECTORY32 PeDecoder::ImageLoadConfig32()
+	{
+		if (!HasNtHeader32())
+		{
+			return NULL;
+		}
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+		if (!dir)
+		{
+			return NULL;
+		}
+		
+		return (PIMAGE_LOAD_CONFIG_DIRECTORY32)GetRvaData(dir->VirtualAddress);
+	}
+	PIMAGE_LOAD_CONFIG_DIRECTORY64 PeDecoder::ImageLoadConfig64()
+	{
+		if (HasNtHeader32())
+		{
+			return NULL;
+		}
+		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+		if (!dir)
+		{
+			return NULL;
+		}
+		
+		return (PIMAGE_LOAD_CONFIG_DIRECTORY64)GetRvaData(dir->VirtualAddress);
+	}
+
+	PIMAGE_BOUND_IMPORT_DESCRIPTOR PeDecoder::ImageBoundImport()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT);
 	if (!dir)
 	{
 	return NULL;
 	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
-	}*/
-	/*DWORD ImageDirectoryEntryIat()
+	return (PIMAGE_BOUND_IMPORT_DESCRIPTOR)GetRvaData(dir->VirtualAddress);
+	}
+	/*DWORD ImageIat()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IAT);
 	if (!dir)
@@ -244,17 +290,18 @@ namespace PE
 	}
 	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
 	}*/
-	/*
-	void PeDecoder::ImageDirectoryEntryDelayImport()
+	
+	PIMAGE_DELAYLOAD_DESCRIPTOR PeDecoder::ImageDelayImport()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT);
 	if (!dir)
 	{
 	return NULL;
 	}
-	return (PIMAGE_EXPORT_DIRECTORY)GetRvaData(dir->VirtualAddress);
+	return (PIMAGE_DELAYLOAD_DESCRIPTOR)GetRvaData(dir->VirtualAddress);
 	}
-	void PeDecoder::ImageDirectoryEntryComDescriptor()
+	/*
+	void PeDecoder::ImageComDescriptor()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR);
 	if (!dir)
@@ -360,7 +407,6 @@ namespace PE
 			break;
 		}
 		lastSectionHeader = firstSectionHeader + *sectionCount;
-		// TODO: 未完成
 
 	}
 	PVOID PeDecoder::NtHeader()

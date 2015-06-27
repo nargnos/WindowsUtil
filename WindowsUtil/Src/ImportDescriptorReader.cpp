@@ -47,9 +47,9 @@ namespace PE
 		{
 			currentIndex = -1;
 		}
-		PCHAR ImportDescriptorReader::GetDescriptorName(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR descriptor)
+		LPSTR ImportDescriptorReader::GetDescriptorName(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR descriptor)
 		{
-			return (PCHAR)pe.GetRvaData(descriptor->Name);
+			return (LPSTR)pe.GetRvaData(descriptor->Name);
 		}
 	}
 }

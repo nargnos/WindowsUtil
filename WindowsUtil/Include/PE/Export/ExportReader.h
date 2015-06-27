@@ -22,7 +22,7 @@ namespace PE{
 			PDWORD funcs;
 			PDWORD names;
 			PWORD nameOrdinals;
-			DWORD currentIndex;
+			int currentIndex;
 		};
 	}
 }

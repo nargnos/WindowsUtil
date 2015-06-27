@@ -24,6 +24,10 @@ namespace PE
 			PWORD typeOffset;
 			PWORD currentTypeOffset;
 		};
+		void RelocHighLow(PVOID oldBase, PVOID currentBase, DWORD relocRva);
+		void RelocLow(PVOID oldBase, PVOID currentBase, DWORD relocRva);
+		void RelocHigh(PVOID oldBase, PVOID currentBase, DWORD relocRva);
+		void RelocDir64(PVOID oldBase, PVOID currentBase, DWORD relocRva);
 	}
 
 }

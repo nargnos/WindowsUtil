@@ -20,7 +20,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -56,6 +56,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -63,6 +64,8 @@
       <AdditionalDependencies>$(OutDir)\WindowsUtil.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>
       </ImportLibrary>
+      <GenerateWindowsMetadata>true</GenerateWindowsMetadata>
+      <DelayLoadDLLs>user32.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -98,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin00001.bin" />
+    <None Include="html1.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="idok.bin" />
     <None Include="qwe1.bin" />
   </ItemGroup>

@@ -4,75 +4,171 @@ namespace PE
 {
 	namespace Resource
 	{
-		ResourceDirectoryReader::ResourceDirectoryReader(PIMAGE_RESOURCE_DIRECTORY res)
+		ResourceDirectoryReader::ResourceDirectoryReader(PIMAGE_RESOURCE_DIRECTORY root) :root(root)
 		{
-			Init(res);
-		}
-		ResourceDirectoryReader::ResourceDirectoryReader()
-		{
-			firstEntry = NULL;
+			SetEntryArrayRange(root, firstTypeDirectoryEntry, lastTypeDirectoryEntry);
 			Reset();
 		}
-		void ResourceDirectoryReader::Init(PIMAGE_RESOURCE_DIRECTORY res)
+		void ResourceDirectoryReader::SetEntryArrayRange(PIMAGE_RESOURCE_DIRECTORY Directory, PIMAGE_RESOURCE_DIRECTORY_ENTRY& begin, PIMAGE_RESOURCE_DIRECTORY_ENTRY& end)
 		{
-			this->res = res;
-			numberOfEntries = res->NumberOfIdEntries + res->NumberOfNamedEntries;
-			if (numberOfEntries > 0)
+			begin = LocateFirstEntry(Directory);
+			end = begin + GetNumberOfEntries(Directory);
+		}
+		bool ResourceDirectoryReader::NextTypeDirectoryEntry()
+		{
+			if (currentTypeDirectoryEntry)
 			{
-				firstEntry = LocateFirstEntry(res);
+				if (++currentTypeDirectoryEntry < lastTypeDirectoryEntry)
+				{
+					ResetCurrentResourceNameDirectoryEntry();
+					ResetCurrentLanguageDirectoryEntry();
+					return true;
+				}
+				
 			}
 			else
 			{
-				firstEntry = NULL;
-			}
-			Reset();
-		}
-		bool ResourceDirectoryReader::Next()
-		{
-			if (firstEntry == NULL)
-			{
-				return false;
-			}
-			if (currentIndex < numberOfEntries)
-			{
-				currentIndex++;
-				return true;
+				if (firstTypeDirectoryEntry)
+				{
+					currentTypeDirectoryEntry = firstTypeDirectoryEntry; 
+					ResetCurrentResourceNameDirectoryEntry();
+					ResetCurrentLanguageDirectoryEntry();
+					return true;
+				}
 			}
 			return false;
 		}
-		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::Current()
+		bool ResourceDirectoryReader::NextResourceNameDirectoryEntry()
 		{
-			if (currentIndex == -1)
+			if (currentResourceNameDirectoryEntry)
 			{
-				return NULL;
+				if (++currentResourceNameDirectoryEntry < lastResourceNameDirectoryEntry)
+				{
+					ResetCurrentLanguageDirectoryEntry();
+					return true;
+				}
 			}
-			return &firstEntry[currentIndex];
+			else
+			{
+				if (firstResourceNameDirectoryEntry)
+				{
+					currentResourceNameDirectoryEntry = firstResourceNameDirectoryEntry;
+					ResetCurrentLanguageDirectoryEntry();
+					return true;
+				}
+			}
+			return false;
 		}
+		bool ResourceDirectoryReader::NextLanguageDirectoryEntry()
+		{
+			if (currentLanguageDirectoryEntry)
+			{
+				if (++currentLanguageDirectoryEntry < lastLanguageDirectoryEntry)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if (firstLanguageDirectoryEntry)
+				{
+					currentLanguageDirectoryEntry = firstLanguageDirectoryEntry;
+					return true;
+				}
+			}
+			return false;
+		}
+
 		void ResourceDirectoryReader::Reset()
 		{
-			currentIndex = -1;
+			ResetCurrentTypeDirectoryEntry();
+			ResetCurrentResourceNameDirectoryEntry();
+			ResetCurrentLanguageDirectoryEntry();
+		}
+		void ResourceDirectoryReader::ResetCurrentTypeDirectoryEntry()
+		{
+			currentTypeDirectoryEntry = NULL;
+		}
+		void ResourceDirectoryReader::ResetCurrentResourceNameDirectoryEntry()
+		{
+			if (currentTypeDirectoryEntry)
+			{
+				SetEntryArrayRange(LocateResourceDirectory(root, currentTypeDirectoryEntry), firstResourceNameDirectoryEntry, lastResourceNameDirectoryEntry);
+			}
+			
+			currentResourceNameDirectoryEntry = NULL;
+		}
+		void ResourceDirectoryReader::ResetCurrentLanguageDirectoryEntry()
+		{
+			if (currentResourceNameDirectoryEntry)
+			{
+				SetEntryArrayRange(LocateResourceDirectory(root, currentResourceNameDirectoryEntry), firstLanguageDirectoryEntry, lastLanguageDirectoryEntry);
+			}
+			currentLanguageDirectoryEntry = NULL;
+		}
+
+		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::CurrentTypeDirectoryEntry()
+		{
+			return currentTypeDirectoryEntry;
+		}
+		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::CurrentResourceNameDirectoryEntry()
+		{
+			return currentResourceNameDirectoryEntry;
+		}
+		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::CurrentLanguageDirectoryEntry()
+		{
+			return currentLanguageDirectoryEntry;
+		}
+
+
+		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryReader::CurrentTypeDirectory()
+		{
+			if (currentTypeDirectoryEntry)
+			{
+				return LocateResourceDirectory(root, currentTypeDirectoryEntry);
+			}
+			return NULL;
+		}
+		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryReader::CurrentResourceNameDirectory()
+		{
+			if (currentResourceNameDirectoryEntry)
+			{
+				return LocateResourceDirectory(root, currentResourceNameDirectoryEntry);
+			}
+			return NULL;
+		}
+		PIMAGE_RESOURCE_DATA_ENTRY ResourceDirectoryReader::CurrentResourceDataEntry()
+		{
+			if (currentLanguageDirectoryEntry)
+			{
+				return LocateResourceDataEntry(root, currentLanguageDirectoryEntry);
+			}
+			return NULL;
 		}
 
 		ResourceDirectoryReader::~ResourceDirectoryReader()
 		{
 		}
 
-
-		PIMAGE_RESOURCE_DIRECTORY_STRING LocateEntryName(PIMAGE_RESOURCE_DIRECTORY directoryRoot, PIMAGE_RESOURCE_DIRECTORY_ENTRY entry)
+		DWORD GetNumberOfEntries(PIMAGE_RESOURCE_DIRECTORY Directory)
 		{
-			return PIMAGE_RESOURCE_DIRECTORY_STRING((PCHAR)directoryRoot + entry->NameOffset);
+			return Directory->NumberOfIdEntries + Directory->NumberOfNamedEntries;
+		}
+		PIMAGE_RESOURCE_DIR_STRING_U LocateEntryName(PIMAGE_RESOURCE_DIRECTORY directoryRoot, PIMAGE_RESOURCE_DIRECTORY_ENTRY entry)
+		{
+			return PIMAGE_RESOURCE_DIR_STRING_U((PUINT8)directoryRoot + entry->NameOffset);
 		}
 		PIMAGE_RESOURCE_DIRECTORY_ENTRY LocateFirstEntry(PIMAGE_RESOURCE_DIRECTORY res)
 		{
-			return (PIMAGE_RESOURCE_DIRECTORY_ENTRY)((PCHAR)res + sizeof(IMAGE_RESOURCE_DIRECTORY));
+			return (PIMAGE_RESOURCE_DIRECTORY_ENTRY)((PUINT8)res + sizeof(IMAGE_RESOURCE_DIRECTORY));
 		}
 		PIMAGE_RESOURCE_DIRECTORY LocateResourceDirectory(PIMAGE_RESOURCE_DIRECTORY directoryRoot, PIMAGE_RESOURCE_DIRECTORY_ENTRY entry)
 		{
-			return PIMAGE_RESOURCE_DIRECTORY((PCHAR)directoryRoot + entry->OffsetToDirectory);
+			return PIMAGE_RESOURCE_DIRECTORY((PUINT8)directoryRoot + entry->OffsetToDirectory);
 		}
 		PIMAGE_RESOURCE_DATA_ENTRY LocateResourceDataEntry(PIMAGE_RESOURCE_DIRECTORY directoryRoot, PIMAGE_RESOURCE_DIRECTORY_ENTRY entry)
 		{
-			return PIMAGE_RESOURCE_DATA_ENTRY((PCHAR)directoryRoot + entry->OffsetToDirectory);
+			return PIMAGE_RESOURCE_DATA_ENTRY((PUINT8)directoryRoot + entry->OffsetToDirectory);
 		}
 	}
 }

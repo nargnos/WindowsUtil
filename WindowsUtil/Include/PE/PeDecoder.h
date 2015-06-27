@@ -27,13 +27,23 @@ namespace PE
 		PIMAGE_IMPORT_DESCRIPTOR GetImageImport();
 		PIMAGE_RESOURCE_DIRECTORY GetImageResource();
 		PIMAGE_BASE_RELOCATION GetImageBasereloc();
-		
+		PIMAGE_DEBUG_DIRECTORY ImageDebug();
+		PIMAGE_RUNTIME_FUNCTION_ENTRY ImageException();
+		PUINT8 ImageSecurity();
+		PIMAGE_ARCHITECTURE_HEADER ImageArchitecture();
+		PIMAGE_TLS_DIRECTORY64 ImageTls64();
+		PIMAGE_TLS_DIRECTORY32 ImageTls32();
+		PIMAGE_LOAD_CONFIG_DIRECTORY64 ImageLoadConfig64();
+		PIMAGE_LOAD_CONFIG_DIRECTORY32 ImageLoadConfig32();
+		PIMAGE_DELAYLOAD_DESCRIPTOR ImageDelayImport();
+		PIMAGE_BOUND_IMPORT_DESCRIPTOR ImageBoundImport();
+
 		PVOID GetRvaData(DWORD rva);
 		PIMAGE_DATA_DIRECTORY GetDataDirectory(DWORD index);
 		PIMAGE_SECTION_HEADER GetFirstSectionHeader();
 		PWORD GetNumberOfSection();
 	private:
-		PCHAR base;
+		PUINT8 base;
 		PVOID ntHeader;
 		PIMAGE_DATA_DIRECTORY imageDataDirectoryEntry;
 		PDWORD imageDataDirectorySize;

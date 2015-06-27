@@ -29,7 +29,7 @@ namespace PE
 			}
 			if (currentReloc)
 			{
-				auto tmpReloc = PIMAGE_BASE_RELOCATION((PCHAR)currentReloc + currentReloc->SizeOfBlock);
+				auto tmpReloc = PIMAGE_BASE_RELOCATION((PUINT8)currentReloc + currentReloc->SizeOfBlock);
 				if (tmpReloc < endReloc)
 				{
 					currentReloc = tmpReloc;
