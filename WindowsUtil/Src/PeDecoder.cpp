@@ -281,7 +281,7 @@ namespace PE
 	}
 	return (PIMAGE_BOUND_IMPORT_DESCRIPTOR)GetRvaData(dir->VirtualAddress);
 	}
-	/*DWORD ImageIat()
+	/*IMAGE_THUNK_DATA32 ImageIat()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IAT);
 	if (!dir)
@@ -301,7 +301,7 @@ namespace PE
 	return (PIMAGE_DELAYLOAD_DESCRIPTOR)GetRvaData(dir->VirtualAddress);
 	}
 	/*
-	void PeDecoder::ImageComDescriptor()
+	IMAGE_COR20_HEADER PeDecoder::ImageComDescriptor()
 	{
 	auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR);
 	if (!dir)

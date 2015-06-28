@@ -18,6 +18,7 @@ int space = minSpace;
 
 __declspec(thread) int a = 0;
 
+
 #define OUTPUT_FILENAME "\\output.txt"
 #define SHOW_FILE system("start"OUTPUT_FILENAME);
 

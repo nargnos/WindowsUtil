@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <WinBase.h>
+#include <WinTrust.h>
 namespace PE
 {
 	// PE½âÎöÆ÷
