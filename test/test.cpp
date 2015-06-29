@@ -5,9 +5,9 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-//#include "../LazyLoad/LazyLoad.h"
-//#include "../WindowsUtil/EnvironmentBlock.h"
+
 #include <PeImage.h>
+#include <Process\LazyLoad\LazyLoad.h>
 using namespace std;
 using namespace PE;
 
@@ -104,6 +104,11 @@ ExportFunc void PrintNtHeader32(PIMAGE_NT_HEADERS32 ntHeader)
 	DISPLAY_STRUCT_HEX(ntHeader, Signature);
 	DISPLAY_STRUCT_POINTER_HEX(ntHeader, FileHeader);
 }
+void PrintNtHeader64(PIMAGE_NT_HEADERS64 ntHeader)
+{
+	DISPLAY_STRUCT_HEX(ntHeader, Signature);
+	DISPLAY_STRUCT_POINTER_HEX(ntHeader, FileHeader);
+}
 ExportFunc void PrintFileHeader(PIMAGE_FILE_HEADER fileHeader)
 {
 	DISPLAY_STRUCT_HEX(fileHeader, Machine);
@@ -148,7 +153,40 @@ ExportFunc void PrintOptionalHeader32(PIMAGE_OPTIONAL_HEADER32 optionalHeader)
 	DISPLAY_STRUCT_HEX(optionalHeader, NumberOfRvaAndSizes);
 	DISPLAY_STRUCT_HEX(optionalHeader, DataDirectory);
 }
-
+ExportFunc void PrintOptionalHeader64(PIMAGE_OPTIONAL_HEADER64 optionalHeader)
+{
+	DISPLAY_STRUCT_HEX(optionalHeader, Magic);
+	DISPLAY_STRUCT_HEX(optionalHeader, MajorLinkerVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, MinorLinkerVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfCode);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfInitializedData);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfUninitializedData);
+	DISPLAY_STRUCT_HEX(optionalHeader, AddressOfEntryPoint);
+	DISPLAY_STRUCT_HEX(optionalHeader, BaseOfCode);
+	//DISPLAY_STRUCT_HEX(optionalHeader, BaseOfData);
+	DISPLAY_STRUCT_HEX(optionalHeader, ImageBase);
+	DISPLAY_STRUCT_HEX(optionalHeader, SectionAlignment);
+	DISPLAY_STRUCT_HEX(optionalHeader, FileAlignment);
+	DISPLAY_STRUCT_HEX(optionalHeader, MajorOperatingSystemVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, MinorOperatingSystemVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, MajorImageVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, MinorImageVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, MajorSubsystemVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, MinorSubsystemVersion);
+	DISPLAY_STRUCT_HEX(optionalHeader, Win32VersionValue);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfImage);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfHeaders);
+	DISPLAY_STRUCT_HEX(optionalHeader, CheckSum);
+	DISPLAY_STRUCT_HEX(optionalHeader, Subsystem);
+	DISPLAY_STRUCT_HEX(optionalHeader, DllCharacteristics);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfStackReserve);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfStackCommit);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfHeapReserve);
+	DISPLAY_STRUCT_HEX(optionalHeader, SizeOfHeapCommit);
+	DISPLAY_STRUCT_HEX(optionalHeader, LoaderFlags);
+	DISPLAY_STRUCT_HEX(optionalHeader, NumberOfRvaAndSizes);
+	DISPLAY_STRUCT_HEX(optionalHeader, DataDirectory);
+}
 ExportFunc void PrintDataDirectory(PIMAGE_DATA_DIRECTORY dataDirectory, DWORD numberOfRvaAndSizes)
 {
 	for (int i = 0; i < numberOfRvaAndSizes; i++)
@@ -306,6 +344,67 @@ void PrintImport(PeDecoder& pe)
 				TO_RIGHT;
 				DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
 				DISPLAY_HEX("FT", itr.CurrentThunk32());
+				TO_LEFT;
+			}
+		}
+		TO_LEFT;
+
+	}
+}
+
+void PrintImport64(PeDecoder& pe)
+{
+	Import::ImportDescriptorReader idr(pe);
+	Import::ImportThunkReader itr;
+	while (idr.Next())
+	{
+		auto tmpDr = idr.Current();
+		DISPLAY_MSG(Import::ImportDescriptorReader::GetDescriptorName(pe, tmpDr) << " [OFT: 0x" << tmpDr->OriginalFirstThunk << "] [FT: 0x" << tmpDr->FirstThunk << "]");
+		itr.Init(pe, tmpDr);
+		TO_RIGHT;
+		while (itr.Next())
+		{
+			auto tmpThunk = itr.CurrentOriginalThunk64();
+			if (!Import::ImportThunkReader::IsSnapByOrdinal(tmpThunk))
+			{
+				auto tmpName = Import::ImportThunkReader::GetNameStruct(pe, tmpThunk);
+
+				DISPLAY_MSG(tmpName->Name);
+				TO_RIGHT;
+				DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
+				DISPLAY_HEX("FT", itr.CurrentThunk64()->u1.AddressOfData);
+				DISPLAY_HEX("Hint", tmpName->Hint);
+				TO_LEFT;
+				// 附加测试 iat hook - Beep
+				if (pe.IsMapped())
+				{
+					if (strcmp(tmpName->Name, "Beep") == 0)
+					{
+						auto hookAddr = itr.CurrentThunk64();
+						DWORD oldProtect;
+						VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
+						*(PDWORDLONG)hookAddr = (DWORDLONG)HookBeep;
+						VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), oldProtect, NULL);
+						DISPLAY_HEX("New - FT", itr.CurrentThunk64()->u1.AddressOfData);
+						DISPLAY_MSG(endl);
+						DISPLAY_MSG("[Run Iat Hook Function]");
+						Beep(0x1b8, 1000);
+						DISPLAY_MSG("[Run Iat Hook Function]");
+						Beep(0xdc, 1000);
+						DISPLAY_MSG(endl);
+
+					}
+
+				}
+				// 附加测试结束
+			}
+			else
+			{
+				auto tmpOrdinal = Import::ImportThunkReader::GetOrdinal(tmpThunk);
+				DISPLAY_MSG("Ordinal: " << tmpOrdinal);
+				TO_RIGHT;
+				DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
+				DISPLAY_HEX("FT", itr.CurrentThunk64());
 				TO_LEFT;
 			}
 		}
@@ -535,12 +634,48 @@ void TestPeDecoder()
 		}
 		else
 		{
-			// 64位未测试
+			// 64位
 			auto ntHeader = pe.NtHeader64();
-			DISPLAY_HEX("NtHeader64", ntHeader);
-			DISPLAY_STRUCT_HEX(ntHeader, Signature);
-			DISPLAY_STRUCT_POINTER_HEX(ntHeader, FileHeader);
+			DISPLAY_HEX("[NtHeader 64]", ntHeader);
+			TO_RIGHT;// ntheader
+			PrintNtHeader64(ntHeader);
+			TO_RIGHT; // FileHeader
+			auto fileHeader = ntHeader->FileHeader;
+			PrintFileHeader(&fileHeader);
+			TO_LEFT;// end FileHeader
 			DISPLAY_STRUCT_POINTER_HEX(ntHeader, OptionalHeader);
+			auto optionalHeader = ntHeader->OptionalHeader;
+			TO_RIGHT;// optionalHeader
+			PrintOptionalHeader64(&optionalHeader);
+			TO_RIGHT;// dataDirectory
+			auto dataDirectory = optionalHeader.DataDirectory;
+			PrintDataDirectory(dataDirectory, optionalHeader.NumberOfRvaAndSizes);
+			TO_LEFT;// end dataDirectory
+			TO_LEFT;// end optionalHeader
+			TO_LEFT;// end ntheader
+			cout << endl;
+			// Section
+			DISPLAY_MSG("[Section]");
+			PrintSection(pe);
+			cout << endl;
+			// Export
+			DISPLAY_MSG("[Export]");
+			TO_RIGHT;
+			PrintExport(pe);
+			cout << endl;
+			// Import
+			// 导入表					
+			DISPLAY_MSG("[Import]");
+			TO_RIGHT;
+			PrintImport64(pe);
+			TO_LEFT;
+
+			cout << endl;
+			// Resource
+			// 资源目录
+			DISPLAY_MSG("[Resource]");
+			PrintResource(pe); 
+			TO_LEFT;
 		}
 
 
@@ -558,16 +693,19 @@ void TestPeDecoder()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	//if (!LazyLoad::__LoadLibraryA("aaa"))
+	//{
+	//	cout << "FAILD" << endl;
+	//}
+	//if (!LazyLoad::__LoadLibraryA("bbb"))
+	//{
+	//	cout << "FAILD" << endl;
+	//}
+	//
+	LazyLoad::Test();
 
-	//_asm pushad
-	//InitLazyLoad();
-	////InitLazyLoad();
-	//Lazy_MessageBoxA(0, 0, 0, 0);
-	//MessageBoxA(0, 0, 0, 0);
-	//auto x = Peb::FindLoadedModuleHandle(L"ntdll.dll");
-
+	// 测试pe解析
 	TestPeDecoder();
-
 	Beep(261, 1000);
 	return 0;
 }

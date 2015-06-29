@@ -72,7 +72,7 @@ namespace Peb
 		TmpEntry = NULL;
 	}
 
-	HMODULE __stdcall FindLoadedModuleHandle(PWCHAR name)
+	HMODULE __stdcall FindLoadedModuleHandle(LPCWSTR name)
 	{
 		LdrDataTableEntryReader iterator(InLoadOrderModuleList);
 		while (iterator.Next())

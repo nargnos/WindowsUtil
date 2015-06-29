@@ -24,5 +24,9 @@ namespace PE{
 			PWORD nameOrdinals;
 			int currentIndex;
 		};
+		FARPROC GetProcAddress(PeDecoder& pe, LPCSTR lpProcName);
+		FARPROC GetProcAddress(HMODULE module, LPCSTR lpProcName);
+		FARPROC GetProcAddress(HMODULE module, PVOID compareName, bool compareCallback(PVOID compare, LPSTR procName)); // 带比较器, 返回true表示值相同
+		FARPROC GetProcAddress(PeDecoder& pe, PVOID compareName, bool compareCallback(PVOID compare, LPSTR procName));
 	}
 }

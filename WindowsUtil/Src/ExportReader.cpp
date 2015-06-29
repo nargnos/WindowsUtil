@@ -27,6 +27,7 @@ namespace PE
 		{
 			return exportDirectory;
 		}
+		// ERROR: 这里不是这么读的, 在读user32时出错了,namerva结果不正确
 		PDWORD ExportReader::CurrentFuncRva()
 		{
 			if (currentIndex == -1)
@@ -65,6 +66,54 @@ namespace PE
 		void ExportReader::Reset()
 		{
 			currentIndex = -1;
+		}
+
+		FARPROC GetProcAddress(PeDecoder& pe, LPCSTR lpProcName)
+		{
+			return GetProcAddress(pe, (PVOID)lpProcName,
+				[](PVOID compare, LPSTR procName)
+			{
+				if (strcmp((PCHAR)compare, procName) == 0)
+				{
+					return true;
+				}
+				return false;
+			});
+		}
+		FARPROC GetProcAddress(HMODULE module, LPCSTR lpProcName)
+		{
+			PeDecoder pe(module,true);
+			return GetProcAddress(pe, lpProcName);
+		}
+
+		FARPROC GetProcAddress(PeDecoder& pe, PVOID compareName, bool compareCallback(PVOID compare, LPSTR procName))
+		{
+			if (!pe.IsPE())
+			{
+				return NULL;
+			}
+			if (compareCallback == NULL)
+			{
+				return NULL;
+			}
+			ExportReader er(pe);
+			while (er.Next())
+			{
+				auto nameRva = er.CurrentNameRva();
+				if (nameRva)
+				{
+					auto name = (PCHAR)pe.GetRvaData(*nameRva);
+					if (compareCallback(compareName, name))
+					{
+						return (FARPROC)pe.GetRvaData(*er.CurrentFuncRva());
+					}
+				}
+			}
+		}
+		FARPROC GetProcAddress(HMODULE module, PVOID compareName,bool compareCallback(PVOID compare, LPSTR procName))
+		{
+			PeDecoder pe(module, true);
+			return GetProcAddress(pe, compareName, compareCallback);
 		}
 	}
 }
