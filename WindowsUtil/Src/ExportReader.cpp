@@ -11,6 +11,7 @@ namespace PE
 			this->exportDirectory = exportDirectory;
 			if (exportDirectory)
 			{
+				numberOfNames = &exportDirectory->NumberOfNames;
 				numberOfFunctions = &exportDirectory->NumberOfFunctions;
 				funcs = (PDWORD)pe.GetRvaData(exportDirectory->AddressOfFunctions);
 				names = (PDWORD)pe.GetRvaData(exportDirectory->AddressOfNames);
@@ -18,16 +19,37 @@ namespace PE
 			}
 			else
 			{
+				numberOfNames = NULL;
 				numberOfFunctions = NULL;
 			}
 			Reset();
 		}
 		ExportReader::~ExportReader(){}
+		PDWORD ExportReader::FuncTable()
+		{
+			return funcs;
+		}
+		PDWORD ExportReader::NameTable()
+		{
+			return names;
+		}
+		PWORD ExportReader::OrdinalTable()
+		{
+			return nameOrdinals;
+		}
+		PDWORD ExportReader::NumberOfFunctions()
+		{
+			return numberOfFunctions;
+		}
+		PDWORD ExportReader::NumberOfNames()
+		{
+			return numberOfNames;
+		}
 		PIMAGE_EXPORT_DIRECTORY ExportReader::GetExportDirectory()
 		{
 			return exportDirectory;
 		}
-		// ERROR: 这里不是这么读的, 在读user32时出错了,namerva结果不正确
+
 		PDWORD ExportReader::CurrentFuncRva()
 		{
 			if (currentIndex == -1)
@@ -42,7 +64,7 @@ namespace PE
 			{
 				return NULL;
 			}
-			return &names[nameOrdinals[currentIndex]];
+			return &names[currentIndex];
 		}
 		PWORD ExportReader::CurrentNameOrdinals()
 		{
@@ -54,9 +76,9 @@ namespace PE
 		}
 		bool ExportReader::Next()
 		{
-			if (numberOfFunctions)
+			if (numberOfNames)
 			{
-				if (++currentIndex < *numberOfFunctions)
+				if (++currentIndex < *numberOfNames)
 				{
 					return true;
 				}
@@ -70,23 +92,46 @@ namespace PE
 
 		FARPROC GetProcAddress(PeDecoder& pe, LPCSTR lpProcName)
 		{
-			return GetProcAddress(pe, (PVOID)lpProcName,
-				[](PVOID compare, LPSTR procName)
+			if (!pe.IsPE())
 			{
-				if (strcmp((PCHAR)compare, procName) == 0)
+				return NULL;
+			}
+			// 导出表名字有序, 二分
+			auto er = ExportReader(pe);
+			PDWORD nameTable = er.NameTable();
+			DWORD right = *er.NumberOfNames();
+			DWORD left = 0;
+			DWORD mid;
+			int cmpResult;
+			while (left<=right)
+			{
+				mid = (left + right) >> 1;
+				cmpResult = strcmp(lpProcName, (LPCSTR)pe.GetRvaData(nameTable[mid]));
+				if (!cmpResult)
 				{
-					return true;
+					// 找到
+					auto nameOrdinal = er.OrdinalTable()[mid];
+					auto funcRva = er.FuncTable()[nameOrdinal];
+					return (FARPROC)pe.GetRvaData(funcRva);
 				}
-				return false;
-			});
+				if (cmpResult < 0)
+				{
+					right = mid - 1;
+				}
+				else
+				{
+					left = mid + 1;
+				}
+			}
+			return NULL;
 		}
 		FARPROC GetProcAddress(HMODULE module, LPCSTR lpProcName)
 		{
-			PeDecoder pe(module,true);
+			PeDecoder pe(module, true);
 			return GetProcAddress(pe, lpProcName);
 		}
 
-		FARPROC GetProcAddress(PeDecoder& pe, PVOID compareName, bool compareCallback(PVOID compare, LPSTR procName))
+		FARPROC GetProcAddress(PeDecoder& pe, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
 		{
 			if (!pe.IsPE())
 			{
@@ -110,7 +155,7 @@ namespace PE
 				}
 			}
 		}
-		FARPROC GetProcAddress(HMODULE module, PVOID compareName,bool compareCallback(PVOID compare, LPSTR procName))
+		FARPROC GetProcAddress(HMODULE module, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
 		{
 			PeDecoder pe(module, true);
 			return GetProcAddress(pe, compareName, compareCallback);

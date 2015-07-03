@@ -237,5 +237,5 @@ namespace Peb
 		PLDR_DATA_TABLE_ENTRY_Ex Module;
 		LdrDataTableModuleList desList;
 	};
-	HMODULE __stdcall FindLoadedModuleHandle(LPCWSTR name);
+	HINSTANCE __stdcall FindLoadedModuleHandle(LPCWSTR name);
 }

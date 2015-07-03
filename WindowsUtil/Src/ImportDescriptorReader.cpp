@@ -5,16 +5,8 @@ namespace PE
 		// 导入表Descriptor结构读取器
 		ImportDescriptorReader::ImportDescriptorReader(PeDecoder& pe)
 		{
-
-			descriptor = pe.GetImageImport();
-			if (descriptor)
-			{
-				descriptorLength = &pe.GetDataDirectory(IMAGE_DIRECTORY_ENTRY_IMPORT)->Size;
-			}
-			else
-			{
-				descriptorLength = 0;
-			}
+			descriptorLength = NULL;
+			descriptor = pe.GetImageImport(&descriptorLength);			
 			Reset();
 		}
 		ImportDescriptorReader::~ImportDescriptorReader(){}

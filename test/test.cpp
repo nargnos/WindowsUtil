@@ -693,17 +693,20 @@ void TestPeDecoder()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//if (!LazyLoad::__LoadLibraryA("aaa"))
-	//{
-	//	cout << "FAILD" << endl;
-	//}
-	//if (!LazyLoad::__LoadLibraryA("bbb"))
-	//{
-	//	cout << "FAILD" << endl;
-	//}
+	/*LazyLoad::_LdrLoadDll(0, 0, 0, 0);
+	if (!LazyLoad::_LoadLibraryA("aaa"))
+	{
+		cout << "FAILD" << endl;
+	}
+	if (!LazyLoad::_LoadLibraryA("bbb"))
+	{
+		cout << "FAILD" << endl;
+	}*/
 	//
-	LazyLoad::Test();
+	//LazyLoad::__LoadLibraryA("");
+	LazyLoad::_MessageBoxA(0, "Hi", "HelloWorld!", 0);
 
+	
 	// ²âÊÔpe½âÎö
 	TestPeDecoder();
 	Beep(261, 1000);

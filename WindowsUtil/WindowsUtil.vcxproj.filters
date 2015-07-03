@@ -77,5 +77,8 @@
     <ClCompile Include="Src\SectionReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Src\LazyLoad.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

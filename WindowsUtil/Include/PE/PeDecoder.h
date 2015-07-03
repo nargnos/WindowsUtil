@@ -25,25 +25,25 @@ namespace PE
 		PIMAGE_SECTION_HEADER OffsetToSection(DWORD fileOffset);
 		DWORD RvaToOffset(DWORD rva);
 		DWORD OffsetToRva(DWORD fileOffset);
-		PIMAGE_EXPORT_DIRECTORY GetImageExport();
-		PIMAGE_IMPORT_DESCRIPTOR GetImageImport();
-		PIMAGE_RESOURCE_DIRECTORY GetImageResource();
-		PIMAGE_BASE_RELOCATION GetImageBasereloc();
-		PVOID ImageIat(); // 取iat头, 可能为32也可能为64, 作用不是读信息,所以直接返回指针
+		PIMAGE_EXPORT_DIRECTORY GetImageExport(PDWORD* size = NULL);
+		PIMAGE_IMPORT_DESCRIPTOR GetImageImport(PDWORD* size = NULL);
+		PIMAGE_RESOURCE_DIRECTORY GetImageResource(PDWORD* size = NULL);
+		PIMAGE_BASE_RELOCATION GetImageBasereloc(PDWORD* size = NULL);
+		PVOID ImageIat(PDWORD* size = NULL); // 取iat头, 可能为32也可能为64, 作用不是读信息,所以直接返回指针
 
 
 #pragma region 这部分未完成reader
-		PIMAGE_DEBUG_DIRECTORY ImageDebug();
-		PIMAGE_RUNTIME_FUNCTION_ENTRY ImageException();
-		PVOID ImageSecurity();
-		PIMAGE_ARCHITECTURE_HEADER ImageArchitecture();
-		PIMAGE_TLS_DIRECTORY64 ImageTls64();
-		PIMAGE_TLS_DIRECTORY32 ImageTls32();
-		PIMAGE_LOAD_CONFIG_DIRECTORY64 ImageLoadConfig64();
-		PIMAGE_LOAD_CONFIG_DIRECTORY32 ImageLoadConfig32();
-		PIMAGE_DELAYLOAD_DESCRIPTOR ImageDelayImport();
-		PIMAGE_BOUND_IMPORT_DESCRIPTOR ImageBoundImport();
-		PIMAGE_COR20_HEADER ImageComDescriptor();
+		PIMAGE_DEBUG_DIRECTORY ImageDebug(PDWORD* size = NULL);
+		PIMAGE_RUNTIME_FUNCTION_ENTRY ImageException(PDWORD* size = NULL);
+		PVOID ImageSecurity(PDWORD* size = NULL);
+		PIMAGE_ARCHITECTURE_HEADER ImageArchitecture(PDWORD* size = NULL);
+		PIMAGE_TLS_DIRECTORY64 ImageTls64(PDWORD* size = NULL);
+		PIMAGE_TLS_DIRECTORY32 ImageTls32(PDWORD* size = NULL);
+		PIMAGE_LOAD_CONFIG_DIRECTORY64 ImageLoadConfig64(PDWORD* size = NULL);
+		PIMAGE_LOAD_CONFIG_DIRECTORY32 ImageLoadConfig32(PDWORD* size = NULL);
+		PIMAGE_DELAYLOAD_DESCRIPTOR ImageDelayImport(PDWORD* size = NULL);
+		PIMAGE_BOUND_IMPORT_DESCRIPTOR ImageBoundImport(PDWORD* size = NULL);
+		PIMAGE_COR20_HEADER ImageComDescriptor(PDWORD* size = NULL);
 #pragma endregion	
 		
 
@@ -52,6 +52,7 @@ namespace PE
 		PIMAGE_SECTION_HEADER GetFirstSectionHeader();
 		PWORD GetNumberOfSection();
 	private:
+		PVOID DirectoryEntryToData(DWORD index, PDWORD* size); // 可根据需要获取size指针, size为NULL则不取值,返回为NULL时不改变size指针的值
 		PUINT8 base;
 		PVOID ntHeader;
 		PIMAGE_DATA_DIRECTORY imageDataDirectoryEntry;

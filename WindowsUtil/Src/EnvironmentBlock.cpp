@@ -38,7 +38,7 @@ namespace Peb
 			TmpEntry = ModuleListHead->Flink;
 			return true;
 		}
-		else if (TmpEntry != ModuleListHead)
+		else if (TmpEntry->Flink != ModuleListHead)
 		{
 			TmpEntry = TmpEntry->Flink;
 			return true;
@@ -72,13 +72,14 @@ namespace Peb
 		TmpEntry = NULL;
 	}
 
-	HMODULE __stdcall FindLoadedModuleHandle(LPCWSTR name)
+	HINSTANCE __stdcall FindLoadedModuleHandle(LPCWSTR name)
 	{
 		LdrDataTableEntryReader iterator(InLoadOrderModuleList);
 		while (iterator.Next())
 		{
 			auto current = iterator.Current();
-			if (_wcsicmp(name, current->BaseDllName.Buffer) == 0)
+			auto moduleName = current->BaseDllName.Buffer;
+			if (_wcsicmp(name, moduleName) == 0)
 			{
 				return (HMODULE)current->DllBase;
 			}

@@ -52,8 +52,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -162,12 +161,12 @@
     <ClCompile Include="Src\ExportReader.cpp" />
     <ClCompile Include="Src\ImportDescriptorReader.cpp" />
     <ClCompile Include="Src\ImportThunkReader.cpp" />
+    <ClCompile Include="Src\LazyLoad.cpp" />
     <ClCompile Include="Src\PeDecoder.cpp" />
     <ClCompile Include="Src\ResourceDirectoryReader.cpp" />
     <ClCompile Include="Src\SectionReader.cpp" />
     <ClCompile Include="Src\TypeOffsetReader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

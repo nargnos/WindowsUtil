@@ -10,12 +10,12 @@ namespace PE
 		}
 		BaseRelocationReader::BaseRelocationReader(PeDecoder& pe)
 		{
-			auto dir = pe.GetDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC);
-			if (dir==NULL)
+			PDWORD size;
+			auto reloc = pe.GetImageBasereloc(&size);
+			if (reloc)
 			{
-				return;
+				new(this) BaseRelocationReader(reloc, *size);
 			}
-			new(this) BaseRelocationReader(pe.GetImageBasereloc(), dir->Size);
 		}
 
 		BaseRelocationReader::~BaseRelocationReader()
