@@ -3,8 +3,6 @@ namespace LazyLoad
 {
 #pragma region 基本函数
 
-#define INIT_FUNC(result,name,params) FuncType_##name _##name=Def_##name;result WINAPI Def_##name params
-
 	VOID NTAPI _RtlInitUnicodeString(IN OUT PUNICODE_STRING DestinationString, IN PCWSTR SourceString)
 	{
 		SIZE_T Size;
@@ -72,11 +70,23 @@ namespace LazyLoad
 		return _LoadLibraryExW(lpLibFileName, NULL, 0);
 	}
 
-	FARPROC _GetProcAddress(HMODULE module, LPCSTR lpProcName)
+	FARPROC _GetProcAddress(HMODULE module, LPCSTR procName)
 	{
-		return PE::Export::GetProcAddress(module, lpProcName);
+		return PE::Export::GetProcAddress(module, procName);
 	}
-
+	FARPROC _GetProcAddressEx(LPCWSTR dllName, LPCSTR procName)
+	{
+		auto dll = _LoadLibraryW(dllName);
+		if (dll)
+		{
+			auto result = _GetProcAddress(dll, procName);
+			if (result)
+			{
+				return result;
+			}
+		}
+		return NULL;
+	}
 #pragma endregion
 
 
@@ -84,19 +94,39 @@ namespace LazyLoad
 #pragma region 常用函数定义
 #define DEF_DEFAULT_FUNC
 #ifdef DEF_DEFAULT_FUNC
+
+
 	// FIX: 32位实现可以用__declspec(naked) __stdcall声明并在函数中jmp到api地址实现跳转, 但是64位不能用这个方法,所以先暂时用一个通用的方法
 	// 下面的MessageBoxA是例子
-	INIT_FUNC(int,MessageBoxA,(
+	INIT_FUNC(int, MessageBoxA, (
 		_In_opt_ HWND hWnd,
 		_In_opt_ LPCSTR lpText,
 		_In_opt_ LPCSTR lpCaption,
-		_In_ UINT uType))
-	{
-		auto dll = _LoadLibraryW(L"user32.dll");
-		_MessageBoxA = (FuncType_MessageBoxA)_GetProcAddress(dll, "MessageBoxA");
-		return _MessageBoxA(hWnd,lpText,lpCaption,uType);
-	}
-	
+		_In_ UINT uType
+		))
+		DEF_FUNC_CODE(L"user32.dll",
+		MessageBoxA, NULL, (
+		hWnd,
+		lpText,
+		lpCaption,
+		uType
+		));
+
+	// NOTICE: 用到的慢慢补充
+	INIT_FUNC(BOOL, VirtualProtect, (
+		_In_ LPVOID lpAddress,
+		_In_ SIZE_T dwSize,
+		_In_ DWORD flNewProtect,
+		_Out_ PDWORD lpflOldProtect
+		))
+		DEF_FUNC_CODE(L"kernel32.dll",
+		VirtualProtect, FALSE, (
+		lpAddress,
+		dwSize,
+		flNewProtect,
+		lpflOldProtect
+		));
+
 
 #endif
 #pragma endregion
