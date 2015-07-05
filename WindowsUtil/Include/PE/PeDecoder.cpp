@@ -1,4 +1,4 @@
-#include <PE\PeDecoder.h>
+#include "PeDecoder.h"
 namespace PE
 {
 	PeDecoder::PeDecoder(PVOID pe, bool isMapped) :
@@ -346,6 +346,6 @@ namespace PE
 		{
 			ntHeader = base + DosHeader()->e_lfanew;
 		}
-		return ntHeader;
+		return ntHeader; 
 	}
 }

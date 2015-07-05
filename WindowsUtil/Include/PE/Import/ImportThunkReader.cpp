@@ -1,4 +1,4 @@
-#include <PE\Import\ImportThunkReader.h>
+#include "ImportThunkReader.h"
 
 namespace PE
 {

@@ -1,4 +1,4 @@
-#include <PE\Reloc\BaseRelocationReader.h>
+#include "BaseRelocationReader.h"
 #include <new>
 namespace PE
 {

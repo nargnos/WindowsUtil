@@ -4,7 +4,7 @@ namespace Microsoft
 {
 	namespace Win32
 	{
-		using namespace LazyLoad;
+		using namespace Process::LazyLoad;
 		LPCWSTR _dllName_kernel32 = L"kernel32.dll";
 		LPCWSTR _dllName_user32 = L"user32.dll";
 		INIT_FUNC(BOOL,
@@ -184,6 +184,70 @@ namespace Microsoft
 			DEF_FUNC_CODE(_dllName_kernel32, SetConsoleCursorInfo, FALSE, (
 			hConsoleOutput,
 			lpConsoleCursorInfo
+			));
+
+		INIT_FUNC(UINT,
+			GetConsoleCP, (
+			VOID
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, GetConsoleCP,0 , ());
+
+		INIT_FUNC(BOOL,
+			SetConsoleCP, (
+			_In_ UINT wCodePageID
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, SetConsoleCP, FALSE, (wCodePageID));
+
+		INIT_FUNC(BOOL,
+			PeekConsoleInputW, (
+			_In_ HANDLE hConsoleInput,
+			_Out_writes_(nLength) PINPUT_RECORD lpBuffer,
+			_In_ DWORD nLength,
+			_Out_ LPDWORD lpNumberOfEventsRead
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, PeekConsoleInputW, FALSE, (
+			hConsoleInput,
+			lpBuffer,
+			nLength,
+			lpNumberOfEventsRead
+			));
+
+		INIT_FUNC(UINT,
+			GetConsoleOutputCP, (
+			VOID
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, GetConsoleOutputCP,0 , ());
+
+		INIT_FUNC(BOOL,
+			SetConsoleOutputCP, (
+			_In_ UINT wCodePageID
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, SetConsoleOutputCP, FALSE, (wCodePageID));
+
+		INIT_FUNC(BOOL,
+			SetConsoleTitleW, (
+			_In_ LPCWSTR lpConsoleTitle
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, SetConsoleTitleW, FALSE, (lpConsoleTitle));
+
+		INIT_FUNC(BOOL,
+			SetConsoleMode, (
+			_In_ HANDLE hConsoleHandle,
+			_In_ DWORD dwMode
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, SetConsoleMode, FALSE, (
+			hConsoleHandle,
+			dwMode
+			));
+
+		INIT_FUNC(BOOL,
+			SetConsoleCtrlHandler, (
+			_In_opt_ PHANDLER_ROUTINE HandlerRoutine,
+			_In_ BOOL Add
+			))
+			DEF_FUNC_CODE(_dllName_kernel32, SetConsoleCtrlHandler, FALSE, (
+			HandlerRoutine,
+			Add
 			));
 	}
 }

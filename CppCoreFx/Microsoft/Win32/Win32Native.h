@@ -124,5 +124,46 @@ namespace Microsoft
 			_In_ HANDLE hConsoleOutput,
 			_In_ CONST CONSOLE_CURSOR_INFO *lpConsoleCursorInfo
 			));
+
+		DEF_FUNC(UINT,
+			GetConsoleCP, (
+			VOID
+			));
+		DEF_FUNC(BOOL,
+			SetConsoleCP, (
+			_In_ UINT wCodePageID
+			));
+
+		DEF_FUNC(BOOL,
+			PeekConsoleInputW, (
+			_In_ HANDLE hConsoleInput,
+			_Out_writes_(nLength) PINPUT_RECORD lpBuffer,
+			_In_ DWORD nLength,
+			_Out_ LPDWORD lpNumberOfEventsRead
+			));
+		DEF_FUNC(UINT,
+			GetConsoleOutputCP, (
+			VOID
+			));
+		DEF_FUNC(BOOL,
+			SetConsoleOutputCP, (
+			_In_ UINT wCodePageID
+			));
+		DEF_FUNC(BOOL,
+			SetConsoleTitleW, (
+			_In_ LPCWSTR lpConsoleTitle
+			));
+
+		DEF_FUNC(BOOL,
+			SetConsoleMode, (
+			_In_ HANDLE hConsoleHandle,
+			_In_ DWORD dwMode
+			));
+		DEF_FUNC(BOOL,
+			SetConsoleCtrlHandler, (
+			_In_opt_ PHANDLER_ROUTINE HandlerRoutine,
+			_In_ BOOL Add
+			));
+
 	}
 }

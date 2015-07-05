@@ -147,25 +147,31 @@
     <ClInclude Include="Include\PE\Export\ExportReader.h" />
     <ClInclude Include="Include\PE\Import\ImportDescriptorReader.h" />
     <ClInclude Include="Include\PE\Import\ImportThunkReader.h" />
+    <ClInclude Include="Include\Process\Hook\IatHook.h" />
     <ClInclude Include="Include\Process\LazyLoad\LazyLoad.h" />
-    <ClInclude Include="Include\Process\EnvironmentBlock.h" />
+    <ClInclude Include="Include\Process\EnvironmentBlock\EnvironmentBlock.h" />
     <ClInclude Include="Include\PE\PeDecoder.h" />
     <ClInclude Include="Include\PeImage.h" />
     <ClInclude Include="Include\PE\Resource\ResourceDirectoryReader.h" />
     <ClInclude Include="Include\PE\Section\SectionReader.h" />
     <ClInclude Include="Include\PE\Reloc\TypeOffsetReader.h" />
+    <ClInclude Include="Include\Process\Remote\RemoteProccess.h" />
+    <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\BaseRelocationReader.cpp" />
-    <ClCompile Include="Src\EnvironmentBlock.cpp" />
-    <ClCompile Include="Src\ExportReader.cpp" />
-    <ClCompile Include="Src\ImportDescriptorReader.cpp" />
-    <ClCompile Include="Src\ImportThunkReader.cpp" />
-    <ClCompile Include="Src\LazyLoad.cpp" />
-    <ClCompile Include="Src\PeDecoder.cpp" />
-    <ClCompile Include="Src\ResourceDirectoryReader.cpp" />
-    <ClCompile Include="Src\SectionReader.cpp" />
-    <ClCompile Include="Src\TypeOffsetReader.cpp" />
+    <ClCompile Include="Include\Process\Remote\RemoteProccess.cpp" />
+    <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp" />
+    <ClCompile Include="Include\Process\EnvironmentBlock\EnvironmentBlock.cpp" />
+    <ClCompile Include="Include\PE\Export\ExportReader.cpp" />
+    <ClCompile Include="Include\Process\Hook\IatHook.cpp" />
+    <ClCompile Include="Include\PE\Import\ImportDescriptorReader.cpp" />
+    <ClCompile Include="Include\PE\Import\ImportThunkReader.cpp" />
+    <ClCompile Include="Include\Process\LazyLoad\LazyLoad.cpp" />
+    <ClCompile Include="Include\PE\PeDecoder.cpp" />
+    <ClCompile Include="Include\PE\Resource\ResourceDirectoryReader.cpp" />
+    <ClCompile Include="Include\PE\Section\SectionReader.cpp" />
+    <ClCompile Include="Include\PE\Reloc\TypeOffsetReader.cpp" />
+    <ClCompile Include="Include\Process\LazyLoad\LazyLoadSystemApi.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

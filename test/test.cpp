@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include <PeImage.h>
-#include <Process\LazyLoad\LazyLoad.h>
+#include <Process\LazyLoad\LazyLoadSystemApi.h>
 using namespace std;
 using namespace PE;
 
@@ -321,9 +321,9 @@ void PrintImport(PeDecoder& pe)
 					{
 						auto hookAddr = itr.CurrentThunk32();
 						DWORD oldProtect;
-						VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect);
+						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect);
 						*(PDWORD)hookAddr = (DWORD)HookBeep;
-						VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), oldProtect, NULL);
+						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), oldProtect, NULL);
 						DISPLAY_HEX("New - FT", itr.CurrentThunk32()->u1.AddressOfData);
 						DISPLAY_MSG(endl);
 						DISPLAY_MSG("[Run Iat Hook Function]");
@@ -382,9 +382,9 @@ void PrintImport64(PeDecoder& pe)
 					{
 						auto hookAddr = itr.CurrentThunk64();
 						DWORD oldProtect;
-						VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
+					Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
 						*(PDWORDLONG)hookAddr = (DWORDLONG)HookBeep;
-						VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), oldProtect, NULL);
+						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), oldProtect, NULL);
 						DISPLAY_HEX("New - FT", itr.CurrentThunk64()->u1.AddressOfData);
 						DISPLAY_MSG(endl);
 						DISPLAY_MSG("[Run Iat Hook Function]");
@@ -392,7 +392,7 @@ void PrintImport64(PeDecoder& pe)
 						DISPLAY_MSG("[Run Iat Hook Function]");
 						Beep(0xdc, 1000);
 						DISPLAY_MSG(endl);
-
+						
 					}
 
 				}
@@ -693,6 +693,7 @@ void TestPeDecoder()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	using namespace Process::LazyLoad;
 	/*LazyLoad::_LdrLoadDll(0, 0, 0, 0);
 	if (!LazyLoad::_LoadLibraryA("aaa"))
 	{
@@ -704,7 +705,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	}*/
 	//
 	//LazyLoad::__LoadLibraryA("");
-	LazyLoad::_MessageBoxA(0, "Hi", "HelloWorld!", 0);
+	//auto ii = NtCurrentTeb();
+	auto x =_OpenProcess(PROCESS_ALL_ACCESS, FALSE, 12328);
+	UINT8 buff[100]="HelloWorld!";
+	DWORD size;
+	auto k = _VirtualAllocEx(x, NULL, 100, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	_WriteProcessMemory(x, k, buff, 100, &size);
+	UINT8 buff2[100];
+	_ReadProcessMemory(x, k, buff2, 100, &size);
+	auto dd = GetLastError();
+	_MessageBoxA(0, "Hi", "HelloWorld!", 0);
 
 	
 	// ≤‚ ‘peΩ‚Œˆ

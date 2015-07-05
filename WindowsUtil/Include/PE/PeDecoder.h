@@ -4,13 +4,14 @@
 #include <WinTrust.h>
 namespace PE
 {
-	// PE解析器
+	// PE解析器, 这个用来读本地程序或文件
 	// TODO: 数据目录解析只完成了导入导出表\资源\重定位\节的读取器
 	class PeDecoder
 	{
 	public:
 
 		PeDecoder(PVOID pe, bool isMapped);
+
 		~PeDecoder();
 		bool HasNtHeader32();
 		bool IsPE();

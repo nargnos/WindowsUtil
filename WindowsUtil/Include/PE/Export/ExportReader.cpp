@@ -1,4 +1,4 @@
-#include <PE\Export\ExportReader.h>
+#include "ExportReader.h"
 
 namespace PE
 {

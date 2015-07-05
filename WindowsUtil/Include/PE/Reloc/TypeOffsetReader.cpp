@@ -1,4 +1,4 @@
-#include <PE\Reloc\TypeOffsetReader.h>
+#include "TypeOffsetReader.h"
 namespace PE
 {
 	namespace Reloc

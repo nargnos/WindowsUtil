@@ -39,45 +39,63 @@
     <ClInclude Include="Include\PE\PeDecoder.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Process\EnvironmentBlock.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\PeImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Include\Process\LazyLoad\LazyLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Process\Hook\IatHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Remote\RemoteProccess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\EnvironmentBlock\EnvironmentBlock.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\EnvironmentBlock.cpp">
+    <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PeDecoder.cpp">
+    <ClCompile Include="Include\PE\Export\ExportReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\ResourceDirectoryReader.cpp">
+    <ClCompile Include="Include\Process\Hook\IatHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\TypeOffsetReader.cpp">
+    <ClCompile Include="Include\PE\Import\ImportDescriptorReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\BaseRelocationReader.cpp">
+    <ClCompile Include="Include\PE\Import\ImportThunkReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\ImportThunkReader.cpp">
+    <ClCompile Include="Include\Process\LazyLoad\LazyLoad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\ImportDescriptorReader.cpp">
+    <ClCompile Include="Include\PE\PeDecoder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\ExportReader.cpp">
+    <ClCompile Include="Include\Process\Remote\RemoteProccess.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\SectionReader.cpp">
+    <ClCompile Include="Include\PE\Resource\ResourceDirectoryReader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Src\LazyLoad.cpp">
+    <ClCompile Include="Include\PE\Section\SectionReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\PE\Reloc\TypeOffsetReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\EnvironmentBlock\EnvironmentBlock.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\LazyLoad\LazyLoadSystemApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

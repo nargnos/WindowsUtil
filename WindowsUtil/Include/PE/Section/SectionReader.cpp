@@ -1,4 +1,4 @@
-#include <PE\Section\SectionReader.h>
+#include "SectionReader.h"
 namespace PE
 {
 	namespace Section

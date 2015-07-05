@@ -152,17 +152,6 @@ namespace Console
 				flag = _WriteConsoleOutputW(consoleOutputHandle, char_infoRef2, dwSize, bufferCoord, &writeRegion);
 
 				delete[] char_infoArray; 
-				GetConsoleCP
-					SetConsoleCP
-					PeekConsoleInput
-					GetConsoleOutputCP
-					SetConsoleOutputCP
-					SetConsoleTitle
-					GetConsoleMode
-					SetConsoleMode
-					SetConsoleCtrlHandler
-
-
 
 			}
 			
