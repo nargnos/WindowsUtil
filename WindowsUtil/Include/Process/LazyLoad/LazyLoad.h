@@ -3,7 +3,7 @@
 #include <WinBase.h>
 #include <intrin.h>
 #include "..\EnvironmentBlock\EnvironmentBlock.h"
-#include "..\..\PE\Export\ExportReader.h"
+#include "..\..\PE\Export\Export.h"
 namespace Process
 {
 	namespace LazyLoad

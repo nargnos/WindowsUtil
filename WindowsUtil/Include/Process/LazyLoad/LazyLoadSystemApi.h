@@ -36,6 +36,7 @@ namespace Process
 			_Out_opt_ SIZE_T * lpNumberOfBytesRead
 			));
 
+		// NOTICE: 这个会强制写入, 跟原先函数执行效果不同, 写入后会恢复原先可读写性
 		DEF_FUNC(BOOL,
 			WriteProcessMemory, (
 			_In_ HANDLE hProcess,

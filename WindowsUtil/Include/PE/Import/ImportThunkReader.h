@@ -23,12 +23,7 @@ namespace PE
 			void Reset();
 			~ImportThunkReader();
 
-			static PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA32 thunk);
-			static PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA64 thunk);
-			static bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk);
-			static bool IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk);
-			static ULONGLONG GetOrdinal(PIMAGE_THUNK_DATA64 thunk);
-			static DWORD GetOrdinal(PIMAGE_THUNK_DATA32 thunk);
+			
 		private:
 			bool is32;
 			PVOID currentThunk;

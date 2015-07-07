@@ -1,12 +1,13 @@
 #pragma once
-#include <PE\PeDecoder.h>
-#include <PE\Import\ImportDescriptorReader.h>
+#include "..\LazyLoad\LazyLoadSystemApi.h"
+#include "..\..\PE\Import\Import.h"
 namespace Process
 {
 	namespace Hook
 	{
-		using namespace PE;
-//		bool IatHook(PeDecoder& pe,)
-
+		// 成功hook返回thunk地址, unhook的时候用到, 失败返回NULL
+		PVOID HookIat(LPCSTR dllName, LPCSTR procName, LPCVOID hookFunc, OUT PVOID* oldFuncAddress);
+		PVOID HookIat(LPCSTR procName, LPCVOID hookFunc, OUT PVOID* oldFuncAddress); 
+		
 	}
 }

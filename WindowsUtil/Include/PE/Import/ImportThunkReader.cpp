@@ -56,22 +56,7 @@ namespace PE
 			return CONVERT_THUNK_POINTER(currentOriginalThunk, 64);
 		}
 
-		bool ImportThunkReader::IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
-		{
-			return IMAGE_SNAP_BY_ORDINAL32(thunk->u1.Ordinal);
-		}
-		bool ImportThunkReader::IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk)
-		{
-			return IMAGE_SNAP_BY_ORDINAL64(thunk->u1.Ordinal);
-		}
-		ULONGLONG ImportThunkReader::GetOrdinal(PIMAGE_THUNK_DATA64 thunk)
-		{
-			return IMAGE_ORDINAL64(thunk->u1.Ordinal);
-		}
-		DWORD ImportThunkReader::GetOrdinal(PIMAGE_THUNK_DATA32 thunk)
-		{
-			return IMAGE_ORDINAL32(thunk->u1.Ordinal);
-		}
+
 
 		bool ImportThunkReader::Next()
 		{
@@ -107,13 +92,5 @@ namespace PE
 		}
 		ImportThunkReader::~ImportThunkReader(){}
 
-		PIMAGE_IMPORT_BY_NAME ImportThunkReader::GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA32 thunk)
-		{
-			return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
-		}
-		PIMAGE_IMPORT_BY_NAME ImportThunkReader::GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA64 thunk)
-		{
-			return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
-		}
 	}
 }

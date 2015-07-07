@@ -296,66 +296,24 @@ namespace Process
 				&OldValue);
 			if (NT_SUCCESS(Status))
 			{
-				UnProtect = OldValue & (PAGE_READWRITE |
-					PAGE_WRITECOPY |
-					PAGE_EXECUTE_READWRITE |
-					PAGE_EXECUTE_WRITECOPY) ? FALSE : TRUE;
-				if (!UnProtect)
+				Status = _NtWriteVirtualMemory(hProcess,
+					lpBaseAddress,
+					(LPVOID)lpBuffer,
+					nSize,
+					&nSize);
+				_NtProtectVirtualMemory(hProcess,
+					&Base,
+					&RegionSize,
+					OldValue,
+					&OldValue);
+				if (lpNumberOfBytesWritten) *lpNumberOfBytesWritten = nSize;
+
+				if (!NT_SUCCESS(Status))
 				{
-					Status = _NtProtectVirtualMemory(hProcess,
-						&Base,
-						&RegionSize,
-						OldValue,
-						&OldValue);
-
-					Status = _NtWriteVirtualMemory(hProcess,
-						lpBaseAddress,
-						(LPVOID)lpBuffer,
-						nSize,
-						&nSize);
-					if (lpNumberOfBytesWritten) *lpNumberOfBytesWritten = nSize;
-
-					if (!NT_SUCCESS(Status))
-					{
-						
-						return FALSE;
-					}
-					_NtFlushInstructionCache(hProcess, lpBaseAddress, nSize);
-					return TRUE;
+					return FALSE;
 				}
-				else
-				{
-					if (OldValue & (PAGE_NOACCESS | PAGE_READONLY))
-					{
-						_NtProtectVirtualMemory(hProcess,
-							&Base,
-							&RegionSize,
-							OldValue,
-							&OldValue);
-						
-						return STATUS_ACCESS_VIOLATION;
-					}
-
-					Status = _NtWriteVirtualMemory(hProcess,
-						lpBaseAddress,
-						(LPVOID)lpBuffer,
-						nSize,
-						&nSize);
-					if (lpNumberOfBytesWritten) *lpNumberOfBytesWritten = nSize;
-
-					_NtProtectVirtualMemory(hProcess,
-						&Base,
-						&RegionSize,
-						OldValue,
-						&OldValue);
-					if (!NT_SUCCESS(Status))
-					{
-						return STATUS_ACCESS_VIOLATION;
-					}
-
-					_NtFlushInstructionCache(hProcess, lpBaseAddress, nSize);
-					return TRUE;
-				}
+				_NtFlushInstructionCache(hProcess, lpBaseAddress, nSize);
+				return TRUE;
 			}
 			else
 			{

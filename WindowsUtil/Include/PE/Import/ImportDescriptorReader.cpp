@@ -39,9 +39,6 @@ namespace PE
 		{
 			currentIndex = -1;
 		}
-		LPSTR ImportDescriptorReader::GetDescriptorName(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR descriptor)
-		{
-			return (LPSTR)pe.GetRvaData(descriptor->Name);
-		}
+
 	}
 }

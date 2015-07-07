@@ -8,6 +8,8 @@
 
 #include <PeImage.h>
 #include <Process\LazyLoad\LazyLoadSystemApi.h>
+#include <Process\Hook\IatHook.h>
+#include <Process\Hook\EatHook.h>
 using namespace std;
 using namespace PE;
 
@@ -22,7 +24,7 @@ __declspec(thread) int a = 0;
 #define OUTPUT_FILENAME "\\output.txt"
 #define SHOW_FILE system("start"OUTPUT_FILENAME);
 
-#define DISPLAY_DES of
+#define DISPLAY_DES cout//of//cout
 #define TO_RIGHT space+=2;if(space>maxSpace){space=maxSpace;}{
 #define TO_LEFT }space-=2;if(space<minSpace){space=minSpace;}
 #define DISPLAY_STRUCT_HEX(structVal, name) DISPLAY_DES <<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< structVal->name << endl
@@ -298,15 +300,15 @@ void PrintImport(PeDecoder& pe)
 	while (idr.Next())
 	{
 		auto tmpDr = idr.Current();
-		DISPLAY_MSG(Import::ImportDescriptorReader::GetDescriptorName(pe, tmpDr) << " [OFT: 0x" << tmpDr->OriginalFirstThunk << "] [FT: 0x" << tmpDr->FirstThunk << "]");
+		DISPLAY_MSG(Import::GetDescriptorName(pe, tmpDr) << " [OFT: 0x" << tmpDr->OriginalFirstThunk << "] [FT: 0x" << tmpDr->FirstThunk << "]");
 		itr.Init(pe, tmpDr);
 		TO_RIGHT;
 		while (itr.Next())
 		{
 			auto tmpThunk = itr.CurrentOriginalThunk32();
-			if (!Import::ImportThunkReader::IsSnapByOrdinal(tmpThunk))
+			if (!Import::IsSnapByOrdinal(tmpThunk))
 			{
-				auto tmpName = Import::ImportThunkReader::GetNameStruct(pe, tmpThunk);
+				auto tmpName = Import::GetNameStruct(pe, tmpThunk);
 
 				DISPLAY_MSG(tmpName->Name);
 				TO_RIGHT;
@@ -339,7 +341,7 @@ void PrintImport(PeDecoder& pe)
 			}
 			else
 			{
-				auto tmpOrdinal = Import::ImportThunkReader::GetOrdinal(tmpThunk);
+				auto tmpOrdinal = Import::GetOrdinal(tmpThunk);
 				DISPLAY_MSG("Ordinal: " << tmpOrdinal);
 				TO_RIGHT;
 				DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
@@ -359,15 +361,15 @@ void PrintImport64(PeDecoder& pe)
 	while (idr.Next())
 	{
 		auto tmpDr = idr.Current();
-		DISPLAY_MSG(Import::ImportDescriptorReader::GetDescriptorName(pe, tmpDr) << " [OFT: 0x" << tmpDr->OriginalFirstThunk << "] [FT: 0x" << tmpDr->FirstThunk << "]");
+		DISPLAY_MSG(Import::GetDescriptorName(pe, tmpDr) << " [OFT: 0x" << tmpDr->OriginalFirstThunk << "] [FT: 0x" << tmpDr->FirstThunk << "]");
 		itr.Init(pe, tmpDr);
 		TO_RIGHT;
 		while (itr.Next())
 		{
 			auto tmpThunk = itr.CurrentOriginalThunk64();
-			if (!Import::ImportThunkReader::IsSnapByOrdinal(tmpThunk))
+			if (!Import::IsSnapByOrdinal(tmpThunk))
 			{
-				auto tmpName = Import::ImportThunkReader::GetNameStruct(pe, tmpThunk);
+				auto tmpName = Import::GetNameStruct(pe, tmpThunk);
 
 				DISPLAY_MSG(tmpName->Name);
 				TO_RIGHT;
@@ -382,7 +384,7 @@ void PrintImport64(PeDecoder& pe)
 					{
 						auto hookAddr = itr.CurrentThunk64();
 						DWORD oldProtect;
-					Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
+						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
 						*(PDWORDLONG)hookAddr = (DWORDLONG)HookBeep;
 						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), oldProtect, NULL);
 						DISPLAY_HEX("New - FT", itr.CurrentThunk64()->u1.AddressOfData);
@@ -400,7 +402,7 @@ void PrintImport64(PeDecoder& pe)
 			}
 			else
 			{
-				auto tmpOrdinal = Import::ImportThunkReader::GetOrdinal(tmpThunk);
+				auto tmpOrdinal = Import::GetOrdinal(tmpThunk);
 				DISPLAY_MSG("Ordinal: " << tmpOrdinal);
 				TO_RIGHT;
 				DISPLAY_HEX("OFT", tmpThunk->u1.AddressOfData);
@@ -688,12 +690,11 @@ void TestPeDecoder()
 	}
 	of.close();
 	SHOW_FILE;
+	Beep(261, 1000);
 }
-
-
-int _tmain(int argc, _TCHAR* argv[])
+void TestLazyLoad()
 {
-	using namespace Process::LazyLoad;
+using namespace Process::LazyLoad;
 	/*LazyLoad::_LdrLoadDll(0, 0, 0, 0);
 	if (!LazyLoad::_LoadLibraryA("aaa"))
 	{
@@ -706,6 +707,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	//
 	//LazyLoad::__LoadLibraryA("");
 	//auto ii = NtCurrentTeb();
+
+
+
 	auto x =_OpenProcess(PROCESS_ALL_ACCESS, FALSE, 12328);
 	UINT8 buff[100]="HelloWorld!";
 	DWORD size;
@@ -715,10 +719,36 @@ int _tmain(int argc, _TCHAR* argv[])
 	_ReadProcessMemory(x, k, buff2, 100, &size);
 	auto dd = GetLastError();
 	_MessageBoxA(0, "Hi", "HelloWorld!", 0);
+}
 
+void TestHook()
+{
+	PVOID oldHookAddress;
+	Process::Hook::HookIat("Beep", HookBeep, &oldHookAddress);
+	
+	Beep(400, 500); // hooked 输出
+	
+	auto realBeepAddress = (bool(WINAPI*)(DWORD, DWORD))GetProcAddress(LoadLibraryA("kernel32.dll"), "Beep"); // eathook前取到的真实地址
+	realBeepAddress(500, 600); // iat不能影响这个
+	Process::Hook::HookEat(L"kernel32.dll", "Beep", HookBeep, NULL);
+	auto hookEatBeepAddress = (bool(WINAPI*)(DWORD, DWORD))GetProcAddress(LoadLibraryA("kernel32.dll"), "Beep"); // hookEat后取到的都是hookBeep
+	realBeepAddress(600, 700);
+	hookEatBeepAddress(800, 900); // hooked 输出
+
+	auto test =Process::LazyLoad::_GetProcAddressEx(L"kernel32.dll", "Beep");
+	if ((PVOID)test == (PVOID)hookEatBeepAddress)
+	{
+		cout << "eat hook address"<<endl;
+	}
+}
+int _tmain(int argc, _TCHAR* argv[])
+{
 	
 	// 测试pe解析
-	TestPeDecoder();
-	Beep(261, 1000);
+	//TestPeDecoder();
+	// 测试延迟载入
+	//TestLazyLoad();
+	// 测试Hook
+	TestHook();
 	return 0;
 }

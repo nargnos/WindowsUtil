@@ -66,15 +66,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -143,6 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Process\Hook\EatHook.h" />
+    <ClInclude Include="Include\PE\Export\Export.h" />
+    <ClInclude Include="Include\PE\Import\Import.h" />
     <ClInclude Include="Include\PE\Reloc\BaseRelocationReader.h" />
     <ClInclude Include="Include\PE\Export\ExportReader.h" />
     <ClInclude Include="Include\PE\Import\ImportDescriptorReader.h" />
@@ -159,6 +158,9 @@
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Process\Hook\EatHook.cpp" />
+    <ClCompile Include="Include\PE\Export\Export.cpp" />
+    <ClCompile Include="Include\PE\Import\Import.cpp" />
     <ClCompile Include="Include\Process\Remote\RemoteProccess.cpp" />
     <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp" />
     <ClCompile Include="Include\Process\EnvironmentBlock\EnvironmentBlock.cpp" />

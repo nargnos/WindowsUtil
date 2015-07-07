@@ -57,6 +57,15 @@
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Include\PE\Import\Import.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PE\Export\Export.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\EatHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp">
@@ -96,6 +105,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Include\Process\LazyLoad\LazyLoadSystemApi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\PE\Import\Import.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\PE\Export\Export.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\EatHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
