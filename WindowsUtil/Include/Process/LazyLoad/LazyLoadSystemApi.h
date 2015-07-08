@@ -156,7 +156,13 @@ namespace Process
 			_In_ ULONG NumberOfBytesToFlush
 			));
 
-		DEF_FUNC(NTSTATUS, NtAllocateVirtualMemory, (HANDLE, PVOID*, ULONG, SIZE_T*, ULONG, ULONG)); 
+		DEF_FUNC(NTSTATUS, NtAllocateVirtualMemory, (
+			_In_ HANDLE ProcessHandle,
+			_Inout_ _Outptr_result_buffer_(*RegionSize) PVOID *BaseAddress,
+			_In_ ULONG_PTR ZeroBits,
+			_Inout_ PSIZE_T RegionSize,
+			_In_ ULONG AllocationType,
+			_In_ ULONG Protect));
 
 		typedef enum _MEMORY_INFORMATION_CLASS {
 			MemoryBasicInformation,

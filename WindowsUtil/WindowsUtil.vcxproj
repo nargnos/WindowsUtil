@@ -139,6 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Process\Hook\DelayLoadHook.h" />
+    <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h" />
+    <ClInclude Include="Include\PE\DelayLoad\DelayLoad.h" />
+    <ClInclude Include="Include\PE\DelayLoad\DelayLoadDescriptorReader.h" />
+    <ClInclude Include="Include\Process\Hook\ApiHook.h" />
     <ClInclude Include="Include\Process\Hook\EatHook.h" />
     <ClInclude Include="Include\PE\Export\Export.h" />
     <ClInclude Include="Include\PE\Import\Import.h" />
@@ -158,6 +163,11 @@
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp" />
+    <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp" />
+    <ClCompile Include="Include\PE\DelayLoad\DelayLoad.cpp" />
+    <ClCompile Include="Include\PE\DelayLoad\DelayLoadDescriptorReader.cpp" />
+    <ClCompile Include="Include\Process\Hook\ApiHook.cpp" />
     <ClCompile Include="Include\Process\Hook\EatHook.cpp" />
     <ClCompile Include="Include\PE\Export\Export.cpp" />
     <ClCompile Include="Include\PE\Import\Import.cpp" />

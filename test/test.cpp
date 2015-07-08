@@ -10,6 +10,10 @@
 #include <Process\LazyLoad\LazyLoadSystemApi.h>
 #include <Process\Hook\IatHook.h>
 #include <Process\Hook\EatHook.h>
+#include <Process\Hook\DelayLoadHook.h>
+#include <PE\DelayLoad\DelayLoad.h>
+
+#pragma comment(lib,"Shlwapi.lib")
 using namespace std;
 using namespace PE;
 
@@ -24,7 +28,7 @@ __declspec(thread) int a = 0;
 #define OUTPUT_FILENAME "\\output.txt"
 #define SHOW_FILE system("start"OUTPUT_FILENAME);
 
-#define DISPLAY_DES cout//of//cout
+#define DISPLAY_DES of//cout
 #define TO_RIGHT space+=2;if(space>maxSpace){space=maxSpace;}{
 #define TO_LEFT }space-=2;if(space<minSpace){space=minSpace;}
 #define DISPLAY_STRUCT_HEX(structVal, name) DISPLAY_DES <<setw(space)<<""<<setw(maxSpace-space)<< #name <<" - 0x"<< hex<< structVal->name << endl
@@ -530,6 +534,35 @@ void PrintReloc(PeDecoder& pe)
 	}
 }
 
+void PrintDelay(PeDecoder& pe)
+{
+	PE::DelayLoad::DelayLoadDescriptorReader ddr(pe);
+	PE::DelayLoad::DelayLoadThunkReader dtr;
+	while (ddr.Next())
+	{
+		auto curDdr = ddr.Current();
+		auto dllName = PE::DelayLoad::GetDelayloadDllName(pe, curDdr);
+		DISPLAY_MSG(dllName);
+		TO_RIGHT;
+		dtr.Init(pe, curDdr);
+		while (dtr.Next())
+		{
+			auto curNameTable = (PIMAGE_THUNK_DATA32)dtr.CurrentNameTable();
+			if (!PE::Import::IsSnapByOrdinal(curNameTable))
+			{
+				auto funcName = (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(*(HANDLE_PTR*)curNameTable);
+				DISPLAY_MSG("Name - "<<(PCHAR)funcName->Name);
+			}
+			else
+			{
+				auto curOrd = PE::Import::GetOrdinal(curNameTable);
+				DISPLAY_MSG("Ordinal - "<<curOrd);
+			}
+		}
+		TO_LEFT;
+	}
+}
+
 // pe解析器测试, 只做测试怎么简单怎么编
 void TestPeDecoder()
 {
@@ -627,7 +660,9 @@ void TestPeDecoder()
 			// iat
 			// TODO: iat
 			// delay import
-			// TODO: delay import
+			DISPLAY_MSG("[DelayImport]");
+			PrintDelay(pe);
+		
 			// meta
 			// TODO: meta
 
@@ -710,7 +745,7 @@ using namespace Process::LazyLoad;
 
 
 
-	auto x =_OpenProcess(PROCESS_ALL_ACCESS, FALSE, 12328);
+	/*auto x =_OpenProcess(PROCESS_ALL_ACCESS, FALSE, 12328);
 	UINT8 buff[100]="HelloWorld!";
 	DWORD size;
 	auto k = _VirtualAllocEx(x, NULL, 100, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
@@ -718,28 +753,57 @@ using namespace Process::LazyLoad;
 	UINT8 buff2[100];
 	_ReadProcessMemory(x, k, buff2, 100, &size);
 	auto dd = GetLastError();
-	_MessageBoxA(0, "Hi", "HelloWorld!", 0);
+	_MessageBoxA(0, "Hi", "HelloWorld!", 0);*/
 }
-
+int(WINAPI*realMboxAddr)(HWND, LPCSTR, LPCSTR, UINT);
+int WINAPI HookMBoxIAT(HWND hwnd, LPCSTR text, LPCSTR caption, UINT type)
+{
+	cout << "IAT Hook - TEXT:" << text << " CAPTION:" << caption << endl;
+	return realMboxAddr(hwnd, "IAT HOOK", "成功", type);
+}
+int WINAPI HookMBoxEAT(HWND hwnd, LPCSTR text, LPCSTR caption, UINT type)
+{
+	cout << "EAT Hook - TEXT:" << text << " CAPTION:" << caption << endl;
+	return realMboxAddr(hwnd, "EAT HOOK", "成功", type);
+}
+int (WINAPI*oldShellMessageBoxA)(
+	_In_opt_ HINSTANCE hAppInst,
+	_In_opt_ HWND hWnd,
+	_In_ LPCSTR lpcText,
+	_In_opt_ LPCSTR lpcTitle,
+	_In_ UINT fuStyle, ...);
+int WINAPI HookShellMessageBoxA(
+	_In_opt_ HINSTANCE hAppInst,
+	_In_opt_ HWND hWnd,
+	_In_ LPCSTR lpcText,
+	_In_opt_ LPCSTR lpcTitle,
+	_In_ UINT fuStyle, ...)
+{
+	cout << "延迟导入表Hook" << endl;
+	
+	return oldShellMessageBoxA(hAppInst, hWnd, "延迟导入表Hooked", "成功", fuStyle);;
+}
 void TestHook()
 {
-	PVOID oldHookAddress;
-	Process::Hook::HookIat("Beep", HookBeep, &oldHookAddress);
+	ShellMessageBoxW(0, 0, L"测试hook", L"hook", MB_ICONINFORMATION, "开始测试Hook,这个函数是延迟导入表导入的,好像用的是序数");
+	realMboxAddr = (int(WINAPI*)(HWND, LPCSTR, LPCSTR, UINT))Process::LazyLoad::_GetProcAddressEx(L"user32.dll", "MessageBoxA");
 	
-	Beep(400, 500); // hooked 输出
+	Process::Hook::HookIat("MessageBoxA", HookMBoxIAT);
 	
-	auto realBeepAddress = (bool(WINAPI*)(DWORD, DWORD))GetProcAddress(LoadLibraryA("kernel32.dll"), "Beep"); // eathook前取到的真实地址
-	realBeepAddress(500, 600); // iat不能影响这个
-	Process::Hook::HookEat(L"kernel32.dll", "Beep", HookBeep, NULL);
-	auto hookEatBeepAddress = (bool(WINAPI*)(DWORD, DWORD))GetProcAddress(LoadLibraryA("kernel32.dll"), "Beep"); // hookEat后取到的都是hookBeep
-	realBeepAddress(600, 700);
-	hookEatBeepAddress(800, 900); // hooked 输出
+	MessageBoxA(0, "hook", "hook", 0); // hooked 输出
+	
+	realMboxAddr(0, "iat hook不能影响这个", "realAddress", 0);
 
-	auto test =Process::LazyLoad::_GetProcAddressEx(L"kernel32.dll", "Beep");
-	if ((PVOID)test == (PVOID)hookEatBeepAddress)
-	{
-		cout << "eat hook address"<<endl;
-	}
+	Process::Hook::HookEat(L"user32.dll", "MessageBoxA", HookMBoxEAT);
+	auto hookEatAddress = (int(WINAPI*)(HWND, LPCSTR, LPCSTR, UINT))GetProcAddress(LoadLibraryA("user32.dll"), "MessageBoxA"); // hookEat后取到的都是hook地址
+	realMboxAddr(0, "eat hook不能影响这个", "realAddress", 0);
+	hookEatAddress(0, "hook", "hook", 0); // hooked 输出
+
+	Process::Hook::HookDelayLoad("SHLWAPI.dll", "ShellMessageBoxA", HookShellMessageBoxA, (PVOID*)&oldShellMessageBoxA);
+	ShellMessageBoxA(0, 0, "测试 延迟载入 hook", "hook", MB_ICONINFORMATION);
+	SHGetLocalizedName(NULL, NULL, NULL, NULL); // 用来扩展延迟导入表项的, 无视
+
+
 }
 int _tmain(int argc, _TCHAR* argv[])
 {

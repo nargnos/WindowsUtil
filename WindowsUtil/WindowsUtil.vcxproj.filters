@@ -66,6 +66,21 @@
     <ClInclude Include="Include\Process\Hook\EatHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Process\Hook\ApiHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PE\DelayLoad\DelayLoad.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PE\DelayLoad\DelayLoadDescriptorReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\DelayLoadHook.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp">
@@ -114,6 +129,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Include\Process\Hook\EatHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\ApiHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\PE\DelayLoad\DelayLoad.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\PE\DelayLoad\DelayLoadDescriptorReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
