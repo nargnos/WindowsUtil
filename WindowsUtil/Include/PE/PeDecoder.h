@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <Windows.h>
 #include <WinBase.h>
 #include <WinTrust.h>

@@ -6,6 +6,7 @@ namespace PE
 	{
 		ResourceDirectoryReader::ResourceDirectoryReader(PIMAGE_RESOURCE_DIRECTORY root) :root(root)
 		{
+			assert(root);
 			SetEntryArrayRange(root, firstTypeDirectoryEntry, lastTypeDirectoryEntry);
 			Reset();
 		}

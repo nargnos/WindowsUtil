@@ -81,6 +81,9 @@
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Asm\AsmGenerator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp">
@@ -144,6 +147,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\AsmGenerator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

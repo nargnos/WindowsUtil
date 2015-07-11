@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include "ImportDescriptorReader.h"
 #include "ImportThunkReader.h"
 namespace PE

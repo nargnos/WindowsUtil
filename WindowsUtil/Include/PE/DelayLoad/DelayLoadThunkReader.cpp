@@ -14,6 +14,7 @@ namespace PE
 		}
 		void DelayLoadThunkReader::Init(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor) 
 		{
+			assert(descriptor != NULL);
 			this->descriptor = descriptor;
 			importAddressTable = pe.GetRvaData(descriptor->ImportAddressTableRVA);
 			importNameTable = pe.GetRvaData(descriptor->ImportNameTableRVA);

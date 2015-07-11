@@ -5,6 +5,7 @@ namespace PE
 	{
 		PDWORD GetProcExportFuncTableAddress(PeDecoder& pe, LPCSTR lpProcName)
 		{
+			assert(lpProcName != NULL);
 			if (!pe.IsPE())
 			{
 				return NULL;
@@ -54,14 +55,12 @@ namespace PE
 
 		FARPROC GetProcAddress(PeDecoder& pe, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
 		{
+			assert(compareCallback != NULL && compareName!=NULL);
 			if (!pe.IsPE())
 			{
 				return NULL;
 			}
-			if (compareCallback == NULL)
-			{
-				return NULL;
-			}
+			
 			ExportReader er(pe);
 			while (er.Next())
 			{

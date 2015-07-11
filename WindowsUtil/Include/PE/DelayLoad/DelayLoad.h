@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include "..\PeDecoder.h"
 #include "..\Import\Import.h"
 #include "DelayLoadDescriptorReader.h"

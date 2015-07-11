@@ -8,6 +8,7 @@ namespace PE
 		}
 		ExportReader::ExportReader(PeDecoder& pe, PIMAGE_EXPORT_DIRECTORY exportDirectory)
 		{
+			assert(exportDirectory != NULL);
 			this->exportDirectory = exportDirectory;
 			if (exportDirectory)
 			{

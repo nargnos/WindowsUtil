@@ -17,6 +17,7 @@ namespace PE
 		}
 		void TypeOffsetReader::Init(PIMAGE_BASE_RELOCATION reloc)
 		{
+			assert(reloc);
 			virtualAddress = reloc->VirtualAddress;
 			typeOffset = PWORD((PUINT8)reloc + sizeof(IMAGE_BASE_RELOCATION));
 			endTypeOffset = typeOffset + ((reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD));

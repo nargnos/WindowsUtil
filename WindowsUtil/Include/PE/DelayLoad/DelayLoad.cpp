@@ -7,10 +7,12 @@ namespace PE
 
 		LPCSTR GetDelayloadDllName(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor)
 		{
+			assert(descriptor != NULL);
 			return (LPCSTR)pe.GetRvaData(descriptor->DllNameRVA);
 		}
 		PVOID GetDelayLoadAddressTableAddress(PeDecoder& pe,LPCSTR dllName, LPCSTR procName)
 		{
+			assert(dllName != NULL&&procName != NULL);
 			PE::DelayLoad::DelayLoadDescriptorReader ddr(pe);
 			PE::DelayLoad::DelayLoadThunkReader dtr;
 			while (ddr.Next())

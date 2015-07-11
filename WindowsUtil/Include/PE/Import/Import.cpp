@@ -33,7 +33,8 @@ namespace PE
 		}
 		PVOID GetProcImportThunkAddress(PeDecoder& pe, LPCSTR dllName, LPCSTR procName)
 		{
-			if (procName == NULL || !pe.IsMapped())
+			assert(procName);
+			if (!pe.IsMapped())
 			{
 				return NULL;
 			}

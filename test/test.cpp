@@ -9,6 +9,7 @@
 #include <PeImage.h>
 #include <Process\LazyLoad\LazyLoadSystemApi.h>
 #include <Process\Hook\IatHook.h>
+#include <Process\Hook\ApiHook.h>
 #include <Process\Hook\EatHook.h>
 #include <Process\Hook\DelayLoadHook.h>
 #include <PE\DelayLoad\DelayLoad.h>
@@ -755,17 +756,48 @@ using namespace Process::LazyLoad;
 	auto dd = GetLastError();
 	_MessageBoxA(0, "Hi", "HelloWorld!", 0);*/
 }
+LPCSTR hookSuccess = "成功";
 int(WINAPI*realMboxAddr)(HWND, LPCSTR, LPCSTR, UINT);
 int WINAPI HookMBoxIAT(HWND hwnd, LPCSTR text, LPCSTR caption, UINT type)
 {
 	cout << "IAT Hook - TEXT:" << text << " CAPTION:" << caption << endl;
-	return realMboxAddr(hwnd, "IAT HOOK", "成功", type);
+	return realMboxAddr(hwnd, "IAT HOOK", hookSuccess, type);
 }
 int WINAPI HookMBoxEAT(HWND hwnd, LPCSTR text, LPCSTR caption, UINT type)
 {
 	cout << "EAT Hook - TEXT:" << text << " CAPTION:" << caption << endl;
-	return realMboxAddr(hwnd, "EAT HOOK", "成功", type);
+	return realMboxAddr(hwnd, "EAT HOOK", hookSuccess, type);
 }
+#ifndef _WIN64
+__declspec(naked) void HookAsm()
+{
+	_asm pushad
+	cout << "内联汇编的hook函数" << endl;
+	_asm
+	{
+		popad
+		pop eax
+		pop ebx
+		pop ecx
+		pop ecx
+		push STRaddr
+		push hookSuccess
+		push ebx
+		push eax
+		jmp realMboxAddr
+STRaddr:
+		_emit 'H'
+		_emit 'o'
+		_emit 'o'
+		_emit 'k'
+		_emit 'e'
+		_emit 'd'
+		_emit 0
+
+	}
+
+}
+#endif
 int (WINAPI*oldShellMessageBoxA)(
 	_In_opt_ HINSTANCE hAppInst,
 	_In_opt_ HWND hWnd,
@@ -781,7 +813,7 @@ int WINAPI HookShellMessageBoxA(
 {
 	cout << "延迟导入表Hook" << endl;
 	
-	return oldShellMessageBoxA(hAppInst, hWnd, "延迟导入表Hooked", "成功", fuStyle);;
+	return oldShellMessageBoxA(hAppInst, hWnd, "延迟导入表Hooked", hookSuccess, fuStyle);;
 }
 void TestHook()
 {
@@ -794,10 +826,18 @@ void TestHook()
 	
 	realMboxAddr(0, "iat hook不能影响这个", "realAddress", 0);
 
+#ifndef _WIN64
+	// 使用另一种hook函数
+	Process::Hook::HookIat("MessageBoxA", HookAsm);
+	MessageBoxA(0, "hook", "hook", 0); // hooked 输出
+#endif
+
 	Process::Hook::HookEat(L"user32.dll", "MessageBoxA", HookMBoxEAT);
 	auto hookEatAddress = (int(WINAPI*)(HWND, LPCSTR, LPCSTR, UINT))GetProcAddress(LoadLibraryA("user32.dll"), "MessageBoxA"); // hookEat后取到的都是hook地址
 	realMboxAddr(0, "eat hook不能影响这个", "realAddress", 0);
 	hookEatAddress(0, "hook", "hook", 0); // hooked 输出
+
+
 
 	Process::Hook::HookDelayLoad("SHLWAPI.dll", "ShellMessageBoxA", HookShellMessageBoxA, (PVOID*)&oldShellMessageBoxA);
 	ShellMessageBoxA(0, 0, "测试 延迟载入 hook", "hook", MB_ICONINFORMATION);
@@ -805,9 +845,13 @@ void TestHook()
 
 
 }
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	
+
+	Process::Hook::HookApi(MessageBoxA, HookMBoxEAT);
+	MessageBoxA(0, 0, 0, 0);
 	// 测试pe解析
 	//TestPeDecoder();
 	// 测试延迟载入

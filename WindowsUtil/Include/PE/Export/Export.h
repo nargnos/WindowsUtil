@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include "ExportReader.h"
 
 namespace PE

@@ -8,6 +8,7 @@ namespace PE
 			firstSectionHeader(firstSectionHeader),
 			lastSectionHeader(lastSectionHeader)
 		{
+			assert(firstSectionHeader);
 			Reset();
 		}
 		SectionReader::SectionReader(PIMAGE_SECTION_HEADER firstSectionHeader, WORD sectionCount) :

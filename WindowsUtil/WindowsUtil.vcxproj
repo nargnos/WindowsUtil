@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Asm\AsmGenerator.h" />
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoad.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\Asm\AsmGenerator.cpp" />
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoad.cpp" />

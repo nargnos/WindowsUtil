@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <Windows.h>
 #include <winternl.h>
 namespace Process
@@ -285,12 +286,12 @@ namespace Process
 		} BASE_STATIC_SERVER_DATA, *PBASE_STATIC_SERVER_DATA;
 		// 定义结束
 
-		enum LdrDataTableModuleList
+		typedef enum class _LdrDataTableModuleList
 		{
 			InLoadOrderModuleList,
 			InMemoryOrderModuleList,
 			InInitializationOrderModuleList
-		};
+		}LdrDataTableModuleList;
 		// ldr双链表迭代器
 		class LdrDataTableEntryReader
 		{

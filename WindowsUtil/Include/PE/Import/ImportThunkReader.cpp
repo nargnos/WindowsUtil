@@ -16,6 +16,7 @@ namespace PE
 		}
 		void ImportThunkReader::Init(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
 		{
+			assert(importDescriptor);
 			is32 = pe.HasNtHeader32();
 			originalThunk = pe.GetRvaData(importDescriptor->OriginalFirstThunk);
 			thunk = pe.GetRvaData(importDescriptor->FirstThunk);

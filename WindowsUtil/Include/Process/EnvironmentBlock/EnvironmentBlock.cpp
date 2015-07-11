@@ -16,14 +16,14 @@ namespace Process
 			this->desList = desList;
 			switch (desList)
 			{
-			case EnvironmentBlock::InLoadOrderModuleList:
+			case LdrDataTableModuleList::InLoadOrderModuleList:
 			default:
 				ModuleListHead = &ldr->InLoadOrderModuleList;
 				break;
-			case EnvironmentBlock::InMemoryOrderModuleList:
+			case LdrDataTableModuleList::InMemoryOrderModuleList:
 				ModuleListHead = &ldr->InMemoryOrderModuleList;
 				break;
-			case EnvironmentBlock::InInitializationOrderModuleList:
+			case LdrDataTableModuleList::InInitializationOrderModuleList:
 				ModuleListHead = &ldr->InInitializationOrderModuleList;
 				break;
 			}
@@ -55,13 +55,13 @@ namespace Process
 			}
 			switch (desList)
 			{
-			case EnvironmentBlock::InLoadOrderModuleList:
+			case LdrDataTableModuleList::InLoadOrderModuleList:
 				return CONTAINING_RECORD(TmpEntry, LDR_DATA_TABLE_ENTRY_Ex, InLoadOrderLinks);
 				break;
-			case EnvironmentBlock::InMemoryOrderModuleList:
+			case LdrDataTableModuleList::InMemoryOrderModuleList:
 				return CONTAINING_RECORD(TmpEntry, LDR_DATA_TABLE_ENTRY_Ex, InMemoryOrderModuleList);
 				break;
-			case EnvironmentBlock::InInitializationOrderModuleList:
+			case LdrDataTableModuleList::InInitializationOrderModuleList:
 				return CONTAINING_RECORD(TmpEntry, LDR_DATA_TABLE_ENTRY_Ex, InInitializationOrderModuleList);
 				break;
 			default:
@@ -76,14 +76,18 @@ namespace Process
 
 		HINSTANCE __stdcall FindLoadedModuleHandle(LPCWSTR name)
 		{
-			LdrDataTableEntryReader iterator(InLoadOrderModuleList);
+			assert(name != NULL);
+			LdrDataTableEntryReader iterator(LdrDataTableModuleList::InLoadOrderModuleList);
 			while (iterator.Next())
 			{
 				auto current = iterator.Current();
 				auto moduleName = current->BaseDllName.Buffer;
-				if (_wcsicmp(name, moduleName) == 0)
+				if (moduleName)
 				{
-					return (HMODULE)current->DllBase;
+					if (_wcsicmp(name, moduleName) == 0)
+					{
+						return (HMODULE)current->DllBase;
+					}
 				}
 			}
 			return NULL;

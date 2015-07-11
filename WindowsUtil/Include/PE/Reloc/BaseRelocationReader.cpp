@@ -6,6 +6,7 @@ namespace PE
 		BaseRelocationReader::BaseRelocationReader(PIMAGE_BASE_RELOCATION reloc, DWORD relocSize)
 			:reloc(reloc), endReloc(reloc + (relocSize / sizeof(IMAGE_BASE_RELOCATION)))
 		{
+			assert(reloc);
 			Reset();
 		}
 		BaseRelocationReader::BaseRelocationReader(PeDecoder& pe)

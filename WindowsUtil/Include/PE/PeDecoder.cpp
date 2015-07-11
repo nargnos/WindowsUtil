@@ -5,6 +5,7 @@ namespace PE
 		base((PUINT8)pe),
 		isMapped(isMapped)
 	{
+		assert(pe);
 		CheckImage();
 	}
 

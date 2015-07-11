@@ -235,11 +235,16 @@ namespace Process
 			OUT PDWORD lpflOldProtect))
 		{
 			NTSTATUS Status;
+			ULONG oldProtect;
 			Status = _NtProtectVirtualMemory(hProcess,
 				&lpAddress,
 				&dwSize,
 				flNewProtect,
-				(PULONG)lpflOldProtect);
+				&oldProtect);
+			if (lpflOldProtect)
+			{
+				*lpflOldProtect = oldProtect;
+			}
 			if (!NT_SUCCESS(Status))
 			{
 				return FALSE;
