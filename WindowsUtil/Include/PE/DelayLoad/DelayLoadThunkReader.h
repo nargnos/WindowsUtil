@@ -6,18 +6,19 @@ namespace PE
 {
 	namespace DelayLoad
 	{
+		// 装了2015，winnt的PIMAGE_DELAYLOAD_DESCRIPTOR结构怎么没了，换成PImgDelayDescr
 		class DelayLoadThunkReader
 		{
 			PVOID importAddressTable;
 			PVOID importNameTable;
-			PIMAGE_DELAYLOAD_DESCRIPTOR descriptor;
+			PImgDelayDescr descriptor;
 			PVOID currentImportAddressTable;
 			PVOID currentImportNameTable;
 		public:
-			DelayLoadThunkReader(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor);
+			DelayLoadThunkReader(PeDecoder& pe, PImgDelayDescr descriptor);
 			DelayLoadThunkReader();
 			~DelayLoadThunkReader();
-			void Init(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor);
+			void Init(PeDecoder& pe, PImgDelayDescr descriptor);
 			PVOID CurrentNameTable();
 			PVOID CurrentAddressTable();
 			bool Next();

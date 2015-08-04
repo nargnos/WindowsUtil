@@ -233,9 +233,9 @@ namespace PE
 		return /*(IMAGE_THUNK_DATA32)*/DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_IAT, size);
 	}
 	
-	PIMAGE_DELAYLOAD_DESCRIPTOR PeDecoder::ImageDelayImport(PDWORD* size)
+	PImgDelayDescr PeDecoder::ImageDelayImport(PDWORD* size)
 	{
-		return (PIMAGE_DELAYLOAD_DESCRIPTOR)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT, size);
+		return (PImgDelayDescr)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT, size);
 	}
 	
 	PIMAGE_COR20_HEADER PeDecoder::ImageComDescriptor(PDWORD* size)

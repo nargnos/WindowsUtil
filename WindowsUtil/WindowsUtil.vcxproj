@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -23,31 +23,32 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LazyLoad</RootNamespace>
     <ProjectName>WindowsUtil</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -139,12 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Asm\AsmGenerator.h" />
+    <ClInclude Include="Include\Asm\DisAsm.h" />
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoad.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoadDescriptorReader.h" />
-    <ClInclude Include="Include\Process\Hook\ApiHook.h" />
     <ClInclude Include="Include\Process\Hook\EatHook.h" />
     <ClInclude Include="Include\PE\Export\Export.h" />
     <ClInclude Include="Include\PE\Import\Import.h" />
@@ -162,14 +162,15 @@
     <ClInclude Include="Include\PE\Reloc\TypeOffsetReader.h" />
     <ClInclude Include="Include\Process\Remote\RemoteProccess.h" />
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
+    <ClInclude Include="Include\Asm\Opcodes.h" />
+    <ClInclude Include="Include\Common\SimpleQueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\Asm\AsmGenerator.cpp" />
+    <ClCompile Include="Include\Asm\DisAsm.cpp" />
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoad.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoadDescriptorReader.cpp" />
-    <ClCompile Include="Include\Process\Hook\ApiHook.cpp" />
     <ClCompile Include="Include\Process\Hook\EatHook.cpp" />
     <ClCompile Include="Include\PE\Export\Export.cpp" />
     <ClCompile Include="Include\PE\Import\Import.cpp" />
@@ -186,6 +187,8 @@
     <ClCompile Include="Include\PE\Section\SectionReader.cpp" />
     <ClCompile Include="Include\PE\Reloc\TypeOffsetReader.cpp" />
     <ClCompile Include="Include\Process\LazyLoad\LazyLoadSystemApi.cpp" />
+    <ClCompile Include="Include\Asm\Opcodes.cpp" />
+    <ClCompile Include="Include\Common\SimpleQueue.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -4,7 +4,7 @@ namespace PE
 {
 	namespace DelayLoad
 	{
-		DelayLoadThunkReader::DelayLoadThunkReader(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor)
+		DelayLoadThunkReader::DelayLoadThunkReader(PeDecoder& pe, PImgDelayDescr descriptor)
 		{
 			Init(pe, descriptor);
 		}
@@ -12,12 +12,12 @@ namespace PE
 		{
 			Reset();
 		}
-		void DelayLoadThunkReader::Init(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor) 
+		void DelayLoadThunkReader::Init(PeDecoder& pe, PImgDelayDescr descriptor)
 		{
 			assert(descriptor != NULL);
 			this->descriptor = descriptor;
-			importAddressTable = pe.GetRvaData(descriptor->ImportAddressTableRVA);
-			importNameTable = pe.GetRvaData(descriptor->ImportNameTableRVA);
+			importAddressTable = pe.GetRvaData(descriptor->rvaIAT);
+			importNameTable = pe.GetRvaData(descriptor->rvaINT);
 			Reset();
 		}
 

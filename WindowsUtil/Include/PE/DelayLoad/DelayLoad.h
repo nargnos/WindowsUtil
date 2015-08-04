@@ -8,7 +8,7 @@ namespace PE
 {
 	namespace DelayLoad
 	{
-		LPCSTR GetDelayloadDllName(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor);
+		LPCSTR GetDelayloadDllName(PeDecoder& pe, PImgDelayDescr descriptor);
 		PVOID GetDelayLoadAddressTableAddress(PeDecoder& pe,LPCSTR dllName, LPCSTR procName);
 	}
 }

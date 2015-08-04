@@ -66,9 +66,6 @@
     <ClInclude Include="Include\Process\Hook\EatHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Process\Hook\ApiHook.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\PE\DelayLoad\DelayLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -81,7 +78,13 @@
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Asm\AsmGenerator.h">
+    <ClInclude Include="Include\Asm\Opcodes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\SimpleQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\DisAsm.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -134,9 +137,6 @@
     <ClCompile Include="Include\Process\Hook\EatHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Process\Hook\ApiHook.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Include\PE\DelayLoad\DelayLoad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -149,7 +149,13 @@
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Asm\AsmGenerator.cpp">
+    <ClCompile Include="Include\Asm\Opcodes.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Common\SimpleQueue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\DisAsm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -13,7 +13,7 @@
 #include <Process\Hook\EatHook.h>
 #include <Process\Hook\DelayLoadHook.h>
 #include <PE\DelayLoad\DelayLoad.h>
-
+#include <Asm\Opcodes.h>
 #pragma comment(lib,"Shlwapi.lib")
 using namespace std;
 using namespace PE;
@@ -26,8 +26,8 @@ int space = minSpace;
 __declspec(thread) int a = 0;
 
 
-#define OUTPUT_FILENAME "\\output.txt"
-#define SHOW_FILE system("start"OUTPUT_FILENAME);
+#define OUTPUT_FILENAME " \\output.txt"
+#define SHOW_FILE system("start" OUTPUT_FILENAME);
 
 #define DISPLAY_DES of//cout
 #define TO_RIGHT space+=2;if(space>maxSpace){space=maxSpace;}{
@@ -324,7 +324,7 @@ void PrintImport(PeDecoder& pe)
 				// ∏Ωº”≤‚ ‘ iat hook - Beep
 				if (pe.IsMapped())
 				{
-					if (strcmp(tmpName->Name, "Beep") == 0)
+					if (strcmp((char*)tmpName->Name, "Beep") == 0)
 					{
 						auto hookAddr = itr.CurrentThunk32();
 						DWORD oldProtect;
@@ -385,7 +385,7 @@ void PrintImport64(PeDecoder& pe)
 				// ∏Ωº”≤‚ ‘ iat hook - Beep
 				if (pe.IsMapped())
 				{
-					if (strcmp(tmpName->Name, "Beep") == 0)
+					if (strcmp((char*)tmpName->Name, "Beep") == 0)
 					{
 						auto hookAddr = itr.CurrentThunk64();
 						DWORD oldProtect;
@@ -518,11 +518,11 @@ void PrintReloc(PeDecoder& pe)
 				CASE_SET_STR(IMAGE_REL_BASED_LOW, tmpType);
 				CASE_SET_STR(IMAGE_REL_BASED_HIGHLOW, tmpType);
 				CASE_SET_STR(IMAGE_REL_BASED_HIGHADJ, tmpType);
-				CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_5, tmpType);
-				CASE_SET_STR(IMAGE_REL_BASED_RESERVED, tmpType);
-				CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_7, tmpType);
-				CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_8, tmpType);
-				CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_9, tmpType);
+				//CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_5, tmpType);
+				//CASE_SET_STR(IMAGE_REL_BASED_RESERVED, tmpType);
+				//CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_7, tmpType);
+				//CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_8, tmpType);
+				//CASE_SET_STR(IMAGE_REL_BASED_MACHINE_SPECIFIC_9, tmpType);
 				CASE_SET_STR(IMAGE_REL_BASED_DIR64, tmpType);
 			default:
 				tmpType = "Unknown";
@@ -849,8 +849,16 @@ void TestHook()
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
-	Process::Hook::HookApi(MessageBoxA, HookMBoxEAT);
+	BYTE a = 0xc8;
+	
+	//auto f = a77;
+//	Asm::MethodAndType ll2;
+	//auto ddddw = sizeof(ll2);
+	Asm::Opcode d;
+	auto size = sizeof(Asm::_Opcode);
+	auto d7 =Asm::OneByteOpcodeMap;
+	auto fsfsfs = sizeof(Asm::OneByteOpcodeMap)/(sizeof(short)*2);
+	//Process::Hook::HookApi(MessageBoxA, HookMBoxEAT);
 	MessageBoxA(0, 0, 0, 0);
 	// ≤‚ ‘peΩ‚Œˆ
 	//TestPeDecoder();

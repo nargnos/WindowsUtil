@@ -6,12 +6,12 @@ namespace PE
 	{
 		class DelayLoadDescriptorReader
 		{
-			PIMAGE_DELAYLOAD_DESCRIPTOR delayArray;
-			PIMAGE_DELAYLOAD_DESCRIPTOR currentDelay;
+			PImgDelayDescr delayArray;
+			PImgDelayDescr currentDelay;
 		public:
 			DelayLoadDescriptorReader(PeDecoder& pe);
 			~DelayLoadDescriptorReader();
-			PIMAGE_DELAYLOAD_DESCRIPTOR Current();
+			PImgDelayDescr Current();
 			bool Next();
 			void Reset();
 		};

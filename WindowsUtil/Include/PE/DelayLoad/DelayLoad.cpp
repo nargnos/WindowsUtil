@@ -5,10 +5,10 @@ namespace PE
 	namespace DelayLoad
 	{
 
-		LPCSTR GetDelayloadDllName(PeDecoder& pe, PIMAGE_DELAYLOAD_DESCRIPTOR descriptor)
+		LPCSTR GetDelayloadDllName(PeDecoder& pe, PImgDelayDescr descriptor)
 		{
 			assert(descriptor != NULL);
-			return (LPCSTR)pe.GetRvaData(descriptor->DllNameRVA);
+			return (LPCSTR)pe.GetRvaData(descriptor->rvaDLLName);
 		}
 		PVOID GetDelayLoadAddressTableAddress(PeDecoder& pe,LPCSTR dllName, LPCSTR procName)
 		{
@@ -48,7 +48,7 @@ namespace PE
 							funcName = (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(*(HANDLE_PTR*)curNameTable);
 						}
 					}
-					if (funcName && (strcmp(funcName->Name, procName) == 0))
+					if (funcName && (strcmp((char*)funcName->Name, procName) == 0))
 					{
 						return dtr.CurrentAddressTable();
 					}

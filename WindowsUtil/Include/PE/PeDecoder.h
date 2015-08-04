@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <WinBase.h>
 #include <WinTrust.h>
+#include <delayimp.h>
 namespace PE
 {
 	// PE解析器, 这个用来读本地程序或文件
@@ -43,7 +44,7 @@ namespace PE
 		PIMAGE_TLS_DIRECTORY32 ImageTls32(PDWORD* size = NULL);
 		PIMAGE_LOAD_CONFIG_DIRECTORY64 ImageLoadConfig64(PDWORD* size = NULL);
 		PIMAGE_LOAD_CONFIG_DIRECTORY32 ImageLoadConfig32(PDWORD* size = NULL);
-		PIMAGE_DELAYLOAD_DESCRIPTOR ImageDelayImport(PDWORD* size = NULL);
+		/*PIMAGE_DELAYLOAD_DESCRIPTOR*/PImgDelayDescr ImageDelayImport(PDWORD* size = NULL);
 		PIMAGE_BOUND_IMPORT_DESCRIPTOR ImageBoundImport(PDWORD* size = NULL);
 		PIMAGE_COR20_HEADER ImageComDescriptor(PDWORD* size = NULL);
 #pragma endregion	

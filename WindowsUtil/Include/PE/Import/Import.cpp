@@ -60,7 +60,7 @@ namespace PE
 						if (!IsSnapByOrdinal(currentThunk))
 						{
 							auto currentProcName = GetNameStruct(pe, currentThunk);
-							if (strcmp(currentProcName->Name, procName))
+							if (strcmp((char*)currentProcName->Name, procName))
 							{
 								continue;
 							}
@@ -74,7 +74,7 @@ namespace PE
 						if (!IsSnapByOrdinal(currentThunk))
 						{
 							auto currentProcName = GetNameStruct(pe, currentThunk);
-							if (strcmp(currentProcName->Name, procName))
+							if (strcmp((char*)currentProcName->Name, procName))
 							{
 								continue;
 							}

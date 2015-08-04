@@ -15,7 +15,7 @@ namespace PE
 		DelayLoadDescriptorReader::~DelayLoadDescriptorReader()
 		{
 		}
-		PIMAGE_DELAYLOAD_DESCRIPTOR DelayLoadDescriptorReader::Current()
+		PImgDelayDescr DelayLoadDescriptorReader::Current()
 		{
 			return currentDelay;
 		}
@@ -29,7 +29,7 @@ namespace PE
 			else
 			{
 				currentDelay++;
-				if (currentDelay->Attributes.AllAttributes)
+				if (currentDelay->grAttrs)
 				{
 					return true;
 				}
