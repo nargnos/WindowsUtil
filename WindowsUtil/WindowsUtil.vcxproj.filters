@@ -78,13 +78,34 @@
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Asm\Opcodes.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Common\SimpleQueue.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Asm\DisAsm.h">
+    <ClInclude Include="Include\Asm\InstructionNames.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\Registers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\OperandStruct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\Operands.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\OpcodeTables.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\PrefixQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Asm\OpcodeReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\GetOpcodeLen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,13 +170,34 @@
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Asm\Opcodes.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Include\Common\SimpleQueue.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Asm\DisAsm.cpp">
+    <ClCompile Include="Include\Asm\InstructionNames.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\Registers.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\OperandStruct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\Operands.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\OpcodeTables.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\PrefixQueue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Asm\OpcodeReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\GetOpcodeLen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\SimpleOpcodeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -140,7 +140,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Asm\DisAsm.h" />
+    <ClInclude Include="Include\Process\Hook\GetOpcodeLen.h" />
+    <ClInclude Include="Include\Asm\PrefixQueue.h" />
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoad.h" />
@@ -162,11 +163,18 @@
     <ClInclude Include="Include\PE\Reloc\TypeOffsetReader.h" />
     <ClInclude Include="Include\Process\Remote\RemoteProccess.h" />
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
-    <ClInclude Include="Include\Asm\Opcodes.h" />
+    <ClInclude Include="Include\Asm\OpcodeTables.h" />
     <ClInclude Include="Include\Common\SimpleQueue.h" />
+    <ClInclude Include="Include\Asm\InstructionNames.h" />
+    <ClInclude Include="Include\Asm\Registers.h" />
+    <ClInclude Include="Include\Asm\OperandStruct.h" />
+    <ClInclude Include="Include\Asm\Operands.h" />
+    <ClInclude Include="Include\Asm\OpcodeReader.h" />
+    <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\Asm\DisAsm.cpp" />
+    <ClCompile Include="Include\Process\Hook\GetOpcodeLen.cpp" />
+    <ClCompile Include="Include\Asm\PrefixQueue.cpp" />
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoad.cpp" />
@@ -187,8 +195,14 @@
     <ClCompile Include="Include\PE\Section\SectionReader.cpp" />
     <ClCompile Include="Include\PE\Reloc\TypeOffsetReader.cpp" />
     <ClCompile Include="Include\Process\LazyLoad\LazyLoadSystemApi.cpp" />
-    <ClCompile Include="Include\Asm\Opcodes.cpp" />
+    <ClCompile Include="Include\Asm\OpcodeTables.cpp" />
     <ClCompile Include="Include\Common\SimpleQueue.cpp" />
+    <ClCompile Include="Include\Asm\InstructionNames.cpp" />
+    <ClCompile Include="Include\Asm\Registers.cpp" />
+    <ClCompile Include="Include\Asm\OperandStruct.cpp" />
+    <ClCompile Include="Include\Asm\Operands.cpp" />
+    <ClCompile Include="Include\Asm\OpcodeReader.cpp" />
+    <ClCompile Include="Include\Process\Hook\SimpleOpcodeMap.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

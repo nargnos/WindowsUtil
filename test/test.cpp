@@ -13,7 +13,7 @@
 #include <Process\Hook\EatHook.h>
 #include <Process\Hook\DelayLoadHook.h>
 #include <PE\DelayLoad\DelayLoad.h>
-#include <Asm\Opcodes.h>
+//#include <Asm\OpcodeReader.h>
 #pragma comment(lib,"Shlwapi.lib")
 using namespace std;
 using namespace PE;
@@ -845,19 +845,59 @@ void TestHook()
 
 
 }
+CHAR* fasf = "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH";
+typedef struct UUUF
+{
 
+	CHAR uuu;
+	CHAR ff;
+	
+}GdA;// = { 'k',2 };
+GdA k[] = { {'h'},{'u',3} };
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	BYTE a = 0xc8;
+	auto f = sizeof(bool);
+
+	/*_asm {
+		_emit 0x90
+			_emit 0x0f
+
+			_emit 0x7c
+			_emit 0x03
+
+	}*/
+//	auto fff = (USHORT)(((1 & 0x7) << 13) | ((1 & 0x7) << 10) | (19 & 0x3ff));
+//	Asm::Opcode ddd = { fff };
+//	auto fsfs = sizeof(Asm::_Opcode);
+//	Asm::RegOrOperand fsffs = {0};
+//	fsffs.Operand = 0xff;
+//	auto d88 = Asm::Opcode_1;
+//	BYTE a = 0xc8;
+////	k[0].ff = 0;
+//	BYTE code[] =  {
+//		0x57, 0x56, 0x83, 0xE7, 0x0F, 0x83, 0xE6, 0x0F, 0x3B, 0xFE, 0x5E, 0x5F
+//	};
+//	Asm::OpcodeReader reader;
+//	auto tmpcode = code;
+//	for (int i = 0; i < sizeof(code); )
+//	{
+//		string out;
+//		auto codeSize = reader.ReadCode(tmpcode, &out);
+//		i += codeSize;
+//		tmpcode += codeSize;
+//		cout << out<<endl;
+//	}
 	
+
+
 	//auto f = a77;
 //	Asm::MethodAndType ll2;
 	//auto ddddw = sizeof(ll2);
-	Asm::Opcode d;
+	/*Asm::Opcode d;
 	auto size = sizeof(Asm::_Opcode);
 	auto d7 =Asm::OneByteOpcodeMap;
-	auto fsfsfs = sizeof(Asm::OneByteOpcodeMap)/(sizeof(short)*2);
+	auto fsfsfs = sizeof(Asm::OneByteOpcodeMap)/(sizeof(short)*2);*/
 	//Process::Hook::HookApi(MessageBoxA, HookMBoxEAT);
 	MessageBoxA(0, 0, 0, 0);
 	// ²âÊÔpe½âÎö
