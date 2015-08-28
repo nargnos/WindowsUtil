@@ -9,20 +9,16 @@ namespace Process
 	namespace Hook
 	{
 		
-		enum NextStat
+		
+		class GetOpcodeLen
+		{
+			enum NextStat
 			{
 				Stat_End,
 				Stat_ReadHex,
 				Stat_ReadRM,
-				Stat_ReadSib,
-			/*	Stat_SwitchTable,
-				Stat_ReadGroup,
-				Stat_ReadPrefix,*/
-				//Stat_ReadNone,
-
+				Stat_ReadSib
 			};
-		class GetOpcodeLen
-		{
 		public:
 			GetOpcodeLen(bool is32);
 			~GetOpcodeLen();
@@ -33,10 +29,10 @@ namespace Process
 			bool is32;
 			NextStat stat;
 			OpcodeTables table;
-			PUINT8 startPos;
 			PUINT8 currentPos;
 			int count; // 指令长度计数
 			bool IsOpcodeExDefine(OpcodeEx& cmd);
+			bool IsPrefixVerify(OpcodePrefixCondition && opc);
 			void AddImmCount(OpcodeLenType len);
 			bool has66; // 有操作数大小切换前缀
 			bool has67; // 有地址大小切换前缀
@@ -49,18 +45,18 @@ namespace Process
 			// 如果跳表就跳
 			// 读取分3种，读1字节时的识别
 			// 读RM，读SIB，
-			NextStat _ReadHex(BYTE hex);
-			NextStat _ReadRM(BYTE hex);
-			NextStat _ReadSib(BYTE hex);
+			GetOpcodeLen::NextStat _ReadHex(BYTE hex);
+			GetOpcodeLen::NextStat _ReadRM(BYTE hex);
+			GetOpcodeLen::NextStat _ReadSib(BYTE hex);
 
-			NextStat _SwitchTable(OpcodeTables table);
-			NextStat _AnalyGroup(BYTE grpIndex);
-			NextStat _AnalyPrefix(OpcodePrefixGroup prefixGroup,BYTE hex);
-			//NextStat _ReadNone();
-			NextStat _AnalyCmd(OpcodeCmd& cmd);
+			GetOpcodeLen::NextStat _SwitchTable(OpcodeTables table);
+			GetOpcodeLen::NextStat _AnalyGroup(BYTE grpIndex);
+			GetOpcodeLen::NextStat _AnalyPrefix(OpcodePrefixGroup prefixGroup,BYTE hex);
+
+			GetOpcodeLen::NextStat _AnalyCmd(OpcodeCmd& cmd);
 			
-			NextStat _AnalyGroup_E(OpcodeGroup_E& grpe);
-			NextStat _AnalyEsc(BYTE hex);
+			GetOpcodeLen::NextStat _AnalyGroup_E(OpcodeGroup_E& grpe);
+			GetOpcodeLen::NextStat _AnalyEsc(BYTE hex);
 			
 		};
 		

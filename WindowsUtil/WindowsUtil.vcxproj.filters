@@ -81,31 +81,31 @@
     <ClInclude Include="Include\Common\SimpleQueue.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Asm\InstructionNames.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Asm\Registers.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Asm\OperandStruct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Asm\Operands.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Asm\OpcodeTables.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Asm\PrefixQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Asm\OpcodeReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Process\Hook\GetOpcodeLen.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\InstructionNames.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\OpcodeReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\OpcodeTables.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\Operands.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\OperandStruct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\PrefixQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DisAsm\Registers.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -173,31 +173,31 @@
     <ClCompile Include="Include\Common\SimpleQueue.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Asm\InstructionNames.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Asm\Registers.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Asm\OperandStruct.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Asm\Operands.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Asm\OpcodeTables.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Asm\PrefixQueue.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Asm\OpcodeReader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Include\Process\Hook\GetOpcodeLen.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Include\Process\Hook\SimpleOpcodeMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\InstructionNames.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\OpcodeReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\OpcodeTables.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\Operands.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\OperandStruct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\PrefixQueue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\Registers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

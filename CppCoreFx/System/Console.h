@@ -1,7 +1,7 @@
 #pragma once
 #include <Microsoft\Win32\Win32Native.h>
-#include <boost\thread.hpp>
-#include <boost\throw_exception.hpp>
+//#include <boost\thread.hpp>
+//#include <boost\throw_exception.hpp>
 namespace Console
 {
 	using namespace Microsoft::Win32;

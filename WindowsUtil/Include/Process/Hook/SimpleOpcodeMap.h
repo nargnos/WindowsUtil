@@ -11,7 +11,7 @@ namespace Process
 			OT_None,
 			OT_Cmd,
 			OT_Grp,// 操作数信息在组表里找的
-			OT_Grp_E,// 带有操作数信息的组,都带有E
+			OT_Grp_E,// 带有操作数信息(长度)的组
 			OT_Table,
 			OT_Esc,
 			OT_Prefix
@@ -36,7 +36,7 @@ namespace Process
 
 			// 操作数都是立即数的
 			OLT_W_And_B, // 3字节
-						 // 在64位下强制64位的
+			// 在64位下强制64位的
 			OLT_B_F64,
 			OLT_W_F64,
 			OLT_W_D_F64
@@ -60,7 +60,6 @@ namespace Process
 		/* 组重新排序*/
 		enum OpcodeGroups
 		{
-			// 有RM
 			Op_grp1,
 			Op_grp2,
 			Op_grp3_F6,  // 有一个test 在f6时B f7时D
@@ -95,7 +94,7 @@ namespace Process
 		{
 			BYTE LenType : 4; // 指令自身长度-1
 			BYTE HasRM : 1;
-		BYTE: 3;
+			BYTE: 3;
 		}OpcodeCmd, *POpcodeCmd;
 		typedef struct
 		{
@@ -128,7 +127,12 @@ namespace Process
 			union
 			{
 				BYTE Val;
-				BYTE Type : 3;
+				struct
+				{
+					BYTE:5;
+					BYTE Type : 3;
+				};
+				
 				OpcodeCmd Cmd;
 				OpcodeTable Table;
 				OpcodeGroup Group;
@@ -142,24 +146,33 @@ namespace Process
 			OPC_None = 1,
 			OPC_66 = OPC_None << 1,
 			OPC_F3 = OPC_66 << 1,
-			OPC_F2 = OPC_F3 << 1,
-			//OPC_66_F2 = OPC_F2<<1 去掉这个因为没什么影响
+			OPC_F2 = OPC_F3 << 1
+		};
+		typedef struct
+		{
+			Opcode Cmd;
+			BYTE PrefixCondition;// 前缀定义条件
+		}OpcodeEx, *POpcodeEx;
+
+		enum Mod76
+		{
+			Mod_mem = 0,
+			Mod_11b = 1
 		};
 		typedef struct
 		{
 			union
 			{
 				BYTE Val;
-				BYTE Type : 3;
-				OpcodeCmd Cmd;
-				OpcodeTable Table;
-				OpcodeGroup Group;
-				OpcodeGroup_E Group_E;
-				OpcodeEsc Esc;
-				OpcodePrefix Prefix;
+				struct
+				{
+					BYTE : 1;
+					BYTE IbIzNone : 2;
+					BYTE Mod : 2;
+					BYTE Prefix : 3;
+				};
 			};
-			BYTE PrefixCondition;// 前缀定义条件
-		}OpcodeEx, *POpcodeEx;
+		}OpcodeGrp,*POpcodeGrp;
 #pragma pack(pop)
 
 #define _HEX_SET_TYPE(type) ((BYTE)((type&0x7)<<5))
@@ -179,8 +192,10 @@ namespace Process
 #define HEXEX_PREFIX(prefixGroup,prefix) {HEX_PREFIX(prefixGroup),prefix}
 #define HEXEX_NULL {NULL,NULL}
 
+#define GRP_DEF(prefix,mod,size) {(BYTE)((BYTE)((size&3)<<1)| (BYTE)((mod&3)<<3) | (BYTE)((prefix&3)<<5))}
 		extern const OpcodeEx ThreeByteTable_0F38[];
 		extern const OpcodeEx ThreeByteTable_0F3A[];
 		extern const BYTE EscMap[][8];
+		extern const OpcodeGrp GroupTable[][8];
 	}
 }

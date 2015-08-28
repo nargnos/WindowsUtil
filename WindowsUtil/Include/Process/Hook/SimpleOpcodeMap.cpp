@@ -44,7 +44,7 @@ namespace Process
 			HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),
 			HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),
 
-			HEX_GRP_E(OLT_B,Op_grp2),HEX_GRP_E(OLT_B,Op_grp2),HEX_CMD(false,OLT_W_F64),HEX_CMD(false,OLT_None),HEX_CMD(true,OLT_None),HEX_CMD(true,OLT_None),HEX_GRP_E(OLT_B,Op_grp11_C6),HEX_GRP_E(OLT_W_D,Op_grp11_C7),
+			HEX_GRP_E(OLT_B,Op_grp2),HEX_GRP_E(OLT_B,Op_grp2),HEX_CMD(false,OLT_W_F64),HEX_CMD(false,OLT_None),HEX_CMD(true,OLT_None),HEX_CMD(true,OLT_None),HEX_GRP(Op_grp11_C6),HEX_GRP(Op_grp11_C7),
 			HEX_CMD(false,OLT_W_And_B),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_W),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),
 
 			HEX_GRP_E(OLT_None,Op_grp2),HEX_GRP_E(OLT_None,Op_grp2),HEX_GRP_E(OLT_None,Op_grp2),HEX_GRP_E(OLT_None,Op_grp2),HEX_CMD(true,OLT_B),HEX_CMD(true,OLT_B),NULL,HEX_CMD(false,OLT_None),
@@ -192,6 +192,51 @@ namespace Process
 			{ true,true, true, true, true, false, true, true },
 			{ true,true, true, true, true, true, true, true },
 			{ true,true, true, true, true, true, true, true },
+		};
+
+		// 无定义的NULL,有定义但是信息空的为 GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,false,OLT_None),
+		const OpcodeGrp GroupTable[][8]=
+		{
+			// 1
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None) },
+			// 2
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None) },
+			// 3_f6
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_B),NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None) },
+			// 3_f7
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_W_D),NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None) },
+			//1a
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,NULL,NULL,NULL,NULL,NULL,NULL },
+			//8
+			{ NULL,NULL,NULL,NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), },
+			// 11_c6
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_B),NULL,NULL,NULL,NULL,NULL,NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_11b,OLT_B), },
+			// 11_c7
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_W_D),NULL,NULL,NULL,NULL,NULL,NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_11b,OLT_W_D), },
+			// 4
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,NULL,NULL,NULL,NULL,NULL },
+			// 5
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL },
+			// 6
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,NULL },
+			// 7 其它不理，无关紧要
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b ,OLT_None),NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem ,OLT_None) },
+			// 9 最后一个 mem 66 无 11 全前缀
+			{ NULL,GRP_DEF(OPC_None ,Mod_mem | Mod_11b ,OLT_None),NULL,NULL,NULL,NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_F3,Mod_mem | Mod_11b ,OLT_None) },
+			// 10
+			{ NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL },
+			// 12
+			{ NULL,NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),NULL },
+			// 13
+			{ NULL,NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),NULL },
+			// 14
+			{ NULL,NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),GRP_DEF(OPC_66, Mod_11b ,OLT_B),NULL,NULL,GRP_DEF(OPC_None | OPC_66, Mod_11b ,OLT_B),GRP_DEF(OPC_66, Mod_11b ,OLT_B) },
+			// 15
+			{ GRP_DEF(OPC_F3, Mod_11b ,OLT_None),GRP_DEF(OPC_F3, Mod_11b ,OLT_None),GRP_DEF(OPC_F3, Mod_11b ,OLT_None),GRP_DEF(OPC_F3, Mod_11b ,OLT_None),NULL,NULL,NULL,NULL },
+			// 16
+			{ NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL },
+			// 17
+			{ NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,NULL,NULL,NULL }
 		};
 
 

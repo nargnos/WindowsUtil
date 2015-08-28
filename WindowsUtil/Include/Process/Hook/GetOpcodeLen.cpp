@@ -8,7 +8,7 @@ namespace Process
 		
 		GetOpcodeLen::GetOpcodeLen(bool is32):is32(is32)
 		{
-			
+
 		}
 
 
@@ -20,29 +20,35 @@ namespace Process
 		{
 			stat = Stat_ReadHex;
 			table = OneByteOpcode;
-			prefix.swap(std::queue<OpcodePrefixGroup>());
-			has66 = false;
-			has67 = false;
-			hasF2= false;
-			hasF3= false;
+			if (!prefix.empty())
+			{
+				prefix.swap(std::queue<OpcodePrefixGroup>());
+			}
+			
+			has66 = 
+			has67 = 
+			hasF2= 
+			hasF3= 
 			isGroupExist[0] = isGroupExist[1] = isGroupExist[2] = isGroupExist[3] = false;
+			count = 0;
 		}
 		int GetOpcodeLen::GetLen(PUINT8 hex)
 		{
 			Reset();
-			startPos = currentPos = hex;
+			currentPos = hex;
 			do
 			{
 				count++;
+				
 				switch (stat)
 				{
-				case Process::Hook::Stat_ReadHex:
+				case Stat_ReadHex:
 					stat = _ReadHex(*currentPos);
 					break;
-				case Process::Hook::Stat_ReadRM:
+				case Stat_ReadRM:
 					stat = _ReadRM(*currentPos);
 					break;
-				case Process::Hook::Stat_ReadSib:
+				case Stat_ReadSib:
 					stat = _ReadSib(*currentPos);
 					break;
 				default:
@@ -55,7 +61,7 @@ namespace Process
 		}
 		bool GetOpcodeLen::IsOpcodeExDefine(OpcodeEx&  cmd)
 		{
-			OpcodeType type = (OpcodeType)cmd.Type;
+			OpcodeType type = (OpcodeType)cmd.Cmd.Type;
 			assert(type != Process::Hook::OT_Prefix && type != Process::Hook::OT_Esc);
 			switch (type)
 			{
@@ -77,9 +83,11 @@ namespace Process
 
 			// NOTICE: 67会改变modrm查找表，现在的定义可能漏了
 
-			// 格式 OPC_F2 OPC_F3 OPC_66 OPC_None
-			auto opc = (OpcodePrefixCondition)cmd.PrefixCondition;
+			return IsPrefixVerify((OpcodePrefixCondition)cmd.PrefixCondition);
+		}
 
+		bool GetOpcodeLen::IsPrefixVerify(OpcodePrefixCondition&& opc)
+		{
 			BYTE verifyOpc = OPC_None;
 			if (has66)
 			{
@@ -94,16 +102,13 @@ namespace Process
 				verifyOpc |= OPC_F3;
 			}
 			// 验证,只要有一个通过都算
-			if (verifyOpc&opc)
-			{
-				return true;
-			}
+			
 			// 不通过则指令未定义
-			return false;
+			return verifyOpc&opc;
 		}
+		
 		void GetOpcodeLen::AddImmCount(OpcodeLenType len)
 		{
-			
 			// 配合前缀处理大小
 			int size = 0;
 			switch (len)
@@ -127,24 +132,24 @@ namespace Process
 					size = has66 ? sizeof(WORD) : sizeof(DWORD64);
 				}
 				break;
-			case Process::Hook::OLT_B_D64:
+			case Process::Hook::OLT_B_D64: // fixed
 				if (is32)
 				{
-					size = has66 ? sizeof(BYTE) : sizeof(DWORD);
+					size = has66 ?   sizeof(DWORD):sizeof(BYTE);
 				}
 				else
 				{
-					size = has66 ? sizeof(BYTE) : sizeof(DWORD64);
+					size = has66 ?  sizeof(DWORD64): sizeof(BYTE);
 				}
 				break;
-			case Process::Hook::OLT_W_D_Q:
+			case Process::Hook::OLT_W_D_Q://fixed
 				if (is32)
 				{
-					size = has66 ? sizeof(DWORD) : sizeof(WORD);
+					size = has66 ?  sizeof(WORD): sizeof(DWORD);
 				}
 				else
 				{
-					size = has66 ? sizeof(DWORD64) : sizeof(WORD);
+					size = has66 ?  sizeof(WORD): sizeof(DWORD64);
 				}
 				break;
 			case Process::Hook::OLT_W_And_B:// 3字节
@@ -167,14 +172,13 @@ namespace Process
 				}
 				break;
 			default:
-				break;
+				return;
 			}
 
 			count += size;
 		}
-		NextStat GetOpcodeLen::_ReadHex(BYTE hex)
+		GetOpcodeLen::NextStat GetOpcodeLen::_ReadHex(BYTE hex)
 		{
-			
 			Opcode tmpOpcode;
 			OpcodeEx tmpOpcodeEx;
 			// 初步处理，查表
@@ -230,7 +234,7 @@ namespace Process
 
 			return Stat_End;
 		}
-		NextStat GetOpcodeLen::_ReadRM(BYTE hex)
+		GetOpcodeLen::NextStat GetOpcodeLen::_ReadRM(BYTE hex)
 		{
 			// 这里前缀67用16的表，否则用32的表，可能有问题
 			
@@ -286,6 +290,12 @@ namespace Process
 				{
 					count += sizeof(DWORD);
 				}
+				else
+				{
+					// mod == 3
+					return Stat_End;
+				}
+				// mod 1 2 的rm4有sib
 				if (rm==(BYTE)4)
 				{
 					return Stat_ReadSib;
@@ -294,17 +304,17 @@ namespace Process
 
 			return Stat_End;
 		}
-		NextStat GetOpcodeLen::_ReadSib(BYTE hex)
+		GetOpcodeLen::NextStat GetOpcodeLen::_ReadSib(BYTE hex)
 		{
 			return Stat_End;
 		}
-		NextStat GetOpcodeLen::_SwitchTable(OpcodeTables table)
+		GetOpcodeLen::NextStat GetOpcodeLen::_SwitchTable(OpcodeTables table)
 		{
 			this->table = table;
 			return Stat_ReadHex;
 		}
 	
-		NextStat GetOpcodeLen::_AnalyPrefix(OpcodePrefixGroup prefixGroup, BYTE hex)
+		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyPrefix(OpcodePrefixGroup prefixGroup, BYTE hex)
 		{
 			assert(prefixGroup != OPG_None);
 			// 处理前缀冲突
@@ -353,45 +363,53 @@ namespace Process
 			
 			return Stat_ReadHex;
 		}
-		NextStat GetOpcodeLen::_AnalyCmd(OpcodeCmd& cmd)
+		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyCmd(OpcodeCmd& cmd)
 		{
 			AddImmCount((OpcodeLenType)cmd.LenType);// 添加立即数长度
+			return cmd.HasRM ? Stat_ReadRM : Stat_End;
+		}
+		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyGroup(BYTE grpIndex)
+		{
+			auto grpByte = (POpcodeModRM)&*(currentPos+1);
+			auto mod = grpByte->Mod;
+			auto nnn = grpByte->Reg; // nnn字段（op/reg
+
+			auto grpOpcode = GroupTable[grpIndex][nnn];
+			if (grpOpcode.Val==NULL)
+			{
+				return Stat_End;
+			}
 			
-			if (cmd.HasRM)
+			// 判断mod，判断前缀，判断指令
+			if (((grpOpcode.Mod&Mod_11b) == Mod_11b) &&
+				(grpByte->Mod == (BYTE)3) &&
+				!IsPrefixVerify((OpcodePrefixCondition)grpOpcode.Prefix))
 			{
-				return Stat_ReadRM;
+				// 11B 该prefix下指令未定义
+				return Stat_End;
 			}
-			return Stat_End;
-		}
-		NextStat GetOpcodeLen::_AnalyGroup(BYTE grpIndex)
-		{
-			// 读组信息，判断是否需要读大小或RM
-			count++;
-			currentPos++;
-			BYTE groupInfo = *currentPos;
+			else if (((grpOpcode.Mod&Mod_mem) == Mod_mem) &&
+				(grpByte->Mod != (BYTE)3) &&
+				!IsPrefixVerify((OpcodePrefixCondition)grpOpcode.Prefix))
+			{
+				// mem 该prefix下指令未定义
+				return Stat_End;
+			}
 
-
-			return NextStat();
+			AddImmCount((OpcodeLenType)grpOpcode.IbIzNone);
+			return Stat_ReadRM;
 		}
-		NextStat GetOpcodeLen::_AnalyGroup_E(OpcodeGroup_E& grpe)
+		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyGroup_E(OpcodeGroup_E& grpe)
 		{
-			// 读rm且读组表
+			// 读rm且读组表,这里定义处理过不会出现冲突(同组号，同指令，不同操作数长度的情况
 			AddImmCount((OpcodeLenType)grpe.IbIzNone);
-			 // 借普通组的函数
-			if (_AnalyGroup(grpe.GroupIndex) == Stat_End)
-			{
-				return Stat_End;
-			}			
-			return Stat_ReadRM;
+			return _AnalyGroup(grpe.GroupIndex);// 借普通组的函数
 		}
-		NextStat GetOpcodeLen::_AnalyEsc(BYTE hex)
+		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyEsc(BYTE hex)
 		{
-			auto tmprm = (POpcodeModRM)&hex;
-			if (!EscMap[hex - 0xd8])
-			{
-				return Stat_End;
-			}
-			return Stat_ReadRM;
+			//auto tmprm = (POpcodeModRM)&hex;
+			
+			return EscMap[hex - 0xd8]?Stat_ReadRM: Stat_End;
 		}
 		
 	}
