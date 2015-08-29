@@ -184,6 +184,15 @@ namespace Process
 
 			count += size;
 		}
+		void GetInstructionLen::NotDefine()
+		{
+			// 遇到未定义指令，去掉前缀解析试试看
+			if (prefix.empty())
+			{
+				return;
+			}
+			count = prefix.size();
+		}
 		GetInstructionLen::NextStat GetInstructionLen::_ReadHex(BYTE hex)
 		{
 			Opcode tmpOpcode;
@@ -208,6 +217,7 @@ namespace Process
 				{
 					// 这个命令无定义,OD解析里有bug，依照vs里的来
 					// 终止这个不正确解析，返回这一堆不正确hex的长度
+					NotDefine();
 					return Stat_End;
 				}
 			
@@ -401,6 +411,7 @@ namespace Process
 				!IsPrefixVerify((OpcodePrefixCondition)grpOpcode.Prefix))
 			{
 				// 11B 该prefix下指令未定义
+				NotDefine();
 				return Stat_End;
 			}
 			else if (((grpOpcode.Mod&Mod_mem) == Mod_mem) &&
@@ -408,6 +419,7 @@ namespace Process
 				!IsPrefixVerify((OpcodePrefixCondition)grpOpcode.Prefix))
 			{
 				// mem 该prefix下指令未定义
+				NotDefine();
 				return Stat_End;
 			}
 

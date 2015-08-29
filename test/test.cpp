@@ -862,14 +862,6 @@ GdA k[] = { {'h'},{'u',3} };
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	_asm
-	{
-		_emit 0xd0
-		_emit 0xf3
-			_emit 0x8d
-
-	}
-	
 
 	/*_asm {
 		_emit 0x90
