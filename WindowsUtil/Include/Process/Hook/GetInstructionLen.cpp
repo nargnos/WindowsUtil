@@ -1,4 +1,4 @@
-#include "GetOpcodeLen.h"
+#include "GetInstructionLen.h"
 
 
 namespace Process
@@ -6,17 +6,17 @@ namespace Process
 	namespace Hook
 	{
 		
-		GetOpcodeLen::GetOpcodeLen(bool is32):is32(is32)
+		GetInstructionLen::GetInstructionLen(bool is32):is32(is32)
 		{
 
 		}
 
 
-		GetOpcodeLen::~GetOpcodeLen()
+		GetInstructionLen::~GetInstructionLen()
 		{
 
 		}
-		void GetOpcodeLen::Reset()
+		void GetInstructionLen::Reset()
 		{
 			stat = Stat_ReadHex;
 			table = OneByteOpcode;
@@ -31,8 +31,9 @@ namespace Process
 			hasF3= 
 			isGroupExist[0] = isGroupExist[1] = isGroupExist[2] = isGroupExist[3] = false;
 			count = 0;
+			isModBit00 = true;
 		}
-		int GetOpcodeLen::GetLen(PUINT8 hex)
+		int GetInstructionLen::GetLen(PUINT8 hex)
 		{
 			Reset();
 			currentPos = hex;
@@ -59,7 +60,7 @@ namespace Process
 
 			return count;
 		}
-		bool GetOpcodeLen::IsOpcodeExDefine(OpcodeEx&  cmd)
+		bool GetInstructionLen::IsOpcodeExDefine(OpcodeEx&  cmd)
 		{
 			OpcodeType type = (OpcodeType)cmd.Cmd.Type;
 			assert(type != Process::Hook::OT_Prefix && type != Process::Hook::OT_Esc);
@@ -86,7 +87,7 @@ namespace Process
 			return IsPrefixVerify((OpcodePrefixCondition)cmd.PrefixCondition);
 		}
 
-		bool GetOpcodeLen::IsPrefixVerify(OpcodePrefixCondition&& opc)
+		bool GetInstructionLen::IsPrefixVerify(OpcodePrefixCondition&& opc)
 		{
 			BYTE verifyOpc = OPC_None;
 			if (has66)
@@ -107,7 +108,7 @@ namespace Process
 			return verifyOpc&opc;
 		}
 		
-		void GetOpcodeLen::AddImmCount(OpcodeLenType len)
+		void GetInstructionLen::AddImmCount(OpcodeLenType len)
 		{
 			// 配合前缀处理大小
 			int size = 0;
@@ -171,13 +172,23 @@ namespace Process
 					size = sizeof(DWORD64);
 				}
 				break;
+			case Process::Hook::OLT_SP_Ap:
+				if (is32)
+				{
+					size = has66 ? sizeof(WORD) + sizeof(WORD) : sizeof(DWORD)+ sizeof(WORD);
+				}
+				else
+				{
+					size = has66 ? sizeof(DWORD) + sizeof(WORD) : sizeof(DWORD64) + sizeof(WORD); // 可能有错
+				}
+				break;
 			default:
 				return;
 			}
 
 			count += size;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_ReadHex(BYTE hex)
+		GetInstructionLen::NextStat GetInstructionLen::_ReadHex(BYTE hex)
 		{
 			Opcode tmpOpcode;
 			OpcodeEx tmpOpcodeEx;
@@ -234,10 +245,9 @@ namespace Process
 
 			return Stat_End;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_ReadRM(BYTE hex)
+		GetInstructionLen::NextStat GetInstructionLen::_ReadRM(BYTE hex)
 		{
 			// 这里前缀67用16的表，否则用32的表，可能有问题
-			
 			// mod reg/opcode rm
 			// 表16
 			// mod=00 rm=110 disp16
@@ -249,6 +259,10 @@ namespace Process
 			// mod=10 +disp32 其中 rm=100 sib+disp32
 			auto modrm = (POpcodeModRM)&hex;
 			auto mod = modrm->Mod;
+			if (mod)
+			{
+				isModBit00 = false;
+			}
 			auto rm = modrm->Rm;
 			if (has67)
 			{
@@ -304,17 +318,22 @@ namespace Process
 
 			return Stat_End;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_ReadSib(BYTE hex)
+		GetInstructionLen::NextStat GetInstructionLen::_ReadSib(BYTE hex)
 		{
+			auto sib = (POpcodeModRM)&hex;
+			if (sib->Rm == (BYTE)5 && isModBit00)
+			{
+				count += sizeof(DWORD);
+			}
 			return Stat_End;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_SwitchTable(OpcodeTables table)
+		GetInstructionLen::NextStat GetInstructionLen::_SwitchTable(OpcodeTables table)
 		{
 			this->table = table;
 			return Stat_ReadHex;
 		}
 	
-		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyPrefix(OpcodePrefixGroup prefixGroup, BYTE hex)
+		GetInstructionLen::NextStat GetInstructionLen::_AnalyPrefix(OpcodePrefixGroup prefixGroup, BYTE hex)
 		{
 			assert(prefixGroup != OPG_None);
 			// 处理前缀冲突
@@ -363,12 +382,12 @@ namespace Process
 			
 			return Stat_ReadHex;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyCmd(OpcodeCmd& cmd)
+		GetInstructionLen::NextStat GetInstructionLen::_AnalyCmd(OpcodeCmd& cmd)
 		{
 			AddImmCount((OpcodeLenType)cmd.LenType);// 添加立即数长度
 			return cmd.HasRM ? Stat_ReadRM : Stat_End;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyGroup(BYTE grpIndex)
+		GetInstructionLen::NextStat GetInstructionLen::_AnalyGroup(BYTE grpIndex)
 		{
 			auto grpByte = (POpcodeModRM)&*(currentPos+1);
 			auto mod = grpByte->Mod;
@@ -399,16 +418,14 @@ namespace Process
 			AddImmCount((OpcodeLenType)grpOpcode.IbIzNone);
 			return Stat_ReadRM;
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyGroup_E(OpcodeGroup_E& grpe)
+		GetInstructionLen::NextStat GetInstructionLen::_AnalyGroup_E(OpcodeGroup_E& grpe)
 		{
 			// 读rm且读组表,这里定义处理过不会出现冲突(同组号，同指令，不同操作数长度的情况
 			AddImmCount((OpcodeLenType)grpe.IbIzNone);
 			return _AnalyGroup(grpe.GroupIndex);// 借普通组的函数
 		}
-		GetOpcodeLen::NextStat GetOpcodeLen::_AnalyEsc(BYTE hex)
+		GetInstructionLen::NextStat GetInstructionLen::_AnalyEsc(BYTE hex)
 		{
-			//auto tmprm = (POpcodeModRM)&hex;
-			
 			return EscMap[hex - 0xd8]?Stat_ReadRM: Stat_End;
 		}
 		

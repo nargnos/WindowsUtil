@@ -39,7 +39,8 @@ namespace Process
 			// 在64位下强制64位的
 			OLT_B_F64,
 			OLT_W_F64,
-			OLT_W_D_F64
+			OLT_W_D_F64,
+			OLT_SP_Ap	//特殊长度不好分类32,48,40
 		};
 
 		enum OpcodePrefixGroup
@@ -98,30 +99,10 @@ namespace Process
 		}OpcodeCmd, *POpcodeCmd;
 		typedef struct
 		{
-			BYTE Index : 5;
-		BYTE: 3;
-		}OpcodeTable, *POpcodeTable;
-		typedef struct
-		{
-			BYTE Index : 5;
-		BYTE: 3;
-		}OpcodeGroup, *POpcodeGroup;
-		typedef struct
-		{
 			BYTE GroupIndex : 3; // 修改相应的到0-7 
 			BYTE IbIzNone : 2; // 使用OpcodeLenType
 		BYTE: 3;
 		}OpcodeGroup_E, *POpcodeGroup_E;
-		typedef struct
-		{
-			BYTE Index : 5;
-		BYTE: 3;
-		}OpcodeEsc, *POpcodeEsc;
-		typedef struct
-		{
-			BYTE PrefixGroup : 5;
-		BYTE: 3;
-		}OpcodePrefix, *POpcodePrefix;
 		typedef struct
 		{
 			union
@@ -134,11 +115,27 @@ namespace Process
 				};
 				
 				OpcodeCmd Cmd;
-				OpcodeTable Table;
-				OpcodeGroup Group;
+				struct
+				{
+					BYTE Index : 5;
+					BYTE: 3;
+				} Table;
+				struct
+				{
+					BYTE Index : 5;
+					BYTE: 3;
+				} Group;
 				OpcodeGroup_E Group_E;
-				OpcodeEsc Esc;
-				OpcodePrefix Prefix;
+				struct
+				{
+					BYTE Index : 5;
+					BYTE: 3;
+				} Esc;
+				struct
+				{
+					BYTE PrefixGroup : 5;
+					BYTE: 3;
+				} Prefix;
 			};
 		}Opcode, *POpcode;
 		enum OpcodePrefixCondition

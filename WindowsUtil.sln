@@ -15,6 +15,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoreFx", "CppCoreFx\CppC
 		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest1", "UnitTest1\UnitTest1.vcxproj", "{2D17935F-28E6-4581-9E22-B997320033E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -45,6 +50,14 @@ Global
 		{4B6C18AB-9124-4199-B329-41D2D701A529}.Release|Win32.ActiveCfg = Release|Win32
 		{4B6C18AB-9124-4199-B329-41D2D701A529}.Release|Win32.Build.0 = Release|Win32
 		{4B6C18AB-9124-4199-B329-41D2D701A529}.Release|x64.ActiveCfg = Release|Win32
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Debug|Win32.Build.0 = Debug|Win32
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Debug|x64.ActiveCfg = Debug|x64
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Debug|x64.Build.0 = Debug|x64
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|Win32.ActiveCfg = Release|Win32
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|Win32.Build.0 = Release|Win32
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|x64.ActiveCfg = Release|x64
+		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

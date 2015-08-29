@@ -8,9 +8,7 @@ namespace Process
 {
 	namespace Hook
 	{
-		
-		
-		class GetOpcodeLen
+		class GetInstructionLen
 		{
 			enum NextStat
 			{
@@ -20,8 +18,8 @@ namespace Process
 				Stat_ReadSib
 			};
 		public:
-			GetOpcodeLen(bool is32);
-			~GetOpcodeLen();
+			GetInstructionLen(bool is32);
+			~GetInstructionLen();
 			void Reset();
 			int GetLen(PUINT8 hex);
 		private:
@@ -38,25 +36,25 @@ namespace Process
 			bool has67; // 有地址大小切换前缀
 			bool hasF2;
 			bool hasF3;
-
+			bool isModBit00;
 			bool isGroupExist[4];
 			// 读取步骤
 			// 读hex，找1表长度，如果有rm再读rm
 			// 如果跳表就跳
 			// 读取分3种，读1字节时的识别
 			// 读RM，读SIB，
-			GetOpcodeLen::NextStat _ReadHex(BYTE hex);
-			GetOpcodeLen::NextStat _ReadRM(BYTE hex);
-			GetOpcodeLen::NextStat _ReadSib(BYTE hex);
+			GetInstructionLen::NextStat _ReadHex(BYTE hex);
+			GetInstructionLen::NextStat _ReadRM(BYTE hex);
+			GetInstructionLen::NextStat _ReadSib(BYTE hex);
 
-			GetOpcodeLen::NextStat _SwitchTable(OpcodeTables table);
-			GetOpcodeLen::NextStat _AnalyGroup(BYTE grpIndex);
-			GetOpcodeLen::NextStat _AnalyPrefix(OpcodePrefixGroup prefixGroup,BYTE hex);
+			GetInstructionLen::NextStat _SwitchTable(OpcodeTables table);
+			GetInstructionLen::NextStat _AnalyGroup(BYTE grpIndex);
+			GetInstructionLen::NextStat _AnalyPrefix(OpcodePrefixGroup prefixGroup,BYTE hex);
 
-			GetOpcodeLen::NextStat _AnalyCmd(OpcodeCmd& cmd);
+			GetInstructionLen::NextStat _AnalyCmd(OpcodeCmd& cmd);
 			
-			GetOpcodeLen::NextStat _AnalyGroup_E(OpcodeGroup_E& grpe);
-			GetOpcodeLen::NextStat _AnalyEsc(BYTE hex);
+			GetInstructionLen::NextStat _AnalyGroup_E(OpcodeGroup_E& grpe);
+			GetInstructionLen::NextStat _AnalyEsc(BYTE hex);
 			
 		};
 		

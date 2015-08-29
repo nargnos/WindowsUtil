@@ -81,9 +81,6 @@
     <ClInclude Include="Include\Common\SimpleQueue.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Process\Hook\GetOpcodeLen.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Include\DisAsm\Registers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\GetInstructionLen.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -173,9 +173,6 @@
     <ClCompile Include="Include\Common\SimpleQueue.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Process\Hook\GetOpcodeLen.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Include\Process\Hook\SimpleOpcodeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -198,6 +195,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Include\DisAsm\Registers.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\GetInstructionLen.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

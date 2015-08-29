@@ -140,7 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Process\Hook\GetOpcodeLen.h" />
+    <ClInclude Include="Include\Process\Hook\GetInstructionLen.h" />
     <ClInclude Include="Include\DisAsm\PrefixQueue.h" />
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h" />
@@ -173,7 +173,7 @@
     <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\Process\Hook\GetOpcodeLen.cpp" />
+    <ClCompile Include="Include\Process\Hook\GetInstructionLen.cpp" />
     <ClCompile Include="Include\DisAsm\PrefixQueue.cpp" />
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp" />
