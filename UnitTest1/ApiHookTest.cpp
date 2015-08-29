@@ -49,8 +49,25 @@ namespace UnitTest1
 		}
 	private:
 		Process::Hook::GetInstructionLen* gol;
+		void PrintHex(PBYTE code, BYTE len)
+		{
+			string output;
+			CHAR tmpStr[3];
+			for (BYTE i = 0; i < len; i++)
+			{
+				auto current = *(code + i);
+				if (current<0x10)
+				{
+					output += "0";
+				}
+				output += itoa(current, tmpStr, 16);
+				output += " ";
+			}
+			Logger::WriteMessage(output.c_str());
+		}
 		void GetLen(PBYTE code, PBYTE verify, int codeSize)
 		{
+			wchar_t num[5];
 			int codeIndex = 0;
 			for (int i = 0; i < codeSize; )
 			{
@@ -58,7 +75,6 @@ namespace UnitTest1
 				
 				if (verify[codeIndex] != len)
 				{
-					wchar_t num[5];
 					_itow_s(codeIndex, num, 5,10);
 					wstring tmpStr;
 					tmpStr+= L"指令长度解析不正确: ";
@@ -71,7 +87,7 @@ namespace UnitTest1
 					tmpStr += num;
 					Assert::Fail(tmpStr.c_str());
 				}
-				
+				PrintHex(code + i, len);
 				codeIndex++;
 				i += len;
 			}

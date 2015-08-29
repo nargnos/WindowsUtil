@@ -24,11 +24,7 @@ namespace Process
 			{
 				prefix.swap(std::queue<OpcodePrefixGroup>());
 			}
-			
-			has66 = 
-			has67 = 
-			hasF2= 
-			hasF3= 
+			has66 = has67 = hasF2= hasF3= 
 			isGroupExist[0] = isGroupExist[1] = isGroupExist[2] = isGroupExist[3] = false;
 			count = 0;
 			isModBit00 = true;
