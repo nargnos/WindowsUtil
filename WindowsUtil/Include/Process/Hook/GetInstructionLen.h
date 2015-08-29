@@ -4,6 +4,7 @@
 #include "SimpleOpcodeMap.h"
 #include <queue>
 #include <assert.h>
+// TODO: 64Î»Î´Íê³É
 namespace Process
 {
 	namespace Hook
