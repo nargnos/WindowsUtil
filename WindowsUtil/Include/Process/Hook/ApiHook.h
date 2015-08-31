@@ -1,121 +1,31 @@
 #pragma once
 #include "..\LazyLoad\LazyLoadSystemApi.h"
+#include "Opcode\GetInstructionLen.h"
 namespace Process
 {
 	namespace Hook
 	{
-#pragma  pack(push)
-#pragma pack(1)
-#ifndef _WIN64
 
-		typedef struct _CopyAsm
-		{
-			_CopyAsm()
-			{
-				Pushad = 0x60;
-				Cld = 0xfc;
-				MovEsi = 0xbe;
-				MovEdi = 0xbf;
-				XorEcxEcx[0] = 0x33;
-				XorEcxEcx[1] = 0xc9;
-				MovCl5[0] = 0xb1;
-				MovCl5[1] = 0x5;
-				RepMovsb[0] = 0xf3;
-				RepMovsb[1] = 0xa4;
-				Popad = 0x61;
-			}
-			void SetAddress(DWORD des, DWORD res)
-			{
-				EdiAddress = des;
-				EsiAddress = res;
-			}
-			UINT8 Pushad;
-			UINT8 Cld;
-			UINT8 MovEsi;
-			DWORD EsiAddress;
-			UINT8 MovEdi;
-			DWORD EdiAddress;
-			UINT8 XorEcxEcx[2];
-			UINT8 MovCl5[2];
-			UINT8 RepMovsb[2];
-			UINT8 Popad;
-		};
-		typedef struct _JmpAddrAsm
-		{
-			_JmpAddrAsm()
-			{
-				Code = 0xe9;
-			}
-			void SetDesAddr(DWORD currAddr, DWORD des)
-			{
-				Value = des - ((DWORD)currAddr + 5);
-			}
-			UINT8 Code;
-			DWORD Value;
-		};
-		typedef struct _PushDwordAsm
-		{
-			_PushDwordAsm()
-			{
-				Code = 0x68;
-			}
-			void SetVal(DWORD val)
-			{
-				Value = val;
-			}
-			UINT8 Code;
-			DWORD Value;
-		};
-		typedef struct _ApiHookStruct
-		{
-			void Init(PVOID apiAddress, PVOID hookFunc)
-			{
-				auto ggg =Process::LazyLoad::_VirtualProtect(apiAddress, sizeof(_JmpAddrAsm), PAGE_EXECUTE_READWRITE, NULL);
-				this->ApiAddress = apiAddress;
-				memcpy(SaveBuff, apiAddress, sizeof(SaveBuff));
-				Hook.Ret = 0xc3;
-				JmpUnHook.SetDesAddr((DWORD)apiAddress, (DWORD)&this->UnHook);
-				UnHook.JmpHookFunc.SetDesAddr((DWORD)&this->UnHook.JmpHookFunc, (DWORD)hookFunc);
+		using LazyLoad::_VirtualProtect;
+		using Process::Hook::GetInstructionLen;
+		
+		// 注意：不可在Hook函数里执行原API，否则会无限循环，需要执行则使用返回的地址
+		// 如果不再调用原函数也不再UnHook，就delete[]掉返回地址
+		
+		// backupLen>5
+		// api :原函数地址
+		// hook :hook函数地址,其定义需要跟原函数一致
+		// backupLen :原函数需要备份的指令长度,需要正确分割且>=5(使用E9XXXXXXXX jmp)
+		// return :返回备份后的Api地址（原函数内容,这个地址unhook需要用）,错误时返回NULL
+		PVOID _HookApi32(PVOID api, PVOID hook, int backupLen);
+		
+		// 自动确定备份字长的版本
+		// 可以重复使用，只要中间的hook函数有一个不运行原函数，则整个链会断开
+		PVOID HookApi32(PVOID api, PVOID hook);
 
-				UnHook.PushHook.SetVal((DWORD)&this->PushReturn);
-				UnHook.Copy.SetAddress((DWORD)apiAddress, (DWORD)SaveBuff);
-				Hook.Copy.SetAddress((DWORD)apiAddress, (DWORD)&this->JmpUnHook);
+		// 多次hook重定位jmp数值用的，无视就好
+		void _RelocJmp(PVOID des, PVOID oldAddr, int offset);
 
-			}
-			// 原函数指针
-			PVOID ApiAddress;
-
-			// 写入api开头的代码
-			_JmpAddrAsm JmpUnHook;
-
-			// 保存api开头的代码
-			UINT8 SaveBuff[5];
-
-			// hook过程
-			_PushDwordAsm PushReturn;
-			struct
-			{
-				_CopyAsm Copy;
-				UINT8 Ret;
-			}Hook;
-
-			// unhook过程, 替换返回地址为hook
-			struct
-			{
-				_CopyAsm Copy;
-				// pop edx
-				// mov [pushreturn+1],edx
-				
-				_PushDwordAsm PushHook;
-				// 跳到hook函数
-				_JmpAddrAsm JmpHookFunc;
-			}UnHook;
-
-		}ApiHookStruct, *PApiHookStruct;
-
-#endif
-#pragma  pack(pop)
-		// hook后会继续调用原先函数
-		PApiHookStruct HookApi(PVOID desFunc, PVOID hookFunc);
+		// TODO: UnHook
 	}
 }

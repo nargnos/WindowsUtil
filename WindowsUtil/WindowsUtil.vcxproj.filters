@@ -78,12 +78,6 @@
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\SimpleQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DisAsm\InstructionNames.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -105,7 +99,13 @@
     <ClInclude Include="Include\DisAsm\Registers.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Process\Hook\GetInstructionLen.h">
+    <ClInclude Include="Include\Process\Hook\Opcode\GetInstructionLen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\Opcode\SimpleOpcodeMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\Hook\ApiHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,12 +170,6 @@
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Common\SimpleQueue.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Include\Process\Hook\SimpleOpcodeMap.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Include\DisAsm\InstructionNames.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -197,7 +191,13 @@
     <ClCompile Include="Include\DisAsm\Registers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Include\Process\Hook\GetInstructionLen.cpp">
+    <ClCompile Include="Include\Process\Hook\Opcode\GetInstructionLen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\Opcode\SimpleOpcodeMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\Hook\ApiHook.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

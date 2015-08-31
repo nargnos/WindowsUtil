@@ -140,7 +140,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Process\Hook\GetInstructionLen.h" />
+    <ClInclude Include="Include\Process\Hook\ApiHook.h" />
+    <ClInclude Include="Include\Process\Hook\Opcode\GetInstructionLen.h" />
     <ClInclude Include="Include\DisAsm\PrefixQueue.h" />
     <ClInclude Include="Include\Process\Hook\DelayLoadHook.h" />
     <ClInclude Include="Include\PE\DelayLoad\DelayLoadThunkReader.h" />
@@ -164,16 +165,16 @@
     <ClInclude Include="Include\Process\Remote\RemoteProccess.h" />
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
     <ClInclude Include="Include\DisAsm\OpcodeTables.h" />
-    <ClInclude Include="Include\Common\SimpleQueue.h" />
     <ClInclude Include="Include\DisAsm\InstructionNames.h" />
     <ClInclude Include="Include\DisAsm\Registers.h" />
     <ClInclude Include="Include\DisAsm\OperandStruct.h" />
     <ClInclude Include="Include\DisAsm\Operands.h" />
     <ClInclude Include="Include\DisAsm\OpcodeReader.h" />
-    <ClInclude Include="Include\Process\Hook\SimpleOpcodeMap.h" />
+    <ClInclude Include="Include\Process\Hook\Opcode\SimpleOpcodeMap.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Include\Process\Hook\GetInstructionLen.cpp" />
+    <ClCompile Include="Include\Process\Hook\ApiHook.cpp" />
+    <ClCompile Include="Include\Process\Hook\Opcode\GetInstructionLen.cpp" />
     <ClCompile Include="Include\DisAsm\PrefixQueue.cpp" />
     <ClCompile Include="Include\Process\Hook\DelayLoadHook.cpp" />
     <ClCompile Include="Include\PE\DelayLoad\DelayLoadThunkReader.cpp" />
@@ -196,13 +197,12 @@
     <ClCompile Include="Include\PE\Reloc\TypeOffsetReader.cpp" />
     <ClCompile Include="Include\Process\LazyLoad\LazyLoadSystemApi.cpp" />
     <ClCompile Include="Include\DisAsm\OpcodeTables.cpp" />
-    <ClCompile Include="Include\Common\SimpleQueue.cpp" />
     <ClCompile Include="Include\DisAsm\InstructionNames.cpp" />
     <ClCompile Include="Include\DisAsm\Registers.cpp" />
     <ClCompile Include="Include\DisAsm\OperandStruct.cpp" />
     <ClCompile Include="Include\DisAsm\Operands.cpp" />
     <ClCompile Include="Include\DisAsm\OpcodeReader.cpp" />
-    <ClCompile Include="Include\Process\Hook\SimpleOpcodeMap.cpp" />
+    <ClCompile Include="Include\Process\Hook\Opcode\SimpleOpcodeMap.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

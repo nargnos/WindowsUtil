@@ -1,28 +1,29 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include <iostream>
-#include <Process\Hook\GetInstructionLen.h>
+#include <Process\Hook\apihook.h>
 #include <string>
 #include <strstream>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
+using Process::Hook::HookApi32;
 namespace UnitTest1
 {		
 
 	// 测试32位部分
-	TEST_CLASS(ApiHookTest)
+	TEST_CLASS(OpcodeTest_x32)
 	{
 		
 	public:
-		ApiHookTest()
+		OpcodeTest_x32()
 		{
 			this->gol = new Process::Hook::GetInstructionLen(true);
 		}
-		~ApiHookTest()
+		~OpcodeTest_x32()
 		{
 			delete gol;
 		}
-		TEST_METHOD(Normal)
+		TEST_METHOD(Opcode_Normal_x32)
 		{
 			// 从代码里复制出来的
 			Logger::WriteMessage("一般指令解析测试1");
@@ -39,7 +40,7 @@ namespace UnitTest1
 
 
 		}
-		TEST_METHOD(OneAndTwoByte)
+		TEST_METHOD(Opcode_OneAndTwoByte_x32)
 		{
 			// 乱组合的，不能运行，纯用来解析
 			Logger::WriteMessage("比较全的指令解析测试x32(都是可以正确解析的指令,无3字节opcode指令)");
@@ -48,7 +49,7 @@ namespace UnitTest1
 			GetLen(code, codeLen, sizeof(code));
 
 		}
-		TEST_METHOD(ThreeByte)
+		TEST_METHOD(Opcode_ThreeByte_x32)
 		{
 			Logger::WriteMessage("3字节opcode测试（部分）");
 			BYTE code[] = { 0x0F,0x38,0x00,0x03,0x0F,0x38,0x01,0x44,0x90,0x90,0x66,0x0F,0x38,0x03,0x44,0x90,0x90,0x66,0x0F,0x38,0x08,0x44,0x01,0x23,0x66,0x0F,0x38,0x10,0x90,0x90,0x90,0x90,0x90,0x66,0x0F,0x38,0x20,0x90,0x90,0x90,0x90,0x90,0x66,0x0F,0x38,0x25,0x90,0x90,0x90,0x90,0x90,0x66,0x0F,0x38,0x2B,0x4C,0x01,0x23,0x66,0x0F,0x38,0x33,0x9C,0x01,0x23,0x45,0x67,0x33,0x66,0x0F,0x38,0x3C,0x15,0x34,0x78,0x12,0x56,0x66,0x0F,0x38,0x40,0x9C,0x01,0x23,0x45,0x67,0x33,0x66,0x0F,0x38,0x81,0x9C,0x01,0x23,0x45,0x67,0x33,0x66,0x0F,0x38,0xDB,0x22,0x66,0x0F,0x38,0xF0,0x94,0x01,0x23,0x45,0x67,0x33,0x66,0x0F,0x38,0xF6,0x44,0x01,0x23,0x66,0x0F,0x3A,0x0F,0x74,0x34,0x78,0x12,0x66,0x0F,0x3A,0x14,0x94,0x34,0x78,0x12,0x56,0x33,0xC0,0x66,0x0F,0x3A,0x20,0x94,0x34,0x78,0x12,0x56,0x33,0xC0,0x66,0x0F,0x3A,0x62,0x74,0x34,0x78,0x12,0x66,0x0F,0x3A,0xDF,0x7C,0x24,0x18,0x72 };
@@ -56,7 +57,7 @@ namespace UnitTest1
 			GetLen(code, codeLen, sizeof(code));
 
 		}
-		TEST_METHOD(Test)
+		TEST_METHOD(Opcode_Test_x32)
 		{
 			Logger::WriteMessage("无聊测试(包含3字节指令，OD可能解不出来)");
 			BYTE code[] = { 0xf8,0xfe,0x00,0xca,0xc6,0x01,0x0f,0x38,0x00,0x03,0x66,0x0f,0x38,0xdb,0x22,0x0f,0x38,0x01,0x44,0x90,0x90,0x9a,0xe5,0x59,0x5a,0x29,0xf1,0x29,0x82,0x8c,0xe8,0x3c,0x01,0x77,0xf7,0x80,0x66,0x0f,0x38,0x25,0x90,0x90,0x90,0x90,0x90,0x66,0x0f,0x38,0x33,0x9c,0x01,0x23,0x45,0x67,0x33,0x81,0x84,0x02,0x8d,0x14,0x2f,0x83,0xfd,0xfc,0x76,0x0e,0x64,0x69,0x9C,0x51,0x50,0x30,0x44,0x4C,0x77,0xB3,0x59,0xDB,0x66,0x0f,0x3a,0x14,0x94,0x34,0x78,0x12,0x56,0x33,0xc0,0xc7,0x05,0x04,0x30,0x33,0x01,0x02,0x00,0x00,0x00,0x67,0x81,0x84,0xff,0x8b,0x02,0x83,0xc2,0x04,0xc0,0x8c,0x00,0x8d,0xbe,0x00,0xf0,0xff,0xc0,0x8b,0x09,0x00,0x8b,0xae,0x7c,0x8f,0x80,0x03,0x0e,0x07,0x88,0xbe,0x80,0x2c,0x06,0x20,0xc8,0xed,0x5e,0x5d,0xd1,0x55,0xff,0xeb,0x08,0xee };
@@ -85,7 +86,7 @@ namespace UnitTest1
 		}
 		void GetLen(PBYTE code, PBYTE verify, int codeSize)
 		{
-			wchar_t num[5];
+			WCHAR tmpStr[64];
 			int codeIndex = 0;
 			for (int i = 0; i < codeSize; )
 			{
@@ -93,27 +94,99 @@ namespace UnitTest1
 				
 				if (verify[codeIndex] != len)
 				{
-					_itow_s(codeIndex, num, 5,10);
-					wstring tmpStr;
-					tmpStr+= L"指令长度解析不正确: ";
-					tmpStr += num;
-					tmpStr += L" Len: ";
-					_itow_s(len, num, 5, 10);
-					tmpStr += num;
-					tmpStr += L" Real: ";
-					_itow_s(verify[codeIndex], num, 5, 10);
-					tmpStr += num;
-					Assert::Fail(tmpStr.c_str());
+					swprintf_s(tmpStr, sizeof(tmpStr)/sizeof(WCHAR), L"指令长度解析不正确: %d, Len: %d  Real: %d", codeIndex, len, verify[codeIndex]);
+
+					Assert::Fail(tmpStr);
 				}
 				PrintHex(code + i, len);
 				codeIndex++;
 				i += len;
 			}
 		
-			CHAR tmpStr[26];
-			sprintf_s(tmpStr, 25, "-成功-\r\n共%d条指令\r\n", codeIndex);
+			swprintf_s(tmpStr, sizeof(tmpStr) / sizeof(WCHAR), L"-成功-\r\n共%d条指令\r\n", codeIndex);
 
 			Logger::WriteMessage(tmpStr);
+		}
+	};
+
+	typedef int (WINAPI* MBOX)(HWND, LPCSTR, LPCSTR, UINT);
+	static MBOX oldAddr1;
+	static MBOX oldAddr2;
+	TEST_CLASS(HookApiTest_x32)
+	{
+	public:
+		
+		static int WINAPI MessageBoxA_Hook1(
+			_In_opt_ HWND hWnd,
+			_In_opt_ LPCSTR lpText,
+			_In_opt_ LPCSTR lpCaption,
+			_In_ UINT uType)
+		{
+			Logger::WriteMessage("Hook1 Success");
+			string str;
+			str += lpText;
+			str += "\r\n-Hook1 Success";
+			return oldAddr1(hWnd, str.c_str(), lpCaption, uType);
+		}
+		static int WINAPI MessageBoxA_Hook2(
+			_In_opt_ HWND hWnd,
+			_In_opt_ LPCSTR lpText,
+			_In_opt_ LPCSTR lpCaption,
+			_In_ UINT uType)
+		{
+			Logger::WriteMessage("Hook2 Success");
+			string str;
+			str += lpText;
+			str += "\r\n-Hook2 Success";
+			return oldAddr2(hWnd, str.c_str(),lpCaption,uType);
+		}
+		
+		static int WINAPI MessageBoxA_Hook3(
+			_In_opt_ HWND hWnd,
+			_In_opt_ LPCSTR lpText,
+			_In_opt_ LPCSTR lpCaption,
+			_In_ UINT uType)
+		{
+			Logger::WriteMessage("Hook3 Success");
+			// 做一些操作
+			if (strcmp(lpText, "Hello World!"))
+			{
+				lpText = "你好世界！";
+			}
+			return ShellAboutA(hWnd, lpCaption, lpText, NULL);
+		}
+		
+		TEST_METHOD(Hook_MessageBox_x32)
+		{
+			// hook 1次，此时如果调用返回地址会调用原函数
+			oldAddr1=(MBOX)HookApi32(MessageBoxA, MessageBoxA_Hook1);
+			MessageBoxA(NULL, "Hello World!", "第 1 次", NULL);
+
+			// hook 2次,重复hook，第二次继续调用返回地址，连带运行到之前的hook1
+			oldAddr2= (MBOX)HookApi32(MessageBoxA, MessageBoxA_Hook2);
+			MessageBoxA(NULL, "Hello World!", "第 2 次", NULL);
+			// 不用就清掉
+			delete[] (PVOID)oldAddr1;
+			delete[] (PVOID)oldAddr2;
+
+			// hook 3次，此时不再调用返回地址，调用链断开，不会执行到hook2
+			// 把函数替换为另一个,不用执行原函数了就删掉返回内容
+			delete[] HookApi32(MessageBoxA, MessageBoxA_Hook3);
+			MessageBoxA(NULL, "Hello World!", "第 3 次", NULL);
+			MessageBoxA(NULL, "123123123", "多余的示例", NULL);
+		}
+		
+		static void Fail(const wchar_t* message, const __LineInfo* pLineInfo)
+		{
+			Logger::WriteMessage(message);
+		}
+		TEST_METHOD(Hook_Fail_x32)
+		{
+			delete[] HookApi32(Assert::Fail, Fail);
+			Assert::Fail(L"You cannot pass!");
+			Logger::WriteMessage("通过！");
+			Assert::Fail(L"You — shall not — pass!");
+			Logger::WriteMessage("通过！");
 		}
 	};
 }

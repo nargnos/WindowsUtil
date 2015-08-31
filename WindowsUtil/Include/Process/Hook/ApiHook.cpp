@@ -4,27 +4,89 @@ namespace Process
 {
 	namespace Hook
 	{
+#define E9_JMP_LEN 5
+#define CALC_E9_JMP(codeAddr,desAddr) ((DWORD)((DWORD)(desAddr)-E9_JMP_LEN-(DWORD)(codeAddr)))
 
-	
-		PApiHookStruct HookApi(PVOID desFunc, PVOID hookFunc)
+		PVOID _HookApi32(PVOID api, PVOID hook, int backupLen)
 		{
-			assert(desFunc&&hookFunc);
-			auto result = new ApiHookStruct;
-			auto fff = Process::LazyLoad::_VirtualProtect(result, sizeof(_ApiHookStruct), PAGE_EXECUTE_READWRITE, NULL);
-			result->Init(desFunc, hookFunc);
-			((void(__stdcall*)())&result->Hook)();
-			return result;
-			// 暂停这个, 这样做在多线程环境下会出问题!! 还是要用通用方法,这样要写disasm, 暂时放一放
-			// api -> jmp B
-			// address
-			// 
-			// A 保存覆盖的前几个字节,
-			// Hook() ret
-			// B 恢复前几个字节,保存栈顶C,pop push A                                                 //XXX pop当前ret地址(现在在栈顶)(C->调用api的返回地址),push C,
-			// jmp hook函数 可选return 原函数() 
-			// 
-			// 执行A,ret到C
 
+			assert(backupLen >= E9_JMP_LEN);
+			PBYTE result = new BYTE[backupLen + E9_JMP_LEN];
+			// 备份原函数
+			memcpy(result, api, backupLen);
+
+			DWORD oldProtect;
+			// 设置备份地址访问性
+			if (!_VirtualProtect(result, backupLen + E9_JMP_LEN, PAGE_EXECUTE_READWRITE, &oldProtect))
+			{
+				return NULL;
+			}
+
+			// 设置api函数访问性
+			if (!_VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
+			{
+				return NULL;
+			}
+			// 设置跳转->Hook
+			((PBYTE)api)[0] = 0xe9;
+			*(PDWORD)&((PBYTE)api)[1] = CALC_E9_JMP(api, hook);
+
+			// 恢复访问性
+			if (!_VirtualProtect(api, backupLen, oldProtect, &oldProtect))
+			{
+				// 设置失败，恢复函数
+				memcpy(api, result, backupLen);
+				delete[] result;
+				return NULL;
+			}
+
+			// 设置备份代码跳转(跳回
+			result[backupLen] = 0xe9;
+			PBYTE tmpAddr = result + backupLen + 1;
+			*(PDWORD)tmpAddr = CALC_E9_JMP(result + backupLen, ((PBYTE)api) + backupLen);
+			return result;
 		}
+
+		PVOID HookApi32(PVOID api, PVOID hook)
+		{
+			GetInstructionLen gil(true);
+			int len = 0;
+			int tmpLen = 0; // 假定每一个指令都是1BYTE时累计的长度
+			// 获取函数头备份长度
+			while (len < E9_JMP_LEN)
+			{
+				len += gil.GetLen((PBYTE)api + len);
+				if (tmpLen++ >= E9_JMP_LEN)
+				{
+					// 读取失败，可能取指令长度部分有BUG或其它原因
+					return NULL;
+				}
+			}
+			auto result = _HookApi32(api, hook, len);
+			// 重定位函数头跳转,以实现重复hook
+			if (result)
+			{
+				tmpLen = 0;
+				while (tmpLen < len)
+				{
+					// 修复跳转					
+					_RelocJmp(result, api, tmpLen);
+					tmpLen += gil.GetLen((PBYTE)result + tmpLen);
+				}
+			}
+			return result;
+		}
+
+		// offset为指令开始位置
+		void _RelocJmp(PVOID des, PVOID oldAddr, int offset)
+		{
+			// E9			
+			if (((PBYTE)des)[offset]==0xe9)
+			{
+				*(PDWORD)&((PBYTE)des)[offset + 1] += (DWORD)oldAddr- (DWORD)des;
+			}
+			// TODO: 还有其它跳转情况
+		}
+		
 	}
 }

@@ -29,7 +29,7 @@ namespace Process
 			count = 0;
 			isModBit00 = true;
 		}
-		int GetInstructionLen::GetLen(PUINT8 hex)
+		int GetInstructionLen::GetLen(PBYTE hex)
 		{
 			Reset();
 			currentPos = hex;

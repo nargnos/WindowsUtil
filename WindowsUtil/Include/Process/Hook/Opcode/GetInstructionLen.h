@@ -21,13 +21,13 @@ namespace Process
 		public:
 			GetInstructionLen(bool is32);
 			~GetInstructionLen();
-			int GetLen(PUINT8 hex);
+			int GetLen(PBYTE hex);
 		private:
 			std::queue<OpcodePrefixGroup> prefix;
 			bool is32;
 			NextStat stat;
 			OpcodeTables table;
-			PUINT8 currentPos;
+			PBYTE currentPos;
 			int count; // 指令长度计数
 			bool IsOpcodeExDefine(OpcodeEx& cmd);
 			bool IsPrefixVerify(OpcodePrefixCondition && opc);
