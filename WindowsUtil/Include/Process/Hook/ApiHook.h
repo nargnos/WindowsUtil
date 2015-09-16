@@ -26,6 +26,13 @@ namespace Process
 		// 多次hook重定位jmp数值用的，无视就好
 		void _RelocJmp(PVOID des, PVOID oldAddr, int offset);
 
+		template<typename T>
+		T HookApi32Ex(T api, T hook)
+		{
+			return (T)HookApi32(api, hook);
+		}
+
+
 		// TODO: UnHook
 	}
 }

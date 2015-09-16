@@ -7,6 +7,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using Process::Hook::HookApi32;
+using Process::Hook::HookApi32Ex;
 namespace UnitTest1
 {		
 
@@ -94,7 +95,7 @@ namespace UnitTest1
 				
 				if (verify[codeIndex] != len)
 				{
-					swprintf_s(tmpStr, sizeof(tmpStr)/sizeof(WCHAR), L"指令长度解析不正确: %d, Len: %d  Real: %d", codeIndex, len, verify[codeIndex]);
+					swprintf_s(tmpStr, sizeof(tmpStr)/sizeof(WCHAR), L"指令长度解析不正确: %d,\r\nLen: %d  Real: %d  FirstByte: %X", codeIndex, len, verify[codeIndex], *(code + i));
 
 					Assert::Fail(tmpStr);
 				}
@@ -182,7 +183,11 @@ namespace UnitTest1
 		}
 		TEST_METHOD(Hook_Fail_x32)
 		{
-			delete[] HookApi32(Assert::Fail, Fail);
+			//delete[] HookApi32(Assert::Fail, Fail);
+			auto output = HookApi32Ex(Assert::Fail, Fail);
+			delete[] (PVOID)output;
+			//output(L"X", NULL);
+			
 			Assert::Fail(L"You cannot pass!");
 			Logger::WriteMessage("通过！");
 			Assert::Fail(L"You — shall not — pass!");

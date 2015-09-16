@@ -434,7 +434,21 @@ namespace Process
 		}
 		GetInstructionLen::NextStat GetInstructionLen::_AnalyEsc(BYTE hex)
 		{
-			return EscMap[hex - 0xd8]?Stat_ReadRM: Stat_End;
+			assert(hex >= 0xd8 && hex <= 0xdf);
+			
+			auto nextByte = *(currentPos + 1);
+			if (nextByte <= 0xbf)
+			{
+				// 减去d8(esc指令起始)确定是第几组, 下个字节的3-5位表示是什么指令
+				if (EscMap[hex - 0xd8][((POpcodeModRM)&nextByte)->Reg])
+				{
+					return Stat_ReadRM;
+				}
+			}
+			count++; // 添加预读计数
+			// 大于bf用的表无读rm的,返回结束
+			return  Stat_End;
+
 		}
 		
 	}
