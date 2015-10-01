@@ -14,7 +14,7 @@ _Windows中用到的一些工具类_
 * 延迟导入表  
 
 _缺读取器的结构有,Debug,Exception,Security,Architecture,Tls,LoadConfig,BoundImport,ComDescriptor.<br>
-缺少读取器是因为不常用, decoder可以返回它的结构,读取器用到再补_
+decoder可以返回结构指针,缺少读取器是因为不常用, 以后用到再补_
 
 
 ##PE修改
