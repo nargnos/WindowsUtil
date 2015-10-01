@@ -30,8 +30,7 @@ _待续_
 #include <Process\EnvironmentBlock\EnvironmentBlock.h>  
 ```
 包含：  
-1.PEB、TEB结构定义  
-　_定义来自reactos源码_  
+1.PEB、TEB结构定义(_定义来自reactos源码_)  
 　取得PEB后,根据定义可以读取PEB结构  
 
 2.LdrDataTableEntry读取器  
