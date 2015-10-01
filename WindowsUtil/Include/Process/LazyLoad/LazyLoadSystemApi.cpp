@@ -6,8 +6,6 @@ namespace Process
 		_Kernel32 Kernel32_Dll = _Kernel32(L"kernel32.dll");
 		_User32 User32_Dll = _User32(L"user32.dll");;
 
-
-
 		// kernel32.dll º¯Êý×¢²á
 		void Process::LazyLoad::_Kernel32::FuncRegister()
 		{
@@ -34,8 +32,12 @@ namespace Process
 			_VirtualQueryEx = decltype(_VirtualQueryEx)(this, "VirtualQueryEx");
 			_VirtualFreeEx = decltype(_VirtualFreeEx)(this, "VirtualFreeEx");
 			_VirtualFree = decltype(_VirtualFree)(this, "VirtualFree");
-
-
+		}
+		_Kernel32::_Kernel32(LPCWSTR dllName) :_LoadDll(dllName)
+		{
+		}
+		_User32::_User32(LPCWSTR dllName) :_LoadDll(dllName)
+		{
 		}
 		// user32.dll º¯Êý×¢²á
 		void Process::LazyLoad::_User32::FuncRegister()

@@ -21,15 +21,10 @@ namespace Process
 		FARPROC _GetProcAddress(HMODULE module, LPCSTR procName);
 		FARPROC _GetProcAddressEx(LPCWSTR dllName, LPCSTR procName);
 
-
-		class _NtDll;
-
 		class _NtDll:public _LoadDll
 		{
 		public:
-			_NtDll(LPCWSTR dllName) :_LoadDll(dllName)
-			{
-			}
+			_NtDll(LPCWSTR dllName);
 			~_NtDll();
 			virtual HINSTANCE GetDll();
 
@@ -43,6 +38,7 @@ namespace Process
 					IN ACCESS_MASK DesiredAccess,
 					IN POBJECT_ATTRIBUTES ObjectAttributes,
 					IN PCLIENT_ID ClientId)> _NtOpenProcess;
+
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ThreadHandle,
 				_In_ PCONTEXT Context
@@ -56,7 +52,6 @@ namespace Process
 				_Out_ PULONG OldAccessProtection
 				)> _NtProtectVirtualMemory;
 
-
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
 				_In_ PVOID BaseAddress,
@@ -64,7 +59,6 @@ namespace Process
 				_In_ SIZE_T NumberOfBytesToRead,
 				_Out_opt_ PSIZE_T NumberOfBytesRead
 				)> _NtReadVirtualMemory;
-
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -74,13 +68,11 @@ namespace Process
 				_Out_opt_ PSIZE_T NumberOfBytesWritten
 				)> _NtWriteVirtualMemory;
 
-
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
 				_In_ PVOID BaseAddress,
 				_In_ ULONG NumberOfBytesToFlush
 				)> _NtFlushInstructionCache;
-
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -89,7 +81,6 @@ namespace Process
 				_Inout_ PSIZE_T RegionSize,
 				_In_ ULONG AllocationType,
 				_In_ ULONG Protect)> _NtAllocateVirtualMemory;
-
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -100,13 +91,11 @@ namespace Process
 				_Out_opt_ PSIZE_T ResultLength
 				)> _NtQueryVirtualMemory;
 
-
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
 				_Inout_ __drv_freesMem(Mem) PVOID *BaseAddress,
 				_Inout_ PSIZE_T RegionSize,
 				_In_ ULONG FreeType)> _NtFreeVirtualMemory;
-
 
 		protected:
 			virtual void FuncRegister();

@@ -175,6 +175,7 @@
     <ClInclude Include="Include\Process\OverwriteWinApi\OverwriteWinApi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Include\DisAsm\!未完成" />
     <ClCompile Include="Include\Process\Hook\ApiHook.cpp" />
     <ClCompile Include="Include\Process\Hook\Opcode\GetInstructionLen.cpp" />
     <ClCompile Include="Include\DisAsm\PrefixQueue.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Include\Process\Hook\EatHook.cpp" />
     <ClCompile Include="Include\PE\Export\Export.cpp" />
     <ClCompile Include="Include\PE\Import\Import.cpp" />
+    <ClCompile Include="Include\Process\LazyLoad\WinApiDynamicCallDef.cpp" />
     <ClCompile Include="Include\Process\Remote\RemoteProccess.cpp" />
     <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp" />
     <ClCompile Include="Include\Process\EnvironmentBlock\EnvironmentBlock.cpp" />

@@ -234,7 +234,7 @@ namespace Process
 			// 15
 			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3, Mod_mem | Mod_11b ,OLT_None) },
 			// 16
-			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,false,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,false,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,false,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,false,OLT_None),NULL,NULL,NULL,NULL },
+			{ GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None), GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,NULL,NULL,NULL },
 			// 17
 			{ NULL,GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),GRP_DEF(OPC_None | OPC_66 | OPC_F3,Mod_mem | Mod_11b,OLT_None),NULL,NULL,NULL,NULL }
 		};

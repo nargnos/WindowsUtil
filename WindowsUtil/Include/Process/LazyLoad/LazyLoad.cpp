@@ -6,9 +6,11 @@ namespace Process
 #pragma region LoadDllºËÐÄº¯Êý
 		
 		_NtDll NtDll_Dll = _NtDll(L"ntdll.dll");
+		_NtDll::_NtDll(LPCWSTR dllName) :_LoadDll(dllName)
+		{
+		}
 		_NtDll::~_NtDll()
 		{
-
 		}
 		HINSTANCE _NtDll::GetDll()
 		{
@@ -111,6 +113,5 @@ namespace Process
 		}
 #pragma endregion
 
-		
 	}
 }

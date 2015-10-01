@@ -112,7 +112,7 @@ namespace Process
 			ULONG OldValue;
 			SIZE_T RegionSize;
 			PVOID Base;
-			BOOLEAN UnProtect;
+			//BOOLEAN UnProtect;
 			if (!NtDll_Dll.Load() ||
 				!NtDll_Dll._NtProtectVirtualMemory ||
 				!NtDll_Dll._NtWriteVirtualMemory ||

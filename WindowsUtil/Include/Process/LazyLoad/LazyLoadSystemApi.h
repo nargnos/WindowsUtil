@@ -14,9 +14,7 @@ namespace Process
 		protected:
 			virtual void FuncRegister();
 		public:
-			_Kernel32(LPCWSTR dllName):_LoadDll(dllName)
-			{
-			}
+			_Kernel32(LPCWSTR dllName);
 			WinApiDynamicCall<VOID WINAPI(
 				_Out_ LPSYSTEM_INFO lpSystemInfo
 				)> _GetSystemInfo;
@@ -79,7 +77,6 @@ namespace Process
 					_In_ DWORD dwProcessId
 					)> _OpenProcess;
 
-
 			WinApiDynamicCall<BOOL WINAPI(
 					_In_ HANDLE hThread,
 					_In_ CONST CONTEXT * lpContext
@@ -137,14 +134,12 @@ namespace Process
 					_In_ SIZE_T dwLength
 					)> _VirtualQuery;
 
-
 			WinApiDynamicCall<SIZE_T WINAPI(
 					_In_ HANDLE hProcess,
 					_In_opt_ LPCVOID lpAddress,
 					_Out_writes_bytes_to_(dwLength, return) PMEMORY_BASIC_INFORMATION lpBuffer,
 					_In_ SIZE_T dwLength
 					)> _VirtualQueryEx;
-
 
 			WinApiDynamicCall<BOOL WINAPI(
 					_In_ HANDLE hProcess,
@@ -158,15 +153,12 @@ namespace Process
 					IN SIZE_T dwSize,
 					IN DWORD dwFreeType
 					)> _VirtualFree;
-
 		};
 		extern _Kernel32 Kernel32_Dll;
 		class _User32 :public _LoadDll
 		{
 		public:
-			_User32(LPCWSTR dllName) :_LoadDll(dllName)
-			{
-			}
+			_User32(LPCWSTR dllName);
 			WinApiDynamicCall<int WINAPI(
 				_In_opt_ HWND hWnd,
 				_In_opt_ LPCSTR lpText,

@@ -7,71 +7,40 @@ namespace Process
 {
 	namespace LazyLoad
 	{
-		using std::shared_ptr;
-		using std::weak_ptr;
 		FARPROC _GetProcAddress(HMODULE module, LPCSTR procName);
 		HINSTANCE WINAPI _LoadLibraryW(LPCWSTR lpLibFileName);
 
+		// 析构时不会unload dll
 		class _LoadDll
 		{
 		public:
-			_LoadDll(LPCWSTR dllName) :dllName(dllName)
-			{
-			}
-			_LoadDll(HMODULE DllModule) :DllModule(DllModule)
-			{
-			}
-			_LoadDll(_LoadDll& obj)
-			{
-				this->DllModule = obj.DllModule;
-				this->dllName = obj.dllName;
-			}
-			~_LoadDll()
-			{
-			}
-			bool Load()
-			{
-				
-				if (DllModule)
-				{
-					return true;
-				}
-				if (!dllName)
-				{
-					return false;
-				}
-				if (!isInit)
-				{
-					isInit = true;
-					FuncRegister();
-				}
-				DllModule = GetDll();
-				return DllModule>0;
-			}
-			virtual HINSTANCE GetDll()
-			{
-				return _LoadLibraryW(dllName);
-			}
+			_LoadDll(LPCWSTR dllName);
+			_LoadDll(HMODULE DllModule); 
+			_LoadDll(_LoadDll& obj);
+			~_LoadDll();
+			bool Load();
+			virtual HINSTANCE GetDll();
 			// 需要在模板类使用,所以设置public, 使用时不要改数值
 			HMODULE DllModule;
 		protected:
+			_LoadDll();
 			LPCWSTR dllName;
-			bool isInit = false;
-			_LoadDll() {}
-			virtual void FuncRegister() {};
+			bool isInit;
+			virtual void FuncRegister();
 		};
 
 		template<typename T>
-		class WinApiDynamicCall
-		{};
+		class WinApiDynamicCall;
 
 		template<typename Ret, typename... T>
 		class WinApiDynamicCall<Ret WINAPI (T...)>
 		{
+		private:
+			bool hasModule = false;
 		protected:
 			typedef Ret(WINAPI* Func)(T...);
 			Func ptr = NULL;
-			_LoadDll* dll;
+			_LoadDll* dll=NULL;
 			LPCSTR func;
 			virtual Func GetAddress()
 			{
@@ -93,7 +62,17 @@ namespace Process
 			WinApiDynamicCall(HINSTANCE dllModule, LPCSTR funcName) :
 				func(funcName)
 			{
-				dll = std::make_shared<_LoadDll>(dllModule);
+				dll = new _LoadDll(dllModule);
+				hasModule = true;
+			}
+			~WinApiDynamicCall()
+			{
+				if (hasModule && dll)
+				{
+					delete dll;
+					dll = NULL;
+					hasModule = false;
+				}
 			}
 			Ret WINAPI operator()(T... args)
 			{

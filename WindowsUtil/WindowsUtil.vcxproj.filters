@@ -209,5 +209,11 @@
     <ClCompile Include="Include\Process\OverwriteWinApi\OverwriteWinApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Include\Process\LazyLoad\WinApiDynamicCallDef.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\DisAsm\!未完成">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

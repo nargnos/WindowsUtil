@@ -28,7 +28,6 @@ namespace PE
 			return currentTypeOffset;
 		}
 
-
 		bool TypeOffsetReader::Next()
 		{
 			if (!typeOffset)
