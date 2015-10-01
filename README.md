@@ -14,11 +14,11 @@ _Windows中用到的一些工具类_
 * 延迟导入表  
 
 _缺读取器的结构有,Debug,Exception,Security,Architecture,Tls,LoadConfig,BoundImport,ComDescriptor.<br>
-因为不常用, 但是decoder可以返回它的结构,读取器用到再补_
+缺少读取器是因为不常用, decoder可以返回它的结构,读取器用到再补_
 
 
 ##PE修改
-_未完成_
+_未完成, 如果需要修改,现在可以用decoder返回的地址修改_
 
 
 ##PE映射
@@ -58,7 +58,7 @@ _待续_
 ```c++
 #include <Process\Hook\ApiHook.h> 
 // ...
-oldFunctionAddress =(MBOXDEF)HookApi32(MessageBoxA, MessageBoxA_Hook1);
+oldFunctionAddress =(decltype(&MessageBoxA))HookApi32(MessageBoxA, MessageBoxA_Hook1);
 
 ```
 包含了一个查表法编写的返回指令长度的Opcode解析器 (Process\Hook\Opcode)  
