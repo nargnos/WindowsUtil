@@ -12,7 +12,11 @@ namespace Process
 				return NULL;
 			}
 			auto currentProcessBaseAddress = NtCurrentPeb->ImageBaseAddress;
-			PE::PeDecoder pe(currentProcessBaseAddress, true);
+			PE::PeDecoder pe;
+			if (!pe.LoadPEImage(currentProcessBaseAddress, true))
+			{
+				return NULL;
+			}
 			auto result = (PVOID*)PE::DelayLoad::GetDelayLoadAddressTableAddress(pe, dllName, procName);
 			if (result)
 			{

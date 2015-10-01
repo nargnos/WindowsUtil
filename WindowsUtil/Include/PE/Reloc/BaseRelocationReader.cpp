@@ -2,7 +2,8 @@
 #include <new>
 namespace PE
 {
-	namespace Reloc{
+	namespace Reloc
+	{
 		BaseRelocationReader::BaseRelocationReader(PIMAGE_BASE_RELOCATION reloc, DWORD relocSize)
 			:reloc(reloc), endReloc(reloc + (relocSize / sizeof(IMAGE_BASE_RELOCATION)))
 		{

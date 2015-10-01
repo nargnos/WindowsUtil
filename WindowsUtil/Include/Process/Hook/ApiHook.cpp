@@ -7,6 +7,9 @@ namespace Process
 #define E9_JMP_LEN 5
 #define CALC_E9_JMP(codeAddr,desAddr) ((DWORD)((DWORD)(desAddr)-E9_JMP_LEN-(DWORD)(codeAddr)))
 
+		using Process::Overwrite::_VirtualProtect;
+		using Process::Hook::GetInstructionLen;
+
 		PVOID _HookApi32(PVOID api, PVOID hook, int backupLen)
 		{
 

@@ -162,6 +162,7 @@
     <ClInclude Include="Include\PE\Resource\ResourceDirectoryReader.h" />
     <ClInclude Include="Include\PE\Section\SectionReader.h" />
     <ClInclude Include="Include\PE\Reloc\TypeOffsetReader.h" />
+    <ClInclude Include="Include\Process\LazyLoad\WinApiDynamicCallDef.h" />
     <ClInclude Include="Include\Process\Remote\RemoteProccess.h" />
     <ClInclude Include="Include\Process\LazyLoad\LazyLoadSystemApi.h" />
     <ClInclude Include="Include\DisAsm\OpcodeTables.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Include\DisAsm\Operands.h" />
     <ClInclude Include="Include\DisAsm\OpcodeReader.h" />
     <ClInclude Include="Include\Process\Hook\Opcode\SimpleOpcodeMap.h" />
+    <ClInclude Include="Include\Process\OverwriteWinApi\OverwriteWinApi.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\Process\Hook\ApiHook.cpp" />
@@ -203,6 +205,7 @@
     <ClCompile Include="Include\DisAsm\Operands.cpp" />
     <ClCompile Include="Include\DisAsm\OpcodeReader.cpp" />
     <ClCompile Include="Include\Process\Hook\Opcode\SimpleOpcodeMap.cpp" />
+    <ClCompile Include="Include\Process\OverwriteWinApi\OverwriteWinApi.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

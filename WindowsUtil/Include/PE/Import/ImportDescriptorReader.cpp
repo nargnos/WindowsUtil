@@ -1,15 +1,16 @@
 #include "ImportDescriptorReader.h"
 namespace PE
 {
-	namespace Import{
+	namespace Import
+	{
 		// 导入表Descriptor结构读取器
 		ImportDescriptorReader::ImportDescriptorReader(PeDecoder& pe)
 		{
 			descriptorLength = NULL;
-			descriptor = pe.GetImageImport(&descriptorLength);			
+			descriptor = pe.GetImageImport(&descriptorLength);
 			Reset();
 		}
-		ImportDescriptorReader::~ImportDescriptorReader(){}
+		ImportDescriptorReader::~ImportDescriptorReader() {}
 		bool ImportDescriptorReader::Next()
 		{
 			if (descriptorLength)

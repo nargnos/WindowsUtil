@@ -2,7 +2,8 @@
 
 namespace PE
 {
-	namespace Export{
+	namespace Export
+	{
 		ExportReader::ExportReader(PeDecoder& pe) :ExportReader(pe, pe.GetImageExport())
 		{
 		}
@@ -90,7 +91,5 @@ namespace PE
 		{
 			currentIndex = -1;
 		}
-
-	
 	}
 }

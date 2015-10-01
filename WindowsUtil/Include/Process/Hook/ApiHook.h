@@ -1,14 +1,11 @@
 #pragma once
-#include "..\LazyLoad\LazyLoadSystemApi.h"
+#include "..\OverwriteWinApi\OverwriteWinApi.h"
 #include "Opcode\GetInstructionLen.h"
 namespace Process
 {
 	namespace Hook
 	{
 
-		using LazyLoad::_VirtualProtect;
-		using Process::Hook::GetInstructionLen;
-		
 		// 注意：不可在Hook函数里执行原API，否则会无限循环，需要执行则使用返回的地址
 		// 如果不再调用原函数也不再UnHook，就delete[]掉返回地址
 		

@@ -1,7 +1,8 @@
 #include "Import.h"
 namespace PE
 {
-	namespace Import{
+	namespace Import
+	{
 		LPSTR GetDescriptorName(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR descriptor)
 		{
 			return (LPSTR)pe.GetRvaData(descriptor->Name);
@@ -14,7 +15,7 @@ namespace PE
 		PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder& pe, PIMAGE_THUNK_DATA64 thunk)
 		{
 			return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
-		}		
+		}
 		bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
 		{
 			return IMAGE_SNAP_BY_ORDINAL32(thunk->u1.Ordinal);
@@ -33,11 +34,7 @@ namespace PE
 		}
 		PVOID GetProcImportThunkAddress(PeDecoder& pe, LPCSTR dllName, LPCSTR procName)
 		{
-			assert(procName);
-			if (!pe.IsMapped())
-			{
-				return NULL;
-			}
+			assert(procName&&pe.isMapped);
 			ImportDescriptorReader idr(pe);
 			ImportThunkReader itr;
 			while (idr.Next())
@@ -54,7 +51,7 @@ namespace PE
 				itr.Init(pe, currentDescriptor);
 				while (itr.Next())
 				{
-					if (pe.HasNtHeader32())
+					if (pe.hasNtHeader32)
 					{
 						auto currentThunk = itr.CurrentOriginalThunk32();
 						if (!IsSnapByOrdinal(currentThunk))
@@ -86,6 +83,5 @@ namespace PE
 			}
 			return NULL;
 		}
-		
 	}
 }

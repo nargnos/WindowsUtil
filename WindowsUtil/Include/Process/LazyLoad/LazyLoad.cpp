@@ -3,8 +3,34 @@ namespace Process
 {
 	namespace LazyLoad
 	{
-		LPCWSTR NtDllDll = L"ntdll.dll";
+#pragma region LoadDll核心函数
 		
+		_NtDll NtDll_Dll = _NtDll(L"ntdll.dll");
+		_NtDll::~_NtDll()
+		{
+
+		}
+		HINSTANCE _NtDll::GetDll()
+		{
+			return EnvironmentBlock::FindLoadedModuleHandle(dllName);
+		}
+		// 注册函数
+		void _NtDll::FuncRegister()
+		{
+			_LdrLoadDll = decltype(_LdrLoadDll)(this, "LdrLoadDll");
+			_NtOpenProcess = decltype(_NtOpenProcess)(this, "NtOpenProcess");
+			_NtSetContextThread = decltype(_NtSetContextThread)(this, "NtSetContextThread");
+			_NtProtectVirtualMemory = decltype(_NtProtectVirtualMemory)(this, "NtProtectVirtualMemory");
+			_NtReadVirtualMemory = decltype(_NtReadVirtualMemory)(this, "NtReadVirtualMemory");
+			_NtWriteVirtualMemory = decltype(_NtWriteVirtualMemory)(this, "NtWriteVirtualMemory");
+			_NtFlushInstructionCache = decltype(_NtFlushInstructionCache)(this, "NtFlushInstructionCache");
+			_NtAllocateVirtualMemory = decltype(_NtAllocateVirtualMemory)(this, "NtAllocateVirtualMemory");
+			_NtQueryVirtualMemory = decltype(_NtQueryVirtualMemory)(this, "NtQueryVirtualMemory");
+			_NtFreeVirtualMemory = decltype(_NtFreeVirtualMemory)(this, "NtFreeVirtualMemory");
+
+		}
+
+#pragma endregion
 #pragma region 基本核心函数
 
 		VOID NTAPI _RtlInitUnicodeString(IN OUT PUNICODE_STRING DestinationString, IN PCWSTR SourceString)
@@ -31,26 +57,17 @@ namespace Process
 			DestinationString->Buffer = (PWCHAR)SourceString;
 		}
 
-		INIT_FUNC(
-			NTSTATUS, LdrLoadDll, (_In_opt_ PWSTR SearchPath, _In_opt_ PULONG LoadFlags, _In_ PUNICODE_STRING Name, _Out_opt_ PVOID *BaseAddress)
-			)
-		{
-			auto ntDll = EnvironmentBlock::FindLoadedModuleHandle(NtDllDll);
-			if (!ntDll)
-			{
-				// 找不到ntdll
-				return STATUS_DLL_NOT_FOUND;
-			}
-			_LdrLoadDll = (FuncType_LdrLoadDll)PE::Export::GetProcAddress(ntDll, "LdrLoadDll");
-			return _LdrLoadDll(SearchPath, LoadFlags, Name, BaseAddress);
-		};
-
 
 		HINSTANCE WINAPI _LoadLibraryExW(LPCWSTR lpLibFileName, HANDLE ignore, DWORD dwFlags)
 		{
 			UNICODE_STRING DllName;
-			HINSTANCE hInst;
+			HINSTANCE hInst = NULL;
 			ULONG DllCharacteristics = 0;
+
+			if (!NtDll_Dll.Load() || !NtDll_Dll._LdrLoadDll)
+			{
+				return NULL;
+			}
 			if (dwFlags & DONT_RESOLVE_DLL_REFERENCES)
 			{
 				DllCharacteristics = IMAGE_FILE_EXECUTABLE_IMAGE;
@@ -61,7 +78,7 @@ namespace Process
 				return hInst;
 			}
 			_RtlInitUnicodeString(&DllName, (PCWSTR)lpLibFileName);
-			if (!NT_SUCCESS(_LdrLoadDll(NULL, &DllCharacteristics, &DllName, (PVOID*)&hInst)))
+			if (!NT_SUCCESS(NtDll_Dll._LdrLoadDll(NULL, &DllCharacteristics, &DllName, (PVOID*)&hInst)))
 			{
 				return NULL;
 			}
@@ -74,7 +91,7 @@ namespace Process
 			return _LoadLibraryExW(lpLibFileName, NULL, 0);
 		}
 
-		// 使用重写的版本,非dll里的
+		// 使用重写的版本,非系统dll里的
 		FARPROC _GetProcAddress(HMODULE module, LPCSTR procName)
 		{
 			return PE::Export::GetProcAddress(module, procName);
@@ -94,6 +111,6 @@ namespace Process
 		}
 #pragma endregion
 
-
+		
 	}
 }

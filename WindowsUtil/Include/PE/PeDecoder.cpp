@@ -1,121 +1,60 @@
 #include "PeDecoder.h"
 namespace PE
 {
-	PeDecoder::PeDecoder(PVOID pe, bool isMapped) :
-		base((PUINT8)pe),
-		isMapped(isMapped)
-	{
-		assert(pe);
-		CheckImage();
-	}
-
-	bool PeDecoder::HasNtHeader32()
-	{
-		return (*imageType == IMAGE_NT_OPTIONAL_HDR32_MAGIC);
-	}
-	bool PeDecoder::IsPE()
-	{
-		return isPE;
-	}
-	bool PeDecoder::IsMapped()
-	{
-		return isMapped;
-	}
-	PVOID PeDecoder::GetBase()
-	{
-		return base;
-	}
-	PIMAGE_DOS_HEADER PeDecoder::DosHeader()
-	{
-		return (PIMAGE_DOS_HEADER)base;
-	}
-
+	
 	PIMAGE_NT_HEADERS32 PeDecoder::NtHeader32()
 	{
-		if (*imageType != IMAGE_NT_OPTIONAL_HDR32_MAGIC)
-		{
-			return NULL;
-		}
-		return (PIMAGE_NT_HEADERS32)NtHeader();
+		return (PIMAGE_NT_HEADERS32)ntHeader;
 	}
 	PIMAGE_NT_HEADERS64 PeDecoder::NtHeader64()
 	{
-		if (*imageType != IMAGE_NT_OPTIONAL_HDR64_MAGIC)
-		{
-			return NULL;
-		}
-		return (PIMAGE_NT_HEADERS64)NtHeader();
+		return (PIMAGE_NT_HEADERS64)ntHeader;
 	}
-	PIMAGE_ROM_HEADERS PeDecoder::RomHeader()
-	{
-		if (*imageType == IMAGE_ROM_OPTIONAL_HDR_MAGIC)
-		{
-			return (PIMAGE_ROM_HEADERS)NtHeader();
-		}
-		return NULL;
-	}
+
 	PIMAGE_SECTION_HEADER PeDecoder::RvaToSection(DWORD rva)
 	{
 		auto section = firstSectionHeader;
 		while (section < lastSectionHeader)
 		{
-			if (rva < section->VirtualAddress + AlignUp((UINT)(section->Misc.VirtualSize), (UINT)(*sectionAlignment)))
+			if (rva < section->VirtualAddress + 
+				ALIGN_UP((UINT)(section->Misc.VirtualSize), (UINT)(*sectionAlignment)))
 			{
-				if (rva < (section->VirtualAddress))
-				{
-					return NULL;
-				}
-				else
-				{
-					return section;
-				}
+				return rva < section->VirtualAddress? NULL: section;
 			}
-
 			section++;
 		}
-
 		return NULL;
 	}
 	PIMAGE_SECTION_HEADER PeDecoder::OffsetToSection(DWORD fileOffset)
 	{
 		auto section = firstSectionHeader;
-
 		while (section < lastSectionHeader)
 		{
 			if (fileOffset < section->PointerToRawData + section->SizeOfRawData)
 			{
-				if (fileOffset < section->PointerToRawData)
-				{
-					return NULL;
-				}
-				else
-				{
-					return section;
-				}
+				return fileOffset < section->PointerToRawData ? NULL : section;
 			}
 			section++;
 		}
-
 		return NULL;
 	}
 	DWORD PeDecoder::RvaToOffset(DWORD rva)
 	{
-		if (rva > 0)
+		if (!rva)
 		{
-			IMAGE_SECTION_HEADER *section = RvaToSection(rva);
-			if (section == NULL)
-			{
-				return rva;
-			}
-
-			return rva - (section->VirtualAddress) + (section->PointerToRawData);
+			return 0;
 		}
-		return 0;
+		IMAGE_SECTION_HEADER *section = RvaToSection(rva);
+		if (section == NULL)
+		{
+			return rva;
+		}
+		return rva - (section->VirtualAddress) + (section->PointerToRawData);
 	}
 
 	DWORD PeDecoder::OffsetToRva(DWORD fileOffset)
 	{
-		if (fileOffset > 0)
+		if (fileOffset)
 		{
 			IMAGE_SECTION_HEADER *section = OffsetToSection(fileOffset);
 			if (section != NULL)
@@ -170,7 +109,7 @@ namespace PE
 		{
 			*size = &dir->Size;
 		}
-		return (base + dir->VirtualAddress);
+		return base + dir->VirtualAddress;
 	}
 	PIMAGE_BASE_RELOCATION PeDecoder::GetImageBasereloc(PDWORD* size)
 	{
@@ -192,43 +131,27 @@ namespace PE
 
 	PIMAGE_TLS_DIRECTORY32 PeDecoder::ImageTls32(PDWORD* size)
 	{
-		if (!HasNtHeader32())
-		{
-			return NULL;
-		}
-		return (PIMAGE_TLS_DIRECTORY32)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_TLS, size);
+		return hasNtHeader32?(PIMAGE_TLS_DIRECTORY32)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_TLS, size): NULL;
 	}
 	PIMAGE_TLS_DIRECTORY64 PeDecoder::ImageTls64(PDWORD* size)
 	{
-		if (HasNtHeader32())
-		{
-			return NULL;
-		}
-		return (PIMAGE_TLS_DIRECTORY64)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_TLS, size);
+		return hasNtHeader32? NULL:(PIMAGE_TLS_DIRECTORY64)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_TLS, size);
 	}
 
 	PIMAGE_LOAD_CONFIG_DIRECTORY32 PeDecoder::ImageLoadConfig32(PDWORD* size)
 	{
-		if (!HasNtHeader32())
-		{
-			return NULL;
-		}
-		return (PIMAGE_LOAD_CONFIG_DIRECTORY32)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, size);
+		return hasNtHeader32?(PIMAGE_LOAD_CONFIG_DIRECTORY32)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, size): NULL;
 	}
 	PIMAGE_LOAD_CONFIG_DIRECTORY64 PeDecoder::ImageLoadConfig64(PDWORD* size)
 	{
-		if (HasNtHeader32())
-		{
-			return NULL;
-		}
-		return (PIMAGE_LOAD_CONFIG_DIRECTORY64)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, size);
+		return hasNtHeader32? NULL:(PIMAGE_LOAD_CONFIG_DIRECTORY64)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, size);
 	}
 
 	PIMAGE_BOUND_IMPORT_DESCRIPTOR PeDecoder::ImageBoundImport(PDWORD* size)
 	{
 		return (PIMAGE_BOUND_IMPORT_DESCRIPTOR)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, size);
 	}
-	PVOID PeDecoder::ImageIat(PDWORD* size)
+	PVOID PeDecoder::GetImageIat(PDWORD* size)
 	{
 		return /*(IMAGE_THUNK_DATA32)*/DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_IAT, size);
 	}
@@ -242,21 +165,10 @@ namespace PE
 	{
 		return (PIMAGE_COR20_HEADER)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, size);
 	}
-	PeDecoder::~PeDecoder()
-	{
-	}
+	
 	PVOID PeDecoder::GetRvaData(DWORD rva)
 	{
-		DWORD offset;
-		if (isMapped)
-		{
-			offset = rva;
-		}
-		else
-		{
-			offset = RvaToOffset(rva);
-		}
-		return base + offset;
+		return base + (isMapped? rva: RvaToOffset(rva));
 	}
 	PIMAGE_DATA_DIRECTORY PeDecoder::GetDataDirectory(DWORD index)
 	{
@@ -270,44 +182,34 @@ namespace PE
 		}
 		return NULL;
 	}
-	PIMAGE_SECTION_HEADER PeDecoder::GetFirstSectionHeader()
-	{
-		return firstSectionHeader;
-	}
-	PWORD PeDecoder::GetNumberOfSection()
-	{
-		return sectionCount;
-	}
-	UINT PeDecoder::AlignUp(UINT value, UINT alignment)
-	{
-		return (value + alignment - 1)&~(alignment - 1);
-	}
 
-	void PeDecoder::CheckImage()
+	bool PeDecoder::LoadPEImage(PVOID base, bool isMapped)
 	{
-		// 设置初始值
-		ntHeader = NULL;
-		imageDataDirectoryEntry = NULL;
-		imageDataDirectorySize = NULL;
-		firstSectionHeader = NULL;
-		lastSectionHeader = NULL;
-		sectionAlignment = NULL;
-		sectionCount = NULL;
+		isPE = false;
+		if (!base)
+		{
+			return false;
+		}
+		// 载入头
+		dosHeader = (PIMAGE_DOS_HEADER)base;
+		ntHeader = (PIMAGE_NT_HEADERS32)((PBYTE)dosHeader + dosHeader->e_lfanew);
 
+		// 检查pe格式
+		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE ||
+			ntHeader->Signature != IMAGE_NT_SIGNATURE
+			)
+		{
+			return false;
+		}
+		
+		// 开始读取
+		this->base = (PBYTE)base;
+		this->isMapped = isMapped;
 
 		//  32 64位共用一些字段, 所以可以用NtHeader32
-		if (DosHeader()->e_magic != IMAGE_DOS_SIGNATURE || ((PIMAGE_NT_HEADERS32)NtHeader())->Signature != IMAGE_NT_SIGNATURE)
-		{
-			isPE = false;
-			return;
-		}
-		else
-		{
-			isPE = true;
-		}
-		// 设置下面这个值后就禁止共用
-		imageType = &((PIMAGE_NT_HEADERS32)NtHeader())->OptionalHeader.Magic;
+		imageType = &(NtHeader32()->OptionalHeader.Magic);
 
+		// 检查映像类型
 		switch (*imageType)
 		{
 		case IMAGE_NT_OPTIONAL_HDR32_MAGIC:
@@ -318,6 +220,7 @@ namespace PE
 			sectionAlignment = &header32->OptionalHeader.SectionAlignment;
 			firstSectionHeader = IMAGE_FIRST_SECTION(header32);
 			sectionCount = &header32->FileHeader.NumberOfSections;
+			hasNtHeader32 = true;
 		}
 		break;
 		case IMAGE_NT_OPTIONAL_HDR64_MAGIC:
@@ -328,25 +231,16 @@ namespace PE
 			sectionAlignment = &header64->OptionalHeader.SectionAlignment;
 			firstSectionHeader = IMAGE_FIRST_SECTION(header64);
 			sectionCount = &header64->FileHeader.NumberOfSections;
+			hasNtHeader32 = false;
 		}
 		break;
-
-		case IMAGE_ROM_OPTIONAL_HDR_MAGIC:
-			// 第三种没见过, 定义里没节和数据目录, 不做解析
-			break;
 		default:
-
-			break;
+			// 第三种没见过, 定义里没节和数据目录, 不做解析
+			return false;
 		}
 		lastSectionHeader = firstSectionHeader + *sectionCount;
+		isPE = true;
+		return true;
+	}
 
-	}
-	PVOID PeDecoder::NtHeader()
-	{
-		if (ntHeader == NULL)
-		{
-			ntHeader = base + DosHeader()->e_lfanew;
-		}
-		return ntHeader; 
-	}
 }

@@ -587,7 +587,7 @@ void TestPeDecoder()
 		cout << endl;
 
 
-		if (pe.HasNtHeader32())
+		if (pe.hasNtHeader32)
 		{
 			auto ntHeader = pe.NtHeader32();
 			//cout << "[Is 32 PE]" << endl;

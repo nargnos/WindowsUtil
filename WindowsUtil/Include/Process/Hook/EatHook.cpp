@@ -8,7 +8,11 @@ namespace Process
 		{
 			auto dllBase = LazyLoad::_LoadLibraryW(dllName);
 			
-			PE::PeDecoder dll(dllBase, true);
+			PE::PeDecoder dll;
+			if (!dll.LoadPEImage(dllBase, true))
+			{
+				return NULL;
+			}
 			auto result = PE::Export::GetProcExportFuncTableAddress(dll, procName);
 			if (!result)
 			{
@@ -21,7 +25,7 @@ namespace Process
 				*oldFuncRva = *result;
 			}
 			DWORD setRva;
-			if (dll.HasNtHeader32())
+			if (dll.hasNtHeader32)
 			{
 				setRva = (DWORD)hookFunc - (DWORD)dllBase;
 			}
@@ -29,7 +33,7 @@ namespace Process
 			{
 				setRva = (DWORDLONG)hookFunc - (DWORDLONG)dllBase;
 			}
-			Process::LazyLoad::_WriteProcessMemory(NtCurrentProcess(), result, &setRva, sizeof(DWORD), NULL);
+			Process::Overwrite::_WriteProcessMemory(NtCurrentProcess(), result, &setRva, sizeof(DWORD), NULL);
 			return result;
 		}
 	}

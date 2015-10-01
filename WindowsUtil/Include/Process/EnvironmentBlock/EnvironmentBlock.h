@@ -6,6 +6,8 @@ namespace Process
 {
 	namespace EnvironmentBlock
 	{
+#define NtCurrentProcess()                      ((HANDLE)(LONG_PTR)-1)
+#define NtCurrentThread()                       ((HANDLE)(LONG_PTR)-2)
 		// struct定义修改自reactos源码
 		//
 		// Loader Data Table Entry
@@ -311,5 +313,12 @@ namespace Process
 			LdrDataTableModuleList desList;
 		};
 		HINSTANCE __stdcall FindLoadedModuleHandle(LPCWSTR name);
+
+		typedef enum _MEMORY_INFORMATION_CLASS {
+			MemoryBasicInformation,
+			MemoryWorkingSetList,
+			MemorySectionName,
+			MemoryBasicVlmInformation
+		} MEMORY_INFORMATION_CLASS;
 	}
 }

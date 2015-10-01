@@ -2,7 +2,8 @@
 #include "..\PeDecoder.h"
 namespace PE
 {
-	namespace Import{
+	namespace Import
+	{
 		// 导入表Descriptor结构读取器
 		class ImportDescriptorReader
 		{
@@ -18,5 +19,6 @@ namespace PE
 			int currentIndex;
 			PIMAGE_IMPORT_DESCRIPTOR descriptor;
 		};
+
 	}
 }

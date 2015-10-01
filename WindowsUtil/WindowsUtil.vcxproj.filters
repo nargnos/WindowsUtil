@@ -108,6 +108,12 @@
     <ClInclude Include="Include\Process\Hook\ApiHook.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Process\LazyLoad\WinApiDynamicCallDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Process\OverwriteWinApi\OverwriteWinApi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\PE\Reloc\BaseRelocationReader.cpp">
@@ -198,6 +204,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Include\Process\Hook\ApiHook.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\Process\OverwriteWinApi\OverwriteWinApi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

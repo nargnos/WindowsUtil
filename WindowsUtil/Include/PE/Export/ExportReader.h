@@ -1,9 +1,10 @@
 #pragma once
 #include <cassert>
 #include "..\PeDecoder.h"
-namespace PE{
-	namespace Export{
-
+namespace PE
+{
+	namespace Export
+	{
 		// 导出表读取器 TODO: 添加一个c++函数名称翻译器,或找一下系统里面有没有现成函数
 		// 只对名字遍历, 因为结构关系, 没有名字的函数会被漏掉
 		class ExportReader

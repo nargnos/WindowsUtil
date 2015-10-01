@@ -1,5 +1,5 @@
 #pragma once
-#include "..\LazyLoad\LazyLoadSystemApi.h"
+#include "..\OverwriteWinApi\OverwriteWinApi.h"
 #include "..\..\PE\Export\Export.h"
 namespace Process
 {

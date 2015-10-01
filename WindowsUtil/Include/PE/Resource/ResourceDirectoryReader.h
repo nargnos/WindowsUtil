@@ -5,13 +5,13 @@ namespace PE
 {
 	namespace Resource
 	{
+
 		// 层级结构为 TypeDirectory --> ResourceNameDirectory --> LanguageDirectory --> ResourceData
 		// 需要按这个层级遍历
 		class ResourceDirectoryReader
 		{
 		public:
 			ResourceDirectoryReader(PIMAGE_RESOURCE_DIRECTORY root);
-			ResourceDirectoryReader();			
 			void Reset();
 
 			void ResetCurrentTypeDirectoryEntry();

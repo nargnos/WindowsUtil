@@ -3,7 +3,9 @@
 #include "..\PeDecoder.h"
 namespace PE
 {
-	namespace Import{
+	namespace Import
+	{
+
 		// 导入表Thunk结构读取器
 #define CONVERT_THUNK_POINTER(thunkPointer, x) ((PIMAGE_THUNK_DATA##x)thunkPointer)
 		class ImportThunkReader
@@ -24,7 +26,7 @@ namespace PE
 			void Reset();
 			~ImportThunkReader();
 
-			
+
 		private:
 			bool is32;
 			PVOID currentThunk;

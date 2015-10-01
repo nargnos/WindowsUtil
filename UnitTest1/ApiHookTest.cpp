@@ -4,6 +4,7 @@
 #include <Process\Hook\apihook.h>
 #include <string>
 #include <strstream>
+#include <Process\LazyLoad\LazyLoad.h>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 using Process::Hook::HookApi32;

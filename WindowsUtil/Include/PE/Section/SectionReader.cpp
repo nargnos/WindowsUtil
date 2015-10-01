@@ -1,51 +1,57 @@
 #include "SectionReader.h"
 namespace PE
 {
-	namespace Section
-	{
+	namespace Section {
+
 		// ½Ú¶ÁÈ¡Æ÷
-		SectionReader::SectionReader(PIMAGE_SECTION_HEADER firstSectionHeader, PIMAGE_SECTION_HEADER lastSectionHeader) :
+
+		SectionReader::SectionReader(PIMAGE_SECTION_HEADER firstSectionHeader, WORD sectionCount) :
 			firstSectionHeader(firstSectionHeader),
-			lastSectionHeader(lastSectionHeader)
+			lastSectionHeader(firstSectionHeader + sectionCount)
 		{
-			assert(firstSectionHeader);
 			Reset();
 		}
-		SectionReader::SectionReader(PIMAGE_SECTION_HEADER firstSectionHeader, WORD sectionCount) :
-			SectionReader(firstSectionHeader, firstSectionHeader + sectionCount)
+		SectionReader::SectionReader(PeDecoder& pe) : SectionReader(pe.firstSectionHeader, *pe.sectionCount)
 		{
 		}
-		SectionReader::SectionReader(PeDecoder& pe) : SectionReader(pe.GetFirstSectionHeader(), *pe.GetNumberOfSection())
-		{
-		}
-		SectionReader::~SectionReader(){}
 		PIMAGE_SECTION_HEADER SectionReader::Current()
 		{
-			return sectionPointer;
+			return currentSectionPointer;
 		}
+
+		PIMAGE_SECTION_HEADER SectionReader::operator[](int index)
+		{
+			auto result = firstSectionHeader + index;
+			if (result < lastSectionHeader)
+			{
+				return result;
+			}
+			return NULL;
+		}
+
 		bool SectionReader::Next()
 		{
-			if (sectionPointer)
+			if (currentSectionPointer)
 			{
-				auto tmpSectionPointer = sectionPointer + 1;
-				if (tmpSectionPointer != lastSectionHeader)
-				{
-					sectionPointer = tmpSectionPointer;
-				}
-				else
+				if (++currentSectionPointer == lastSectionHeader)
 				{
 					return false;
 				}
 			}
 			else
 			{
-				sectionPointer = firstSectionHeader;
+				if (!firstSectionHeader || lastSectionHeader == firstSectionHeader)
+				{
+					return false;
+				}
+				currentSectionPointer = firstSectionHeader;
 			}
 			return true;
 		}
 		void SectionReader::Reset()
 		{
-			sectionPointer = NULL;
+			currentSectionPointer = NULL;
 		}
+
 	}
 }

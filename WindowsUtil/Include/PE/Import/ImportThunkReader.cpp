@@ -2,7 +2,8 @@
 
 namespace PE
 {
-	namespace Import{
+	namespace Import 
+	{
 		// 导入表Thunk结构读取器
 
 		ImportThunkReader::ImportThunkReader(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
@@ -17,7 +18,7 @@ namespace PE
 		void ImportThunkReader::Init(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
 		{
 			assert(importDescriptor);
-			is32 = pe.HasNtHeader32();
+			is32 = pe.hasNtHeader32;
 			originalThunk = pe.GetRvaData(importDescriptor->OriginalFirstThunk);
 			thunk = pe.GetRvaData(importDescriptor->FirstThunk);
 			Reset();
@@ -91,7 +92,6 @@ namespace PE
 			currentThunk = NULL;
 			currentOriginalThunk = NULL;
 		}
-		ImportThunkReader::~ImportThunkReader(){}
-
+		ImportThunkReader::~ImportThunkReader() {}
 	}
 }

@@ -28,7 +28,7 @@ namespace PE
 				{
 					auto curNameTable = dtr.CurrentNameTable();
 					PIMAGE_IMPORT_BY_NAME funcName = NULL;
-					if (pe.HasNtHeader32())
+					if (pe.hasNtHeader32)
 					{
 						if (!PE::Import::IsSnapByOrdinal((PIMAGE_THUNK_DATA32)curNameTable))
 						{
