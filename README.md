@@ -1,7 +1,7 @@
 _Windows中用到的一些工具类_
 
 #PE
-##PE解析
+###PE解析
 ```c++
 #include <PE\PeDecoder.h>  
 ```
@@ -17,15 +17,16 @@ _缺读取器的结构有,Debug,Exception,Security,Architecture,Tls,LoadConfig,B
 decoder可以返回结构指针,缺少读取器是因为不常用, 以后用到再补_
 
 
-##PE修改
+###PE修改
 _未完成, 如果需要修改,现在可以用decoder返回的地址修改_
 
 
-##PE映射
+###PE映射
 _待续_
 
+
 #进程
-##解析PEB
+###解析PEB
 ```c++
 #include <Process\EnvironmentBlock\EnvironmentBlock.h>  
 ```
@@ -38,22 +39,22 @@ _待续_
 
 3.搜索LdrDataTable,取得已经载入的DLL的句柄的函数  
 
-##Hook
-###导入表(IAT) Hook
+###Hook
+####导入表(IAT) Hook
 ```c++
 #include <Process\Hook\IatHook.h>  
 ```
 
-###导出表(EAT) Hook
+####导出表(EAT) Hook
 ```c++
 #include <Process\Hook\EatHook.h>  
 ```
-###延迟导入表(DelayLoad) Hook
+####延迟导入表(DelayLoad) Hook
 ```c++
 #include <Process\Hook\DelayLoadHook.h>  
 ```
 
-###API Hook
+####API Hook
 ```c++
 #include <Process\Hook\ApiHook.h> 
 // ...
@@ -64,7 +65,8 @@ oldFunctionAddress =(decltype(&MessageBoxA))HookApi32(MessageBoxA, MessageBoxA_H
 支持多次Hook同一个函数  
 _64位的解析器未测试, 所以64位的Hook未编写, UnHook 待续(通常不需要)_
 
-##动态调用
+
+###动态调用
 ```c++
 #include <Process\LazyLoad\LazyLoadSystemApi.h> 
 // 直接使用已经定义的Kernel32_Dll、NtDll_Dll、User32_Dll来动态调用函数，
@@ -80,7 +82,7 @@ NtDll_Dll._NtFreeVirtualMemory(hProcess,
 ```
 
 
-##重写WinApi
+###重写WinApi
 在上面动态调用的例子中, 如果只需要基础的LoadLibrary和GetProcAddress, 可以
 ```c++
 #include <Process\LazyLoad\LazyLoad.h>  
@@ -95,10 +97,13 @@ NtDll_Dll._NtFreeVirtualMemory(hProcess,
 包括打开进程、读写释放远程进程内存、设置内存保护标记、设置线程上下文信息等  
 _启动远程线程等函数等写到再添加, 所以这部分待续_
 
-##注入
+
+###注入
 _待续_
 
+###劫持
+_待续_
 
 #其它
-##DisAsm
-_未完成, 在apihook中编写了一个只解析长度的版本_
+###DisAsm
+_未完成, 太费时,先在apihook中编写了一个只解析长度的版本_

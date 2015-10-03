@@ -395,7 +395,7 @@ namespace Process
 		}
 		GetInstructionLen::NextStat GetInstructionLen::_AnalyGroup(BYTE grpIndex)
 		{
-			auto grpByte = (POpcodeModRM)&*(currentPos+1);
+			auto grpByte = (POpcodeModRM)(currentPos+1);
 			auto mod = grpByte->Mod;
 			auto nnn = grpByte->Reg; // nnn×Ö¶Î£¨op/reg
 
