@@ -116,9 +116,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinUtil\DisAsm\!未完成">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\InstructionNames.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -213,6 +210,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\Process\Remote\RemoteProccess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\!DisAsm未完成">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

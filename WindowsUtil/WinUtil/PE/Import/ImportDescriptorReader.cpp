@@ -18,22 +18,14 @@ namespace PE
 				if (++currentIndex < *descriptorLength)
 				{
 					auto checkResult = descriptor[currentIndex];
-					if (checkResult.Name == NULL || checkResult.FirstThunk == NULL)
-					{
-						return false;
-					}
-					return true;
+					return !(checkResult.Name == NULL || checkResult.FirstThunk == NULL);
 				}
 			}
 			return false;
 		}
 		PIMAGE_IMPORT_DESCRIPTOR ImportDescriptorReader::Current()
 		{
-			if (currentIndex == -1)
-			{
-				return NULL;
-			}
-			return &descriptor[currentIndex];
+			return currentIndex == -1 ?NULL:&descriptor[currentIndex];
 		}
 
 		void ImportDescriptorReader::Reset()

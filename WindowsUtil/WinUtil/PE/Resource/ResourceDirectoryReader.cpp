@@ -124,27 +124,15 @@ namespace PE
 
 		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryReader::CurrentTypeDirectory()
 		{
-			if (currentTypeDirectoryEntry)
-			{
-				return LocateResourceDirectory(root, currentTypeDirectoryEntry);
-			}
-			return NULL;
+			return currentTypeDirectoryEntry?LocateResourceDirectory(root, currentTypeDirectoryEntry):NULL;
 		}
 		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryReader::CurrentResourceNameDirectory()
 		{
-			if (currentResourceNameDirectoryEntry)
-			{
-				return LocateResourceDirectory(root, currentResourceNameDirectoryEntry);
-			}
-			return NULL;
+			return currentResourceNameDirectoryEntry?LocateResourceDirectory(root, currentResourceNameDirectoryEntry): NULL;
 		}
 		PIMAGE_RESOURCE_DATA_ENTRY ResourceDirectoryReader::CurrentResourceDataEntry()
 		{
-			if (currentLanguageDirectoryEntry)
-			{
-				return LocateResourceDataEntry(root, currentLanguageDirectoryEntry);
-			}
-			return NULL;
+			return currentLanguageDirectoryEntry?LocateResourceDataEntry(root, currentLanguageDirectoryEntry):NULL;
 		}
 
 		ResourceDirectoryReader::~ResourceDirectoryReader()

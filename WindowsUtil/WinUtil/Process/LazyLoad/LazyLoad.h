@@ -36,7 +36,8 @@ namespace Process
 					OUT PHANDLE ProcessHandle,
 					IN ACCESS_MASK DesiredAccess,
 					IN POBJECT_ATTRIBUTES ObjectAttributes,
-					IN PCLIENT_ID ClientId)> _NtOpenProcess;
+					IN PCLIENT_ID ClientId
+				)> _NtOpenProcess;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ThreadHandle,
@@ -79,7 +80,8 @@ namespace Process
 				_In_ ULONG_PTR ZeroBits,
 				_Inout_ PSIZE_T RegionSize,
 				_In_ ULONG AllocationType,
-				_In_ ULONG Protect)> _NtAllocateVirtualMemory;
+				_In_ ULONG Protect
+				)> _NtAllocateVirtualMemory;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -94,7 +96,8 @@ namespace Process
 				_In_ HANDLE ProcessHandle,
 				_Inout_ __drv_freesMem(Mem) PVOID *BaseAddress,
 				_Inout_ PSIZE_T RegionSize,
-				_In_ ULONG FreeType)> _NtFreeVirtualMemory;
+				_In_ ULONG FreeType
+				)> _NtFreeVirtualMemory;
 			~_NtDll();
 		protected:
 			virtual void FuncRegister();

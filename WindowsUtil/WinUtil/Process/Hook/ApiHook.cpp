@@ -88,7 +88,7 @@ namespace Process
 			{
 				*(PDWORD)&((PBYTE)des)[offset + 1] += (DWORD)oldAddr- (DWORD)des;
 			}
-			// TODO: 还有其它跳转情况
+			// TODO: 还有其它跳转情况,如果存在使用不同方式hook的时候需要注意
 		}
 		
 	}

@@ -36,38 +36,31 @@ namespace Process
 				dwDesiredAccess,
 				&ObjectAttributes,
 				&ClientId);
-			if (!NT_SUCCESS(Status))
-			{
-				return NULL;
-			}
-			return ProcessHandle;
+	
+			return NT_SUCCESS(Status)?ProcessHandle:NULL;
 		}
-		BOOL WINAPI _SetThreadContext(_In_ HANDLE hThread, _In_ CONST CONTEXT * lpContext)
+		bool WINAPI _SetThreadContext(_In_ HANDLE hThread, _In_ CONST CONTEXT * lpContext)
 		{
 			NTSTATUS Status;
 			if (!NtDll_Dll.Load() || !NtDll_Dll._NtSetContextThread)
 			{
-				return FALSE;
+				return false;
 			}
 			Status = NtDll_Dll._NtSetContextThread(hThread, (PCONTEXT)lpContext);
-			if (!NT_SUCCESS(Status))
-			{
-				return FALSE;
-			}
-			return TRUE;
+			return NT_SUCCESS(Status);
 		}
-		BOOL WINAPI _VirtualProtect(_In_ LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD flNewProtect, _Out_ PDWORD lpflOldProtect)
+		bool WINAPI _VirtualProtect(_In_ LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD flNewProtect, _Out_ PDWORD lpflOldProtect)
 		{
 			return _VirtualProtectEx(NtCurrentProcess(), lpAddress, dwSize, flNewProtect, lpflOldProtect);
 		}
 
-		BOOL WINAPI _VirtualProtectEx(IN HANDLE hProcess, IN LPVOID lpAddress, IN SIZE_T dwSize, IN DWORD flNewProtect, OUT PDWORD lpflOldProtect)
+		bool WINAPI _VirtualProtectEx(IN HANDLE hProcess, IN LPVOID lpAddress, IN SIZE_T dwSize, IN DWORD flNewProtect, OUT PDWORD lpflOldProtect)
 		{
 			NTSTATUS Status;
 			ULONG oldProtect;
 			if (!NtDll_Dll.Load() || !NtDll_Dll._NtProtectVirtualMemory)
 			{
-				return FALSE;
+				return false;
 			}
 
 			Status = NtDll_Dll._NtProtectVirtualMemory(hProcess,
@@ -79,19 +72,14 @@ namespace Process
 			{
 				*lpflOldProtect = oldProtect;
 			}
-			if (!NT_SUCCESS(Status))
-			{
-				return FALSE;
-			}
-
-			return TRUE;
+			return NT_SUCCESS(Status);
 		}
-		BOOL WINAPI _ReadProcessMemory(_In_ HANDLE hProcess, _In_ LPCVOID lpBaseAddress, _Out_writes_bytes_to_(nSize, *lpNumberOfBytesRead) LPVOID lpBuffer, _In_ SIZE_T nSize, _Out_opt_ SIZE_T * lpNumberOfBytesRead)
+		bool WINAPI _ReadProcessMemory(_In_ HANDLE hProcess, _In_ LPCVOID lpBaseAddress, _Out_writes_bytes_to_(nSize, *lpNumberOfBytesRead) LPVOID lpBuffer, _In_ SIZE_T nSize, _Out_opt_ SIZE_T * lpNumberOfBytesRead)
 		{
 			NTSTATUS Status;
 			if (!NtDll_Dll.Load() || !NtDll_Dll._NtReadVirtualMemory)
 			{
-				return FALSE;
+				return false;
 			}
 			Status = NtDll_Dll._NtReadVirtualMemory(hProcess,
 				(PVOID)lpBaseAddress,
@@ -99,14 +87,11 @@ namespace Process
 				nSize,
 				&nSize);
 			if (lpNumberOfBytesRead) *lpNumberOfBytesRead = nSize;
-			if (!NT_SUCCESS(Status))
-			{
-				return FALSE;
-			}
-			return TRUE;
+			
+			return NT_SUCCESS(Status);
 		}
 
-		BOOL WINAPI _WriteProcessMemory(_In_ HANDLE hProcess, _In_ LPVOID lpBaseAddress, _In_reads_bytes_(nSize) LPCVOID lpBuffer, _In_ SIZE_T nSize, _Out_opt_ SIZE_T * lpNumberOfBytesWritten)
+		bool WINAPI _WriteProcessMemory(_In_ HANDLE hProcess, _In_ LPVOID lpBaseAddress, _In_reads_bytes_(nSize) LPCVOID lpBuffer, _In_ SIZE_T nSize, _Out_opt_ SIZE_T * lpNumberOfBytesWritten)
 		{
 			NTSTATUS Status;
 			ULONG OldValue;
@@ -119,7 +104,7 @@ namespace Process
 				!NtDll_Dll._NtFlushInstructionCache
 				)
 			{
-				return FALSE;
+				return false;
 			}
 			RegionSize = nSize;
 			Base = lpBaseAddress;
@@ -145,14 +130,14 @@ namespace Process
 
 				if (!NT_SUCCESS(Status))
 				{
-					return FALSE;
+					return false;
 				}
 				NtDll_Dll._NtFlushInstructionCache(hProcess, lpBaseAddress, nSize);
-				return TRUE;
+				return true;
 			}
 			else
 			{
-				return FALSE;
+				return false;
 			}
 		}
 		LPVOID WINAPI _VirtualAlloc(_In_opt_ LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD flAllocationType, _In_ DWORD flProtect)
@@ -191,12 +176,7 @@ namespace Process
 				Status = 0;
 			}
 
-
-			if (!NT_SUCCESS(Status))
-			{
-				return NULL;
-			}
-			return lpAddress;
+			return NT_SUCCESS(Status)?lpAddress:NULL;
 		}
 		SIZE_T WINAPI _VirtualQuery(_In_opt_ LPCVOID lpAddress, _Out_writes_bytes_to_(dwLength, return) PMEMORY_BASIC_INFORMATION lpBuffer, _In_ SIZE_T dwLength)
 		{
@@ -208,7 +188,7 @@ namespace Process
 			SIZE_T ResultLength;
 			if (!NtDll_Dll.Load() || !NtDll_Dll._NtQueryVirtualMemory)
 			{
-				return FALSE;
+				return 0;
 			}
 			Status = NtDll_Dll._NtQueryVirtualMemory(hProcess,
 				(LPVOID)lpAddress,
@@ -222,12 +202,12 @@ namespace Process
 			}
 			return ResultLength;
 		}
-		BOOL WINAPI _VirtualFreeEx(_In_ HANDLE hProcess, _Pre_notnull_ _When_(dwFreeType == MEM_DECOMMIT, _Post_invalid_) _When_(dwFreeType == MEM_RELEASE, _Post_ptr_invalid_) LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD dwFreeType)
+		bool WINAPI _VirtualFreeEx(_In_ HANDLE hProcess, _Pre_notnull_ _When_(dwFreeType == MEM_DECOMMIT, _Post_invalid_) _When_(dwFreeType == MEM_RELEASE, _Post_ptr_invalid_) LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD dwFreeType)
 		{
 			NTSTATUS Status;
 			if (!NtDll_Dll.Load() || !NtDll_Dll._NtFreeVirtualMemory)
 			{
-				return FALSE;
+				return false;
 			}
 
 			if (!(dwSize) || !(dwFreeType & MEM_RELEASE))
@@ -236,15 +216,12 @@ namespace Process
 					&lpAddress,
 					&dwSize,
 					dwFreeType);
-				if (!NT_SUCCESS(Status))
-				{
-					return FALSE;
-				}
-				return TRUE;
+				
+				return NT_SUCCESS(Status);
 			}
-			return FALSE;
+			return false;
 		}
-		BOOL WINAPI _VirtualFree(IN LPVOID lpAddress, IN SIZE_T dwSize, IN DWORD dwFreeType)
+		bool WINAPI _VirtualFree(IN LPVOID lpAddress, IN SIZE_T dwSize, IN DWORD dwFreeType)
 		{
 			return _VirtualFreeEx(NtCurrentProcess(), lpAddress, dwSize, dwFreeType);
 		}
