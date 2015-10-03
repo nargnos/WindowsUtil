@@ -15,15 +15,13 @@ namespace Process
 		{
 		public:
 			_LoadDll(LPCWSTR dllName);
-			_LoadDll(HMODULE DllModule); 
+			_LoadDll(HMODULE dllModule); 
 			_LoadDll(_LoadDll& obj);
 			~_LoadDll();
 			bool Load();
-			
-			// 需要在模板类使用,所以设置public, 使用时不要改数值
-			HMODULE DllModule;
+			HMODULE GetDllModule();
 		protected:
-			
+			HMODULE dllModule;
 			_LoadDll();
 			LPCWSTR dllName;
 			bool isInit;
@@ -46,7 +44,7 @@ namespace Process
 			LPCSTR func=NULL;
 			virtual Func GetAddress()
 			{
-				auto result = _GetProcAddress(dll->DllModule, func);
+				auto result = _GetProcAddress(dll->GetDllModule(), func);
 				if (result)
 				{
 					return (Func)result;
@@ -104,7 +102,7 @@ namespace Process
 			}
 			HINSTANCE GetDllModule()
 			{
-				return dll->DllModule;
+				return dll->GetDllModule();
 			}
 			Func GetFuncAddress()
 			{
