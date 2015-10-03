@@ -1,5 +1,6 @@
-// test.cpp : 定义控制台应用程序的入口点。
-//
+// 为了添加用于解析的数据,这个工程有点乱
+// 里面包含了编写过程中写的一些测试,很杂
+// 现在运行后会解析出自身pe的信息,因为之前是一条条测试的,整体混合就很乱,有时间再整理
 
 #include "stdafx.h"
 #include <Windows.h>
@@ -10,6 +11,7 @@
 
 #include <PeImage.h>
 #include <Process\LazyLoad\LazyLoadSystemApi.h>
+#include <Process\OverwriteWinApi\OverwriteWinApi.h>
 #include <Process\Hook\IatHook.h>
 #include <Process\Hook\ApiHook.h>
 #include <Process\Hook\EatHook.h>
@@ -30,8 +32,8 @@ int space = minSpace;
 __declspec(thread) int a = 0;
 
 
-#define OUTPUT_FILENAME " \\output.txt"
-#define SHOW_FILE system("start" OUTPUT_FILENAME);
+#define OUTPUT_FILENAME ".//output.txt"
+#define SHOW_FILE system("start " OUTPUT_FILENAME);
 
 #define DISPLAY_DES of//cout
 #define TO_RIGHT space+=2;if(space>maxSpace){space=maxSpace;}{
@@ -332,9 +334,9 @@ void PrintImport(PeDecoder& pe)
 					{
 						auto hookAddr = itr.CurrentThunk32();
 						DWORD oldProtect;
-						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect);
+						Process::Overwrite::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect);
 						*(PDWORD)hookAddr = (DWORD)HookBeep;
-						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), oldProtect, NULL);
+						Process::Overwrite::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORD), oldProtect, NULL);
 						DISPLAY_HEX("New - FT", itr.CurrentThunk32()->u1.AddressOfData);
 						DISPLAY_MSG(endl);
 						DISPLAY_MSG("[Run Iat Hook Function]");
@@ -393,9 +395,9 @@ void PrintImport64(PeDecoder& pe)
 					{
 						auto hookAddr = itr.CurrentThunk64();
 						DWORD oldProtect;
-						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
+						Process::Overwrite::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), PAGE_EXECUTE_READWRITE, &oldProtect);
 						*(PDWORDLONG)hookAddr = (DWORDLONG)HookBeep;
-						Process::LazyLoad::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), oldProtect, NULL);
+						Process::Overwrite::_VirtualProtect((LPVOID)hookAddr, sizeof(DWORDLONG), oldProtect, NULL);
 						DISPLAY_HEX("New - FT", itr.CurrentThunk64()->u1.AddressOfData);
 						DISPLAY_MSG(endl);
 						DISPLAY_MSG("[Run Iat Hook Function]");
@@ -571,13 +573,13 @@ void PrintDelay(PeDecoder& pe)
 // pe解析器测试, 只做测试怎么简单怎么编
 void TestPeDecoder()
 {
-	of.open(OUTPUT_FILENAME, ios::out);
+	of.open(OUTPUT_FILENAME, ios::out| ios::trunc);
 
 	DISPLAY_DES.setf(ios::left | ios::boolalpha);
 
-	PE::PeDecoder pe(GetModuleHandleA(NULL), true);
-
-	if (pe.IsPE())
+	PE::PeDecoder pe;
+	
+	if (pe.LoadPEImage(GetModuleHandleA(NULL), true))
 	{
 		auto dosHeader = pe.DosHeader();
 		DISPLAY_HEX("[Dos Header]", dosHeader);
@@ -587,7 +589,7 @@ void TestPeDecoder()
 		cout << endl;
 
 
-		if (pe.hasNtHeader32)
+		if (pe.HasNtHeader32())
 		{
 			auto ntHeader = pe.NtHeader32();
 			//cout << "[Is 32 PE]" << endl;
@@ -863,49 +865,8 @@ GdA k[] = { {'h'},{'u',3} };
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	/*_asm {
-		_emit 0x90
-			_emit 0x0f
-
-			_emit 0x7c
-			_emit 0x03
-
-	}*/
-//	auto fff = (USHORT)(((1 & 0x7) << 13) | ((1 & 0x7) << 10) | (19 & 0x3ff));
-//	Asm::Opcode ddd = { fff };
-//	auto fsfs = sizeof(Asm::_Opcode);
-//	Asm::RegOrOperand fsffs = {0};
-//	fsffs.Operand = 0xff;
-//	auto d88 = Asm::Opcode_1;
-//	BYTE a = 0xc8;
-////	k[0].ff = 0;
-//	BYTE code[] =  {
-//		0x57, 0x56, 0x83, 0xE7, 0x0F, 0x83, 0xE6, 0x0F, 0x3B, 0xFE, 0x5E, 0x5F
-//	};
-//	Asm::OpcodeReader reader;
-//	auto tmpcode = code;
-//	for (int i = 0; i < sizeof(code); )
-//	{
-//		string out;
-//		auto codeSize = reader.ReadCode(tmpcode, &out);
-//		i += codeSize;
-//		tmpcode += codeSize;
-//		cout << out<<endl;
-//	}
-	
-
-
-	//auto f = a77;
-//	Asm::MethodAndType ll2;
-	//auto ddddw = sizeof(ll2);
-	/*Asm::Opcode d;
-	auto size = sizeof(Asm::_Opcode);
-	auto d7 =Asm::OneByteOpcodeMap;
-	auto fsfsfs = sizeof(Asm::OneByteOpcodeMap)/(sizeof(short)*2);*/
-	//Process::Hook::HookApi(MessageBoxA, HookMBoxEAT);
-	///MessageBoxA(0, 0, 0, 0);
 	// 测试pe解析
-	//TestPeDecoder();
+	TestPeDecoder();
 	// 测试延迟载入
 	//TestLazyLoad();
 	// 测试Hook

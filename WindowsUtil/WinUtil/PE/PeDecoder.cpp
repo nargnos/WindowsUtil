@@ -10,7 +10,18 @@ namespace PE
 	{
 		return (PIMAGE_NT_HEADERS64)ntHeader;
 	}
-
+	bool PeDecoder::IsMapped()
+	{
+		return isMapped;
+	}
+	PIMAGE_DOS_HEADER PeDecoder::DosHeader()
+	{
+		return dosHeader;
+	}
+	bool PeDecoder::HasNtHeader32()
+	{
+		return hasNtHeader32;
+	}
 	PIMAGE_SECTION_HEADER PeDecoder::RvaToSection(DWORD rva)
 	{
 		auto section = firstSectionHeader;

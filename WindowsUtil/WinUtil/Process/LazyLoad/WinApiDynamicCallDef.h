@@ -11,7 +11,7 @@ namespace Process
 		HINSTANCE WINAPI _LoadLibraryW(LPCWSTR lpLibFileName);
 
 		// 析构时不会unload dll
-		class _LoadDll
+		class _LoadDll 
 		{
 		public:
 			_LoadDll(LPCWSTR dllName);
@@ -19,14 +19,16 @@ namespace Process
 			_LoadDll(_LoadDll& obj);
 			~_LoadDll();
 			bool Load();
-			virtual HINSTANCE GetDll();
+			
 			// 需要在模板类使用,所以设置public, 使用时不要改数值
 			HMODULE DllModule;
 		protected:
+			
 			_LoadDll();
 			LPCWSTR dllName;
 			bool isInit;
 			virtual void FuncRegister();
+			virtual HINSTANCE GetDll();
 		};
 
 		template<typename T>
@@ -41,7 +43,7 @@ namespace Process
 			typedef Ret(WINAPI* Func)(T...);
 			Func ptr = NULL;
 			_LoadDll* dll=NULL;
-			LPCSTR func;
+			LPCSTR func=NULL;
 			virtual Func GetAddress()
 			{
 				auto result = _GetProcAddress(dll->DllModule, func);
@@ -92,7 +94,7 @@ namespace Process
 				}
 				else
 				{
-					if (!dll->Load() || !func)
+					if (!dll || !dll->Load() || !func)
 					{
 						return false;
 					}

@@ -8,6 +8,7 @@ namespace Process
 {
 	namespace LazyLoad
 	{
+		// 编写成必须先load才能使用, 如果自动设置,启动程序会花太久时间
 		// 不使用decltype定义,因为要include太多头文件
 		class _Kernel32 :public _LoadDll
 		{

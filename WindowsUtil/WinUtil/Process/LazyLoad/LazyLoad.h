@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <WinBase.h>
 #include <intrin.h>
+#include <memory>
 #include "..\EnvironmentBlock\EnvironmentBlock.h"
 #include "..\..\PE\Export\Export.h"
 #include "WinApiDynamicCallDef.h"
@@ -25,9 +26,7 @@ namespace Process
 		{
 		public:
 			_NtDll(LPCWSTR dllName);
-			~_NtDll();
-			virtual HINSTANCE GetDll();
-
+			
 			WinApiDynamicCall<NTSTATUS WINAPI(_In_opt_ PWSTR SearchPath,
 				_In_opt_ PULONG LoadFlags,
 				_In_ PUNICODE_STRING Name,
@@ -96,11 +95,14 @@ namespace Process
 				_Inout_ __drv_freesMem(Mem) PVOID *BaseAddress,
 				_Inout_ PSIZE_T RegionSize,
 				_In_ ULONG FreeType)> _NtFreeVirtualMemory;
-
+			~_NtDll();
 		protected:
 			virtual void FuncRegister();
+
+			virtual HINSTANCE GetDll();
+
 		};
 
-		extern _NtDll NtDll_Dll;
+		extern  _NtDll NtDll_Dll;
 	}
 }

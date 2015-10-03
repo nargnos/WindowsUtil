@@ -59,7 +59,11 @@ namespace PE
 		~PeDecoder() = default;
 		PeDecoder(PeDecoder& pe)=delete;
 		bool LoadPEImage(PVOID base, bool isMapped);
-
+		bool IsMapped();
+		PIMAGE_DOS_HEADER DosHeader();
+		PIMAGE_NT_HEADERS32 NtHeader32();
+		PIMAGE_NT_HEADERS64 NtHeader64();
+		bool HasNtHeader32();
 
 		PIMAGE_SECTION_HEADER RvaToSection(DWORD rva);
 		PIMAGE_SECTION_HEADER OffsetToSection(DWORD fileOffset);
@@ -70,6 +74,7 @@ namespace PE
 		PIMAGE_RESOURCE_DIRECTORY GetImageResource(PDWORD* size = NULL);
 		PIMAGE_BASE_RELOCATION GetImageBasereloc(PDWORD* size = NULL);
 		PVOID GetImageIat(PDWORD* size = NULL); // 取iat头, 可能为32也可能为64, 作用不是读信息,所以直接返回指针
+		/*PIMAGE_DELAYLOAD_DESCRIPTOR*/PImgDelayDescr ImageDelayImport(PDWORD* size = NULL);
 
 
 #pragma region 这部分未完成reader
@@ -81,7 +86,6 @@ namespace PE
 		PIMAGE_TLS_DIRECTORY32 ImageTls32(PDWORD* size = NULL);
 		PIMAGE_LOAD_CONFIG_DIRECTORY64 ImageLoadConfig64(PDWORD* size = NULL);
 		PIMAGE_LOAD_CONFIG_DIRECTORY32 ImageLoadConfig32(PDWORD* size = NULL);
-		/*PIMAGE_DELAYLOAD_DESCRIPTOR*/PImgDelayDescr ImageDelayImport(PDWORD* size = NULL);
 		PIMAGE_BOUND_IMPORT_DESCRIPTOR ImageBoundImport(PDWORD* size = NULL);
 		PIMAGE_COR20_HEADER ImageComDescriptor(PDWORD* size = NULL);
 #pragma endregion	
@@ -94,8 +98,7 @@ namespace PE
 		PBYTE base;
 		PIMAGE_DOS_HEADER dosHeader;
 		PIMAGE_NT_HEADERS32 ntHeader;
-		PIMAGE_NT_HEADERS32 NtHeader32();
-		PIMAGE_NT_HEADERS64 NtHeader64();
+		
 		bool isMapped;
 		bool isPE;
 		bool hasNtHeader32;

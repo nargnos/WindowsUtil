@@ -5,13 +5,13 @@ namespace Process
 {
 	namespace LazyLoad
 	{
-		_LoadDll::_LoadDll(): isInit(false)
+		_LoadDll::_LoadDll(): dllName(NULL), DllModule(NULL), isInit(false)
 		{
 		}
-		_LoadDll::_LoadDll(LPCWSTR dllName) :dllName(dllName), isInit(false)
+		_LoadDll::_LoadDll(LPCWSTR dllName) :dllName(dllName), DllModule(NULL), isInit(false)
 		{
 		}
-		_LoadDll::_LoadDll(HMODULE DllModule) : DllModule(DllModule), isInit(false)
+		_LoadDll::_LoadDll(HMODULE DllModule) : dllName(NULL), DllModule(DllModule), isInit(false)
 		{
 		}
 		_LoadDll::_LoadDll(_LoadDll & obj)
@@ -28,7 +28,7 @@ namespace Process
 		}
 		bool _LoadDll::Load()
 		{
-
+			
 			if (DllModule)
 			{
 				return true;

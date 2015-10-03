@@ -23,13 +23,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ApiHookTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="源.cpp">
+    <ClCompile Include="WinApiDynamicCallTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
