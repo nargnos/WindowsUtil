@@ -20,6 +20,7 @@ namespace Process
 			};
 		public:
 			GetInstructionLen(bool is32);
+			GetInstructionLen(GetInstructionLen&) = delete;
 			~GetInstructionLen();
 			int GetLen(PBYTE hex);
 		private:
@@ -28,6 +29,7 @@ namespace Process
 			NextStat stat;
 			OpcodeTables table;
 			PBYTE currentPos;
+			OpcodeRex rex;
 			int count; // 指令长度计数
 			bool IsOpcodeExDefine(OpcodeEx& cmd);
 			bool IsPrefixVerify(OpcodePrefixCondition && opc);

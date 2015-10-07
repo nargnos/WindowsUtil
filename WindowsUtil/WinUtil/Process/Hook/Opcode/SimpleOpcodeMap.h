@@ -40,7 +40,10 @@ namespace Process
 			OLT_B_F64,
 			OLT_W_F64,
 			OLT_W_D_F64,
-			OLT_SP_Ap	//特殊长度不好分类32,48,40
+			OLT_SP_Ap,	//特殊长度不好分类32,48,40
+			// 在64位时不需前缀自动扩充成64位长的
+			OLT_B_O,
+			OLT_W_D_Q_O
 		};
 
 		enum OpcodePrefixGroup
@@ -170,6 +173,23 @@ namespace Process
 				};
 			};
 		}OpcodeGrp,*POpcodeGrp;
+
+
+		typedef struct
+		{
+			union
+			{
+				BYTE Val;
+				struct
+				{
+					BYTE B : 1;
+					BYTE X : 1;
+					BYTE R : 1;
+					BYTE W : 1;
+					BYTE: 4;					
+				};
+			};
+		}OpcodeRex,*POpcodeRex;
 #pragma pack(pop)
 
 #define _HEX_SET_TYPE(type) ((BYTE)((type&0x7)<<5))

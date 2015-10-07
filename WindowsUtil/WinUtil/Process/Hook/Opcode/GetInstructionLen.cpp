@@ -6,9 +6,9 @@ namespace Process
 	namespace Hook
 	{
 		
-		GetInstructionLen::GetInstructionLen(bool is32):is32(is32)
+		GetInstructionLen::GetInstructionLen(bool is32)
 		{
-
+			this->is32 = is32;
 		}
 
 
@@ -27,6 +27,7 @@ namespace Process
 			has66 = has67 = hasF2= hasF3= 
 			isGroupExist[0] = isGroupExist[1] = isGroupExist[2] = isGroupExist[3] = false;
 			count = 0;
+			rex.Val= 0;
 			isModBit00 = true;
 		}
 		int GetInstructionLen::GetLen(PBYTE hex)
@@ -101,9 +102,10 @@ namespace Process
 			// 验证,只要有一个通过都算
 			
 			// 不通过则指令未定义
-			return verifyOpc&opc;
+			return (verifyOpc&opc)>0;
 		}
 		
+		// 这个函数的64位判断长度的地方存在疑惑, 所以先保留跟32位一样的代码, 等弄明白再做修改
 		void GetInstructionLen::AddImmCount(OpcodeLenType len)
 		{
 			// 配合前缀处理大小
@@ -114,6 +116,7 @@ namespace Process
 				size = sizeof(BYTE);
 				break;
 			case Process::Hook::OLT_W_D: // 16位时W，32、64时D
+				
 				size = has66 ? sizeof(WORD) : sizeof(DWORD);
 				break;
 			case Process::Hook::OLT_W:
@@ -126,7 +129,15 @@ namespace Process
 				}
 				else
 				{
-					size = has66 ? sizeof(WORD) : sizeof(DWORD64);
+					if (rex.W)
+					{
+						size = sizeof(DWORD64);
+					}
+					else
+					{
+						size = has66 ? sizeof(WORD) : sizeof(DWORD);
+					}
+					
 				}
 				break;
 			case Process::Hook::OLT_B_D64: // fixed
@@ -136,7 +147,7 @@ namespace Process
 				}
 				else
 				{
-					size = has66 ?  sizeof(DWORD64): sizeof(BYTE);
+					size = has66 ?  sizeof(DWORD): sizeof(BYTE);
 				}
 				break;
 			case Process::Hook::OLT_W_D_Q://fixed
@@ -146,17 +157,36 @@ namespace Process
 				}
 				else
 				{
-					size = has66 ?  sizeof(WORD): sizeof(DWORD64);
+					if (rex.W) // 有REX.W时无视66
+					{
+						size = sizeof(DWORD64);
+					}
+					else
+					{
+						size = has66 ? sizeof(WORD) : sizeof(DWORD);// REX: 64?,这里在有rex前缀时会变化
+					}
+					
+				}
+				break;
+			case  OLT_B_O:
+			case OLT_W_D_Q_O:
+				if (is32)
+				{
+					size = has66 ? sizeof(WORD) : sizeof(DWORD);
+				}
+				else
+				{
+					size = sizeof(DWORD64);
 				}
 				break;
 			case Process::Hook::OLT_W_And_B:// 3字节
 				size = sizeof(WORD) + sizeof(BYTE);
 				break;
 			case Process::Hook::OLT_B_F64:
-				size = is32 ? sizeof(BYTE) : sizeof(DWORD64);
+				size = is32 ? sizeof(BYTE) : sizeof(BYTE);// 64?
 				break;
 			case Process::Hook::OLT_W_F64:
-				size = is32 ? sizeof(WORD) : sizeof(DWORD64);
+				size = is32 ? sizeof(WORD) : sizeof(WORD);// 64?
 				break;
 			case Process::Hook::OLT_W_D_F64:
 				if (is32)
@@ -165,7 +195,7 @@ namespace Process
 				}
 				else
 				{
-					size = sizeof(DWORD64);
+					size = sizeof(DWORD); // 64?
 				}
 				break;
 			case Process::Hook::OLT_SP_Ap:
@@ -201,6 +231,15 @@ namespace Process
 			switch (table)
 			{
 			case Process::Hook::OneByteOpcode:
+				if (!is32)
+				{
+					if (hex >= 0x40 && hex <= 0x4f)
+					{
+						// rex前缀
+						rex.Val=hex;
+						return Stat_ReadHex;
+					}
+				}
 				tmpOpcode = OneByteTable[hex];
 				break;
 			case Process::Hook::TwoByteOpcode:
@@ -270,7 +309,7 @@ namespace Process
 				isModBit00 = false;
 			}
 			auto rm = modrm->Rm;
-			if (has67)
+			if (has67&&is32)
 			{
 				switch (mod)
 				{

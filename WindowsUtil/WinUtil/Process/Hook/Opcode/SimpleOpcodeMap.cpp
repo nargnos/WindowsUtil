@@ -38,7 +38,7 @@ namespace Process
 			HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),
 			HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_SP_Ap),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),
 
-			HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_W_D_Q),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),
+			HEX_CMD(false,OLT_B_O),HEX_CMD(false,OLT_W_D_Q_O),HEX_CMD(false,OLT_B_O),HEX_CMD(false,OLT_W_D_Q_O),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),
 			HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_W_D),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),
 
 			HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_B),

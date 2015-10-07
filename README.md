@@ -1,4 +1,4 @@
-_Windows中用到的一些工具类_
+_平时用到的一些工具类, 这部分内容涉及面比较广, 慢慢补全_
 
 #PE
 ###PE解析
@@ -13,16 +13,14 @@ _Windows中用到的一些工具类_
 * 重定位表  
 * 延迟导入表  
 
-_缺读取器的结构有,Debug,Exception,Security,Architecture,Tls,LoadConfig,BoundImport,ComDescriptor.<br>
-decoder可以返回结构指针,缺少读取器是因为不常用, 以后用到再补_
+_缺读取器的结构有_  
+_Debug,Exception,Security,Architecture,Tls,LoadConfig,BoundImport,ComDescriptor._  
+_pedecoder可以返回结构指针,缺少读取器是因为不常用, 以后用到再补_
 
 
 ###PE修改
 _未完成, 如果需要修改,现在可以用decoder返回的地址修改_
 
-
-###PE映射
-_待续_
 
 
 #进程
@@ -31,8 +29,8 @@ _待续_
 #include <Process\EnvironmentBlock\EnvironmentBlock.h>  
 ```
 包含：  
-1.PEB、TEB结构定义(_定义来自reactos源码_)  
-　取得PEB后,根据定义可以读取PEB结构  
+1.PEB、TEB结构定义  
+_定义来自reactos源码_  
 
 2.LdrDataTableEntry读取器  
 　可以使用三种方式遍历LdrDataTable  
@@ -49,10 +47,13 @@ _待续_
 ```c++
 #include <Process\Hook\EatHook.h>  
 ```
+_不支持64位_  
+
 ####延迟导入表(DelayLoad) Hook
 ```c++
 #include <Process\Hook\DelayLoadHook.h>  
 ```
+_使用vs2015后,相关结构定义的头文件在sdk中改名了,所以用的是新的那一个定义,旧版本编译时可能会找不到相关定义_  
 
 ####API Hook
 ```c++
@@ -61,16 +62,16 @@ _待续_
 oldFunctionAddress =(decltype(&MessageBoxA))HookApi32(MessageBoxA, MessageBoxA_Hook1);
 
 ```
-包含了一个查表法编写的返回指令长度的Opcode解析器 (Process\Hook\Opcode)  
-支持多次Hook同一个函数  
-_64位的解析器未测试, 所以64位的Hook未编写, UnHook 待续(通常不需要)_
+包含了一个返回指令长度的Opcode解析器 (Process\Hook\Opcode)  
+支持多次Hook同一个函数, 也有只hook一次的精简版本  
+_UnHook 待续(通常不需要)_
 
 
 ###动态调用
 ```c++
 #include <Process\LazyLoad\LazyLoadSystemApi.h> 
 // 直接使用已经定义的Kernel32_Dll、NtDll_Dll、User32_Dll来动态调用函数，
-// 不全，只注册了常用的一些函数
+// 不全，只注册了常用的一些函数, 使用方法类似:
 Kernel32_Dll._GetSystemInfo(&sysinfo);
 // ... 
 NtDll_Dll._NtFreeVirtualMemory(hProcess,
@@ -90,20 +91,15 @@ NtDll_Dll._NtFreeVirtualMemory(hProcess,
 里面包含了重写的两个函数和一些扩展. _LoadLibraryW使用ntdll.dll(读取PEB取到的句柄)的LdrLoadDll来载入dll,
 已存在dll的句柄都是通过读取peb获得的. _GetProcAddress使用的是解析pe获取的函数地址.  
 
-代码、dll注入使用的一些函数重写了(不需要重写版本可以使用Kernel32_Dll的动态调用版本)
+代码、dll注入相关的一些函数重写了(不需要重写版本可以使用Kernel32_Dll的动态调用版本).
 ```c++
 #include <Process\OverwriteWinApi\OverwriteWinApi.h>  
 ```
+_代码修改自reactos_  
 包括打开进程、读写释放远程进程内存、设置内存保护标记、设置线程上下文信息等  
 _启动远程线程等函数等写到再添加, 所以这部分待续_
 
 
-###注入
-_待续_
-
-###劫持
-_待续_
-
 #其它
 ###DisAsm
-_未完成, 太费时,先在apihook中编写了一个只解析长度的版本_
+_未完成, 太费时, 先在apihook中编写了一个只解析指令长度的版本_

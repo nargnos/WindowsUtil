@@ -24,14 +24,24 @@ namespace Process
 			{
 				*oldFuncRva = *result;
 			}
-			DWORD setRva;
+			LONG setRva;
 			if (dll.hasNtHeader32)
 			{
-				setRva = (DWORD)hookFunc - (DWORD)dllBase;
+				setRva = (LONG)hookFunc - (LONG)dllBase;
 			}
 			else
 			{
-				setRva = (DWORDLONG)hookFunc - (DWORDLONG)dllBase;
+				auto tmpDta = (LONGLONG)hookFunc - (LONGLONG)dllBase;
+				if (tmpDta>0 && tmpDta<LONG_MAX)
+				{
+					setRva = (LONG)tmpDta;
+				}
+				else
+				{
+					// NOTICE: 因为导出表结构原因,存储的数据总是DWORD,不能在附加64位的base之后往前偏移,所以无法hook
+					return NULL;
+				}
+				
 			}
 			Process::Overwrite::_WriteProcessMemory(NtCurrentProcess(), result, &setRva, sizeof(DWORD), NULL);
 			return result;

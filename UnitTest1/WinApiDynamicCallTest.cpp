@@ -14,7 +14,7 @@ namespace UnitTest1
 	{
 
 	public:
-		
+		// 32\64≤‚ ‘Õ®π˝
 		TEST_METHOD(Load_MessageBoxA)
 		{
 			using namespace Process::LazyLoad;
