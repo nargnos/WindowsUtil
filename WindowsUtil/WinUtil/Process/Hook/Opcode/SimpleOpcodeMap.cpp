@@ -6,6 +6,8 @@ namespace Process
 	namespace Hook
 	{
 		// TODO:添加32位非法，64位非法表(只记录可能被错误解析项
+		// FIX: 这里的表记录了存在的和不存在的指令(尤其是某些前缀下不存在),可以默认指令全部正确,把记录不存在的部分删掉,减少代码
+		// 这些数组是可以压缩的,删掉那部分之后压缩更加方便
 		const Opcode OneByteTable[] =
 		{
 			HEX_CMD(true,OLT_None),HEX_CMD(true,OLT_None),HEX_CMD(true,OLT_None),HEX_CMD(true,OLT_None),HEX_CMD(false,OLT_B),HEX_CMD(false,OLT_W_D),HEX_CMD(false,OLT_None),HEX_CMD(false,OLT_None),

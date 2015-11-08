@@ -15,6 +15,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest1", "UnitTest1\Unit
 		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PEView", "PEView\PEView.vcxproj", "{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -47,6 +52,14 @@ Global
 		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|Win32.Build.0 = Release|Win32
 		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|x64.ActiveCfg = Release|x64
 		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|x64.Build.0 = Release|x64
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|Win32.Build.0 = Debug|Win32
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|x64.ActiveCfg = Debug|x64
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|x64.Build.0 = Debug|x64
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|Win32.ActiveCfg = Release|Win32
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|Win32.Build.0 = Release|Win32
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|x64.ActiveCfg = Release|x64
+		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

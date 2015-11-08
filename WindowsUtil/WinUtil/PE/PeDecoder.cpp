@@ -1,4 +1,5 @@
 #include "PeDecoder.h"
+#include "PeDecoder.h"
 namespace PE
 {
 	
@@ -78,7 +79,7 @@ namespace PE
 	PVOID PeDecoder::DirectoryEntryToData(DWORD index, PDWORD* size)
 	{
 		auto dir = GetDataDirectory(index);
-		if (!dir)
+		if (!dir|| dir->VirtualAddress == NULL)
 		{
 			return NULL;
 		}
@@ -101,18 +102,18 @@ namespace PE
 	{
 		return (PIMAGE_RESOURCE_DIRECTORY)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_RESOURCE, size);
 	}
-	PIMAGE_RUNTIME_FUNCTION_ENTRY PeDecoder::ImageException(PDWORD* size)
+	PIMAGE_RUNTIME_FUNCTION_ENTRY PeDecoder::GetImageException(PDWORD* size)
 	{
 		return (PIMAGE_RUNTIME_FUNCTION_ENTRY)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_EXCEPTION, size);
 	}
-	PVOID PeDecoder::ImageSecurity(PDWORD* size)
+	PVOID PeDecoder::GetImageSecurity(PDWORD* size)
 	{
 		if (isMapped)
 		{
 			return NULL;
 		}
 		auto dir = GetDataDirectory(IMAGE_DIRECTORY_ENTRY_SECURITY);
-		if (!dir)
+		if (!dir || dir->VirtualAddress == NULL)
 		{
 			return NULL;
 		}
@@ -126,11 +127,11 @@ namespace PE
 	{
 		return (PIMAGE_BASE_RELOCATION)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_BASERELOC, size);
 	}
-	PIMAGE_DEBUG_DIRECTORY PeDecoder::ImageDebug(PDWORD* size)
+	PIMAGE_DEBUG_DIRECTORY PeDecoder::GetImageDebug(PDWORD* size)
 	{
 		return (PIMAGE_DEBUG_DIRECTORY)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_DEBUG, size);
 	}
-	PIMAGE_ARCHITECTURE_HEADER PeDecoder::ImageArchitecture(PDWORD* size)
+	PIMAGE_ARCHITECTURE_HEADER PeDecoder::GetImageArchitecture(PDWORD* size)
 	{
 		return (PIMAGE_ARCHITECTURE_HEADER)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_ARCHITECTURE, size);
 	}
@@ -140,25 +141,25 @@ namespace PE
 	return (PIMAGE_EXPORT_DIRECTORY)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_GLOBALPTR, size);
 	}*/
 
-	PIMAGE_TLS_DIRECTORY32 PeDecoder::ImageTls32(PDWORD* size)
+	PIMAGE_TLS_DIRECTORY32 PeDecoder::GetImageTls32(PDWORD* size)
 	{
 		return hasNtHeader32?(PIMAGE_TLS_DIRECTORY32)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_TLS, size): NULL;
 	}
-	PIMAGE_TLS_DIRECTORY64 PeDecoder::ImageTls64(PDWORD* size)
+	PIMAGE_TLS_DIRECTORY64 PeDecoder::GetImageTls64(PDWORD* size)
 	{
 		return hasNtHeader32? NULL:(PIMAGE_TLS_DIRECTORY64)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_TLS, size);
 	}
 
-	PIMAGE_LOAD_CONFIG_DIRECTORY32 PeDecoder::ImageLoadConfig32(PDWORD* size)
+	PIMAGE_LOAD_CONFIG_DIRECTORY32 PeDecoder::GetImageLoadConfig32(PDWORD* size)
 	{
 		return hasNtHeader32?(PIMAGE_LOAD_CONFIG_DIRECTORY32)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, size): NULL;
 	}
-	PIMAGE_LOAD_CONFIG_DIRECTORY64 PeDecoder::ImageLoadConfig64(PDWORD* size)
+	PIMAGE_LOAD_CONFIG_DIRECTORY64 PeDecoder::GetImageLoadConfig64(PDWORD* size)
 	{
 		return hasNtHeader32? NULL:(PIMAGE_LOAD_CONFIG_DIRECTORY64)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, size);
 	}
 
-	PIMAGE_BOUND_IMPORT_DESCRIPTOR PeDecoder::ImageBoundImport(PDWORD* size)
+	PIMAGE_BOUND_IMPORT_DESCRIPTOR PeDecoder::GetImageBoundImport(PDWORD* size)
 	{
 		return (PIMAGE_BOUND_IMPORT_DESCRIPTOR)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, size);
 	}
@@ -167,12 +168,12 @@ namespace PE
 		return /*(IMAGE_THUNK_DATA32)*/DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_IAT, size);
 	}
 	
-	PImgDelayDescr PeDecoder::ImageDelayImport(PDWORD* size)
+	PImgDelayDescr PeDecoder::GetImageDelayImport(PDWORD* size)
 	{
 		return (PImgDelayDescr)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT, size);
 	}
 	
-	PIMAGE_COR20_HEADER PeDecoder::ImageComDescriptor(PDWORD* size)
+	PIMAGE_COR20_HEADER PeDecoder::GetImageComDescriptor(PDWORD* size)
 	{
 		return (PIMAGE_COR20_HEADER)DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, size);
 	}
@@ -186,10 +187,10 @@ namespace PE
 		if (*imageDataDirectorySize > index && IMAGE_NUMBEROF_DIRECTORY_ENTRIES > index)
 		{
 			auto result = &imageDataDirectoryEntry[index];
-			if (result->VirtualAddress != NULL)
-			{			
+			//if (result->VirtualAddress != NULL)
+			//{			
 				return result;
-			}
+			//}
 		}
 		return NULL;
 	}
@@ -252,6 +253,11 @@ namespace PE
 		lastSectionHeader = firstSectionHeader + *sectionCount;
 		isPE = true;
 		return true;
+	}
+
+	PVOID PeDecoder::GetBase()
+	{
+		return this->base;
 	}
 
 }

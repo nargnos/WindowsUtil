@@ -7,7 +7,7 @@ namespace PE
 		DelayLoadDescriptorReader::DelayLoadDescriptorReader(PeDecoder& pe)
 		{
 			
-			delayArray = pe.ImageDelayImport();
+			delayArray = pe.GetImageDelayImport();
 			Reset();
 		}
 

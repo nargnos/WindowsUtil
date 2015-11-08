@@ -59,6 +59,7 @@ namespace PE
 		~PeDecoder() = default;
 		PeDecoder(PeDecoder& pe)=delete;
 		bool LoadPEImage(PVOID base, bool isMapped);
+		PVOID GetBase();
 		bool IsMapped();
 		PIMAGE_DOS_HEADER DosHeader();
 		PIMAGE_NT_HEADERS32 NtHeader32();
@@ -69,25 +70,26 @@ namespace PE
 		PIMAGE_SECTION_HEADER OffsetToSection(DWORD fileOffset);
 		DWORD RvaToOffset(DWORD rva);
 		DWORD OffsetToRva(DWORD fileOffset);
+
 		PIMAGE_EXPORT_DIRECTORY GetImageExport(PDWORD* size = NULL);
 		PIMAGE_IMPORT_DESCRIPTOR GetImageImport(PDWORD* size = NULL);
 		PIMAGE_RESOURCE_DIRECTORY GetImageResource(PDWORD* size = NULL);
 		PIMAGE_BASE_RELOCATION GetImageBasereloc(PDWORD* size = NULL);
 		PVOID GetImageIat(PDWORD* size = NULL); // 取iat头, 可能为32也可能为64, 作用不是读信息,所以直接返回指针
-		/*PIMAGE_DELAYLOAD_DESCRIPTOR*/PImgDelayDescr ImageDelayImport(PDWORD* size = NULL);
+		/*PIMAGE_DELAYLOAD_DESCRIPTOR*/PImgDelayDescr GetImageDelayImport(PDWORD* size = NULL);
 
 
 #pragma region 这部分未完成reader
-		PIMAGE_DEBUG_DIRECTORY ImageDebug(PDWORD* size = NULL);
-		PIMAGE_RUNTIME_FUNCTION_ENTRY ImageException(PDWORD* size = NULL);
-		PVOID ImageSecurity(PDWORD* size = NULL);
-		PIMAGE_ARCHITECTURE_HEADER ImageArchitecture(PDWORD* size = NULL);
-		PIMAGE_TLS_DIRECTORY64 ImageTls64(PDWORD* size = NULL);
-		PIMAGE_TLS_DIRECTORY32 ImageTls32(PDWORD* size = NULL);
-		PIMAGE_LOAD_CONFIG_DIRECTORY64 ImageLoadConfig64(PDWORD* size = NULL);
-		PIMAGE_LOAD_CONFIG_DIRECTORY32 ImageLoadConfig32(PDWORD* size = NULL);
-		PIMAGE_BOUND_IMPORT_DESCRIPTOR ImageBoundImport(PDWORD* size = NULL);
-		PIMAGE_COR20_HEADER ImageComDescriptor(PDWORD* size = NULL);
+		PIMAGE_DEBUG_DIRECTORY GetImageDebug(PDWORD* size = NULL);
+		PIMAGE_RUNTIME_FUNCTION_ENTRY GetImageException(PDWORD* size = NULL);
+		PVOID GetImageSecurity(PDWORD* size = NULL);
+		PIMAGE_ARCHITECTURE_HEADER GetImageArchitecture(PDWORD* size = NULL);
+		PIMAGE_TLS_DIRECTORY64 GetImageTls64(PDWORD* size = NULL);
+		PIMAGE_TLS_DIRECTORY32 GetImageTls32(PDWORD* size = NULL);
+		PIMAGE_LOAD_CONFIG_DIRECTORY64 GetImageLoadConfig64(PDWORD* size = NULL);
+		PIMAGE_LOAD_CONFIG_DIRECTORY32 GetImageLoadConfig32(PDWORD* size = NULL);
+		PIMAGE_BOUND_IMPORT_DESCRIPTOR GetImageBoundImport(PDWORD* size = NULL);
+		PIMAGE_COR20_HEADER GetImageComDescriptor(PDWORD* size = NULL);
 #pragma endregion	
 		
 

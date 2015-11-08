@@ -6,3 +6,4 @@
 #include "PE\Reloc\BaseRelocationReader.h"
 #include "PE\Reloc\TypeOffsetReader.h"
 #include "PE\Resource\ResourceDirectoryReader.h"
+#include "PE\DelayLoad\DelayLoad.h"
