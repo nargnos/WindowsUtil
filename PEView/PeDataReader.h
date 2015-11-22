@@ -17,12 +17,16 @@ public:
 template<typename T>
 ref class PeDataReader :public IPeDataReader
 {
+
 protected:
-	// 返回读取列的函数和列集合
-	static Tuple< Func<T^, int, String^>^, List<String^>^>^ MakeColReader()
+	List<String^>^ cols;
+	Func<T^, int, String^>^ colReader;
+	List<T^>^ data;
+	// 返回列读取函数和列名
+	static Tuple< Func<T^, int, String^>^, List<String^>^>^ CreateGetCellFunction()
 	{
 		List<String^>^ colResult = gcnew List<String^>();
-		auto properties = (T::typeid)->GetFields();
+		array<Reflection::FieldInfo^>^ properties = (T::typeid)->GetFields();
 
 		auto objParam = Expression::Parameter(T::typeid);
 		auto fieldIndexParam = Expression::Parameter(int::typeid);
@@ -44,17 +48,15 @@ protected:
 		}
 		auto switchValue = Expression::Switch(fieldIndexParam,Expression::Constant(String::Empty), cases->ToArray());
 		auto lambda = Expression::Lambda<Func<T^, int, String^>^>(switchValue->Reduce(), objParam, fieldIndexParam);
-		return gcnew  Tuple< Func<T^, int, String^>^, List<String^>^>(lambda->Compile(), colResult) ;
+		return gcnew Tuple<Func<T^, int, String^>^, List<String^>^>(lambda->Compile(), colResult) ;
 	}
 
-	List<String^>^ cols;
-	Func<T^, int, String^>^ colReader;
-	List<T^>^ data;
+
 public:
 	PeDataReader(List<T^>^ data)
 	{
 		this->data = data;
-		auto tmp = PeDataReader<T>::MakeColReader();
+		auto tmp = PeDataReader<T>::CreateGetCellFunction();
 		colReader= tmp->Item1;
 		cols = tmp->Item2;
 	}
@@ -91,12 +93,12 @@ public:
 	}
 	String^ GetCell(DataGridView^ sender, int col, int row) override
 	{
-
-		if (!row)
+		if (row == 0)
 		{
 			if (sender->SelectedRows->Count>0)
 			{
 				auto selectedRow = sender->SelectedRows[0];
+				
 				if (selectedRow->Index>0 && selectedRow->Index-1 < data->Count)
 				{
 					return data[selectedRow->Index-1]->GetOffsetData(col);

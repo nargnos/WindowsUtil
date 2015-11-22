@@ -19,9 +19,9 @@ namespace PEView {
 	using namespace System::Runtime::InteropServices;
 	using namespace System::Collections::Generic;
 	using namespace msclr::interop;
-	
-	
-	
+
+
+
 	/// <summary>
 	/// PEView 摘要
 	/// </summary>
@@ -30,8 +30,8 @@ namespace PEView {
 	public:
 		PEView(void);
 
-		
-	
+
+
 	protected:
 		/// <summary>
 		/// 清理所有正在使用的资源。
@@ -43,26 +43,109 @@ namespace PEView {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  optionToolStripMenuItem;
+	private:
+		System::Windows::Forms::MenuStrip^  menuStrip1;
+		System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  optionToolStripMenuItem;
+
+
+		System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
+		System::Windows::Forms::OpenFileDialog^  openFileDialog;
+
+		System::Windows::Forms::SplitContainer^  splitContainer1;
+
+		System::Windows::Forms::TreeView^  treeMenu;
+		System::Windows::Forms::ToolStripMenuItem^  closeToolStripMenuItem;
+		System::Windows::Forms::ToolStripMenuItem^  pluginToolStripMenuItem;
+		PeFile^ peFile;
+
+		TreeNodeDrawer^ draw;
+		bool isDefaultMenuInit;
+		bool isExMenuInit;
+		Func<DataGridView^, int, int, String^>^ lastCellValueNeeded;
+		Action<DataGridView^>^ lastSelectionChanged;
+		Dictionary<TreeNode^, System::Action^>^ menuActions;
+		Dictionary<TreeNode^, System::Action^>^ defaultMenuactions;
+		Dictionary<TreeNode^, System::Action^>^ exMenuActions;
+
+		System::Windows::Forms::TreeNode^  treeNode_DosHeader;
+		System::Windows::Forms::TreeNode^  treeNode_FileHeader;
+		System::Windows::Forms::TreeNode^  treeNode_DataDirectories;
+		System::Windows::Forms::TreeNode^  treeNode_OptionalHeader;
+		System::Windows::Forms::TreeNode^  treeNode_NtHeader;
+		System::Windows::Forms::TreeNode^  treeNode_SectionHeader;
+		System::Windows::Forms::TreeNode^  treeNode_Exe;
+		String^ str_DosHeader = "Node_DosHeader";
+		String^ str_FileHeader = "Node_FileHeader";
+		String^ str_DataDirectories = "Node_DataDirectories";
+		String^ str_OptionalHeader = "Node_OptionalHeader";
+		String^ str_NtHeader = "Node_NtHeader";
+		String^ str_SectionHeader = "Node_SectionHeader";
+		String^ str_Exe = "Node_Exe";
+
+		System::Windows::Forms::TreeNode^  treeNode_ExportDirectories;
+		System::Windows::Forms::TreeNode^  treeNode_ImportDirectories;
+		System::Windows::Forms::TreeNode^  treeNode_ResourceDirectory;
+		System::Windows::Forms::TreeNode^  treeNode_RelocationDirectory;
+		System::Windows::Forms::TreeNode^  treeNode_DebugDirectory;
+		System::Windows::Forms::TreeNode^  treeNode_TLSDirectory;
+		String^ str_ExportDirectories = L"ExportDirectories";
+		String^ str_ImportDirectories = L"ImportDirectories";
+		String^ str_ResourceDirectory = L"ResourceDirectory";
+		String^ str_RelocationDirectory = L"RelocationDirectory";
+		String^ str_DebugDirectory = L"DebugDirectory";
+	private: System::Windows::Forms::ToolStripMenuItem^  helpToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  aboutToolStripMenuItem;
 
-	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
-	private: System::Windows::Forms::OpenFileDialog^  openFileDialog;
+			 String^ str_TLSDirectory = L"TLSDirectory";
 
-	private: System::Windows::Forms::SplitContainer^  splitContainer1;
+		System::Void aboutToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e);
+		System::Void openToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e);
 
-	private: System::Windows::Forms::TreeView^  treeMenu;
-	private: System::Windows::Forms::ToolStripMenuItem^  closeToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  pluginToolStripMenuItem;
+		System::Void treeMenu_DrawNode(System::Object^  sender, System::Windows::Forms::DrawTreeNodeEventArgs^  e);
+		System::Void treeMenu_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e);
+		System::Void treeMenu_BeforeSelect(System::Object^  sender, System::Windows::Forms::TreeViewCancelEventArgs^  e);
+		System::Void closeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
 
-			 /// <summary>
-		/// 必需的设计器变量。
-		/// </summary>
+		void CloseFile();
+		void InitUI();
+		void InitExMenu();
+		void AddExMenu(TreeNode^ node);
+		void InitTreeView();
+		void InitDefaultMenu();
+
+		System::Void OnDosHeaderClick();
+		System::Void OnFileHeaderClick();
+		System::Void OnDataDirectoriesClick();
+		System::Void OnOptionalHeaderClick();
+		System::Void OnNtHeaderClick();
+		System::Void OnSectionHeaderClick();
+		System::Void OnSectionRowSelectionChanged(DataGridView^ sender);
+		void AddInfoListControl(List<String^>^ cols, int rowCount, Func<DataGridView^, int, int, String^>^ getCell, Action<DataGridView^>^ selectionChanged);
+		void AddInfoListControl(IPeDataReader^ reader);
+		void AddInfoListControl(IPeDataReader ^ reader, Action<DataGridView^>^ selectionChanged);
+
+		System::Void OnExeClick();
+
+		System::Void PEView::ExportDirectoriesClick();
+		System::Void PEView::ImportDirectoriesClick();
+		System::Void PEView::ResourceDirectoryClick();
+		System::Void PEView::RelocationDirectoryClick();
+		System::Void PEView::DebugDirectoryClick();
+		System::Void PEView::TLSDirectoryClick();
+		void OnClosed();
+
+		InfoListControl^ infoList;
+		PluginMenuManager^ pluginMenu;
+
+		void LoadPlugin();
+
+		/// <summary>
+   /// 必需的设计器变量。
+   /// </summary>
 		System::ComponentModel::Container ^components;
-		
-	
+
+
 #pragma region Windows Form Designer generated code
 		/// <summary>
 		/// 设计器支持所需的方法 - 不要修改
@@ -75,11 +158,12 @@ namespace PEView {
 			this->openToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->closeToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->optionToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->pluginToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->openFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->splitContainer1 = (gcnew System::Windows::Forms::SplitContainer());
 			this->treeMenu = (gcnew System::Windows::Forms::TreeView());
-			this->pluginToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->BeginInit();
 			this->splitContainer1->Panel1->SuspendLayout();
@@ -92,7 +176,7 @@ namespace PEView {
 			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
 			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
 				this->fileToolStripMenuItem,
-					this->optionToolStripMenuItem, this->pluginToolStripMenuItem, this->aboutToolStripMenuItem
+					this->optionToolStripMenuItem, this->pluginToolStripMenuItem, this->helpToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -133,12 +217,11 @@ namespace PEView {
 			this->optionToolStripMenuItem->Size = System::Drawing::Size(70, 24);
 			this->optionToolStripMenuItem->Text = L"设置(&S)";
 			// 
-			// aboutToolStripMenuItem
+			// pluginToolStripMenuItem
 			// 
-			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-			this->aboutToolStripMenuItem->Size = System::Drawing::Size(72, 24);
-			this->aboutToolStripMenuItem->Text = L"关于(&A)";
-			this->aboutToolStripMenuItem->Click += gcnew System::EventHandler(this, &PEView::aboutToolStripMenuItem_Click);
+			this->pluginToolStripMenuItem->Name = L"pluginToolStripMenuItem";
+			this->pluginToolStripMenuItem->Size = System::Drawing::Size(70, 24);
+			this->pluginToolStripMenuItem->Text = L"插件(&P)";
 			// 
 			// openFileDialog
 			// 
@@ -184,11 +267,19 @@ namespace PEView {
 			this->treeMenu->BeforeSelect += gcnew System::Windows::Forms::TreeViewCancelEventHandler(this, &PEView::treeMenu_BeforeSelect);
 			this->treeMenu->AfterSelect += gcnew System::Windows::Forms::TreeViewEventHandler(this, &PEView::treeMenu_AfterSelect);
 			// 
-			// pluginToolStripMenuItem
+			// helpToolStripMenuItem
 			// 
-			this->pluginToolStripMenuItem->Name = L"pluginToolStripMenuItem";
-			this->pluginToolStripMenuItem->Size = System::Drawing::Size(70, 24);
-			this->pluginToolStripMenuItem->Text = L"插件(&P)";
+			this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->aboutToolStripMenuItem });
+			this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
+			this->helpToolStripMenuItem->Size = System::Drawing::Size(73, 24);
+			this->helpToolStripMenuItem->Text = L"帮助(&H)";
+			// 
+			// aboutToolStripMenuItem
+			// 
+			this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
+			this->aboutToolStripMenuItem->Size = System::Drawing::Size(181, 26);
+			this->aboutToolStripMenuItem->Text = L"关于(&A)...";
+			this->aboutToolStripMenuItem->Click += gcnew System::EventHandler(this, &PEView::aboutToolStripMenuItem_Click);
 			// 
 			// PEView
 			// 
@@ -211,95 +302,10 @@ namespace PEView {
 			this->PerformLayout();
 
 		}
-		
+
 #pragma endregion
-	private:
-		PeFile^ peFile;
 
-		TreeNodeDrawer^ draw;
-		bool isDefaultMenuInit;
-		bool isExMenuInit;
-		Func<DataGridView^, int, int, String^>^ lastCellValueNeeded;
-		Action<DataGridView^>^ lastSelectionChanged;
-		Dictionary<TreeNode^, System::Action^>^ menuActions;
-		Dictionary<TreeNode^, System::Action^>^ defaultMenuactions;
-		Dictionary<TreeNode^, System::Action^>^ exMenuActions;
-
-
-		System::Windows::Forms::TreeNode^  treeNode_DosHeader;
-		System::Windows::Forms::TreeNode^  treeNode_FileHeader;
-		System::Windows::Forms::TreeNode^  treeNode_DataDirectories;
-		System::Windows::Forms::TreeNode^  treeNode_OptionalHeader;
-		System::Windows::Forms::TreeNode^  treeNode_NtHeader;
-		System::Windows::Forms::TreeNode^  treeNode_SectionHeader;
-		System::Windows::Forms::TreeNode^  treeNode_Exe;
-		String^ str_DosHeader = "Node_DosHeader";
-		String^ str_FileHeader = "Node_FileHeader";
-		String^ str_DataDirectories = "Node_DataDirectories";
-		String^ str_OptionalHeader = "Node_OptionalHeader";
-		String^ str_NtHeader = "Node_NtHeader";
-		String^ str_SectionHeader = "Node_SectionHeader";
-		String^ str_Exe = "Node_Exe";
-
-		System::Windows::Forms::TreeNode^  treeNode_ExportDirectories;
-		System::Windows::Forms::TreeNode^  treeNode_ImportDirectories;
-		System::Windows::Forms::TreeNode^  treeNode_ResourceDirectory;
-		System::Windows::Forms::TreeNode^  treeNode_RelocationDirectory;
-		System::Windows::Forms::TreeNode^  treeNode_DebugDirectory;
-		System::Windows::Forms::TreeNode^  treeNode_TLSDirectory;
-		String^ str_ExportDirectories = L"ExportDirectories";
-		String^ str_ImportDirectories = L"ImportDirectories";
-		String^ str_ResourceDirectory = L"ResourceDirectory";
-		String^ str_RelocationDirectory = L"RelocationDirectory";
-		String^ str_DebugDirectory = L"DebugDirectory";
-		String^ str_TLSDirectory = L"TLSDirectory";
-
-
-
-		System::Void aboutToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e);
-
-		
-
-		System::Void openToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e);
-
-		System::Void treeMenu_DrawNode(System::Object^  sender, System::Windows::Forms::DrawTreeNodeEventArgs^  e);
-		System::Void treeMenu_AfterSelect(System::Object^  sender, System::Windows::Forms::TreeViewEventArgs^  e);
-		System::Void treeMenu_BeforeSelect(System::Object^  sender, System::Windows::Forms::TreeViewCancelEventArgs^  e);
-		System::Void closeToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e);
-		void CloseFile();
-		void InitUI();
-		void InitExMenu();
-		void AddExMenu(TreeNode^ node);
-		void InitTreeView();
-		void InitDefaultMenu();
-
-		System::Void OnDosHeaderClick();
-		System::Void OnFileHeaderClick();
-		System::Void OnDataDirectoriesClick();
-		System::Void OnOptionalHeaderClick();
-		System::Void OnNtHeaderClick();
-		System::Void OnSectionHeaderClick();
-		System::Void OnSectionRowSelectionChanged(DataGridView^ sender);
-		void AddInfoListControl(List<String^>^ cols, int rowCount, Func<DataGridView^, int, int, String^>^ getCell, Action<DataGridView^>^ selectionChanged);
-		void AddInfoListControl(IPeDataReader^ reader);
-		void AddInfoListControl(IPeDataReader ^ reader, Action<DataGridView^>^ selectionChanged);
-
-		System::Void OnExeClick();
-
-		System::Void PEView::ExportDirectoriesClick();
-		System::Void PEView::ImportDirectoriesClick();
-		System::Void PEView::ResourceDirectoryClick();
-		System::Void PEView::RelocationDirectoryClick();
-		System::Void PEView::DebugDirectoryClick();
-		System::Void PEView::TLSDirectoryClick();
-		void OnClosed();
-
-
-		InfoListControl^ infoList;
-		PluginMenuManager^ pluginMenu;
-
-		void LoadPlugin();
-};
+	};
 
 }
 

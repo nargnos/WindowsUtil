@@ -34,7 +34,7 @@ namespace PEView
 		result->Add(gcnew _ExeInfo("Accessed", fileInfo->LastAccessTime.ToString()));
 
 		
-		result->Add(gcnew _ExeInfo("MD5", ""));// md5 需要用托管数组,怎么转？
+		result->Add(gcnew _ExeInfo("MD5", ""));// md5 需要用托管数组,打算做到插件里
 		
 		result->Add(gcnew _ExeInfo("SHA-1", ""));
 		result->Add(gcnew _ExeInfo("Company Name", ""));
@@ -270,6 +270,7 @@ namespace PEView
 		}
 		else
 		{
+			fs.Close();
 			throw gcnew Exception("不能创建映射对象");
 		}
 

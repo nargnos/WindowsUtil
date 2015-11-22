@@ -10,6 +10,7 @@ enum _MemberSize
 	_Qword=8
 };
 extern String^ GetSizeString(int size);
+
 [AttributeUsage(AttributeTargets::Field | AttributeTargets::Property, AllowMultiple = false)]
 ref class ColNameAttribute :Attribute
 {

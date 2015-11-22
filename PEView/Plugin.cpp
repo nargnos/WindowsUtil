@@ -13,6 +13,7 @@ inline UnManagedPlugin::UnManagedPlugin() {}
 
 inline UnManagedPlugin ^ UnManagedPlugin::CreateInstance(HMODULE dll)
 {
+	assert(dll != NULL);
 	auto result = gcnew UnManagedPlugin();
 	result->getName = (GetNameDef)GetProcAddress(dll, "GetName");
 	result->onFileOpened = (OnFileOpenedDef)GetProcAddress(dll, "OnFileOpened");
@@ -77,6 +78,7 @@ inline PeidPlugin::PeidPlugin() {}
 
 inline PeidPlugin ^ PeidPlugin::CreateInstance(HMODULE dll)
 {
+	assert(dll != NULL);
 	auto result = gcnew PeidPlugin();
 	result->doMyJob = (DoMyJobDef)GetProcAddress(dll, "DoMyJob");
 	result->loadDll = (LoadDllDef)GetProcAddress(dll, "LoadDll");
@@ -102,12 +104,12 @@ inline PluginFactory::PluginFactory() {}
 
 inline void PluginFactory::AddPlugin(Dictionary<String^, IPluginBase^>^% dic, IPluginBase ^ plugin)
 {
+	assert(dic!=nullptr && plugin != nullptr);
 	auto name = plugin->GetName();
-	if (dic->ContainsKey(name))
+	if (!dic->ContainsKey(name))
 	{
-		return;
+		dic->Add(name, plugin);
 	}
-	dic->Add(name, plugin);
 }
 
 inline bool PluginFactory::IsSameMethod(MethodInfo ^ method1, MethodInfo ^ method2)
@@ -141,6 +143,7 @@ inline bool PluginFactory::IsSameMethod(MethodInfo ^ method1, MethodInfo ^ metho
 
 inline void PluginFactory::LoadAssemblyPlugin(Assembly ^ assembly, Dictionary<String^, IPluginBase^>^% result)
 {
+	assert(assembly != nullptr && result != nullptr);
 	//auto result = gcnew Dictionary<String^, IPlugin^>();
 	auto interfaceType = IPlugin::typeid;
 	for each(auto assemblyType in assembly->GetTypes())
@@ -172,13 +175,13 @@ inline void PluginFactory::LoadAssemblyPlugin(Assembly ^ assembly, Dictionary<St
 						break;
 					}
 					isSame = IsSameMethod(interfaceMethod, assemblyMethod);
-					if (!isSame)
+					if (isSame)
 					{
-						break;
+						funcMap->Add(interfaceMethod->Name, assemblyMethod);
 					}
 					else
 					{
-						funcMap->Add(interfaceMethod->Name, assemblyMethod);
+						break;
 					}
 				}
 
@@ -197,9 +200,10 @@ inline void PluginFactory::LoadAssemblyPlugin(Assembly ^ assembly, Dictionary<St
 	}
 	//return result;
 }
-
+// FIX: 需要先检查文件有没有导出函数再载入dll，这样边载边查会有隐患
 inline IPluginBase ^ PluginFactory::LoadUnManagedPlugin(String ^ path)
 {
+	assert(!String::IsNullOrEmpty(path));
 	auto str = marshal_as<std::wstring>(path);
 	HMODULE dll;
 	try
@@ -225,6 +229,7 @@ inline IPluginBase ^ PluginFactory::LoadUnManagedPlugin(String ^ path)
 
 inline Dictionary<String^, IPluginBase^>^ PluginFactory::GetPlugins(String ^ dirName)
 {
+	assert(!String::IsNullOrEmpty(dirName));
 	auto path = Path::Combine(Application::StartupPath, dirName);
 	if (!Directory::Exists(path))
 	{
@@ -269,6 +274,7 @@ inline ToolStripMenuItem ^ PluginMenuManager::BuildMenu(String ^ menuName, PeidP
 
 inline ToolStripMenuItem ^ PluginMenuManager::BuildMenu(String ^ menuName, IPlugin ^ plugin)
 {
+	assert(plugin != nullptr);
 	auto tmpMenu = gcnew ToolStripMenuItem(menuName);
 	tmpMenu->DropDownItems->AddRange(plugin->GetMenus()->ToArray());
 	return tmpMenu;
@@ -276,6 +282,7 @@ inline ToolStripMenuItem ^ PluginMenuManager::BuildMenu(String ^ menuName, IPlug
 
 inline void PluginMenuManager::RunPeidPlugin(Object ^ plugin)
 {
+	assert(plugin != nullptr);
 	(static_cast<PeidPlugin^>(plugin))->DoMyJob(hMainDlg, path, 0, IntPtr::Zero);
 }
 
@@ -292,11 +299,13 @@ inline void PluginMenuManager::OnClick(System::Object ^ sender, System::EventArg
 
 inline void PluginMenuManager::AddMenu(ToolStripMenuItem ^ item)
 {
+	assert(item != nullptr);
 	menu->DropDownItems->Add(item);
 }
 
 inline PluginMenuManager::PluginMenuManager(ToolStripMenuItem ^ menu)
 {
+	assert(menu != nullptr);
 	isFileOpen = false;
 	this->menu = menu;
 	plugins = PluginFactory::GetPlugins("Plugins");
@@ -331,6 +340,7 @@ inline PluginMenuManager::PluginMenuManager(ToolStripMenuItem ^ menu)
 
 inline void PluginMenuManager::OnOpenFIle(IntPtr hMainDlg, String ^ path, IntPtr base, long long size, bool isReadonly)
 {
+	assert(!String::IsNullOrEmpty(path));
 	isFileOpen = true;
 	this->hMainDlg = hMainDlg;
 	this->path = path;

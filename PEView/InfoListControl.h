@@ -35,14 +35,7 @@ namespace PEView {
 		// 列,行
 		event Func<DataGridView^, int,int, String^>^ CellValueNeeded;
 		event Action<DataGridView^>^ SelectionChanged;
-		void Clear()
-		{
-			
-			infoGridView->RowCount = 0;
-			infoGridView->ColumnCount = 0;
-			infoGridView->Rows->Clear();
-			infoGridView->Columns->Clear();
-		}
+		void Clear();
 	protected:
 		/// <summary>
 		/// 清理所有正在使用的资源。
@@ -53,10 +46,12 @@ namespace PEView {
 			{
 				delete components;
 			}
-		}
-	private: System::Windows::Forms::DataGridView^  infoGridView;
-
+		} 
 	private:
+		System::Windows::Forms::DataGridView^  infoGridView;
+		System::Void infoGridView_CellValueNeeded(System::Object^  sender, System::Windows::Forms::DataGridViewCellValueEventArgs^  e);
+		System::Void infoGridView_SelectionChanged(System::Object^  sender, System::EventArgs^  e);
+
 		/// <summary>
 		/// 必需的设计器变量。
 		/// </summary>
@@ -141,14 +136,7 @@ namespace PEView {
 #pragma endregion
 		
 
-private: System::Void infoGridView_CellValueNeeded(System::Object^  sender, System::Windows::Forms::DataGridViewCellValueEventArgs^  e) 
-{
-	e->Value = CellValueNeeded((DataGridView^)sender, e->ColumnIndex,e->RowIndex);
-}
-System::Void infoGridView_SelectionChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	SelectionChanged((DataGridView^)sender);
-}
+
 };
 
 }

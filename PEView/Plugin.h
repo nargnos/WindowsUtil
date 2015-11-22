@@ -57,7 +57,8 @@ public:
 
 
 
-// 非托管dll的接口转换, 要用extern "C" 导出
+// 非托管dll的接口转换, 要用extern "C" 导出，
+// TODO: 接口待修改，先放着
 ref class UnManagedPlugin : public IPlugin
 {
 	// LPSTR GetName()

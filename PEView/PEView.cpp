@@ -64,7 +64,7 @@ namespace PEView
 	{
 		auto title = marshal_as<std::wstring>(this->Text);
 
-		ShellAboutW((HWND)this->Handle.ToPointer(), (LPCWSTR)title.c_str(), NULL, NULL);
+		ShellAboutW((HWND)this->Handle.ToPointer(), (LPCWSTR)title.c_str(), L"²âÊÔÀà¿âÓÃ", NULL);
 
 	}
 	void PEView::CloseFile()
@@ -215,6 +215,7 @@ namespace PEView
 	}
 	void PEView::AddExMenu(TreeNode^ node)
 	{
+		assert(node != nullptr);
 		menuActions->Add(node, exMenuActions[node]);
 		this->treeMenu->Nodes->Add(node);
 	}
@@ -254,6 +255,7 @@ namespace PEView
 
 	System::Void PEView::OnSectionRowSelectionChanged(DataGridView^ sender)
 	{
+		assert(sender != nullptr);
 		if (sender->SelectedRows->Count > 0 && sender->SelectedRows[0]->Index == 0)
 		{
 			sender->SelectedRows[0]->Selected = false;
@@ -265,18 +267,18 @@ namespace PEView
 
 	void PEView::AddInfoListControl(List<String^>^ cols, int rowCount, Func<DataGridView^, int, int, String^>^ getCell, Action<DataGridView^>^ selectionChanged)
 	{
-		bool needAdd = false;
+		assert(cols!=nullptr && getCell != nullptr);
+		bool needAdd = true;
 		if (splitContainer1->Panel2->Controls->Count > 0)
 		{
 			if (splitContainer1->Panel2->Controls[0] != infoList)
 			{
 				splitContainer1->Panel2->Controls->Clear();
-				needAdd = true;
 			}
-		}
-		else
-		{
-			needAdd = true;
+			else
+			{
+				needAdd = false;
+			}
 		}
 
 		infoList->Clear();
@@ -307,10 +309,12 @@ namespace PEView
 	}
 	void PEView::AddInfoListControl(IPeDataReader^ reader)
 	{
+		
 		AddInfoListControl(reader, nullptr);
 	}
 	void PEView::AddInfoListControl(IPeDataReader^ reader, Action<DataGridView^>^ selectionChanged)
 	{
+		assert(reader != nullptr);
 		splitContainer1->Invoke(gcnew Action<List<String^>^, int, Func<DataGridView^, int, int, String^>^, Action<DataGridView^>^>(this, &PEView::AddInfoListControl),
 			reader->GetCols(),
 			reader->GetCount(),
@@ -347,7 +351,8 @@ namespace PEView
 		treeMenu->Nodes->Clear();
 		menuActions->Clear();
 	}
-	inline System::Void PEView::closeToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e) {
+	inline System::Void PEView::closeToolStripMenuItem_Click(System::Object ^ sender, System::EventArgs ^ e) 
+	{
 		CloseFile();
 	}
 }

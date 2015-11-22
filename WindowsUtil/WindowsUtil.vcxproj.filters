@@ -15,27 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WinUtil\DisAsm\InstructionNames.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\OpcodeReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\OpcodeTables.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Operands.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\OperandStruct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\PrefixQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Registers.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WinUtil\PE\DelayLoad\DelayLoad.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -116,27 +95,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinUtil\DisAsm\InstructionNames.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\OpcodeReader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\OpcodeTables.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Operands.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\OperandStruct.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\PrefixQueue.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Registers.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\PE\DelayLoad\DelayLoad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -210,9 +168,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\Process\Remote\RemoteProccess.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\!DisAsm未完成">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

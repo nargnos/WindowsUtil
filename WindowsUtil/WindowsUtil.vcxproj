@@ -142,7 +142,6 @@
   <ItemGroup>
     <ClInclude Include="WinUtil\Process\Hook\ApiHook.h" />
     <ClInclude Include="WinUtil\Process\Hook\Opcode\GetInstructionLen.h" />
-    <ClInclude Include="WinUtil\DisAsm\PrefixQueue.h" />
     <ClInclude Include="WinUtil\Process\Hook\DelayLoadHook.h" />
     <ClInclude Include="WinUtil\PE\DelayLoad\DelayLoadThunkReader.h" />
     <ClInclude Include="WinUtil\PE\DelayLoad\DelayLoad.h" />
@@ -165,20 +164,12 @@
     <ClInclude Include="WinUtil\Process\LazyLoad\WinApiDynamicCallDef.h" />
     <ClInclude Include="WinUtil\Process\Remote\RemoteProccess.h" />
     <ClInclude Include="WinUtil\Process\LazyLoad\LazyLoadSystemApi.h" />
-    <ClInclude Include="WinUtil\DisAsm\OpcodeTables.h" />
-    <ClInclude Include="WinUtil\DisAsm\InstructionNames.h" />
-    <ClInclude Include="WinUtil\DisAsm\Registers.h" />
-    <ClInclude Include="WinUtil\DisAsm\OperandStruct.h" />
-    <ClInclude Include="WinUtil\DisAsm\Operands.h" />
-    <ClInclude Include="WinUtil\DisAsm\OpcodeReader.h" />
     <ClInclude Include="WinUtil\Process\Hook\Opcode\SimpleOpcodeMap.h" />
     <ClInclude Include="WinUtil\Process\OverwriteWinApi\OverwriteWinApi.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinUtil\DisAsm\!DisAsm未完成" />
     <ClCompile Include="WinUtil\Process\Hook\ApiHook.cpp" />
     <ClCompile Include="WinUtil\Process\Hook\Opcode\GetInstructionLen.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\PrefixQueue.cpp" />
     <ClCompile Include="WinUtil\Process\Hook\DelayLoadHook.cpp" />
     <ClCompile Include="WinUtil\PE\DelayLoad\DelayLoadThunkReader.cpp" />
     <ClCompile Include="WinUtil\PE\DelayLoad\DelayLoad.cpp" />
@@ -200,12 +191,6 @@
     <ClCompile Include="WinUtil\PE\Section\SectionReader.cpp" />
     <ClCompile Include="WinUtil\PE\Reloc\TypeOffsetReader.cpp" />
     <ClCompile Include="WinUtil\Process\LazyLoad\LazyLoadSystemApi.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\OpcodeTables.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\InstructionNames.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Registers.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\OperandStruct.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Operands.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\OpcodeReader.cpp" />
     <ClCompile Include="WinUtil\Process\Hook\Opcode\SimpleOpcodeMap.cpp" />
     <ClCompile Include="WinUtil\Process\OverwriteWinApi\OverwriteWinApi.cpp" />
   </ItemGroup>
