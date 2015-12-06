@@ -13,12 +13,12 @@ namespace Process
 			{
 				return NULL;
 			}
-			auto thunkAddress = PE::Import::GetProcImportThunkAddress(pe, dllName, procName);
+			auto thunkAddress = PE::GetProcImportThunkAddress(pe, dllName, procName);
 			if (!thunkAddress)
 			{
 				return NULL;
 			}
-			if (pe.hasNtHeader32)
+			if (pe.HasNtHeader32())
 			{
 				if (oldFuncAddress)
 				{

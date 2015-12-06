@@ -96,7 +96,7 @@ namespace Process
 		// 使用重写的版本,非系统dll里的
 		FARPROC _GetProcAddress(HMODULE module, LPCSTR procName)
 		{
-			return PE::Export::GetProcAddress(module, procName);
+			return PE::GetProcAddress(module, procName);
 		}
 		FARPROC _GetProcAddressEx(LPCWSTR dllName, LPCSTR procName)
 		{

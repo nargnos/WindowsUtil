@@ -135,30 +135,30 @@ namespace PEView
 		}
 
 		// 扩展菜单选择性添加
-		if (peDecoder->GetImageExport())
+		if (peDecoder->GetExport()->IsExist())
 		{
 			AddExMenu(treeNode_ExportDirectories);
 		}
-		if (peDecoder->GetImageImport())
+		if (peDecoder->GetImport()->IsExist())
 		{
 			AddExMenu(treeNode_ImportDirectories);
 		}
-		if (peDecoder->GetImageResource())
+		/*if (peDecoder->GetResource())
 		{
 			AddExMenu(treeNode_ResourceDirectory);
-		}
-		if (peDecoder->GetImageBasereloc())
+		}*/
+		if (peDecoder->GetReloc()->IsExist())
 		{
 			AddExMenu(treeNode_RelocationDirectory);
 		}
-		if (peDecoder->GetImageDebug())
+		/*if (peDecoder->GetImageDebug())
 		{
 			AddExMenu(treeNode_DebugDirectory);
 		}
 		if (peDecoder->GetImageTls32() || peDecoder->GetImageTls64())
 		{
 			AddExMenu(treeNode_TLSDirectory);
-		}
+		}*/
 		///////////////////////////////////////////
 
 		this->treeMenu->ExpandAll();

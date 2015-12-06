@@ -28,9 +28,9 @@ namespace PE
 				{
 					auto curNameTable = dtr.CurrentNameTable();
 					PIMAGE_IMPORT_BY_NAME funcName = NULL;
-					if (pe.hasNtHeader32)
+					if (pe.HasNtHeader32())
 					{
-						if (!PE::Import::IsSnapByOrdinal((PIMAGE_THUNK_DATA32)curNameTable))
+						if (!PE::IsSnapByOrdinal((PIMAGE_THUNK_DATA32)curNameTable))
 						{
 							funcName = (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(*(HANDLE_PTR*)curNameTable);
 
@@ -43,7 +43,7 @@ namespace PE
 					}
 					else
 					{
-						if (!PE::Import::IsSnapByOrdinal((PIMAGE_THUNK_DATA64)curNameTable))
+						if (!PE::IsSnapByOrdinal((PIMAGE_THUNK_DATA64)curNameTable))
 						{
 							funcName = (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(*(HANDLE_PTR*)curNameTable);
 						}

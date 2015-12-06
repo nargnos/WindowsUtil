@@ -8,10 +8,10 @@ namespace PE
 
 		// 层级结构为 TypeDirectory --> ResourceNameDirectory --> LanguageDirectory --> ResourceData
 		// 需要按这个层级遍历
-		class ResourceDirectoryReader
+		class ResourceDirectoryIterator
 		{
 		public:
-			ResourceDirectoryReader(PIMAGE_RESOURCE_DIRECTORY root);
+			ResourceDirectoryIterator(PIMAGE_RESOURCE_DIRECTORY root);
 			void Reset();
 
 			void ResetCurrentTypeDirectoryEntry();
@@ -30,7 +30,7 @@ namespace PE
 			PIMAGE_RESOURCE_DIRECTORY CurrentResourceNameDirectory();
 			PIMAGE_RESOURCE_DATA_ENTRY CurrentResourceDataEntry();
 
-			~ResourceDirectoryReader();
+			~ResourceDirectoryIterator();
 		private:
 			void SetEntryArrayRange(PIMAGE_RESOURCE_DIRECTORY Directory, PIMAGE_RESOURCE_DIRECTORY_ENTRY& begin, PIMAGE_RESOURCE_DIRECTORY_ENTRY& end);
 			PIMAGE_RESOURCE_DIRECTORY root;

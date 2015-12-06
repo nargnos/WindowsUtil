@@ -1,34 +1,23 @@
-#include "TypeOffsetReader.h"
+#pragma once
+#include "../Common/Common.h"
 namespace PE
 {
-	namespace Reloc
+	template<typename _BaseRelocationIterator>
+	class TypeOffsetIterator :
+		public IIterator<PWORD>
 	{
-		TypeOffsetReader::TypeOffsetReader()
+	public:
+		TypeOffsetIterator(_BaseRelocationIterator& baseRelocationIterator)
 		{
-			typeOffset = NULL;
+			Init(baseRelocationIterator.currentReloc);
 		}
-		TypeOffsetReader::TypeOffsetReader(PIMAGE_BASE_RELOCATION reloc)
-		{
-			Init(reloc);
+		~TypeOffsetIterator() {}
 
-		}
-		TypeOffsetReader::~TypeOffsetReader()
-		{
-		}
-		void TypeOffsetReader::Init(PIMAGE_BASE_RELOCATION reloc)
-		{
-			assert(reloc);
-			virtualAddress = reloc->VirtualAddress;
-			typeOffset = PWORD((PUINT8)reloc + sizeof(IMAGE_BASE_RELOCATION));
-			endTypeOffset = typeOffset + ((reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD));
-			Reset();
-		}
-		PWORD TypeOffsetReader::Current()
+		PWORD Current()
 		{
 			return currentTypeOffset;
 		}
-
-		bool TypeOffsetReader::Next()
+		bool Next()
 		{
 			if (!typeOffset)
 			{
@@ -45,20 +34,19 @@ namespace PE
 			}
 			return false;
 		}
-		void TypeOffsetReader::Reset()
+		void Reset()
 		{
 			currentTypeOffset = NULL;
 		}
-
-		WORD TypeOffsetReader::CurrentType()
+		WORD CurrentType()
 		{
 			return (*currentTypeOffset) >> 12;
 		}
-		DWORD TypeOffsetReader::CurrentRelocRva()
+		DWORD CurrentRelocRva()
 		{
 			return ((*currentTypeOffset) & 0xFFF) + virtualAddress;
 		}
-		void TypeOffsetReader::ApplyCurrentReloc(PVOID oldBase, PVOID currentBase)
+		void ApplyCurrentReloc(PVOID oldBase, PVOID currentBase)// 当程序已经映射完毕后不要使用
 		{
 			// oldValAddr + baseDelta = 要应用的值
 			// 应用方式		
@@ -83,32 +71,51 @@ namespace PE
 				break;
 			}
 		}
-		void RelocLow(PVOID oldBase, PVOID currentBase, DWORD relocRva)
+
+		static void RelocHighLow(PVOID oldBase, PVOID currentBase, DWORD relocRva)
+		{
+			auto baseDelta = (PUINT8)currentBase - (PUINT8)oldBase;
+			auto currentRelocAddress = PDWORD((PUINT8)currentBase + relocRva);
+			*currentRelocAddress = *currentRelocAddress + (baseDelta & MAXDWORD);
+		}
+		static void RelocLow(PVOID oldBase, PVOID currentBase, DWORD relocRva)
 		{
 			// FIX: 这里不确定
 			/*auto baseDelta = (PUINT8)currentBase - (PUINT8)oldBase;
 			auto currentRelocAddress = PWORD((PUINT8)currentBase + relocRva);
 			*currentRelocAddress = *currentRelocAddress + LOWORD(baseDelta & MAXWORD);*/
 		}
-		void RelocHigh(PVOID oldBase, PVOID currentBase, DWORD relocRva)
+		static void RelocHigh(PVOID oldBase, PVOID currentBase, DWORD relocRva)
 		{
 			/*auto baseDelta = (PUINT8)currentBase - (PUINT8)oldBase;
 			auto currentRelocAddress = PWORD((PUINT8)currentBase + relocRva);
 			*currentRelocAddress = HIWORD(MAKELONG(0, *currentRelocAddress) + (baseDelta & MAXDWORD));*/
 		}
-
-		void RelocHighLow(PVOID oldBase, PVOID currentBase, DWORD relocRva)
-		{
-			auto baseDelta = (PUINT8)currentBase - (PUINT8)oldBase;
-			auto currentRelocAddress = PDWORD((PUINT8)currentBase + relocRva);
-			*currentRelocAddress = *currentRelocAddress + (baseDelta & MAXDWORD);
-		}
-		void RelocDir64(PVOID oldBase, PVOID currentBase, DWORD relocRva)
+		static void RelocDir64(PVOID oldBase, PVOID currentBase, DWORD relocRva)
 		{
 			auto baseDelta = (PUINT8)currentBase - (PUINT8)oldBase;
 			auto currentRelocAddress = PDWORDLONG((PUINT8)currentBase + relocRva);
 			*currentRelocAddress = *currentRelocAddress + baseDelta;
 		}
+	private:
+		DWORD virtualAddress;
+		PWORD endTypeOffset;
+		PWORD typeOffset;
+		PWORD currentTypeOffset;
 
-	}
+		PIMAGE_BASE_RELOCATION currentReloc;
+		void Init(PIMAGE_BASE_RELOCATION reloc)
+		{
+			assert(reloc);
+			currentReloc = reloc;
+			virtualAddress = reloc->VirtualAddress;
+			typeOffset = PWORD((PUINT8)reloc + sizeof(IMAGE_BASE_RELOCATION));
+			endTypeOffset = typeOffset + ((reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD));
+			Reset();
+		}
+
+	};
+
+
+
 }

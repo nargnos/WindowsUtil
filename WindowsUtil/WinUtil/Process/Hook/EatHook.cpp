@@ -13,7 +13,7 @@ namespace Process
 			{
 				return NULL;
 			}
-			auto result = PE::Export::GetProcExportFuncTableAddress(dll, procName);
+			auto result = PE::GetProcExportFuncTableAddress(dll, procName);
 			if (!result)
 			{
 				return NULL;
@@ -25,7 +25,7 @@ namespace Process
 				*oldFuncRva = *result;
 			}
 			LONG setRva;
-			if (dll.hasNtHeader32)
+			if (dll.HasNtHeader32())
 			{
 				setRva = (LONG)hookFunc - (LONG)dllBase;
 			}

@@ -1,13 +1,12 @@
-#include "ExportReader.h"
+#include "ExportIterator.h"
 
 namespace PE
 {
-	namespace Export
-	{
-		ExportReader::ExportReader(PeDecoder& pe) :ExportReader(pe, pe.GetImageExport())
+	
+	/*	ExportIterator::ExportIterator(PeDecoder& pe) :ExportIterator(pe, pe.GetImageExport())
 		{
 		}
-		ExportReader::ExportReader(PeDecoder& pe, PIMAGE_EXPORT_DIRECTORY exportDirectory)
+		ExportIterator::ExportIterator(PeDecoder& pe, PIMAGE_EXPORT_DIRECTORY exportDirectory)
 		{
 			assert(exportDirectory != NULL);
 			this->exportDirectory = exportDirectory;
@@ -26,33 +25,33 @@ namespace PE
 			}
 			Reset();
 		}
-		ExportReader::~ExportReader(){}
-		PDWORD ExportReader::FuncTable()
+		ExportIterator::~ExportIterator(){}
+		PDWORD ExportIterator::FuncTable()
 		{
 			return funcs;
 		}
-		PDWORD ExportReader::NameTable()
+		PDWORD ExportIterator::NameTable()
 		{
 			return names;
 		}
-		PWORD ExportReader::OrdinalTable()
+		PWORD ExportIterator::OrdinalTable()
 		{
 			return nameOrdinals;
 		}
-		PDWORD ExportReader::NumberOfFunctions()
+		PDWORD ExportIterator::NumberOfFunctions()
 		{
 			return numberOfFunctions;
 		}
-		PDWORD ExportReader::NumberOfNames()
+		PDWORD ExportIterator::NumberOfNames()
 		{
 			return numberOfNames;
 		}
-		PIMAGE_EXPORT_DIRECTORY ExportReader::GetExportDirectory()
+		PIMAGE_EXPORT_DIRECTORY ExportIterator::GetExportDirectory()
 		{
 			return exportDirectory;
 		}
 
-		PDWORD ExportReader::CurrentFuncRva()
+		PDWORD ExportIterator::CurrentFuncRva()
 		{
 			if (currentIndex == -1)
 			{
@@ -60,7 +59,7 @@ namespace PE
 			}
 			return &funcs[nameOrdinals[currentIndex]];
 		}
-		PDWORD ExportReader::CurrentNameRva()
+		PDWORD ExportIterator::CurrentNameRva()
 		{
 			if (currentIndex == -1)
 			{
@@ -68,7 +67,7 @@ namespace PE
 			}
 			return &names[currentIndex];
 		}
-		PWORD ExportReader::CurrentNameOrdinals()
+		PWORD ExportIterator::CurrentNameOrdinals()
 		{
 			if (currentIndex == -1)
 			{
@@ -76,7 +75,7 @@ namespace PE
 			}
 			return &nameOrdinals[currentIndex];
 		}
-		bool ExportReader::Next()
+		bool ExportIterator::Next()
 		{
 			if (numberOfNames)
 			{
@@ -87,9 +86,9 @@ namespace PE
 			}
 			return false;
 		}
-		void ExportReader::Reset()
+		void ExportIterator::Reset()
 		{
 			currentIndex = -1;
-		}
-	}
+		}*/
+	
 }

@@ -4,18 +4,18 @@ namespace PE
 {
 	namespace Resource
 	{
-		ResourceDirectoryReader::ResourceDirectoryReader(PIMAGE_RESOURCE_DIRECTORY root) :root(root)
+		ResourceDirectoryIterator::ResourceDirectoryIterator(PIMAGE_RESOURCE_DIRECTORY root) :root(root)
 		{
 			assert(root);
 			SetEntryArrayRange(root, firstTypeDirectoryEntry, lastTypeDirectoryEntry);
 			Reset();
 		}
-		void ResourceDirectoryReader::SetEntryArrayRange(PIMAGE_RESOURCE_DIRECTORY Directory, PIMAGE_RESOURCE_DIRECTORY_ENTRY& begin, PIMAGE_RESOURCE_DIRECTORY_ENTRY& end)
+		void ResourceDirectoryIterator::SetEntryArrayRange(PIMAGE_RESOURCE_DIRECTORY Directory, PIMAGE_RESOURCE_DIRECTORY_ENTRY& begin, PIMAGE_RESOURCE_DIRECTORY_ENTRY& end)
 		{
 			begin = LocateFirstEntry(Directory);
 			end = begin + GetNumberOfEntries(Directory);
 		}
-		bool ResourceDirectoryReader::NextTypeDirectoryEntry()
+		bool ResourceDirectoryIterator::NextTypeDirectoryEntry()
 		{
 			if (currentTypeDirectoryEntry)
 			{
@@ -39,7 +39,7 @@ namespace PE
 			}
 			return false;
 		}
-		bool ResourceDirectoryReader::NextResourceNameDirectoryEntry()
+		bool ResourceDirectoryIterator::NextResourceNameDirectoryEntry()
 		{
 			if (currentResourceNameDirectoryEntry)
 			{
@@ -60,7 +60,7 @@ namespace PE
 			}
 			return false;
 		}
-		bool ResourceDirectoryReader::NextLanguageDirectoryEntry()
+		bool ResourceDirectoryIterator::NextLanguageDirectoryEntry()
 		{
 			if (currentLanguageDirectoryEntry)
 			{
@@ -80,17 +80,17 @@ namespace PE
 			return false;
 		}
 
-		void ResourceDirectoryReader::Reset()
+		void ResourceDirectoryIterator::Reset()
 		{
 			ResetCurrentTypeDirectoryEntry();
 			ResetCurrentResourceNameDirectoryEntry();
 			ResetCurrentLanguageDirectoryEntry();
 		}
-		void ResourceDirectoryReader::ResetCurrentTypeDirectoryEntry()
+		void ResourceDirectoryIterator::ResetCurrentTypeDirectoryEntry()
 		{
 			currentTypeDirectoryEntry = NULL;
 		}
-		void ResourceDirectoryReader::ResetCurrentResourceNameDirectoryEntry()
+		void ResourceDirectoryIterator::ResetCurrentResourceNameDirectoryEntry()
 		{
 			if (currentTypeDirectoryEntry)
 			{
@@ -99,7 +99,7 @@ namespace PE
 			
 			currentResourceNameDirectoryEntry = NULL;
 		}
-		void ResourceDirectoryReader::ResetCurrentLanguageDirectoryEntry()
+		void ResourceDirectoryIterator::ResetCurrentLanguageDirectoryEntry()
 		{
 			if (currentResourceNameDirectoryEntry)
 			{
@@ -108,34 +108,34 @@ namespace PE
 			currentLanguageDirectoryEntry = NULL;
 		}
 
-		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::CurrentTypeDirectoryEntry()
+		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryIterator::CurrentTypeDirectoryEntry()
 		{
 			return currentTypeDirectoryEntry;
 		}
-		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::CurrentResourceNameDirectoryEntry()
+		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryIterator::CurrentResourceNameDirectoryEntry()
 		{
 			return currentResourceNameDirectoryEntry;
 		}
-		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryReader::CurrentLanguageDirectoryEntry()
+		PIMAGE_RESOURCE_DIRECTORY_ENTRY ResourceDirectoryIterator::CurrentLanguageDirectoryEntry()
 		{
 			return currentLanguageDirectoryEntry;
 		}
 
 
-		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryReader::CurrentTypeDirectory()
+		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryIterator::CurrentTypeDirectory()
 		{
 			return currentTypeDirectoryEntry?LocateResourceDirectory(root, currentTypeDirectoryEntry):NULL;
 		}
-		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryReader::CurrentResourceNameDirectory()
+		PIMAGE_RESOURCE_DIRECTORY ResourceDirectoryIterator::CurrentResourceNameDirectory()
 		{
 			return currentResourceNameDirectoryEntry?LocateResourceDirectory(root, currentResourceNameDirectoryEntry): NULL;
 		}
-		PIMAGE_RESOURCE_DATA_ENTRY ResourceDirectoryReader::CurrentResourceDataEntry()
+		PIMAGE_RESOURCE_DATA_ENTRY ResourceDirectoryIterator::CurrentResourceDataEntry()
 		{
 			return currentLanguageDirectoryEntry?LocateResourceDataEntry(root, currentLanguageDirectoryEntry):NULL;
 		}
 
-		ResourceDirectoryReader::~ResourceDirectoryReader()
+		ResourceDirectoryIterator::~ResourceDirectoryIterator()
 		{
 		}
 

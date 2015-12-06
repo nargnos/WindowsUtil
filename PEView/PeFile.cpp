@@ -51,7 +51,7 @@ namespace PEView
 		// FIX: 非ref的结构体类型不知道怎么反射字段名(用GetFields(Reflection::BindingFlags::NonPublic| Reflection::BindingFlags::Instance)反射不出结果),
 		// 现在只能一个个填
 		auto result = gcnew List<_PeData^>();
-		auto tmpDosHeader = peDecoder->DosHeader();
+		auto tmpDosHeader = peDecoder->GetDosHeader()->GetValue();
 
 		_ADD_TABLE(e_magic, tmpDosHeader, result);
 		_ADD_TABLE(e_cblp, tmpDosHeader, result);
@@ -77,7 +77,7 @@ namespace PEView
 	}
 	List<_PeData^>^ PeFile::GetNtHeaderData()
 	{
-		auto tmpNtHeader = peDecoder->NtHeader32();
+		auto tmpNtHeader = peDecoder->GetNtHeader()->GetNtHeader32();
 		auto result = gcnew List<_PeData^>();
 		_ADD_TABLE(Signature, tmpNtHeader, result);
 		return result;
@@ -88,11 +88,11 @@ namespace PEView
 		PIMAGE_FILE_HEADER tmpFileHeader;
 		if (peDecoder->HasNtHeader32())
 		{
-			tmpFileHeader = &peDecoder->NtHeader32()->FileHeader;
+			tmpFileHeader = &peDecoder->GetNtHeader()->GetNtHeader32()->FileHeader;
 		}
 		else
 		{
-			tmpFileHeader = &peDecoder->NtHeader64()->FileHeader;
+			tmpFileHeader = &peDecoder->GetNtHeader()->GetNtHeader64()->FileHeader;
 		}
 		_ADD_TABLE(Machine, tmpFileHeader, result);
 		_ADD_TABLE(NumberOfSections, tmpFileHeader, result);
@@ -108,7 +108,7 @@ namespace PEView
 		auto result = gcnew List<_PeData^>();
 		if (peDecoder->HasNtHeader32())
 		{
-			auto tmpOh = &peDecoder->NtHeader32()->OptionalHeader;
+			auto tmpOh = &peDecoder->GetNtHeader()->GetNtHeader32()->OptionalHeader;
 			_ADD_TABLE(Magic, tmpOh, result);
 			_ADD_TABLE(MajorLinkerVersion, tmpOh, result);
 			_ADD_TABLE(MinorLinkerVersion, tmpOh, result);
@@ -143,7 +143,7 @@ namespace PEView
 		}
 		else
 		{
-			auto tmpOh = &peDecoder->NtHeader64()->OptionalHeader;
+			auto tmpOh = &peDecoder->GetNtHeader()->GetNtHeader64()->OptionalHeader;
 			_ADD_TABLE(Magic, tmpOh, result);
 			_ADD_TABLE(MajorLinkerVersion, tmpOh, result);
 			_ADD_TABLE(MinorLinkerVersion, tmpOh, result);
@@ -211,8 +211,8 @@ namespace PEView
 	{
 		auto result = gcnew List<_PeData^>();
 		auto count = peDecoder->HasNtHeader32() ?
-			peDecoder->NtHeader32()->OptionalHeader.NumberOfRvaAndSizes :
-			peDecoder->NtHeader64()->OptionalHeader.NumberOfRvaAndSizes;
+			peDecoder->GetNtHeader()->GetNtHeader32()->OptionalHeader.NumberOfRvaAndSizes :
+			peDecoder->GetNtHeader()->GetNtHeader64()->OptionalHeader.NumberOfRvaAndSizes;
 		for (int i = 0; i < count && i<= IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR; i++)
 		{
 			auto tmpDataDirectory = peDecoder->GetDataDirectory(i);
@@ -241,11 +241,11 @@ namespace PEView
 	}
 	List<_SectionData^>^ PeFile::GetSectionData()
 	{
-		PE::Section::SectionReader sr(*peDecoder.get());
+		auto sr = peDecoder->GetSection()->CreateIterator();
 		auto result = gcnew List<_SectionData^>();
-		while (sr.Next())
+		while (sr->Next())
 		{
-			result->Add(gcnew _SectionData(peDecoder->GetBase(), sr.Current()));
+			result->Add(gcnew _SectionData(peDecoder->GetBase(), sr->Current()));
 		}
 		return result;
 	}

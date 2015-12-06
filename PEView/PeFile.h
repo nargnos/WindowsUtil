@@ -1,5 +1,5 @@
 #pragma once
-#include <PeImage.h>
+#include <PE\PeDecoder.h>
 #include <memory>
 #include <list>
 #include <msclr\marshal_cppstd.h>  
