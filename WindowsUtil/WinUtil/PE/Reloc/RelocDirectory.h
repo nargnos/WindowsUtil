@@ -12,7 +12,7 @@ namespace PE
 		friend BaseRelocationIterator<RelocDirectory<_PeDecoder>>;
 		RelocDirectory(_PeDecoder& pe):DataDirectory<_PeDecoder, PIMAGE_BASE_RELOCATION, IMAGE_DIRECTORY_ENTRY_BASERELOC>(pe)
 		{
-			
+			canCreateIterator = true;
 		}
 
 		~RelocDirectory()

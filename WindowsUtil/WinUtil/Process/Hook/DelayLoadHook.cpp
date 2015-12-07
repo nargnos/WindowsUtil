@@ -17,7 +17,7 @@ namespace Process
 			{
 				return NULL;
 			}
-			auto result = (PVOID*)PE::DelayLoad::GetDelayLoadAddressTableAddress(pe, dllName, procName);
+			auto result = (PVOID*)PE::GetDelayLoadAddressTableAddress(pe, dllName, procName);
 			if (result)
 			{
 				if (oldFuncAddr)

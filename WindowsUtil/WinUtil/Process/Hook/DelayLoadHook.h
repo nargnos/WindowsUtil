@@ -1,7 +1,8 @@
 #pragma once
 #include "..\LazyLoad\LazyLoadSystemApi.h"
 #include "..\..\PE\Import\Import.h"
-#include "..\..\PE\DelayLoad\DelayLoad.h"
+#include "..\..\PE\PeDecoder.h"
+#include "..\..\PE\DelayImport\DelayImport.h"
 namespace Process
 {
 	namespace Hook

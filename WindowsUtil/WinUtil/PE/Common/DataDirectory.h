@@ -13,7 +13,7 @@ namespace PE
 		PIMAGE_DATA_DIRECTORY dataDirectory;
 		DataType data;
 		PDWORD size;
-		PVOID DirectoryEntryToData()
+		virtual PVOID DirectoryEntryToData()
 		{
 			if (!dataDirectory || dataDirectory->VirtualAddress == NULL)
 			{
@@ -25,7 +25,6 @@ namespace PE
 
 		DataDirectory(_PeDecoder& pe) :PeStruct<_PeDecoder>(pe)
 		{
-			auto& ntHeader = peDecoder.GetNtHeader();
 			dataDirectory=peDecoder.GetDataDirectory(Index);
 			if (dataDirectory)
 			{
@@ -41,7 +40,7 @@ namespace PE
 		// 需要先判断结构存在才能进行下一步操作
 		bool IsExist()
 		{
-			return dataDirectory != NULL;
+			return data != NULL;
 		}
 		virtual ~DataDirectory()
 		{

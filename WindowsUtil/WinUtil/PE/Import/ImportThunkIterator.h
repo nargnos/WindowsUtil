@@ -4,11 +4,17 @@
 namespace PE
 {
 	// 导入表Thunk结构读取器
-#define CONVERT_THUNK_POINTER(thunkPointer, x) ((PIMAGE_THUNK_DATA##x)thunkPointer)
+
 	template<typename _ImportDescriptorIterator>
 	class ImportThunkIterator
 	{
 		_ImportDescriptorIterator& importDescriptorIterator;
+		bool is32;
+		PVOID currentThunk;
+		PVOID currentOriginalThunk;
+
+		PVOID originalThunk;
+		PVOID thunk;
 		void Init(PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
 		{
 			originalThunk = importDescriptorIterator.importDirectory.GetPeDecoder().GetRvaData(importDescriptor->OriginalFirstThunk);
@@ -22,7 +28,7 @@ namespace PE
 			Init(importDescriptorIterator.Current());
 		}
 
-
+#define CONVERT_THUNK_POINTER(thunkPointer, x) ((PIMAGE_THUNK_DATA##x)thunkPointer)
 		PIMAGE_THUNK_DATA32 CurrentThunk32()
 		{
 			return is32 ? CONVERT_THUNK_POINTER(currentThunk, 32) : NULL;
@@ -44,8 +50,8 @@ namespace PE
 
 
 #define CHECK_THUNK(x) \
-					auto tmpThunk = CONVERT_THUNK_POINTER(currentOriginalThunk, x) + 1;\
-			if (CONVERT_THUNK_POINTER(tmpThunk,x)->u1.AddressOfData == NULL)	   \
+			auto tmpThunk = CONVERT_THUNK_POINTER(currentOriginalThunk, x) + 1;\
+			if (CONVERT_THUNK_POINTER(tmpThunk,x)->u1.AddressOfData == NULL)   \
 			{																   \
 				return false;												   \
 			}																   \
@@ -75,16 +81,7 @@ namespace PE
 			currentThunk = NULL;
 			currentOriginalThunk = NULL;
 		}
-		~ImportThunkIterator(){}
-
-
-	private:
-		bool is32;
-		PVOID currentThunk;
-		PVOID currentOriginalThunk;
-
-		PVOID originalThunk;
-		PVOID thunk;
+		~ImportThunkIterator() {}
 
 	};
 

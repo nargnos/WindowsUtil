@@ -20,6 +20,10 @@ public:
 		isInitialized = InitFunc();
 		return isInitialized;
 	}
+	bool IsInit()
+	{
+		return isInitialized;
+	}
 	virtual ~InitStruct()
 	{
 	}

@@ -34,8 +34,6 @@ namespace PE
 		{
 			assert(procName&&pe.IsMapped());
 			auto idr = pe.GetImport()->CreateIterator();
-			//ImportDescriptorIterator idr(pe);
-			//ImportThunkIterator itr;
 			while (idr->Next())
 			{
 				auto currentDescriptor = idr->Current();
@@ -48,7 +46,6 @@ namespace PE
 					}
 				}
 				auto itr = idr->CreateIterator();
-				//itr.Init(pe, currentDescriptor);
 				while (itr->Next())
 				{
 					if (pe.HasNtHeader32())

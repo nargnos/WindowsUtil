@@ -29,6 +29,7 @@ namespace PE
 				funcsTable = reinterpret_cast<PDWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfFunctions));
 				namesTable = reinterpret_cast<PDWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfNames));
 				nameOrdinalsTable = reinterpret_cast<PWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfNameOrdinals));
+				canCreateIterator = true;
 			}
 			else
 			{

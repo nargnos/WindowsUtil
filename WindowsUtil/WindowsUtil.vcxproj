@@ -140,10 +140,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryLanguageIterator.h" />
+    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryResourceDataIterator.h" />
+    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryResourceNameIterator.h" />
+    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryTypeIterator.h" />
+    <ClInclude Include="WinUtil\PE\DelayImport\DelayImport.h" />
+    <ClInclude Include="WinUtil\PE\DelayImport\DelayImportThunkIterator.h" />
+    <ClInclude Include="WinUtil\PE\DelayImport\DelayImportDescriptorIterator.h" />
+    <ClInclude Include="WinUtil\PE\Globalptr\GlobalptrDirectory.h" />
+    <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h" />
+    <ClInclude Include="WinUtil\PE\BoundImport\BoundImportDirectory.h" />
+    <ClInclude Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.h" />
+    <ClInclude Include="WinUtil\PE\Debug\DebugDirectory.h" />
+    <ClInclude Include="WinUtil\PE\DelayImport\DelayImportDirectory.h" />
+    <ClInclude Include="WinUtil\PE\Iat\IatDirectory.h" />
+    <ClInclude Include="WinUtil\PE\LoadConfig\LoadConfigDirectory.h" />
+    <ClInclude Include="WinUtil\PE\Tls\TlsDirectory.h" />
+    <ClInclude Include="WinUtil\PE\Security\SecurityDirectory.h" />
+    <ClInclude Include="WinUtil\PE\EntryException\EntryExceptionDirectory.h" />
+    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectory.h" />
     <ClInclude Include="WinUtil\PE\Common\Common.h" />
-    <ClInclude Include="WinUtil\PE\DelayLoad\DelayLoad.h" />
-    <ClInclude Include="WinUtil\PE\DelayLoad\DelayLoadDescriptorReader.h" />
-    <ClInclude Include="WinUtil\PE\DelayLoad\DelayLoadThunkReader.h" />
     <ClInclude Include="WinUtil\PE\Import\Import.h" />
     <ClInclude Include="WinUtil\PE\Import\ImportDirectory.h" />
     <ClInclude Include="WinUtil\PE\Export\Export.h" />
@@ -179,18 +195,9 @@
     <ClInclude Include="WinUtil\Process\Remote\RemoteProccess.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinUtil\PE\DelayLoad\DelayLoad.cpp" />
-    <ClCompile Include="WinUtil\PE\DelayLoad\DelayLoadDescriptorReader.cpp" />
-    <ClCompile Include="WinUtil\PE\DelayLoad\DelayLoadThunkReader.cpp" />
     <ClCompile Include="WinUtil\PE\Export\Export.cpp" />
-    <ClCompile Include="WinUtil\PE\Export\ExportDirectory.cpp" />
     <ClCompile Include="WinUtil\PE\Import\Import.cpp" />
-    <ClCompile Include="WinUtil\PE\Import\ImportDescriptorIterator.cpp" />
-    <ClCompile Include="WinUtil\PE\Import\ImportThunkIterator.cpp" />
-    <ClCompile Include="WinUtil\PE\Reloc\BaseRelocationIterator.cpp" />
-    <ClCompile Include="WinUtil\PE\Export\ExportIterator.cpp" />
     <ClCompile Include="WinUtil\PE\PeDecoder.cpp" />
-    <ClCompile Include="WinUtil\PE\Reloc\TypeOffsetIterator.cpp" />
     <ClCompile Include="WinUtil\Process\EnvironmentBlock\EnvironmentBlock.cpp" />
     <ClCompile Include="WinUtil\Process\Hook\ApiHook.cpp" />
     <ClCompile Include="WinUtil\Process\Hook\DelayLoadHook.cpp" />

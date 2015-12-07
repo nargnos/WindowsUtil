@@ -8,10 +8,8 @@ namespace PE
 	template<typename _PeDecoder>
 	class SectionHeaders :
 		public PeStruct<_PeDecoder>,
-		public InitStruct,
 		public GetIterator<SectionIterator<SectionHeaders<_PeDecoder>>, SectionHeaders<_PeDecoder>>
 	{
-		
 		PIMAGE_SECTION_HEADER firstSectionHeader;
 		PIMAGE_SECTION_HEADER lastSectionHeader;
 		PDWORD sectionAlignment;
@@ -21,20 +19,7 @@ namespace PE
 		friend SectionIterator<SectionHeaders<_PeDecoder>>;
 		SectionHeaders(_PeDecoder& pe) :PeStruct<_PeDecoder>(pe)
 		{
-		}
-
-		~SectionHeaders()
-		{
-		}
-		
-		
-		// Í¨¹ý InitStruct ¼Ì³Ð
-		virtual bool InitFunc() override
-		{
-			if (!peDecoder.GetNtHeader()->Init())
-			{
-				return false;
-			}
+			assert(peDecoder.GetNtHeader()->IsInit());
 			if (peDecoder.GetNtHeader()->HasNtHeader32())
 			{
 				auto header32 = peDecoder.GetNtHeader()->GetNtHeader32();
@@ -50,9 +35,12 @@ namespace PE
 				sectionCount = &header64->FileHeader.NumberOfSections;
 			}
 			lastSectionHeader = firstSectionHeader + *sectionCount;
-			return true;
+			canCreateIterator = true;
 		}
 
+		~SectionHeaders()
+		{
+		}
 		
 
 	};

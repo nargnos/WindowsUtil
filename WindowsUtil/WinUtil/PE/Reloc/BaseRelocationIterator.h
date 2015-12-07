@@ -27,6 +27,7 @@ namespace PE
 		{
 			if (!startReloc)
 			{
+				canCreateIterator = false;
 				return false;
 			}
 			if (currentReloc)
@@ -35,14 +36,17 @@ namespace PE
 				if (tmpReloc < endReloc)
 				{
 					currentReloc = tmpReloc;
+					canCreateIterator = true;
 					return true;
 				}
 			}
 			else
 			{
 				currentReloc = reloc;
+				canCreateIterator = true;
 				return true;
 			}
+			canCreateIterator = false;
 			return false;
 		}
 		PIMAGE_BASE_RELOCATION Current()

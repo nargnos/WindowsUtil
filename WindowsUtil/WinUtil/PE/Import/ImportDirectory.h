@@ -13,7 +13,7 @@ namespace PE
 		friend ImportDescriptorIterator<ImportDirectory<_PeDecoder>>;
 		ImportDirectory(_PeDecoder& pe) :DataDirectory<_PeDecoder, PIMAGE_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_IMPORT>(pe)
 		{
-			//this->size
+			canCreateIterator = true;
 		}
 
 		~ImportDirectory()

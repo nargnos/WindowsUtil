@@ -143,22 +143,58 @@ namespace PEView
 		{
 			AddExMenu(treeNode_ImportDirectories);
 		}
-		/*if (peDecoder->GetResource())
+		if (peDecoder->GetResource()->IsExist())
 		{
 			AddExMenu(treeNode_ResourceDirectory);
-		}*/
+		}
 		if (peDecoder->GetReloc()->IsExist())
 		{
 			AddExMenu(treeNode_RelocationDirectory);
 		}
-		/*if (peDecoder->GetImageDebug())
+		if (peDecoder->GetDebug()->IsExist())
 		{
 			AddExMenu(treeNode_DebugDirectory);
 		}
-		if (peDecoder->GetImageTls32() || peDecoder->GetImageTls64())
+		if (peDecoder->GetTls()->IsExist())
 		{
 			AddExMenu(treeNode_TLSDirectory);
-		}*/
+		}
+		if (peDecoder->GetArchitecture()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetBoundImport()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetComDescriptor()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetIat()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetDelayImport()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetLoadConfig()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetSecurity()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetGlobalptr()->IsExist())
+		{
+			//
+		}
+		if (peDecoder->GetException()->IsExist())
+		{
+			//
+		}
 		///////////////////////////////////////////
 
 		this->treeMenu->ExpandAll();
