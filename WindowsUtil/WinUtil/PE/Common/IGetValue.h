@@ -5,6 +5,7 @@ namespace PE
 	class IGetValue
 	{
 	public:
+		typedef IGetValue<T> IGetValueBase;
 		IGetValue() {}
 		virtual ~IGetValue() {}
 		virtual T GetValue() = 0;

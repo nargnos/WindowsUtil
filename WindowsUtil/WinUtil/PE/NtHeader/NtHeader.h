@@ -13,7 +13,7 @@ namespace PE
 		bool hasNtHeader32;
 	public:
 		friend _PeDecoder;
-		NtHeader(_PeDecoder& pe) :PeStruct<_PeDecoder>(pe)
+		NtHeader(_PeDecoder& pe) :PeStructBase(pe)
 		{
 			ntHeader = reinterpret_cast<PBYTE>(peDecoder.GetBase()) + peDecoder.GetDosHeader()->GetValue()->e_lfanew;
 			hasNtHeader32 = false;

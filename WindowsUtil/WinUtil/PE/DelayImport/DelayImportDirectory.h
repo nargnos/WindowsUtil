@@ -6,14 +6,14 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class DelayImportDirectory :
-		public DataDirectory<_PeDecoder, PImgDelayDescr, IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT>,
+		public DataDirectory<DelayImportDirectory< _PeDecoder>,_PeDecoder, PImgDelayDescr, IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT>,
 		public IGetValue<PImgDelayDescr>,
 		public GetIterator<DelayImportDescriptorIterator<DelayImportDirectory<_PeDecoder>>, DelayImportDirectory<_PeDecoder>>
 	{
 		
 	public:
-		friend DelayImportDescriptorIterator<DelayImportDirectory<_PeDecoder>>;
-		DelayImportDirectory(_PeDecoder& pe) :DataDirectory<_PeDecoder, PImgDelayDescr, IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT>(pe)
+		friend GetIteratorBase::Iterator;
+		DelayImportDirectory(_PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 			canCreateIterator = true;
 		}

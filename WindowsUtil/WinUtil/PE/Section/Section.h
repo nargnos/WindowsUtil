@@ -17,7 +17,7 @@ namespace PE
 	public:
 		friend _PeDecoder;
 		friend SectionIterator<SectionHeaders<_PeDecoder>>;
-		SectionHeaders(_PeDecoder& pe) :PeStruct<_PeDecoder>(pe)
+		SectionHeaders(_PeDecoder& pe) :PeStructBase(pe)
 		{
 			assert(peDecoder.GetNtHeader()->IsInit());
 			if (peDecoder.GetNtHeader()->HasNtHeader32())

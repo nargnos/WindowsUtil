@@ -13,7 +13,7 @@ namespace PE
 		_ImportDirectory& importDirectory;
 		int currentIndex;
 	public:
-		friend ImportThunkIterator<ImportDescriptorIterator<_ImportDirectory>>;
+		friend GetIteratorBase::Iterator;
 		ImportDescriptorIterator(_ImportDirectory& importDirectory) :importDirectory(importDirectory)
 		{
 

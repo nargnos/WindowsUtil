@@ -6,12 +6,12 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class ImportDirectory:
-		public DataDirectory<_PeDecoder, PIMAGE_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_IMPORT>,
+		public DataDirectory<ImportDirectory< _PeDecoder>, _PeDecoder, PIMAGE_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_IMPORT>,
 		public GetIterator<ImportDescriptorIterator<ImportDirectory<_PeDecoder>>, ImportDirectory<_PeDecoder>>
 	{
 	public:
-		friend ImportDescriptorIterator<ImportDirectory<_PeDecoder>>;
-		ImportDirectory(_PeDecoder& pe) :DataDirectory<_PeDecoder, PIMAGE_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_IMPORT>(pe)
+		friend GetIteratorBase::Iterator;
+		ImportDirectory(_PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 			canCreateIterator = true;
 		}

@@ -4,10 +4,10 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class SecurityDirectory :
-		public DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_SECURITY>
+		public DataDirectory<SecurityDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_SECURITY>
 	{
 	protected:
-		virtual PVOID DirectoryEntryToData() override
+		 PVOID DirectoryEntryToData() 
 		{
 			if (peDecoder.IsMapped()) // 不会映射到内存
 			{
@@ -20,8 +20,8 @@ namespace PE
 			return reinterpret_cast<PBYTE>(peDecoder.GetBase()) + dataDirectory->VirtualAddress;
 		}
 	public:
-
-		SecurityDirectory(_PeDecoder& pe) :DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_SECURITY>(pe)
+		friend DataDirectoryBase;
+		SecurityDirectory(_PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 		}
 

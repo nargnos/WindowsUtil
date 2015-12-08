@@ -8,7 +8,7 @@ namespace PE
 		PIMAGE_DOS_HEADER  dosHeader;
 	public:
 		friend _PeDecoder;
-		DosHeader(_PeDecoder& pe) :PeStruct<_PeDecoder>(pe)
+		DosHeader(_PeDecoder& pe) :PeStructBase(pe)
 		{
 			dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(peDecoder.GetBase());
 		}

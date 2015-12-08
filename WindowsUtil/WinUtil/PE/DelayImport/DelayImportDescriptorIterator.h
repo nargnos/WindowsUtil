@@ -12,7 +12,7 @@ namespace PE
 		_DelayImport& delayImport;
 		PImgDelayDescr currentDelay;
 	public:
-		friend DelayImportThunkIterator<DelayImportDescriptorIterator<_DelayImport>>;
+		friend GetIteratorBase::Iterator;
 		DelayImportDescriptorIterator(_DelayImport& delayImport) :delayImport(delayImport)
 		{
 		}

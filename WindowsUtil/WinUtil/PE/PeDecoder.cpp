@@ -2,7 +2,7 @@
 #include "PeDecoder.h"
 namespace PE
 {
-	inline bool PeDecoder::IsMapped()
+	bool PeDecoder::IsMapped()
 	{
 		return isMapped;
 	}
@@ -39,7 +39,7 @@ namespace PE
 		return true;
 	}
 
-	inline PVOID PeDecoder::GetBase()
+	PVOID PeDecoder::GetBase()
 	{
 		return this->base;
 	}
@@ -208,7 +208,7 @@ namespace PE
 	{
 		return hasNtHeader32;
 	}
-	inline bool PeDecoder::IsPE()
+	bool PeDecoder::IsPE()
 	{
 		return isPE;
 	}

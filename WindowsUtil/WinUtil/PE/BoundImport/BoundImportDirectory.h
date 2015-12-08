@@ -4,11 +4,11 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class BoundImportDirectory :
-		public DataDirectory<_PeDecoder, PIMAGE_BOUND_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT>
+		public DataDirectory<BoundImportDirectory<_PeDecoder>,_PeDecoder, PIMAGE_BOUND_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT>
 	{
 	public:
 
-		BoundImportDirectory(_PeDecoder& pe) :DataDirectory<_PeDecoder, PIMAGE_BOUND_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT>(pe)
+		BoundImportDirectory(_PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 		}
 

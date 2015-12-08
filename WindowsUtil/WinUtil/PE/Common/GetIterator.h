@@ -6,7 +6,8 @@ class GetIterator
 protected:
 	bool canCreateIterator;
 public:
-
+	typedef GetIterator<IteratorType, StructType> GetIteratorBase;
+	typedef IteratorType Iterator;
 	GetIterator()
 	{
 		canCreateIterator = false;

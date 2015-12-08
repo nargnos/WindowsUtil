@@ -6,11 +6,11 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class TlsDirectory :
-		public DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_TLS>
+		public DataDirectory<TlsDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_TLS>
 	{
 	public:
 
-		TlsDirectory(_PeDecoder& pe) :DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_TLS>(pe)
+		TlsDirectory(_PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 		}
 
