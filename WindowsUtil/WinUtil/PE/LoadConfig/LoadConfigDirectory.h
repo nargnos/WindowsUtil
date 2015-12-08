@@ -5,7 +5,7 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class LoadConfigDirectory :
-		public DataDirectory<LoadConfigDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG>
+		public DataDirectory< _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG>
 	{
 	public:
 

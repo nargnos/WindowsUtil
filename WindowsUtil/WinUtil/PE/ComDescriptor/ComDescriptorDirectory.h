@@ -4,7 +4,7 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class ComDescriptorDirectory :
-		public DataDirectory<ComDescriptorDirectory< _PeDecoder>,_PeDecoder, PIMAGE_COR20_HEADER, IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR>
+		public DataDirectory<_PeDecoder, PIMAGE_COR20_HEADER, IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR>
 	{
 	public:
 

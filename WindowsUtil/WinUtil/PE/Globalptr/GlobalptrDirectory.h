@@ -4,7 +4,7 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class GlobalptrDirectory :
-		public DataDirectory<GlobalptrDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_GLOBALPTR>
+		public DataDirectory< _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_GLOBALPTR>
 	{
 	public:
 

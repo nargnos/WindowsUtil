@@ -16,7 +16,7 @@ namespace PE
 		PWORD sectionCount;
 	public:
 		friend _PeDecoder;
-		friend SectionIterator<SectionHeaders<_PeDecoder>>;
+		friend GetIteratorBase::Iterator;
 		SectionHeaders(_PeDecoder& pe) :PeStructBase(pe)
 		{
 			assert(peDecoder.GetNtHeader()->IsInit());

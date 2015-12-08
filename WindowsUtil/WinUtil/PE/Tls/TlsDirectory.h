@@ -6,7 +6,7 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class TlsDirectory :
-		public DataDirectory<TlsDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_TLS>
+		public DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_TLS>
 	{
 	public:
 

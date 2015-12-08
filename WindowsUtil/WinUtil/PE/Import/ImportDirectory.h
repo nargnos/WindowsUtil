@@ -6,7 +6,7 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class ImportDirectory:
-		public DataDirectory<ImportDirectory< _PeDecoder>, _PeDecoder, PIMAGE_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_IMPORT>,
+		public DataDirectory< _PeDecoder, PIMAGE_IMPORT_DESCRIPTOR, IMAGE_DIRECTORY_ENTRY_IMPORT>,
 		public GetIterator<ImportDescriptorIterator<ImportDirectory<_PeDecoder>>, ImportDirectory<_PeDecoder>>
 	{
 	public:

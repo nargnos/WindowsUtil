@@ -6,14 +6,14 @@
 namespace PE
 {
 	// 从Index取出PIMAGE_DATA_DIRECTORY，并把rva指向数据存储在data中
-	template<typename _Child, typename _PeDecoder, typename DataType, int Index>
+	template<typename _PeDecoder, typename DataType, int Index>
 	class DataDirectory :public PeStruct<_PeDecoder>
 	{
 	protected:
 		PIMAGE_DATA_DIRECTORY dataDirectory;
 		DataType data;
 		PDWORD size;
-		PVOID DirectoryEntryToData()
+		virtual PVOID DirectoryEntryToData()
 		{
 			if (!dataDirectory || dataDirectory->VirtualAddress == NULL)
 			{
@@ -22,15 +22,15 @@ namespace PE
 			return peDecoder.GetRvaData(dataDirectory->VirtualAddress);
 		}
 	public:
-		typedef DataDirectory<_Child, _PeDecoder, DataType, Index> DataDirectoryBase;
+		typedef DataDirectory<_PeDecoder, DataType, Index> DataDirectoryBase;
+		
 		DataDirectory(_PeDecoder& pe) :PeStructBase(pe)
 		{
 			dataDirectory=peDecoder.GetDataDirectory(Index);
 			if (dataDirectory)
 			{
 				size = &dataDirectory->Size;
-				_Child* child = static_cast<_Child*>(this);
-				data = reinterpret_cast<DataType>(child->DirectoryEntryToData());
+				data = reinterpret_cast<DataType>(DirectoryEntryToData());
 			}			
 			else
 			{

@@ -8,7 +8,7 @@ namespace PE
 	// TODO: 添加一个c++函数名称翻译器, 或找一下系统里面有没有现成函数
 	template<typename _PeDecoder>
 	class ExportDirectory :
-		public DataDirectory<ExportDirectory< _PeDecoder>,_PeDecoder, PIMAGE_EXPORT_DIRECTORY, IMAGE_DIRECTORY_ENTRY_EXPORT>,
+		public DataDirectory<_PeDecoder, PIMAGE_EXPORT_DIRECTORY, IMAGE_DIRECTORY_ENTRY_EXPORT>,
 		public GetIterator<ExportIterator<ExportDirectory<_PeDecoder>>, ExportDirectory<_PeDecoder>>,
 		public IGetValue<PIMAGE_EXPORT_DIRECTORY>
 	{

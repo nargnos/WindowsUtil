@@ -4,7 +4,7 @@ namespace PE
 {
 	template<typename _PeDecoder>
 	class SecurityDirectory :
-		public DataDirectory<SecurityDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_SECURITY>
+		public DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_SECURITY>
 	{
 	protected:
 		 PVOID DirectoryEntryToData() 

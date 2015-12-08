@@ -5,7 +5,7 @@ namespace PE
 	//IMAGE_THUNK_DATA32 IMAGE_THUNK_DATA64
 	template<typename _PeDecoder>
 	class IatDirectory :
-		public DataDirectory<IatDirectory< _PeDecoder>, _PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_IAT>
+		public DataDirectory<_PeDecoder, PVOID, IMAGE_DIRECTORY_ENTRY_IAT>
 	{
 	public:
 
