@@ -126,9 +126,6 @@
     <ClInclude Include="WinUtil\PE\DelayImport\DelayImportDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\PE\Debug\DebugDirectory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -172,6 +169,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryTypeIterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\DebugDirectory\DebugDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

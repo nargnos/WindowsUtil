@@ -21,7 +21,7 @@
 #include "Iat\IatDirectory.h"
 #include "LoadConfig\LoadConfigDirectory.h"
 #include "Tls\TlsDirectory.h"
-#include "Debug\DebugDirectory.h"
+#include "DebugDirectory\DebugDirectory.h"
 namespace PE
 {
 #define ALIGN_UP(value, alignment) ((UINT)(value + alignment - 1)&~(alignment - 1))

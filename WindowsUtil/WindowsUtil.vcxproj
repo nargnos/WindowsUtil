@@ -151,7 +151,7 @@
     <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h" />
     <ClInclude Include="WinUtil\PE\BoundImport\BoundImportDirectory.h" />
     <ClInclude Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.h" />
-    <ClInclude Include="WinUtil\PE\Debug\DebugDirectory.h" />
+    <ClInclude Include="WinUtil\PE\DebugDirectory\DebugDirectory.h" />
     <ClInclude Include="WinUtil\PE\DelayImport\DelayImportDirectory.h" />
     <ClInclude Include="WinUtil\PE\Iat\IatDirectory.h" />
     <ClInclude Include="WinUtil\PE\LoadConfig\LoadConfigDirectory.h" />
