@@ -1,5 +1,5 @@
 #pragma once
-#include "../PeDecoder.h"
+#include "..\PeImage.h"
 namespace PE
 {
 	PDWORD GetProcExportFuncTableAddress(PeDecoder& pe, LPCSTR lpProcName); // ¶þ·Ö²éÕÒ

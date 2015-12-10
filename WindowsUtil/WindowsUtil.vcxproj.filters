@@ -126,6 +126,15 @@
     <ClInclude Include="WinUtil\PE\DelayImport\DelayImportDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="WinUtil\PE\Tls\TlsDirectory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\DelayImport\DelayImport.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\PeImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -133,6 +142,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\DebugDirectory\DebugDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\PE\EntryException\EntryExceptionDirectory.h">
@@ -151,27 +163,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\PE\Security\SecurityDirectory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\Tls\TlsDirectory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\DelayImport\DelayImport.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryLanguageIterator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryResourceDataIterator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryResourceNameIterator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\Resource\ResourceDirectoryTypeIterator.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\PE\DebugDirectory\DebugDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -219,6 +210,93 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\PE\Import\Import.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Common\PeStruct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\NtHeader\NtHeader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Architecture\architecturedirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\BoundImport\BoundImportDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Common\DataDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Common\InitStruct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\DebugDirectory\DebugDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\DelayImport\DelayImport.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\DelayImport\DelayImportDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\DosHeader\DosHeader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\EntryException\EntryExceptionDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Export\ExportDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Globalptr\GlobalptrDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Iat\IatDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Import\ImportDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\LoadConfig\LoadConfigDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Reloc\RelocDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Section\Section.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Security\SecurityDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Tls\TlsDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\DelayImport\DelayImportDescriptorIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\DelayImport\DelayImportThunkIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Import\ImportThunkIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Import\ImportDescriptorIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Export\ExportIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Reloc\TypeOffsetIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Reloc\BaseRelocationIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Section\SectionIterator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

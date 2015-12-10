@@ -3,19 +3,12 @@
 #include "../Common/Common.h"
 namespace PE
 {
-	template<typename _PeDecoder>
 	class EntryExceptionDirectory :
-		public DataDirectory<_PeDecoder, PIMAGE_RUNTIME_FUNCTION_ENTRY, IMAGE_DIRECTORY_ENTRY_EXCEPTION>
+		public DataDirectory<EntryExceptionDirectory, PIMAGE_RUNTIME_FUNCTION_ENTRY, IMAGE_DIRECTORY_ENTRY_EXCEPTION>
 	{
 	public:
-
-		EntryExceptionDirectory(_PeDecoder& pe) :DataDirectoryBase(pe)
-		{
-		}
-
-		~EntryExceptionDirectory()
-		{
-		}
+		EntryExceptionDirectory(PeDecoder& pe);
+		~EntryExceptionDirectory();
 	};
 
 }

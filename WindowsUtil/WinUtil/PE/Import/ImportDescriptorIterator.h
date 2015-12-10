@@ -1,48 +1,23 @@
 #pragma once
-
-#include "../Common/Common.h"
 #include "ImportThunkIterator.h"
 namespace PE
 {
+	class ImportDirectory;
 	// 导入表Descriptor结构读取器
-	template<typename _ImportDirectory>
 	class ImportDescriptorIterator :
 		public IIterator<PIMAGE_IMPORT_DESCRIPTOR>,
-		public GetIterator<ImportThunkIterator<ImportDescriptorIterator<_ImportDirectory>>, ImportDescriptorIterator<_ImportDirectory>>
+		public GetIterator<ImportThunkIterator, ImportDescriptorIterator>
 	{
-		_ImportDirectory& importDirectory;
+		ImportDirectory& importDirectory;
 		int currentIndex;
 	public:
 		friend GetIteratorBase::Iterator;
-		ImportDescriptorIterator(_ImportDirectory& importDirectory) :importDirectory(importDirectory)
-		{
+		ImportDescriptorIterator(ImportDirectory& importDirectory);
+		~ImportDescriptorIterator();
+		bool Next();
 
-		}
-		~ImportDescriptorIterator() {}
-		bool Next()
-		{
-			if (importDirectory.size)
-			{
-				if (++currentIndex < *importDirectory.size)
-				{
-					auto checkResult = importDirectory.data[currentIndex];
-					canCreateIterator = !(checkResult.Name == NULL || checkResult.FirstThunk == NULL);
-					return canCreateIterator;
-				}
-			}
-			canCreateIterator = false;
-			return false;
-		}
-
-		void Reset()
-		{
-			currentIndex = -1;
-		}
-		virtual PIMAGE_IMPORT_DESCRIPTOR Current() override
-		{
-			assert(currentIndex > 0 && currentIndex < *importDirectory.size);
-			return &importDirectory.data[currentIndex];
-		}
+		void Reset();
+		virtual PIMAGE_IMPORT_DESCRIPTOR Current() override;
 	};
 
 

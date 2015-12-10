@@ -1,63 +1,25 @@
 #pragma once
-#include "../Common/Common.h"
 #include "TypeOffsetIterator.h"
 namespace PE
 {
-	template<typename _RelocDirectory>
+	class RelocDirectory;
 	class BaseRelocationIterator :
 		public IIterator<PIMAGE_BASE_RELOCATION>,
-		public GetIterator<TypeOffsetIterator<BaseRelocationIterator<_RelocDirectory>>, BaseRelocationIterator<_RelocDirectory>>
+		public GetIterator<TypeOffsetIterator, BaseRelocationIterator>
 	{
 		PIMAGE_BASE_RELOCATION startReloc;
 		PIMAGE_BASE_RELOCATION currentReloc;
 		PIMAGE_BASE_RELOCATION endReloc;
 	public:
 		friend GetIteratorBase::Iterator;
-		BaseRelocationIterator(_RelocDirectory& reloc)
-		{
-			Reset();
-			typeOffsetIterator = NULL;
-			startReloc = reloc.data;
-			endReloc = startReloc + *reloc.size / sizeof(IMAGE_BASE_RELOCATION);
-		}
-		~BaseRelocationIterator() {}
+		BaseRelocationIterator(RelocDirectory& reloc);
+		~BaseRelocationIterator();
 		
 		
-		bool Next() 
-		{
-			if (!startReloc)
-			{
-				canCreateIterator = false;
-				return false;
-			}
-			if (currentReloc)
-			{
-				auto tmpReloc = PIMAGE_BASE_RELOCATION((PUINT8)currentReloc + currentReloc->SizeOfBlock);
-				if (tmpReloc < endReloc)
-				{
-					currentReloc = tmpReloc;
-					canCreateIterator = true;
-					return true;
-				}
-			}
-			else
-			{
-				currentReloc = reloc;
-				canCreateIterator = true;
-				return true;
-			}
-			canCreateIterator = false;
-			return false;
-		}
-		PIMAGE_BASE_RELOCATION Current()
-		{
-			return currentReloc;
-		}
+		bool Next();
+		PIMAGE_BASE_RELOCATION Current();
 		
-		void Reset() 
-		{
-			currentReloc = NULL; 
-		}
+		void Reset();
 		
 	};
 

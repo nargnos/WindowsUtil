@@ -1,87 +1,35 @@
 #pragma once
-#include <Windows.h>
-#include <cassert>
+#include "../Common/Common.h"
 namespace PE
 {
 	// 导入表Thunk结构读取器
-
-	template<typename _ImportDescriptorIterator>
+	class ImportDescriptorIterator;
 	class ImportThunkIterator
 	{
-		_ImportDescriptorIterator& importDescriptorIterator;
+		ImportDescriptorIterator& importDescriptorIterator;
 		bool is32;
 		PVOID currentThunk;
 		PVOID currentOriginalThunk;
 
 		PVOID originalThunk;
 		PVOID thunk;
-		void Init(PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
-		{
-			originalThunk = importDescriptorIterator.importDirectory.GetPeDecoder().GetRvaData(importDescriptor->OriginalFirstThunk);
-			thunk = importDescriptorIterator.importDirectory.GetPeDecoder().GetRvaData(importDescriptor->FirstThunk);
-			Reset();
-		}
+		void Init(PIMAGE_IMPORT_DESCRIPTOR importDescriptor);
 	public:
-		ImportThunkIterator(_ImportDescriptorIterator& importDescriptorIterator) :importDescriptorIterator(importDescriptorIterator)
-		{
-			is32 = importDescriptorIterator.importDirectory.GetPeDecoder().HasNtHeader32();
-			Init(importDescriptorIterator.Current());
-		}
+		ImportThunkIterator(ImportDescriptorIterator& importDescriptorIterator);
 
-#define CONVERT_THUNK_POINTER(thunkPointer, x) ((PIMAGE_THUNK_DATA##x)thunkPointer)
-		PIMAGE_THUNK_DATA32 CurrentThunk32()
-		{
-			return is32 ? CONVERT_THUNK_POINTER(currentThunk, 32) : NULL;
-		}
-		PIMAGE_THUNK_DATA32 CurrentOriginalThunk32()
-		{
-			return is32 ? CONVERT_THUNK_POINTER(currentOriginalThunk, 32) : NULL;
-		}
-		PIMAGE_THUNK_DATA64 CurrentThunk64()
-		{
-			return is32 ? NULL : CONVERT_THUNK_POINTER(currentThunk, 64);
-		}
 
-		PIMAGE_THUNK_DATA64 CurrentOriginalThunk64()
-		{
-			return is32 ? NULL : CONVERT_THUNK_POINTER(currentOriginalThunk, 64);
-		}
+		PIMAGE_THUNK_DATA32 CurrentThunk32();
+		PIMAGE_THUNK_DATA32 CurrentOriginalThunk32();
+		PIMAGE_THUNK_DATA64 CurrentThunk64();
+
+		PIMAGE_THUNK_DATA64 CurrentOriginalThunk64();
 
 
 
-#define CHECK_THUNK(x) \
-			auto tmpThunk = CONVERT_THUNK_POINTER(currentOriginalThunk, x) + 1;\
-			if (CONVERT_THUNK_POINTER(tmpThunk,x)->u1.AddressOfData == NULL)   \
-			{																   \
-				return false;												   \
-			}																   \
-			currentThunk =  CONVERT_THUNK_POINTER(currentThunk, x) + 1;		   \
-			currentOriginalThunk = tmpThunk;
-		bool Next()
-		{
-			if (currentThunk == NULL && currentOriginalThunk == NULL)
-			{
-				currentThunk = thunk;
-				currentOriginalThunk = originalThunk;
-				return true;
-			}
-			if (is32)
-			{
-				CHECK_THUNK(32);
-			}
-			else
-			{
-				CHECK_THUNK(64);
-			}
 
-			return true;
-		}
-		void Reset()
-		{
-			currentThunk = NULL;
-			currentOriginalThunk = NULL;
-		}
-		~ImportThunkIterator() {}
+		bool Next();
+		void Reset();
+		~ImportThunkIterator();
 
 	};
 

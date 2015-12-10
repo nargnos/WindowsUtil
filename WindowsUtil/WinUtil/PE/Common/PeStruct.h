@@ -1,23 +1,16 @@
 #pragma once
 namespace PE
 {
-	template<typename _PeDecoder>
+	class PeDecoder;
 	class PeStruct
 	{
 	protected :
-		_PeDecoder& peDecoder;
+		PeDecoder& peDecoder;
 	public:
-		typedef PeStruct<_PeDecoder> PeStructBase;
-		PeStruct(_PeDecoder& pe):peDecoder(pe)
-		{
-		}
-		_PeDecoder& GetPeDecoder()
-		{
-			return peDecoder;
-		}
-		virtual ~PeStruct()
-		{
-		}
+		typedef PeStruct PeStructBase;
+		PeStruct(PeDecoder& pe);
+		PeDecoder& GetPeDecoder();
+		virtual ~PeStruct();
 	};
 
 }

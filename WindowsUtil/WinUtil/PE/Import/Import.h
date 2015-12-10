@@ -1,6 +1,6 @@
 #pragma once
 #include <cassert>
-#include "../PeDecoder.h"
+#include "..\PeImage.h"
 namespace PE
 {
 		LPSTR GetDescriptorName(PeDecoder& pe, PIMAGE_IMPORT_DESCRIPTOR descriptor);

@@ -1,9 +1,10 @@
 #pragma once
-#include <delayimp.h>
+
 #include "..\Common\Common.h"
+#include <delayimp.h>
 namespace PE
 {
-	template<typename _DelayImportDescriptorIterator>
+	class DelayImportDescriptorIterator;
 	class DelayImportThunkIterator
 	{
 		PVOID importAddressTable;
@@ -14,51 +15,13 @@ namespace PE
 
 	public:
 
-		DelayImportThunkIterator(_DelayImportDescriptorIterator& delayImportDescriptorIterator)
-		{
-			descriptor = delayImportDescriptorIterator.currentDelay;
-			importAddressTable = delayImportDescriptorIterator.delayImport.GetPeDecoder().GetRvaData(descriptor->rvaIAT);
-			importNameTable = delayImportDescriptorIterator.delayImport.GetPeDecoder().GetRvaData(descriptor->rvaINT);
-			Reset();
-		}
+		DelayImportThunkIterator(DelayImportDescriptorIterator& delayImportDescriptorIterator);
 
-		~DelayImportThunkIterator()
-		{
-		}
-		PVOID CurrentNameTable()
-		{
-			return currentImportNameTable;
-		}
-		PVOID CurrentAddressTable()
-		{
-			return currentImportAddressTable;
-		}
-		bool Next()
-		{
-			if (currentImportAddressTable && currentImportNameTable)
-			{
-				currentImportAddressTable = (HANDLE_PTR*)currentImportAddressTable + 1;
-				currentImportNameTable = (HANDLE_PTR*)currentImportNameTable + 1;
-				if (*(HANDLE_PTR*)currentImportAddressTable && *(HANDLE_PTR*)currentImportNameTable)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				currentImportAddressTable = importAddressTable;
-				currentImportNameTable = importNameTable;
-				return true;
-			}
-
-
-			return false;
-		}
-		void Reset()
-		{
-			currentImportAddressTable = NULL;
-			currentImportNameTable = NULL;
-		}
+		~DelayImportThunkIterator();
+		PVOID CurrentNameTable();
+		PVOID CurrentAddressTable();
+		bool Next();
+		void Reset();
 	};
 
 }

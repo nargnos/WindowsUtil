@@ -6,26 +6,10 @@ protected:
 	virtual bool InitFunc() = 0;
 public:
 
-	InitStruct()
-	{
-		isInitialized = false;
-	}
+	InitStruct();
 	// ≥ı ºªØ ß∞‹∑µªÿfalse
-	bool Init() 
-	{
-		if (isInitialized)
-		{
-			return isInitialized;
-		}
-		isInitialized = InitFunc();
-		return isInitialized;
-	}
-	bool IsInit()
-	{
-		return isInitialized;
-	}
-	virtual ~InitStruct()
-	{
-	}
+	bool Init();
+	bool IsInit();
+	virtual ~InitStruct();
 };
 

@@ -14,11 +14,11 @@ namespace PE
 		{
 			return (PIMAGE_IMPORT_BY_NAME)pe.GetRvaData(thunk->u1.AddressOfData);
 		}
-		inline bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
+		 bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
 		{
 			return IMAGE_SNAP_BY_ORDINAL32(thunk->u1.Ordinal);
 		}
-		inline bool IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk)
+		 bool IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk)
 		{
 			return IMAGE_SNAP_BY_ORDINAL64(thunk->u1.Ordinal);
 		}
