@@ -165,6 +165,18 @@
     <ClInclude Include="WinUtil\PE\Security\SecurityDirectory.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="WinUtil\PE\Resource\TypeIterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\Resource\ResourceNameIterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\Resource\ResourceDataIterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\PE\Resource\LanguageIterator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinUtil\PE\PeDecoder.cpp">
@@ -297,6 +309,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\PE\Section\SectionIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Resource\ResourceDirectory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Resource\TypeIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Resource\ResourceNameIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Resource\ResourceDataIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\PE\Resource\LanguageIterator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

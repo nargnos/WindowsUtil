@@ -38,5 +38,6 @@ bool PE::DelayImportDescriptorIterator::Next()
 
 void PE::DelayImportDescriptorIterator::Reset()
 {
+	canCreateIterator = false;
 	currentDelay = NULL;
 }
