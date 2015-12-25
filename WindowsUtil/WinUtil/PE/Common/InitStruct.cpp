@@ -1,28 +1,30 @@
 #include "InitStruct.h"
-
- InitStruct::InitStruct()
+namespace PE
 {
-	isInitialized = false;
-}
+	InitStruct::InitStruct()
+	{
+		isInitialized = false;
+	}
 
 
-// 初始化失败返回false
+	// 初始化失败返回false
 
- bool InitStruct::Init()
-{
-	if (isInitialized)
+	bool InitStruct::Init()
+	{
+		if (isInitialized)
+		{
+			return isInitialized;
+		}
+		isInitialized = InitFunc();
+		return isInitialized;
+	}
+
+	bool InitStruct::IsInit()
 	{
 		return isInitialized;
 	}
-	isInitialized = InitFunc();
-	return isInitialized;
-}
 
- bool InitStruct::IsInit()
-{
-	return isInitialized;
-}
-
- InitStruct::~InitStruct()
-{
+	InitStruct::~InitStruct()
+	{
+	}
 }

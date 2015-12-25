@@ -3,20 +3,20 @@
 #include "..\Common\PeStruct.h"
 namespace PE
 {
-	class DataDirectory_PeDecoder :public PeStruct
+	class DataDirectoryBase :public PeStruct
 	{
 	protected:
 		PIMAGE_DATA_DIRECTORY dataDirectory;
 		PDWORD size;
 	public:
-		DataDirectory_PeDecoder(PeDecoder& pe);
+		DataDirectoryBase(PeDecoder& pe);
 		PVOID DirectoryEntryToData();
 	};
 	template<typename DataDirectoryChild, typename DataType>
-	class DataDirectory_PeDecoder_DataType :public DataDirectory_PeDecoder
+	class DataDirectory_DataType :public DataDirectoryBase
 	{
 	protected:
-		typedef DataDirectory_PeDecoder_DataType<DataDirectoryChild, DataType> OverloadDirectoryEntryToData;
+		typedef DataDirectory_DataType<DataDirectoryChild, DataType> OverloadDirectoryEntryToData;
 		DataType data;
 		virtual void Init()
 		{
@@ -38,19 +38,19 @@ namespace PE
 		{
 			return data != NULL;
 		}
-		DataDirectory_PeDecoder_DataType(PeDecoder& pe) :DataDirectory_PeDecoder(pe)
+		DataDirectory_DataType(PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 		}
 	};
 	// 从Index取出PIMAGE_DATA_DIRECTORY，并把rva指向数据存储在data中
 	template<typename DataDirectoryChild, typename DataType, int Index>
-	class DataDirectory :public DataDirectory_PeDecoder_DataType<DataDirectoryChild, DataType>
+	class DataDirectory :public DataDirectory_DataType<DataDirectoryChild, DataType>
 	{
 		friend DataDirectoryChild;
 	public:
 		typedef DataDirectory<DataDirectoryChild, DataType, Index> DataDirectoryBase;
 
-		DataDirectory(PeDecoder& pe) :DataDirectory_PeDecoder_DataType<DataDirectoryChild, DataType>(pe)
+		DataDirectory(PeDecoder& pe) :DataDirectory_DataType<DataDirectoryChild, DataType>(pe)
 		{
 			dataDirectory = peDecoder.GetDataDirectory(Index);
 			Init();

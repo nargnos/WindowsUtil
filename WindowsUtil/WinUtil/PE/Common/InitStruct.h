@@ -1,15 +1,18 @@
 #pragma once
-class InitStruct
+namespace PE
 {
-protected:
-	bool isInitialized;
-	virtual bool InitFunc() = 0;
-public:
+	class InitStruct
+	{
+	protected:
+		bool isInitialized;
+		virtual bool InitFunc() = 0;
+	public:
 
-	InitStruct();
-	// 初始化失败返回false
-	bool Init();
-	bool IsInit();
-	virtual ~InitStruct();
-};
+		InitStruct();
+		// 初始化失败返回false
+		bool Init();
+		bool IsInit();
+		virtual ~InitStruct();
+	};
 
+}

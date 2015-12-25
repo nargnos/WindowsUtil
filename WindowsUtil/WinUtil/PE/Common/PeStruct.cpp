@@ -12,3 +12,4 @@ PE::PeDecoder& PE::PeStruct::GetPeDecoder()
 PE::PeStruct::~PeStruct()
 {
 }
+

@@ -280,7 +280,11 @@ namespace PEView
 
 		if (pePtr)
 		{
-			peDecoder = std::make_shared<PE::PeDecoder>();
+			if (!peDecoder)
+			{
+				peDecoder = std::make_shared<PE::PeDecoder>();
+			}
+			
 			if (!peDecoder->LoadPEImage(pePtr->ToPointer(), false))
 			{
 				// ‘ÿ»Î ß∞‹

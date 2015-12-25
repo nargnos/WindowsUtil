@@ -1,11 +1,11 @@
 #include "Common.h"
 
-PE::DataDirectory_PeDecoder::DataDirectory_PeDecoder(PeDecoder & pe) :PeStruct(pe)
+PE::DataDirectoryBase::DataDirectoryBase(PeDecoder & pe) :PeStruct(pe)
 {
 
 }
 
-PVOID PE::DataDirectory_PeDecoder::DirectoryEntryToData()
+PVOID PE::DataDirectoryBase::DirectoryEntryToData()
 {
 	if (!dataDirectory || dataDirectory->VirtualAddress == NULL)
 	{
