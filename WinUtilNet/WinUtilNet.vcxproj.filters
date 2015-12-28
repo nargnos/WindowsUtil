@@ -18,9 +18,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UnmanagedWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="PE\DosHeader\DosHeaderWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -28,9 +25,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="UnmanagedValue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PeStructWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="PE\NtHeader\NtHeaderWapper.h">
@@ -45,9 +39,6 @@
     <ClInclude Include="Converters.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UnmanagedWrite.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="UITypeEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -57,12 +48,27 @@
     <ClInclude Include="FlagsEditorUI.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="UnmanagedEnum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="StructOffset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\Section\SectionWapper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedMemory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PeStructWapper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\Export\ExportWapper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PE\DosHeader\DosHeaderWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="UnmanagedValue.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PE\PeImage.cpp">
@@ -80,20 +86,17 @@
     <ClCompile Include="PE\NtHeader\FileHeaderWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="UITypeEditor.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="PE\NtHeader\OptionalHeaderWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="FlagsEditorUI.cpp">
+    <ClCompile Include="PE\Section\SectionWapper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\Export\ExportWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PE\NtHeader\FlagsEditorUI.resx">
-      <Filter>资源文件</Filter>
-    </EmbeddedResource>
     <EmbeddedResource Include="FlagsEditorUI.resx">
       <Filter>资源文件</Filter>
     </EmbeddedResource>

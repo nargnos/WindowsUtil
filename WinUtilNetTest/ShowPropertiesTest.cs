@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WinUtilWapper.PeDecoderWapper;
+using Wapper.PeDecoderWapper;
 namespace WinUtilNetTest
 {
     public partial class ShowPropertiesTest : Form
@@ -26,7 +26,7 @@ namespace WinUtilNetTest
            
             pe = new PeImage();
             
-            isLoad = pe.LoadPEImage(Process.GetCurrentProcess().MainModule.BaseAddress, true);
+            isLoad = pe.Attach(Process.GetCurrentProcess().MainModule.BaseAddress, true);
             Debug.WriteLine(isLoad);
             if (isLoad)
             {

@@ -13,7 +13,7 @@ namespace Process
 			}
 			auto currentProcessBaseAddress = NtCurrentPeb->ImageBaseAddress;
 			PE::PeDecoder pe;
-			if (!pe.LoadPEImage(currentProcessBaseAddress, true))
+			if (!pe.Attach(currentProcessBaseAddress, true))
 			{
 				return NULL;
 			}

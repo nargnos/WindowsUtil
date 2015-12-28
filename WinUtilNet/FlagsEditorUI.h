@@ -8,7 +8,7 @@ namespace NAMESPACE {
 	using namespace System::Windows::Forms::Design;
 	using namespace System::Data;
 	using namespace System::Drawing;
-
+	using namespace System::Threading::Tasks;
 	/// <summary>
 	/// CharacteristicsEditorUI 摘要
 	/// </summary>
@@ -18,34 +18,55 @@ namespace NAMESPACE {
 		T value;
 		DialogResult result;
 		IWindowsFormsEditorService^ svc;
+		typedef FlagsEditorUI<T> FlagsEditorUIType;
+		bool suspendCheckChanged = false;
 	public:
 		FlagsEditorUI(T value, IWindowsFormsEditorService^ svc) :value(value), svc(svc)
 		{
 			InitializeComponent();
 
 			// 添加控件
-
+			InitCheckBoxes(value);
+		}
+		void InitCheckBoxes(T val)
+		{
+			value = val;
 			auto options = Enum::GetValues(T::typeid);
-			auto valueInt = Convert::ToInt32(value); 
+			auto valueInt = Convert::ToUInt32(val);
 			this->SuspendLayout();
-			for each (auto var in options)
+			flowLayoutPanel1->Controls->Clear();
+			for each (auto item in options)
 			{
 				auto tmpCheckBox = gcnew CheckBox();
-				auto varInt = Convert::ToInt32(var);
-				tmpCheckBox->Text =String::Format("{0} ({1:X4})", Enum::GetName(T::typeid, var),varInt);// pe头枚举大都为WORD长度
-				tmpCheckBox->Tag = var;
+				auto optionInt = Convert::ToUInt32(item);
+				tmpCheckBox->Text = String::Format("{0} ({1:X" + 2 * sizeof(T) + "})", Enum::GetName(T::typeid, item), optionInt);// pe头枚举大都为WORD长度
+				tmpCheckBox->Tag = item;
 				tmpCheckBox->AutoSize = true;
-				
-				if ((valueInt & varInt) == varInt)
+
+				if ((valueInt & optionInt) == optionInt)
 				{
 					// 被选中
 					tmpCheckBox->Checked = true;
 				}
 				tmpCheckBox->CheckedChanged += gcnew System::EventHandler(this, &NAMESPACE::FlagsEditorUI<T>::OnCheckedChanged);
+
 				flowLayoutPanel1->Controls->Add(tmpCheckBox);
 			}
 			this->ResumeLayout(false);
 		}
+		void SetCheckBoxes(T val)
+		{
+			suspendCheckChanged = true;
+			value = val;
+			auto valueInt = Convert::ToUInt32(val);
+			for each (CheckBox^ item in flowLayoutPanel1->Controls)
+			{
+				auto optionInt = Convert::ToUInt32(item->Tag);
+				item->Checked = (valueInt & optionInt) == optionInt;
+			}
+			suspendCheckChanged = false;
+		}
+
 		property T Value
 		{
 			T get()
@@ -116,7 +137,7 @@ namespace NAMESPACE {
 			// 
 			this->button1->AutoSize = true;
 			this->button1->DialogResult = System::Windows::Forms::DialogResult::OK;
-			this->button1->Location = System::Drawing::Point(225, 3);
+			this->button1->Location = System::Drawing::Point(255, 3);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 25);
 			this->button1->TabIndex = 0;
@@ -152,7 +173,7 @@ namespace NAMESPACE {
 			this->AutoSize = true;
 			this->Controls->Add(this->splitContainer1);
 			this->Name = L"FlagsEditorUI";
-			this->Size = System::Drawing::Size(303, 363);
+			this->Size = System::Drawing::Size(350, 363);
 			this->splitContainer1->Panel1->ResumeLayout(false);
 			this->splitContainer1->Panel1->PerformLayout();
 			this->splitContainer1->Panel2->ResumeLayout(false);
@@ -173,10 +194,14 @@ namespace NAMESPACE {
 		}
 		void OnCheckedChanged(System::Object ^sender, System::EventArgs ^e)
 		{
+			if (suspendCheckChanged)
+			{
+				return;
+			}
 			auto checkBox = (CheckBox^)sender;
 			auto valueName = checkBox->Text;
-			auto newValue = Convert::ToInt32(checkBox->Tag);
-			auto valueInt = Convert::ToInt32(value);
+			auto newValue = Convert::ToUInt32(checkBox->Tag);
+			auto valueInt = Convert::ToUInt32(value);
 			if (checkBox->Checked)
 			{
 				value = (T)Enum::Parse(T::typeid, Convert::ToString(newValue | valueInt));

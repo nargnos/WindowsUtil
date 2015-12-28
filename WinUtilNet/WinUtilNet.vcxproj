@@ -24,7 +24,7 @@
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>WinUtilNet</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>WinUtilWapper</ProjectName>
+    <ProjectName>PeDecoderWapper</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -94,10 +94,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <ExceptionHandling>Async</ExceptionHandling>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(OutDir)WindowsUtil.lib;</AdditionalDependencies>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -141,29 +145,31 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Converters.h" />
+    <ClInclude Include="PE\Export\ExportWapper.h" />
     <ClInclude Include="FlagsEditorUI.h" />
     <ClInclude Include="PE\NtHeader\OptionalHeaderWapper.h" />
     <ClInclude Include="PE\NtHeader\FileHeaderWapper.h" />
     <ClInclude Include="PE\NtHeader\NtHeaderWapper.h" />
-    <ClInclude Include="PeStructWapper.h" />
+    <ClInclude Include="PE\PeStructWapper.h" />
+    <ClInclude Include="PE\Section\SectionWapper.h" />
+    <ClInclude Include="StructOffset.h" />
     <ClInclude Include="UITypeEditor.h" />
+    <ClInclude Include="UnmanagedEnum.h" />
     <ClInclude Include="UnmanagedValue.h" />
     <ClInclude Include="PE\DosHeader\DosHeaderWapper.h" />
     <ClInclude Include="PE\PeImage.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnmanagedArray.h" />
-    <ClInclude Include="UnmanagedWapper.h" />
-    <ClInclude Include="UnmanagedWrite.h" />
+    <ClInclude Include="UnmanagedMemory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Converters.cpp" />
-    <ClCompile Include="FlagsEditorUI.cpp" />
+    <ClCompile Include="PE\Export\ExportWapper.cpp" />
     <ClCompile Include="PE\NtHeader\FileHeaderWapper.cpp" />
     <ClCompile Include="PE\NtHeader\OptionalHeaderWapper.cpp" />
     <ClCompile Include="PE\NtHeader\NtHeaderWapper.cpp" />
+    <ClCompile Include="PE\Section\SectionWapper.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="UITypeEditor.cpp" />
-    <ClCompile Include="UnmanagedValue.cpp" />
     <ClCompile Include="PE\DosHeader\DosHeaderWapper.cpp" />
     <ClCompile Include="PE\PeImage.cpp" />
   </ItemGroup>

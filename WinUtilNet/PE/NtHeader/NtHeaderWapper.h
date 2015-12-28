@@ -6,26 +6,41 @@ namespace NAMESPACE {
 	namespace PeDecoderWapper
 	{
 		ref class PeImage;
-		[TypeConverter(NtHeaderConverter::typeid)]
+		[TypeConverter(ShowPropertiesConverter::typeid)]
 		public ref class NtHeaderWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::NtHeader>>, public IReset
+			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::NtHeader>>,
+			public IPropertiesFilter
 		{
+			static array<String^>^ sortList;
 			FileHeaderWapper^ fileHeader;
 			IOptionalHeaderWapper^ optionalHeader;
 			bool Is32PE();
 		public:
 
-			NtHeaderWapper(PeImage^ pe) :PeStructWapperBase(pe)
+			NtHeaderWapper(PeImage^ pe);
+			virtual array<String^>^ GetSortList() override
 			{
-			}
+				if (NtHeaderWapper::sortList == nullptr)
+				{
+					NtHeaderWapper::sortList = gcnew array<String^>
+					{
+						"Signature",
+							"FileHeader",
+							"OptionalHeader32",
+							"OptionalHeader64"
 
+					};
+				}
+				return NtHeaderWapper::sortList;
+			}
 			property UnmanagedValue<DWORD>^ Signature
 			{
 				UnmanagedValue<DWORD>^ get()
 				{
-					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct()->GetNtHeader32()->Signature));
+					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct()->GetNtHeader32()->Signature), GetPeBase());
 				}
-			};
+			}; 
+			[DisplayNameAttribute("File Header")]
 			property FileHeaderWapper^ FileHeader
 			{
 				FileHeaderWapper^ get()
@@ -37,7 +52,7 @@ namespace NAMESPACE {
 					return fileHeader;
 				}
 			};
-
+			[DisplayNameAttribute("Optional Header")]
 			property OptionalHeaderWapper32^ OptionalHeader32
 			{
 				OptionalHeaderWapper32^ get()
@@ -53,6 +68,7 @@ namespace NAMESPACE {
 					return safe_cast<OptionalHeaderWapper32^>(optionalHeader);
 				}
 			};
+			[DisplayNameAttribute("Optional Header")]
 			property OptionalHeaderWapper64^ OptionalHeader64
 			{
 				OptionalHeaderWapper64^ get()
@@ -68,13 +84,21 @@ namespace NAMESPACE {
 					return safe_cast<OptionalHeaderWapper64^>(optionalHeader);
 				}
 			};
-			virtual void Reset() override
-			{
-				fileHeader = nullptr;
-			}
-
-			// Í¨¹ý PeStructWapper ¼Ì³Ð
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
+
+			virtual List<String^>^ GetHidePropList() override
+			{
+				auto result = gcnew List<String^>();
+				if (Is32PE())
+				{
+					result->Add("OptionalHeader64");
+				}
+				else
+				{
+					result->Add("OptionalHeader32");
+				}
+				return result;
+			}
 		};
 
 	}

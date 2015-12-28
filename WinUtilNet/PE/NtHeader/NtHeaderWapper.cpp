@@ -8,9 +8,16 @@ namespace NAMESPACE {
 		{
 			return pe->HasNtHeader32;
 		}
+		NtHeaderWapper::NtHeaderWapper(PeImage ^ pe) :PeStructWapperBase(pe)
+		{
+			fileHeader = nullptr;
+			optionalHeader = nullptr;
+			SetDescription(IntPtr(pe->GetPeDecoder()->GetNtHeader->GetNtHeader32()),pe->BaseAddress, 0);
+		}
 		NtHeaderWapper::PeStructWapperType & NtHeaderWapper::GetUnmanagedStruct()
 		{
-			return pe->UnmanagedObject()->GetNtHeader;
+			return pe->GetPeDecoder()->GetNtHeader;
 		}
+		
 	}
 }

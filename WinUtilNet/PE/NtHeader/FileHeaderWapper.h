@@ -4,8 +4,8 @@ namespace NAMESPACE {
 	{
 #define ENUM_VALUE(name,hex) name##_##hex
 		using namespace System::ComponentModel;
-		
-		
+
+
 		[TypeConverter(EnumHexConverter::typeid)]
 		public enum class  MachineType :WORD
 		{
@@ -40,7 +40,7 @@ namespace NAMESPACE {
 			M32R = IMAGE_FILE_MACHINE_M32R,
 			CEE = IMAGE_FILE_MACHINE_CEE
 		};
-		
+
 		[FlagsAttribute]
 		[EditorAttribute(FlagsEditor<CharacteristicsType>::typeid, UITypeEditor::typeid)]
 		public enum class  CharacteristicsType :WORD
@@ -61,87 +61,103 @@ namespace NAMESPACE {
 			UP_SYSTEM_ONLY = IMAGE_FILE_UP_SYSTEM_ONLY,
 			BYTES_REVERSED_HI = IMAGE_FILE_BYTES_REVERSED_HI
 		};
-		[TypeConverter(FileHeaderConverter::typeid)]
+
+		// FIX: 直接这样取值拿不到偏移地址, 想到方法了再替换，如果用取得头指针再自己计算偏移需要人工成本太大
+		// 
+		/*[StructLayout(LayoutKind::Sequential, Size = sizeof(IMAGE_FILE_HEADER))]
+		public value struct FileHeader
+		{
+			MachineType    Machine;
+			WORD    NumberOfSections;
+			DWORD   TimeDateStamp;
+			DWORD   PointerToSymbolTable;
+			DWORD   NumberOfSymbols;
+			WORD    SizeOfOptionalHeader;
+			CharacteristicsType    Characteristics;
+		};*/
+
+		[TypeConverter(ShowPropertiesConverter::typeid)]
 		public ref class FileHeaderWapper :
 			public PeStructWapper<IMAGE_FILE_HEADER>
 		{
+			static array<String^>^ sortList;
+			
 		internal:
 			// 通过 PeStructWapper 继承
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
 
 		public:
 
-			FileHeaderWapper(PeImage^ pe) :PeStructWapperBase(pe)
+			FileHeaderWapper(PeImage^ pe);
+			virtual array<String^>^ GetSortList() override
 			{
-			}
-			
-			property MachineType Machine
-			{
-				MachineType get()
+				if (FileHeaderWapper::sortList == nullptr)
 				{
-					return safe_cast<MachineType>(GetUnmanagedStruct().Machine);
+					FileHeaderWapper::sortList = gcnew array<String^>
+					{
+						"Machine",
+							"NumberOfSections",
+							"TimeDateStamp",
+							"PointerToSymbolTable",
+							"NumberOfSymbols",
+							"SizeOfOptionalHeader",
+							"Characteristics"
+					};
 				}
-				void set(MachineType value)
+				return FileHeaderWapper::sortList;
+			}
+			property UnmanagedEnum<MachineType>^ Machine
+			{
+				UnmanagedEnum<MachineType>^ get()
 				{
-					// FIX: 在无写权限时候会抛出异常,为什么捕捉不到
-					try
-					{
-						GetUnmanagedStruct().Machine = (WORD)value;
-					}
-					catch (System::AccessViolationException^ ex)
-					{
-
-					}
+					return gcnew UnmanagedEnum<MachineType>(IntPtr(&GetUnmanagedStruct().Machine), GetPeBase());
 				}
 			};
+
 			property UnmanagedValue<WORD>^    NumberOfSections
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct().NumberOfSections));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct().NumberOfSections), GetPeBase());
 				}
 			};
 			property UnmanagedValue<DWORD>^   TimeDateStamp
 			{
 				UnmanagedValue<DWORD>^ get()
 				{
-					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().TimeDateStamp));
+					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().TimeDateStamp), GetPeBase());
 				}
 			};
 			property UnmanagedValue<DWORD>^   PointerToSymbolTable
 			{
 				UnmanagedValue<DWORD>^ get()
 				{
-					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().PointerToSymbolTable));
+					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().PointerToSymbolTable), GetPeBase());
 				}
 			};
 			property UnmanagedValue<DWORD>^   NumberOfSymbols
 			{
 				UnmanagedValue<DWORD>^ get()
 				{
-					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().NumberOfSymbols));
+					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().NumberOfSymbols), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^    SizeOfOptionalHeader
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct().SizeOfOptionalHeader));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct().SizeOfOptionalHeader), GetPeBase());
 				}
 			};
-			
-			
-			property CharacteristicsType Characteristics
+
+
+			property UnmanagedEnum<CharacteristicsType>^ Characteristics
 			{
-				CharacteristicsType get()
+				UnmanagedEnum<CharacteristicsType>^ get()
 				{
-					return  safe_cast<CharacteristicsType>(GetUnmanagedStruct().Characteristics);
+					return gcnew UnmanagedEnum<CharacteristicsType>(IntPtr(&GetUnmanagedStruct().Characteristics), GetPeBase());
 				}
-				void set(CharacteristicsType value)
-				{
-					GetUnmanagedStruct().Characteristics = (WORD)value;
-				}
-			};
+			};	
 		};
 	}
 }

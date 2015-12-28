@@ -7,18 +7,19 @@ namespace PE
 	{
 		return isMapped;
 	}
-	bool PeDecoder::LoadPEImage(PVOID base, bool isMapped)
+	bool PeDecoder::Attach(PVOID base, bool isMapped)
 	{
+		if (base==NULL)
+		{
+			return false;
+		}
 		if (base == this->base)
 		{
 			return true;
 		}
 		isPE = false;
 		Clear();
-		if (!base)
-		{
-			return false;
-		}
+		isAttached = true;
 
 		this->base = reinterpret_cast<PBYTE>(base);
 		this->isMapped = isMapped;
@@ -37,7 +38,14 @@ namespace PE
 		}
 		this->hasNtHeader32 = GetNtHeader->HasNtHeader32();
 		isPE = true;
+		
 		return true;
+	}
+	void PeDecoder::Dettach()
+	{
+		base = NULL;
+		Clear();
+		isAttached = false;
 	}
 	void PeDecoder::BindPtr()
 	{
@@ -71,6 +79,7 @@ namespace PE
 	PeDecoder::PeDecoder()
 	{
 		isBinded = false;
+		isAttached = false;
 		Clear();
 	}
 	void PeDecoder::Clear()
@@ -102,6 +111,11 @@ namespace PE
 	bool PeDecoder::IsPE()
 	{
 		return isPE;
+	}
+
+	bool PeDecoder::IsAttached()
+	{
+		return isAttached;
 	}
 
 	PIMAGE_SECTION_HEADER PeDecoder::RvaToSection(DWORD rva)

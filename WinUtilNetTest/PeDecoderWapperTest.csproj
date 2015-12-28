@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -67,7 +67,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WinUtilNet\WinUtilNet.vcxproj">
       <Project>{80d4f4ba-bc91-4e01-babc-9e1c1cb2e199}</Project>
-      <Name>WinUtilNet</Name>
+      <Name>PeDecoderWapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

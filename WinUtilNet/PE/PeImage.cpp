@@ -3,26 +3,56 @@
 namespace NAMESPACE {
 	namespace PeDecoderWapper
 	{
-		void PeImage::OnPeLoaded()
+		void PeImage::OnPeAttached()
 		{
-			PeLoaded();
-		}
-		::PE::PeDecoder * PeImage::GetData()
-		{
-			return new ::PE::PeDecoder();
+			PeAttached();
 		}
 
-		PeImage::PeImage()
+		bool PeImage::Attach(IntPtr pePtr, bool isMapped)
 		{
+			return Attach(pePtr.ToPointer(), isMapped);
 		}
-
-		bool PeImage::LoadPEImage(IntPtr pe, bool isMapped)
+		bool PeImage::Attach(PVOID pePtr, bool isMapped)
 		{
-			auto result = UnmanagedObject()->LoadPEImage(pe.ToPointer(), isMapped);
+			auto result = pe->Attach(pePtr, isMapped);
 			if (result)
 			{
-				OnPeLoaded();
+				OnReset();
+				OnPeAttached();
 			}
+			return result;
+		}
+
+		String ^ PeImage::GetDescription()
+		{
+			return nullptr;
+		}
+
+		array<String^>^ PeImage::GetSortList()
+		{
+			if (PeImage::sortList==nullptr)
+			{
+				PeImage::sortList = gcnew array<String^>
+				{
+						"HasNtHeader32",
+						"DosHeader",
+						"DosStub",
+						"NtHeader",
+						"SectionHeaders",
+						"Export",
+				};
+			}
+			return PeImage::sortList;
+		}
+
+		List<String^>^ PeImage::GetHidePropList()
+		{
+			auto result = gcnew List<String^>;
+			if (!Export)
+			{
+				result->Add("Export");
+			}
+
 			return result;
 		}
 

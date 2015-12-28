@@ -1,6 +1,6 @@
 #pragma once
 namespace NAMESPACE {
-	ref class UnmanagedWrite
+	ref class UnmanagedMemory
 	{
 	public:
 		static void Copy(IntPtr source, array<byte>^ destination, int startIndex, int length)
@@ -9,7 +9,7 @@ namespace NAMESPACE {
 		}
 		static void Copy(array<byte>^ source, int startIndex, IntPtr destination, int length)
 		{
-			Marshal::Copy(source, startIndex, destination, length);
+			//Marshal::Copy(source, startIndex, destination, length);
 		}
 		static byte ReadByte(IntPtr ptr, int ofs)
 		{
@@ -25,8 +25,17 @@ namespace NAMESPACE {
 		}
 		static void StructureToPtr(Object^ structure, IntPtr ptr, bool fDeleteOld)
 		{
-			Marshal::StructureToPtr(structure, ptr, fDeleteOld);
+			//Marshal::StructureToPtr(structure, ptr, fDeleteOld);
 		}
+		static String^ PtrToStringAnsi(IntPtr ptr, int len)
+		{
+			return Marshal::PtrToStringAnsi(ptr, len);
+		}
+		/*static void Copy(array<byte>^ source, int startIndex, IntPtr destination, int length)
+		{
+			
+		}*/
+		//static void Copy(System.IntPtr source, byte[] destination, int startIndex, int length)
 	};
 
 }

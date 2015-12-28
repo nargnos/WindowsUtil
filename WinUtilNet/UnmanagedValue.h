@@ -1,50 +1,62 @@
 #pragma once
 namespace NAMESPACE {
 
-
-
-
+	public ref class UnmanagedValueSort
+	{
+		UnmanagedValueSort() {}
+		static array<String^>^ sortList;
+	public:
+		static array<String^>^ GetSortList()
+		{
+			if (UnmanagedValueSort::sortList == nullptr)
+			{
+				UnmanagedValueSort::sortList = gcnew array<String^>
+				{
+					"Offset",
+						"value"
+				};
+			}
+			return UnmanagedValueSort::sortList;
+		}
+	};
 
 	generic<typename T> where T : ValueType
-		[TypeConverter(UnmanagedValueConverter::typeid)]
-	public 	ref struct UnmanagedValue
+		[TypeConverter(ShowPropertiesConverter::typeid)]
+	public 	ref class UnmanagedValue :
+		public StructOffset,
+		public IDescription
 	{
-		IntPtr addr;
+
+		typedef UnmanagedValue<T> UnmanagedValueType;
 	public:
 
-		UnmanagedValue(IntPtr addr) :addr(addr)
+		UnmanagedValue(IntPtr addr, IntPtr base) :StructOffset(addr,base)
 		{
 
 		}
-		virtual String^ ToString() override
-		{
-			return String::Format("{1}\t{0:X" + 2 * sizeof(T) + "}", Value, GetValueSizeStr(sizeof(T))) ;
-		}
+
 		[TypeConverter(ValueConverter::typeid)]
 		property T Value
 		{
 			T get()
 			{
-				return safe_cast<T>(UnmanagedWrite::PtrToStructure(addr, T::typeid));
+				return safe_cast<T>(UnmanagedMemory::PtrToStructure(addr, T::typeid));
 			}
 
 			void set(T value)
 			{
-				UnmanagedWrite::StructureToPtr(value, addr, false);
+				UnmanagedMemory::StructureToPtr(value, addr, false);
 			};
 		}
-		[TypeConverter(ValueConverter::typeid)]
-		property IntPtr Offset
+
+		virtual String ^ GetDescription() override
 		{
-			IntPtr get()
-			{
-				return addr;
-			}
-		internal:
-			void set(IntPtr value)
-			{
-				addr = value;
-			}
+			return String::Format(GetValueSizeStr(sizeof(T)) + "\t{0:X" + 2 * sizeof(T) + "}", Value);
+		}
+
+		virtual array<String^>^ GetSortList()
+		{
+			return UnmanagedValueSort::GetSortList();
 		}
 	};
 

@@ -10,17 +10,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsUtilTest", "UnitTest
 		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PEView", "PEView\PEView.vcxproj", "{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PeDecoderWapper", "WinUtilNet\WinUtilNet.vcxproj", "{80D4F4BA-BC91-4E01-BABC-9E1C1CB2E199}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinUtilNet", "WinUtilNet\WinUtilNet.vcxproj", "{80D4F4BA-BC91-4E01-BABC-9E1C1CB2E199}"
-	ProjectSection(ProjectDependencies) = postProject
-		{3A2ED9E1-31F5-4F07-A43E-60AB38C10548} = {3A2ED9E1-31F5-4F07-A43E-60AB38C10548}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeDecoderWapperTest", "WinUtilNetTest\PeDecoderWapperTest.csproj", "{415CDA56-0012-4901-BF43-E2530F103024}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinUtilNetTest", "WinUtilNetTest\WinUtilNetTest.csproj", "{415CDA56-0012-4901-BF43-E2530F103024}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeExplorer", "PeExplorer\PeExplorer.csproj", "{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,16 +49,6 @@ Global
 		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|Win32.Build.0 = Release|Win32
 		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|x64.ActiveCfg = Release|x64
 		{2D17935F-28E6-4581-9E22-B997320033E6}.Release|x64.Build.0 = Release|x64
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|Win32.Build.0 = Debug|Win32
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|x64.ActiveCfg = Debug|x64
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Debug|x64.Build.0 = Debug|x64
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|Any CPU.ActiveCfg = Release|Win32
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|Win32.ActiveCfg = Release|Win32
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|Win32.Build.0 = Release|Win32
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|x64.ActiveCfg = Release|x64
-		{A7ABF642-CD8A-49F4-9F9C-F7A0BDA074BE}.Release|x64.Build.0 = Release|x64
 		{80D4F4BA-BC91-4E01-BABC-9E1C1CB2E199}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{80D4F4BA-BC91-4E01-BABC-9E1C1CB2E199}.Debug|Win32.ActiveCfg = Debug|Win32
 		{80D4F4BA-BC91-4E01-BABC-9E1C1CB2E199}.Debug|Win32.Build.0 = Debug|Win32
@@ -84,6 +71,18 @@ Global
 		{415CDA56-0012-4901-BF43-E2530F103024}.Release|Win32.Build.0 = Release|Any CPU
 		{415CDA56-0012-4901-BF43-E2530F103024}.Release|x64.ActiveCfg = Release|Any CPU
 		{415CDA56-0012-4901-BF43-E2530F103024}.Release|x64.Build.0 = Release|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Debug|Win32.Build.0 = Debug|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Debug|x64.Build.0 = Debug|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|Win32.ActiveCfg = Release|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|Win32.Build.0 = Release|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|x64.ActiveCfg = Release|Any CPU
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

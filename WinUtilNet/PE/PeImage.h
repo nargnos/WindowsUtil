@@ -2,40 +2,96 @@
 #include "..\stdafx.h"
 #include "DosHeader\DosHeaderWapper.h"
 #include "NtHeader\NtHeaderWapper.h"
+#include "Section\SectionWapper.h"
+#include "Export\ExportWapper.h"
 namespace NAMESPACE {
 	namespace PeDecoderWapper
 	{
-		[TypeConverter(PeImageConverter::typeid)]
-		public ref class PeImage :public UnmanagedWapper<::PE::PeDecoder>
-		{
-			DosHeaderWapper^ dosHeader; 
-			NtHeaderWapper^ ntHeader;
-			void OnPeLoaded();
-		protected:
-			virtual ::PE::PeDecoder * GetData() override;
-			
-			void AddResetEvent(IReset^ obj)
-			{
-				PeLoaded += gcnew Action(obj, &IReset::Reset);
-			}
-		public:
-			PeImage();
-			event Action^ PeLoaded;
-			bool LoadPEImage(IntPtr pe, bool isMapped);
 
-			[TypeConverter(ValueConverter::typeid)]
+
+		[TypeConverter(ShowPropertiesConverter::typeid)]
+		public ref class PeImage :
+			public IDescription,
+			public IPropertiesFilter
+		{
+			::PE::PeDecoder* pe;
+
+			static array<String^>^ sortList;
+
+			DosHeaderWapper^ dosHeader;
+			NtHeaderWapper^ ntHeader;
+			UnmanagedByteArray^ dosStub;
+			SectionHeaderArrayWapper^ sectionHeaders;
+			ExportWapper^ exportWapper;
+			void OnPeAttached();
+			void OnReset()
+			{
+				dosHeader = nullptr;
+				ntHeader = nullptr;
+				dosStub = nullptr;
+				sectionHeaders = nullptr;
+				exportWapper = nullptr;
+			}
+		protected:
+
+			/*void AddResetEvent(IReset^ obj)
+			{
+				Reset += gcnew Action(obj, &IReset::Reset);
+			}*/
+			//event Action^ Reset;
+		public:
+			event Action^ PeAttached;
+			bool Attach(IntPtr pe, bool isMapped);
+			bool Attach(PVOID pe, bool isMapped);
+			void Dettach()
+			{
+				OnReset();
+				pe->Dettach();
+			}
+			PeImage()
+			{
+				pe = new ::PE::PeDecoder();
+			}
+			~PeImage()
+			{
+				this->!PeImage();
+			}
+			!PeImage()
+			{
+				if (pe)
+				{
+					delete pe;
+					pe = NULL;
+				}
+			}
+			virtual String ^ GetDescription();
+			virtual array<String^>^ GetSortList();
+			::PE::PeDecoder* GetPeDecoder()
+			{
+				return pe;
+			}
+			[BrowsableAttribute(false)]
+			property bool IsAttached
+			{
+				bool get()
+				{
+					return pe->IsAttached();
+				}
+			}
+			[BrowsableAttribute(false)]
 			property IntPtr BaseAddress
 			{
 				IntPtr get()
 				{
-					return IntPtr(UnmanagedObject()->GetBase());
+					return IntPtr(pe->GetBase());
 				}
 			}
+			[BrowsableAttribute(false)]
 			property bool IsMapped
 			{
 				bool get()
 				{
-					return UnmanagedObject()->IsMapped();
+					return pe->IsMapped();
 				}
 			}
 			[DisplayNameAttribute("Is32PE")]
@@ -43,7 +99,7 @@ namespace NAMESPACE {
 			{
 				bool get()
 				{
-					return UnmanagedObject()->HasNtHeader32();
+					return pe->HasNtHeader32();
 				}
 			}
 			[BrowsableAttribute(false)]
@@ -51,23 +107,39 @@ namespace NAMESPACE {
 			{
 				bool get()
 				{
-					return UnmanagedObject()->IsPE();
+					return pe->IsPE();
 				}
 			}
-			//[BrowsableAttribute(false)]
+			
+			[DisplayNameAttribute("Dos Header")]
 			property DosHeaderWapper^ DosHeader
 			{
 				DosHeaderWapper^ get()
 				{
-					if (dosHeader==nullptr)
+					if (dosHeader == nullptr)
 					{
 						dosHeader = gcnew DosHeaderWapper(this);
-						AddResetEvent(dosHeader);
 					}
 					return dosHeader;
 				}
 			}
-			
+			[DisplayNameAttribute("Dos Stub")]
+			property UnmanagedByteArray^ DosStub //
+			{
+				UnmanagedByteArray^ get()
+				{
+					if (dosStub == nullptr)
+					{
+						auto lfanew = &(pe->GetDosHeader->GetValue()->e_lfanew);
+						auto ptr = IntPtr(lfanew);
+						ptr += sizeof(*lfanew);
+						auto dosStubSize = *lfanew - sizeof(IMAGE_DOS_HEADER);
+						dosStub = gcnew UnmanagedByteArray(ptr,BaseAddress, dosStubSize);
+					}
+					return dosStub;
+				}
+			};
+			[DisplayNameAttribute("Nt Headers")]
 			property NtHeaderWapper^ NtHeader
 			{
 				NtHeaderWapper^ get()
@@ -75,11 +147,41 @@ namespace NAMESPACE {
 					if (ntHeader == nullptr)
 					{
 						ntHeader = gcnew NtHeaderWapper(this);
-						AddResetEvent(ntHeader);
 					}
 					return ntHeader;
 				}
 			}
+			[DisplayNameAttribute("Section Headers")]
+			property SectionHeaderArrayWapper^ SectionHeaders
+			{
+				SectionHeaderArrayWapper^ get()
+				{
+					if (sectionHeaders == nullptr)
+					{
+						sectionHeaders = gcnew SectionHeaderArrayWapper(this);
+					}
+					return sectionHeaders;
+				}
+			}
+			
+			[DisplayNameAttribute("Export Directory")]
+			property ExportWapper^ Export
+			{
+				ExportWapper^ get()
+				{
+					if (exportWapper == nullptr)
+					{
+						if (pe->GetExport->IsExist())
+						{
+							exportWapper = gcnew ExportWapper(this);
+						}
+					}
+					return exportWapper;
+				}
+			}
+
+			// Í¨¹ý IPropertiesFilter ¼Ì³Ð
+			virtual List<String^>^ GetHidePropList();
 			/*
 
 			void GetSection();

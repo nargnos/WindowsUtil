@@ -49,7 +49,7 @@ namespace PE
 	FARPROC GetProcAddress(HMODULE module, LPCSTR lpProcName)
 	{
 		PeDecoder pe;
-		if (!pe.LoadPEImage(module, true))
+		if (!pe.Attach(module, true))
 		{
 			return NULL;
 		}
@@ -81,7 +81,7 @@ namespace PE
 	FARPROC GetProcAddress(HMODULE module, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
 	{
 		PeDecoder pe;
-		if (!pe.LoadPEImage(module, true))
+		if (!pe.Attach(module, true))
 		{
 			return NULL;
 		}

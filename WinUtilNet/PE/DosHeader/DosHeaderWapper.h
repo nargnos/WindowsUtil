@@ -5,116 +5,145 @@ namespace NAMESPACE {
 	{
 		ref class PeImage;
 
-		[TypeConverter(DosHeaderConverter::typeid)]
+		[TypeConverter(ShowPropertiesConverter::typeid)]
 		public ref class DosHeaderWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::DosHeader>>, public IReset
+			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::DosHeader>>
 		{
+			static array<String^>^ sortList;
 			UnmanagedArray<WORD>^ e_res2;
 			UnmanagedArray<WORD>^ e_res;
+
 		internal:
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
 		public:
-			DosHeaderWapper(PeImage^ pe):PeStructWapperBase(pe)
+			DosHeaderWapper(PeImage^ pe);
+			virtual array<String^>^ GetSortList() override
 			{
-				Reset();
+				if (DosHeaderWapper::sortList == nullptr)
+				{
+					DosHeaderWapper::sortList = gcnew array<String^>
+					{
+						"E_magic",
+							"E_cblp",
+							"E_cp",
+							"E_crlc",
+							"E_cparhdr",
+							"E_minalloc",
+							"E_maxalloc",
+							"E_ss",
+							"E_sp",
+							"E_csum",
+							"E_ip",
+							"E_cs",
+							"E_lfarlc",
+							"E_ovno",
+							"E_res",
+							"E_oemid",
+							"E_oeminfo",
+							"E_res2",
+							"E_lfanew"
+					};
+				}
+				return DosHeaderWapper::sortList;
 			}
+
 			[ReadOnlyAttribute(true)]
 			property UnmanagedValue<WORD>^ E_magic
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_magic));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_magic), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_cblp
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cblp));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cblp), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_cp
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cp));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cp), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_crlc
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_crlc));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_crlc), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_cparhdr
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cparhdr));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cparhdr), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_minalloc
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_minalloc));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_minalloc), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_maxalloc
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_maxalloc));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_maxalloc), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_ss
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_ss));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_ss), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_sp
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_sp));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_sp), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_csum
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_csum));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_csum), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_ip
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_ip));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_ip), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_cs
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cs));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_cs), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_lfarlc
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_lfarlc));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_lfarlc), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_ovno
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_ovno));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_ovno), GetPeBase());
 				}
 			};
 
@@ -124,7 +153,7 @@ namespace NAMESPACE {
 				{
 					if (e_res == nullptr)
 					{
-						e_res = gcnew UnmanagedArray<WORD>(IntPtr(GetUnmanagedStruct()->GetValue()->e_res), 4);
+						e_res = gcnew UnmanagedArray<WORD>(IntPtr(GetUnmanagedStruct()->GetValue()->e_res), GetPeBase(), 4);
 					}
 					return e_res;
 				}
@@ -133,14 +162,14 @@ namespace NAMESPACE {
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_oemid));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_oemid), GetPeBase());
 				}
 			};
 			property UnmanagedValue<WORD>^ E_oeminfo
 			{
 				UnmanagedValue<WORD>^ get()
 				{
-					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_oeminfo));
+					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_oeminfo), GetPeBase());
 				}
 			};
 
@@ -150,7 +179,7 @@ namespace NAMESPACE {
 				{
 					if (e_res2 == nullptr)
 					{
-						e_res2 = gcnew UnmanagedArray<WORD>(IntPtr(GetUnmanagedStruct()->GetValue()->e_res2), 10);
+						e_res2 = gcnew UnmanagedArray<WORD>(IntPtr(GetUnmanagedStruct()->GetValue()->e_res2), GetPeBase(), 10);
 					}
 					return e_res2;
 				}
@@ -159,30 +188,12 @@ namespace NAMESPACE {
 			{
 				UnmanagedValue<LONG>^ get()
 				{
-					return gcnew UnmanagedValue<LONG>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_lfanew));
+					return gcnew UnmanagedValue<LONG>(IntPtr(&GetUnmanagedStruct()->GetValue()->e_lfanew), GetPeBase());
 				}
 			};
 
-			UnmanagedByteArray^ dosStub;
-			property UnmanagedByteArray^ DosStub //
-			{
-				UnmanagedByteArray^ get()
-				{
-					if (dosStub == nullptr)
-					{
-						auto lfanew = &GetUnmanagedStruct()->GetValue()->e_lfanew;
-						auto ptr = IntPtr(lfanew);
-						ptr += sizeof(*lfanew);
-						auto dosStubSize = *lfanew-sizeof(IMAGE_DOS_HEADER);
-						dosStub = gcnew UnmanagedByteArray(ptr, dosStubSize);
-					}
-					return dosStub;
-				}
-			};
-			virtual void Reset() override;
 
-
-};
+		};
 
 	}
 }

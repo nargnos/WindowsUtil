@@ -3,14 +3,15 @@
 namespace NAMESPACE {
 	namespace PeDecoderWapper
 	{
-		void DosHeaderWapper::Reset()
-		{
-			e_res = nullptr;
-			e_res2 = nullptr;
-		}
 		DosHeaderWapper::PeStructWapperType & DosHeaderWapper::GetUnmanagedStruct()
 		{
-			return pe->UnmanagedObject()->GetDosHeader;
+			return pe->GetPeDecoder()->GetDosHeader;
+		}
+		DosHeaderWapper::DosHeaderWapper(PeImage ^ pe) :PeStructWapperBase(pe)
+		{
+			SetDescription(GetPeBase(), GetPeBase(), sizeof(IMAGE_DOS_HEADER));
+			e_res = nullptr;
+			e_res2 = nullptr;
 		}
 	}
 }

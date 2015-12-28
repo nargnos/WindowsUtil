@@ -6,7 +6,7 @@
 #include <memory>
 namespace PE
 {
-	
+
 	class DosHeader;
 	class NtHeader;
 	class SectionHeaders;
@@ -30,7 +30,7 @@ namespace PE
 	// TODO: 数据目录解析只完成了导入导出表\资源\重定位\节的读取器
 	class PeDecoder
 	{
-		
+
 
 		PBYTE base;
 
@@ -38,8 +38,9 @@ namespace PE
 		bool isPE;
 		bool hasNtHeader32;
 		bool isBinded;
+		bool isAttached;
 		void BindPtr();
-
+		
 	public:
 		template<typename T>
 		class PeStructInstance
@@ -63,12 +64,16 @@ namespace PE
 			void operator =(PeStructInstance&) = delete;
 		public:
 			friend PeDecoder;
-			
+
 			_STD shared_ptr<T> operator->()
 			{
 				if (!data)
 				{
-					data = _STD make_shared<T>(*peDecoder);
+					if (peDecoder->isAttached)
+					{
+						data = _STD make_shared<T>(*peDecoder);
+					}
+
 				}
 				return data;
 			}
@@ -76,14 +81,14 @@ namespace PE
 			{
 				return this->operator->();
 			}
-			
+
 		};
 		PeDecoder();
 		~PeDecoder() = default;
 		void Clear();
 		PeDecoder(PeDecoder& pe) = delete;
-		bool LoadPEImage(PVOID base, bool isMapped);
-
+		bool Attach(PVOID base, bool isMapped);
+		void Dettach();
 		PVOID GetBase();
 		PeStructInstance<DosHeader> GetDosHeader;
 		PeStructInstance<NtHeader> GetNtHeader;
@@ -107,6 +112,7 @@ namespace PE
 		bool IsMapped();
 		bool HasNtHeader32();
 		bool IsPE();
+		bool IsAttached();
 		PIMAGE_SECTION_HEADER RvaToSection(DWORD rva);
 		PIMAGE_SECTION_HEADER OffsetToSection(DWORD fileOffset);
 		DWORD RvaToOffset(DWORD rva);
@@ -158,7 +164,7 @@ namespace PE
 		// Resource
 		// 定位修改设置（F
 
-		
+
 	};
 
 }

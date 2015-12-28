@@ -9,7 +9,7 @@ namespace Process
 			auto dllBase = LazyLoad::_LoadLibraryW(dllName);
 			
 			PE::PeDecoder dll;
-			if (!dll.LoadPEImage(dllBase, true))
+			if (!dll.Attach(dllBase, true))
 			{
 				return NULL;
 			}
