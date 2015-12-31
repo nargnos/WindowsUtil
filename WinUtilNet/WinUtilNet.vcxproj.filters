@@ -66,6 +66,9 @@
     <ClInclude Include="PE\Export\ExportWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PE\Import\ImportWapper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PE\DosHeader\DosHeaderWapper.cpp">
@@ -93,6 +96,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="PE\Export\ExportWapper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\Import\ImportWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

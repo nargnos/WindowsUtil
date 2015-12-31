@@ -30,16 +30,17 @@ namespace NAMESPACE {
 
 		array<String^>^ PeImage::GetSortList()
 		{
-			if (PeImage::sortList==nullptr)
+			if (PeImage::sortList == nullptr)
 			{
 				PeImage::sortList = gcnew array<String^>
 				{
-						"HasNtHeader32",
+					"HasNtHeader32",
 						"DosHeader",
 						"DosStub",
 						"NtHeader",
 						"SectionHeaders",
 						"Export",
+						"Import",
 				};
 			}
 			return PeImage::sortList;
@@ -52,10 +53,14 @@ namespace NAMESPACE {
 			{
 				result->Add("Export");
 			}
+			if (!Import)
+			{
+				result->Add("Import");
+			}
 
 			return result;
 		}
 
-		
+
 	}
 }

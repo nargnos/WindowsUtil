@@ -34,9 +34,7 @@ namespace NAMESPACE {
 			ExportWapper(PeImage^ pe) :PeStructWapperBase(pe)
 			{
 				SetDescription(IntPtr(GetUnmanagedStruct()->GetValue()), GetPeBase(), sizeof(IMAGE_EXPORT_DIRECTORY));
-				auto bbb=GetUnmanagedStruct()->CreateIterator();
-				//bbb->CurrentNameRva()
-			
+				
 			}
 			
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
@@ -48,11 +46,11 @@ namespace NAMESPACE {
 					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->Characteristics), GetPeBase());
 				}
 			}
-			property UnmanagedValue<DWORD>^   TimeDateStamp
+			property UnmanagedDateTimeValue<DWORD>^   TimeDateStamp
 			{
-				UnmanagedValue<DWORD>^ get()
+				UnmanagedDateTimeValue<DWORD>^ get()
 				{
-					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->TimeDateStamp), GetPeBase());
+					return gcnew UnmanagedDateTimeValue<DWORD>(IntPtr(&GetUnmanagedStruct()->GetValue()->TimeDateStamp), GetPeBase());
 				}
 			}
 			property UnmanagedValue<WORD>^    MajorVersion

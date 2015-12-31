@@ -104,7 +104,7 @@ namespace NAMESPACE {
 		{
 			static array<String^>^ sortList;
 		public:
-			DataDirectoryWapper(IntPtr addr,IntPtr basePtr):PeStructDescription()
+			DataDirectoryWapper(IntPtr addr,IntPtr basePtr)//:PeStructDescription()
 			{
 				SetDescription(addr, basePtr, sizeof(IMAGE_DATA_DIRECTORY));
 			}

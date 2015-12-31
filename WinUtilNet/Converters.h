@@ -140,35 +140,65 @@ namespace NAMESPACE {
 	};
 
 
-	public ref class SectionHeaderArrayConverter : public ShowPropertiesConverter
+	//public ref class SectionHeaderArrayConverter : public ShowPropertiesConverter
+	//{
+	//	ref class ArrayPropertyDescriptor : TypeConverter::SimplePropertyDescriptor
+	//	{
+	//		int index;
+	//	public:
+	//		ArrayPropertyDescriptor(Type^ arrayType, Type^ elementType, int index, String^ sectionName);
+	//		virtual  Object^ GetValue(Object^ instance) override;
+	//		virtual void SetValue(Object^ instance, Object^ value)override
+	//		{
+	//			/*if (instance is Array)
+	//			{
+	//				Array array = (Array)instance;
+	//				if (array.GetLength(0) > this.index)
+	//				{
+	//					array.SetValue(value, this.index);
+	//				}
+	//				this.OnValueChanged(instance, EventArgs.Empty);
+	//			}*/
+	//		}
+	//	};
+
+	//public:
+	//	SectionHeaderArrayConverter()
+	//	{
+	//	}
+
+	//	virtual  PropertyDescriptorCollection^ GetProperties(ITypeDescriptorContext^ context, Object^ value, array<Attribute^>^ attributes) override;
+	//};
+
+	public interface class IWapperArray
+	{
+		// 成员类型必须为IElementName，cli不知道怎么声明可协变
+		System::Collections::Generic::IList<Object^>^ GetElements();
+	};
+	public interface class IElementName
+	{
+		String^ GetName();
+	};
+	
+	public ref class PeStructArrayConverter : public ShowPropertiesConverter
 	{
 		ref class ArrayPropertyDescriptor : TypeConverter::SimplePropertyDescriptor
 		{
 			int index;
 		public:
-			ArrayPropertyDescriptor(Type^ arrayType, Type^ elementType, int index, String^ sectionName);
+			ArrayPropertyDescriptor(Type^ arrayType, Type^ elementType, int index, String^ nodeName);
 			virtual  Object^ GetValue(Object^ instance) override;
 			virtual void SetValue(Object^ instance, Object^ value)override
 			{
-				/*if (instance is Array)
-				{
-					Array array = (Array)instance;
-					if (array.GetLength(0) > this.index)
-					{
-						array.SetValue(value, this.index);
-					}
-					this.OnValueChanged(instance, EventArgs.Empty);
-				}*/
 			}
 		};
 
 	public:
-		SectionHeaderArrayConverter()
+		PeStructArrayConverter()
 		{
+
 		}
 
 		virtual  PropertyDescriptorCollection^ GetProperties(ITypeDescriptorContext^ context, Object^ value, array<Attribute^>^ attributes) override;
 	};
-
-
 }

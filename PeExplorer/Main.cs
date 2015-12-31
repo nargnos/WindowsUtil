@@ -28,13 +28,14 @@ namespace PeExplorer
         private void HidePropertyGrid()
         {
             Text = "Pe Explorer";
+            toolStripStatusLabel_Path.Text = string.Empty;
             propertyGrid.SelectedObject = null;
             propertyGrid.Visible = false;
 
         }
         private void ShowPropertyGrid()
         {
-            Text = pe.FileName;
+            Text = toolStripStatusLabel_Path.Text = pe.FileName;
             propertyGrid.Visible = true;
             propertyGrid.SelectedObject = pe.PE;
         }
@@ -92,20 +93,43 @@ namespace PeExplorer
 
         private void onlyShowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Text += ">>>" + propertyGrid.SelectedGridItem.Label;
+            string str = GetPath(toolStripStatusLabel_Path.Text);
             propertyGrid.SelectedObject = propertyGrid.SelectedGridItem.Value;
-
+            toolStripStatusLabel_Path.Text = str;
         }
 
+        private string GetPath(string oldPath)
+        {
+            Stack<string> path = new Stack<string>();
 
+            var tmpGridItem = propertyGrid.SelectedGridItem;
+            do
+            {
+                path.Push(tmpGridItem.Label);
+                tmpGridItem = tmpGridItem.Parent;
+            } while (tmpGridItem.Parent != null);
 
+            StringBuilder sb = new StringBuilder(oldPath);
+           
+            foreach (var item in path)
+            {
+                sb.AppendFormat("->{0}", item);
+            }
+
+            return sb.ToString();
+        }
+
+       
         private void contextMenuStrip_Prop_Opening(object sender, CancelEventArgs e)
         {
             toggleToolStripMenuItem.Enabled =
             onlyShowToolStripMenuItem.Enabled = pe.IsOpen && (propertyGrid.SelectedGridItem != null) && propertyGrid.SelectedGridItem.Expandable;
-            backToolStripMenuItem.Enabled = propertyGrid.SelectedObject != pe.PE;
+            backToolStripMenuItem.Enabled = IsOnlyShow();
         }
-
+        private bool IsOnlyShow()
+        {
+            return propertyGrid.SelectedObject != pe.PE;
+        }
         private void backToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowPropertyGrid();
@@ -183,7 +207,7 @@ namespace PeExplorer
 // 后面要做的是载入解析运行中的程序（现在就能直接做...不过这个功能好像没用）
 ";
             textBox.Select(textBox.Text.Length, 0);
-            
+
             var dlg = new Form();
             dlg.Size = this.Size;
             dlg.Padding = new Padding(5);
@@ -196,5 +220,16 @@ namespace PeExplorer
             dlg.ShowInTaskbar = false;
             dlg.ShowDialog(this);
         }
+
+        private void copyPathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(propertyGrid.SelectedGridItem != null ?GetPath(toolStripStatusLabel_Path.Text):string.Empty);
+        }
+
+        private void captionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(propertyGrid.SelectedGridItem != null ? propertyGrid.SelectedGridItem.Label : string.Empty);
+        }
+        
     }
 }

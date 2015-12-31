@@ -75,7 +75,8 @@ namespace NAMESPACE {
 
 		[TypeConverter(ShowPropertiesConverter::typeid)]
 		public ref class SectionHeaderWapper :
-			public PeStructDescription
+			public PeStructDescription,
+			public IElementName
 		{
 			PIMAGE_SECTION_HEADER GetPointer()
 			{
@@ -108,22 +109,14 @@ namespace NAMESPACE {
 			{
 				SetDescription(addr,base, sizeof(IMAGE_SECTION_HEADER));
 			}
-
-			property String^ Name//[IMAGE_SIZEOF_SHORT_NAME]
+			
+			property UnmanagedString^ Name//[IMAGE_SIZEOF_SHORT_NAME]
 			{
-				String^ get()
+				UnmanagedString^ get()
 				{
-					return Marshal::PtrToStringAnsi(IntPtr(&GetPointer()->Name), IMAGE_SIZEOF_SHORT_NAME);
+					return gcnew UnmanagedString(IntPtr(&GetPointer()->Name),base,IMAGE_SIZEOF_SHORT_NAME);
 				}
-				void set(String^ value)
-				{
-					if (System::Text::Encoding::ASCII->GetByteCount(value) <= IMAGE_SIZEOF_SHORT_NAME)
-					{
-						auto strBytes = System::Text::Encoding::ASCII->GetBytes(value);
-						UnmanagedMemory::Copy(strBytes, 0, IntPtr(&GetPointer()->Name), strBytes->Length);
-					}
-
-				}
+				
 			};
 			property UnmanagedValue<DWORD>^ VirtualSize
 			{
@@ -234,13 +227,18 @@ namespace NAMESPACE {
 				}
 			}
 
-		};
 
-		[TypeConverter(SectionHeaderArrayConverter::typeid)]
+			// 通过 IElementName 继承
+			virtual String ^ GetName();
+
+};
+
+		[TypeConverter(PeStructArrayConverter::typeid)]
 		ref class SectionHeaderArrayWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::SectionHeaders>>
+			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::SectionHeaders>>,
+			public IWapperArray
 		{
-			List<SectionHeaderWapper^>^ list;
+			List<Object^>^ list;
 			void InitArrayList();
 			int numberOfSections;
 		public:
@@ -252,18 +250,8 @@ namespace NAMESPACE {
 			}
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
 		
-			property List<SectionHeaderWapper^>^ Sections
-			{
-				List<SectionHeaderWapper^>^ get()
-				{
-					if (list == nullptr)
-					{
-						InitArrayList();
-					}
-					return list;
-				}
-			}
-
+			// 通过 IWapperArray 继承
+			virtual System::Collections::Generic::IList<Object^>^ GetElements();
 
 		};
 	}

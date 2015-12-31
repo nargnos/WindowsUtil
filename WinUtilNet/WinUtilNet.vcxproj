@@ -147,6 +147,7 @@
     <ClInclude Include="Converters.h" />
     <ClInclude Include="PE\Export\ExportWapper.h" />
     <ClInclude Include="FlagsEditorUI.h" />
+    <ClInclude Include="PE\Import\ImportWapper.h" />
     <ClInclude Include="PE\NtHeader\OptionalHeaderWapper.h" />
     <ClInclude Include="PE\NtHeader\FileHeaderWapper.h" />
     <ClInclude Include="PE\NtHeader\NtHeaderWapper.h" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="Converters.cpp" />
     <ClCompile Include="PE\Export\ExportWapper.cpp" />
+    <ClCompile Include="PE\Import\ImportWapper.cpp" />
     <ClCompile Include="PE\NtHeader\FileHeaderWapper.cpp" />
     <ClCompile Include="PE\NtHeader\OptionalHeaderWapper.cpp" />
     <ClCompile Include="PE\NtHeader\NtHeaderWapper.cpp" />

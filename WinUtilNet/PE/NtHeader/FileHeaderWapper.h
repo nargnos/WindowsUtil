@@ -121,11 +121,11 @@ namespace NAMESPACE {
 					return gcnew UnmanagedValue<WORD>(IntPtr(&GetUnmanagedStruct().NumberOfSections), GetPeBase());
 				}
 			};
-			property UnmanagedValue<DWORD>^   TimeDateStamp
+			property UnmanagedDateTimeValue<DWORD>^   TimeDateStamp
 			{
-				UnmanagedValue<DWORD>^ get()
+				UnmanagedDateTimeValue<DWORD>^ get()
 				{
-					return gcnew UnmanagedValue<DWORD>(IntPtr(&GetUnmanagedStruct().TimeDateStamp), GetPeBase());
+					return gcnew UnmanagedDateTimeValue<DWORD>(IntPtr(&GetUnmanagedStruct().TimeDateStamp), GetPeBase());
 				}
 			};
 			property UnmanagedValue<DWORD>^   PointerToSymbolTable

@@ -4,6 +4,7 @@
 #include "NtHeader\NtHeaderWapper.h"
 #include "Section\SectionWapper.h"
 #include "Export\ExportWapper.h"
+#include "Import\ImportWapper.h"
 namespace NAMESPACE {
 	namespace PeDecoderWapper
 	{
@@ -23,6 +24,7 @@ namespace NAMESPACE {
 			UnmanagedByteArray^ dosStub;
 			SectionHeaderArrayWapper^ sectionHeaders;
 			ExportWapper^ exportWapper;
+			ImportDescriptorArrayWapper^ import;
 			void OnPeAttached();
 			void OnReset()
 			{
@@ -31,6 +33,7 @@ namespace NAMESPACE {
 				dosStub = nullptr;
 				sectionHeaders = nullptr;
 				exportWapper = nullptr;
+				import = nullptr;
 			}
 		protected:
 
@@ -177,6 +180,22 @@ namespace NAMESPACE {
 						}
 					}
 					return exportWapper;
+				}
+			}
+
+			[DisplayNameAttribute("Import Directory")]
+				property ImportDescriptorArrayWapper^ Import
+			{
+				ImportDescriptorArrayWapper^ get()
+				{
+					if (import == nullptr)
+					{
+						if (pe->GetImport->IsExist())
+						{
+							import = gcnew ImportDescriptorArrayWapper(this);
+						}
+					}
+					return import;
 				}
 			}
 

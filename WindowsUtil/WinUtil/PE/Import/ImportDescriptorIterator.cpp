@@ -2,7 +2,7 @@
 
 PE::ImportDescriptorIterator::ImportDescriptorIterator(ImportDirectory & importDirectory) :importDirectory(importDirectory)
 {
-
+	Reset();
 }
 
 PE::ImportDescriptorIterator::~ImportDescriptorIterator() {}
@@ -29,6 +29,6 @@ void PE::ImportDescriptorIterator::Reset()
 
 PIMAGE_IMPORT_DESCRIPTOR PE::ImportDescriptorIterator::Current()
 {
-	assert(currentIndex > 0 && currentIndex < *importDirectory.size);
+	assert(currentIndex >= 0 && currentIndex < *importDirectory.size);
 	return &importDirectory.data[currentIndex];
 }

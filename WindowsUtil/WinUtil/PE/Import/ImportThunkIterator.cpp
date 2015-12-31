@@ -8,17 +8,21 @@
 			}																   \
 			currentThunk =  CONVERT_THUNK_POINTER(currentThunk, x) + 1;		   \
 			currentOriginalThunk = tmpThunk;
-void PE::ImportThunkIterator::Init(PIMAGE_IMPORT_DESCRIPTOR importDescriptor)
+
+
+inline void PE::ImportThunkIterator::Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder & pe)
 {
-	originalThunk = importDescriptorIterator.importDirectory.GetPeDecoder().GetRvaData(importDescriptor->OriginalFirstThunk);
-	thunk = importDescriptorIterator.importDirectory.GetPeDecoder().GetRvaData(importDescriptor->FirstThunk);
+	is32 = pe.HasNtHeader32();
+	originalThunk = pe.GetRvaData(descriptor->OriginalFirstThunk);
+	thunk = pe.GetRvaData(descriptor->FirstThunk);
 	Reset();
 }
 
-PE::ImportThunkIterator::ImportThunkIterator(ImportDescriptorIterator & importDescriptorIterator) :importDescriptorIterator(importDescriptorIterator)
+PE::ImportThunkIterator::ImportThunkIterator(ImportDescriptorIterator & importDescriptorIterator)
 {
-	is32 = importDescriptorIterator.importDirectory.GetPeDecoder().HasNtHeader32();
-	Init(importDescriptorIterator.Current());
+	auto current = importDescriptorIterator.Current();
+	auto& peDecoder = importDescriptorIterator.importDirectory.GetPeDecoder();
+	Init(current, peDecoder);
 }
 
 PIMAGE_THUNK_DATA32 PE::ImportThunkIterator::CurrentThunk32()

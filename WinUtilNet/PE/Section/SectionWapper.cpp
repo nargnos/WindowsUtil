@@ -6,15 +6,15 @@ namespace NAMESPACE {
 	{
 		void SectionHeaderArrayWapper::InitArrayList()
 		{
-			
-			list = gcnew List<SectionHeaderWapper^>(numberOfSections); // 
+
+			list = gcnew List<Object^>(numberOfSections); // 
 			auto iter = GetUnmanagedStruct()->CreateIterator();
 			while (iter->Next())
 			{
-				list->Add(gcnew SectionHeaderWapper(IntPtr(iter->Current()),pe->BaseAddress));
+				list->Add(gcnew SectionHeaderWapper(IntPtr(iter->Current()), pe->BaseAddress));
 			}
 		}
-		 SectionHeaderArrayWapper::SectionHeaderArrayWapper(PeImage ^ pe) :PeStructWapperBase(pe)
+		SectionHeaderArrayWapper::SectionHeaderArrayWapper(PeImage ^ pe) :PeStructWapperBase(pe)
 		{
 			list = nullptr;
 			numberOfSections = pe->GetPeDecoder()->GetNtHeader->GetNtHeader32()->FileHeader.NumberOfSections;
@@ -28,7 +28,7 @@ namespace NAMESPACE {
 			{
 				sectionAddr = IMAGE_FIRST_SECTION((PIMAGE_NT_HEADERS64)(&pe->GetPeDecoder()->GetNtHeader->GetNtHeader64()->Signature));
 			}
-			SetDescription(IntPtr(sectionAddr),GetPeBase(), sizeof(IMAGE_SECTION_HEADER)*numberOfSections);
+			SetDescription(IntPtr(sectionAddr), GetPeBase(), sizeof(IMAGE_SECTION_HEADER)*numberOfSections);
 
 		}
 		SectionHeaderArrayWapper::PeStructWapperType & SectionHeaderArrayWapper::GetUnmanagedStruct()
@@ -36,6 +36,20 @@ namespace NAMESPACE {
 			return pe->GetPeDecoder()->GetSection;
 		}
 
-		
+		System::Collections::Generic::IList<Object^>^ SectionHeaderArrayWapper::GetElements()
+		{
+			if (list == nullptr)
+			{
+				InitArrayList();
+			}
+			return list;
+		}
+
+
+		String ^ SectionHeaderWapper::GetName()
+		{
+			return Name->String;
+		}
+
 	}
 }

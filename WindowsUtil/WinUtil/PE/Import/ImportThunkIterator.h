@@ -6,17 +6,20 @@ namespace PE
 	class ImportDescriptorIterator;
 	class ImportThunkIterator
 	{
-		ImportDescriptorIterator& importDescriptorIterator;
+		
 		bool is32;
 		PVOID currentThunk;
 		PVOID currentOriginalThunk;
 
 		PVOID originalThunk;
 		PVOID thunk;
-		void Init(PIMAGE_IMPORT_DESCRIPTOR importDescriptor);
+		void Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder& pe);
 	public:
 		ImportThunkIterator(ImportDescriptorIterator& importDescriptorIterator);
-
+		ImportThunkIterator(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder& pe)
+		{
+			Init(descriptor, pe);
+		}
 
 		PIMAGE_THUNK_DATA32 CurrentThunk32();
 		PIMAGE_THUNK_DATA32 CurrentOriginalThunk32();
