@@ -170,15 +170,16 @@ namespace NAMESPACE {
 	//	virtual  PropertyDescriptorCollection^ GetProperties(ITypeDescriptorContext^ context, Object^ value, array<Attribute^>^ attributes) override;
 	//};
 
-	public interface class IWapperArray
-	{
-		// 成员类型必须为IElementName，cli不知道怎么声明可协变
-		System::Collections::Generic::IList<Object^>^ GetElements();
-	};
-	public interface class IElementName
+public interface class IElementName
 	{
 		String^ GetName();
 	};
+	public interface class IWapperArray
+	{
+		// 成员类型必须为IElementName，cli不知道怎么声明可协变
+		System::Collections::Generic::IList<IElementName^>^ GetElements();
+	};
+	
 	
 	public ref class PeStructArrayConverter : public ShowPropertiesConverter
 	{

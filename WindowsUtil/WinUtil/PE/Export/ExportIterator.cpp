@@ -13,7 +13,7 @@ PDWORD PE::ExportIterator::CurrentFuncRva()
 	{
 		return NULL;
 	}
-	return &exportDir.funcsTable[exportDir.nameOrdinalsTable[currentIndex]];
+	return &exportDir.funcTable[exportDir.nameOrdinalTable[currentIndex]];
 }
 
 PDWORD PE::ExportIterator::CurrentNameRva()
@@ -22,7 +22,7 @@ PDWORD PE::ExportIterator::CurrentNameRva()
 	{
 		return NULL;
 	}
-	return &exportDir.namesTable[currentIndex];
+	return &exportDir.nameTable[currentIndex];
 }
 
 PWORD PE::ExportIterator::CurrentNameOrdinals()
@@ -31,7 +31,7 @@ PWORD PE::ExportIterator::CurrentNameOrdinals()
 	{
 		return NULL;
 	}
-	return &exportDir.nameOrdinalsTable[currentIndex];
+	return &exportDir.nameOrdinalTable[currentIndex];
 }
 
 bool PE::ExportIterator::Next()

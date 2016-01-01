@@ -20,10 +20,8 @@ namespace NAMESPACE {
 			bool is32;
 			PIMAGE_IMPORT_BY_NAME GetNameStruct();
 		public:
-			// 通过 PeStructDescription 继承
 			virtual array<String^>^ GetSortList() override;
-
-			// 通过 IElementName 继承
+			virtual List<String^>^ GetHidePropList();
 			virtual String ^ GetName();
 
 			ImportThunkWapper(PIMAGE_THUNK_DATA32 othunk, PIMAGE_THUNK_DATA32 thunk, PeImage ^ pe);
@@ -134,10 +132,7 @@ namespace NAMESPACE {
 				}
 			}
 
-
-			// 通过 IPropertiesFilter 继承
-			virtual List<String^>^ GetHidePropList();
-
+			
 		};
 		// 存储函数名称
 		[TypeConverter(PeStructArrayConverter::typeid)]
@@ -146,33 +141,14 @@ namespace NAMESPACE {
 			public PeStructDescription
 		{
 			
-			List<Object^>^ list;
+			List<IElementName^>^ list;
 			void InitArrayList();
 			PIMAGE_IMPORT_DESCRIPTOR descriptor;
 			PeImage^ pe;
 		public:
 			ImportThunkArrayWapper(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeImage^ pe);
-			virtual System::Collections::Generic::IList<Object^>^ ImportThunkArrayWapper::GetElements() override
-			{
-				if (list == nullptr)
-				{
-					InitArrayList();
-				}
-				return list;
-			}
-			virtual String ^ GetDescription() override
-			{
-				if (addr == IntPtr::Zero)
-				{
-					return String::Empty;
-				}
-				auto offset = Offset.ToString("X" + 2 * IntPtr::Size);
-				if (structSize == 0)
-				{
-					return String::Format("[{0}]", offset);
-				}
-				return String::Format("[{0} (Count: {1})]", offset, structSize);
-			}
+			virtual System::Collections::Generic::IList<IElementName^>^ ImportThunkArrayWapper::GetElements() override;
+			virtual String ^ GetDescription() override;
 			virtual array<String^>^ GetSortList() override;
 		};
 
@@ -185,29 +161,11 @@ namespace NAMESPACE {
 			static array<String^>^ sortList;
 			PeImage ^ pe;
 
-			PIMAGE_IMPORT_DESCRIPTOR GetPointer()
-			{
-				return (PIMAGE_IMPORT_DESCRIPTOR)addr.ToPointer();
-			}
+			PIMAGE_IMPORT_DESCRIPTOR GetPointer();
 			PE::PeDecoder* GetPeDecoder();
 		public:
-			virtual array<String^>^ GetSortList() override
-			{
-				if (ImportDescriptorWapper::sortList == nullptr)
-				{
-					ImportDescriptorWapper::sortList = gcnew array<String^>
-					{
-						"Name",
-							"OriginalFirstThunk",
-							"TimeDateStamp",
-							"ForwarderChain",
-							"NameRVA",
-							"FirstThunk",
-							"Functions"
-					};
-				}
-				return ImportDescriptorWapper::sortList;
-			}
+			virtual String ^ GetName();
+			virtual array<String^>^ GetSortList() override;
 
 			ImportDescriptorWapper(IntPtr addr, PeImage^ pe);
 
@@ -261,10 +219,6 @@ namespace NAMESPACE {
 				}
 			}
 			
-
-
-			virtual String ^ GetName();
-
 		};
 
 
@@ -274,27 +228,15 @@ namespace NAMESPACE {
 			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::ImportDirectory>>,
 			public IWapperArray
 		{
-			List<Object^>^ list;
-			void InitArrayList()
-			{
-				list = gcnew List<Object^>();
-				auto it = GetUnmanagedStruct()->CreateIterator();
-
-				while (it->Next())
-				{
-					list->Add(gcnew ImportDescriptorWapper(IntPtr(it->Current()), pe));
-				}
-			}
+			List<IElementName^>^ list;
+			void InitArrayList();
 		public:
 			ImportDescriptorArrayWapper(PeImage^ pe);
 
 
-			virtual array<String^>^ GetSortList() override
-			{
-				return nullptr;
-			}
+			virtual array<String^>^ GetSortList() override;
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
-			virtual System::Collections::Generic::IList<Object^>^ GetElements();
+			virtual System::Collections::Generic::IList<IElementName^>^ GetElements();
 
 		};
 	}

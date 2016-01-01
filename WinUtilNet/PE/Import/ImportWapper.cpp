@@ -4,13 +4,17 @@
 namespace NAMESPACE {
 	namespace PeDecoderWapper
 	{
+		inline PIMAGE_IMPORT_DESCRIPTOR ImportDescriptorWapper::GetPointer()
+		{
+			return (PIMAGE_IMPORT_DESCRIPTOR)addr.ToPointer();
+		}
 		inline PE::PeDecoder * ImportDescriptorWapper::GetPeDecoder()
 		{
 			return pe->GetPeDecoder();
 		}
 		inline void ImportThunkArrayWapper::InitArrayList()
 		{
-			list = gcnew List<Object^>();
+			list = gcnew List<IElementName^>();
 			auto thunk = new PE::ImportThunkIterator(descriptor, *pe->GetPeDecoder());
 			if (pe->HasNtHeader32)
 			{
@@ -31,6 +35,14 @@ namespace NAMESPACE {
 		{
 			this->SetDescription(IntPtr(descriptor), pe->BaseAddress, GetElements()->Count);
 		}
+		inline System::Collections::Generic::IList<IElementName^>^ ImportThunkArrayWapper::GetElements()
+		{
+			if (list == nullptr)
+			{
+				InitArrayList();
+			}
+			return list;
+		}
 		inline ImportDescriptorWapper::ImportDescriptorWapper(IntPtr addr, PeImage ^ pe) :pe(pe)
 		{
 			SetDescription(addr, pe->BaseAddress, 0);
@@ -39,15 +51,46 @@ namespace NAMESPACE {
 		{
 			return Name->String;
 		}
+		inline array<String^>^ ImportDescriptorWapper::GetSortList()
+		{
+			if (ImportDescriptorWapper::sortList == nullptr)
+			{
+				ImportDescriptorWapper::sortList = gcnew array<String^>
+				{
+					"Name",
+						"OriginalFirstThunk",
+						"TimeDateStamp",
+						"ForwarderChain",
+						"NameRVA",
+						"FirstThunk",
+						"Functions"
+				};
+			}
+			return ImportDescriptorWapper::sortList;
+		}
+		inline void ImportDescriptorArrayWapper::InitArrayList()
+		{
+			list = gcnew List<IElementName^>();
+			auto it = GetUnmanagedStruct()->CreateIterator();
+
+			while (it->Next())
+			{
+				list->Add(gcnew ImportDescriptorWapper(IntPtr(it->Current()), pe));
+			}
+		}
 		inline ImportDescriptorArrayWapper::ImportDescriptorArrayWapper(PeImage ^ pe) :PeStructWapperBase(pe)
 		{
 			this->SetDescription(IntPtr(GetUnmanagedStruct()->DirectoryEntryToData()), pe->BaseAddress, 0);
+		}
+		inline array<String^>^ ImportDescriptorArrayWapper::GetSortList()
+		{
+			return nullptr;
 		}
 		inline ImportDescriptorArrayWapper::PeStructWapperType & ImportDescriptorArrayWapper::GetUnmanagedStruct()
 		{
 			return pe->GetPeDecoder()->GetImport;
 		}
-		System::Collections::Generic::IList<Object^>^ ImportDescriptorArrayWapper::GetElements()
+		System::Collections::Generic::IList<IElementName^>^ ImportDescriptorArrayWapper::GetElements()
 		{
 			if (list == nullptr)
 			{
@@ -157,6 +200,19 @@ namespace NAMESPACE {
 				result->Add("Name");
 			}
 			return result;
+		}
+		inline String ^ ImportThunkArrayWapper::GetDescription()
+		{
+			if (addr == IntPtr::Zero)
+			{
+				return String::Empty;
+			}
+			auto offset = Offset.ToString("X" + 2 * IntPtr::Size);
+			if (structSize == 0)
+			{
+				return String::Format("[{0}]", offset);
+			}
+			return String::Format("[{0} (Count: {1})]", offset, structSize);
 		}
 		array<String^>^ ImportThunkArrayWapper::GetSortList()
 		{

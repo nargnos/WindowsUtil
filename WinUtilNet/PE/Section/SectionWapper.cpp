@@ -7,7 +7,7 @@ namespace NAMESPACE {
 		void SectionHeaderArrayWapper::InitArrayList()
 		{
 
-			list = gcnew List<Object^>(numberOfSections); // 
+			list = gcnew List<IElementName^>(numberOfSections); // 
 			auto iter = GetUnmanagedStruct()->CreateIterator();
 			while (iter->Next())
 			{
@@ -36,7 +36,7 @@ namespace NAMESPACE {
 			return pe->GetPeDecoder()->GetSection;
 		}
 
-		System::Collections::Generic::IList<Object^>^ SectionHeaderArrayWapper::GetElements()
+		System::Collections::Generic::IList<IElementName^>^ SectionHeaderArrayWapper::GetElements()
 		{
 			if (list == nullptr)
 			{

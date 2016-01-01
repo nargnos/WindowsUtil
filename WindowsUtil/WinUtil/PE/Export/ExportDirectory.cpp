@@ -7,18 +7,18 @@ PE::ExportDirectory::ExportDirectory(PeDecoder & pe) :DataDirectoryBase(pe)
 	{
 		numberOfNames = &exportDirectory->NumberOfNames;
 		numberOfFunctions = &exportDirectory->NumberOfFunctions;
-		funcsTable = reinterpret_cast<PDWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfFunctions));
-		namesTable = reinterpret_cast<PDWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfNames));
-		nameOrdinalsTable = reinterpret_cast<PWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfNameOrdinals));
+		funcTable = reinterpret_cast<PDWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfFunctions));
+		nameTable = reinterpret_cast<PDWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfNames));
+		nameOrdinalTable = reinterpret_cast<PWORD>(peDecoder.GetRvaData(exportDirectory->AddressOfNameOrdinals));
 		canCreateIterator = true;
 	}
 	else
 	{
 		numberOfNames = NULL;
 		numberOfFunctions = NULL;
-		funcsTable = NULL;
-		namesTable = NULL;
-		nameOrdinalsTable = NULL;
+		funcTable = NULL;
+		nameTable = NULL;
+		nameOrdinalTable = NULL;
 	}
 }
 
@@ -31,17 +31,17 @@ PIMAGE_EXPORT_DIRECTORY PE::ExportDirectory::GetValue()
 
 const PDWORD PE::ExportDirectory::FuncTable()
 {
-	return funcsTable;
+	return funcTable;
 }
 
 const PDWORD PE::ExportDirectory::NameTable()
 {
-	return namesTable;
+	return nameTable;
 }
 
 const PWORD PE::ExportDirectory::OrdinalTable()
 {
-	return nameOrdinalsTable;
+	return nameOrdinalTable;
 }
 
 const PDWORD PE::ExportDirectory::NumberOfFunctions()

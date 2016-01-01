@@ -13,9 +13,9 @@ namespace PE
 	{
 		PDWORD numberOfFunctions;
 		PDWORD numberOfNames;
-		PDWORD funcsTable;
-		PDWORD namesTable;
-		PWORD nameOrdinalsTable;
+		PDWORD funcTable;
+		PDWORD nameTable;
+		PWORD nameOrdinalTable;
 	public:
 		friend GetIteratorBase::Iterator;
 		ExportDirectory(PeDecoder& pe);

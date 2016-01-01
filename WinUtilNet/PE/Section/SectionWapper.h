@@ -238,7 +238,7 @@ namespace NAMESPACE {
 			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::SectionHeaders>>,
 			public IWapperArray
 		{
-			List<Object^>^ list;
+			List<IElementName^>^ list;
 			void InitArrayList();
 			int numberOfSections;
 		public:
@@ -251,7 +251,7 @@ namespace NAMESPACE {
 			virtual PeStructWapperType & GetUnmanagedStruct() override;
 		
 			// Í¨¹ý IWapperArray ¼Ì³Ð
-			virtual System::Collections::Generic::IList<Object^>^ GetElements();
+			virtual System::Collections::Generic::IList<IElementName^>^ GetElements();
 
 		};
 	}

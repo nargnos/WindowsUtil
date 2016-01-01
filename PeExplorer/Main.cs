@@ -11,6 +11,7 @@ using Wapper;
 using Wapper.PeDecoderWapper;
 using System.IO.MemoryMappedFiles;
 using System.IO;
+using System.Diagnostics;
 
 namespace PeExplorer
 {
@@ -74,23 +75,34 @@ namespace PeExplorer
             }
 
         }
-
-        private void ToggleAll(GridItem gi, bool isExpanded)
+        // 返回当前结点和深度
+        private IEnumerable<Tuple< GridItem,int>> ForEachGridItem(GridItem gi,int depth=0)
         {
             if (gi.Expandable)
             {
-                gi.Expanded = isExpanded;
+                yield return new Tuple<GridItem, int>( gi,depth);
                 if (gi.GridItems.Count > 0)
                 {
+                    depth++;
                     foreach (GridItem item in gi.GridItems)
                     {
-                        ToggleAll(item, isExpanded);
+                        foreach (var node in ForEachGridItem(item, depth))
+                        {
+                            yield return node; ;
+                        }
                     }
                 }
+               
             }
-
         }
-
+        private void ToggleAll(GridItem gi, bool isExpanded)
+        {
+            foreach (var item in ForEachGridItem(gi))
+            {
+                item.Item1.Expanded = isExpanded;
+            }
+        }
+       
         private void onlyShowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string str = GetPath(toolStripStatusLabel_Path.Text);
@@ -180,13 +192,16 @@ namespace PeExplorer
 // [=] 解析（枚举值解析需要显示提示,Meaning列需要多做一些处理），解析方面有些不常用的结构未写代码
 // 	[=] pe info - 缺identifier，等这个模块写好再补上
 // 	[X] Dos Header
+// 	[X] Dos Stub
 // 	[X] Nt Header
 // 	[X] File Header
 // 	[X] Optional Header
 // 	[X] Data Directories
 // 	[=] Section Headers - 缺16进制编辑界面
-// 	[=] Import Directory
+// 	[X] Export Directory
+// 	[X] Import Directory
 // 	[=] Resource Directory
+// 	[ ] ...
 // [ ] 编辑(包括pe结构和资源、添加结构、移动代码并重定位等) - 有空再写
 // [=] Address Converter - 代码已有，无界面
 // [ ] Dependency Walker - 可通过已写代码修改而来，无界面
@@ -230,6 +245,25 @@ namespace PeExplorer
         {
             Clipboard.SetText(propertyGrid.SelectedGridItem != null ? propertyGrid.SelectedGridItem.Label : string.Empty);
         }
+
+        private void treeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (propertyGrid.SelectedGridItem != null)
+            {
+                foreach (var item in ForEachGridItem(propertyGrid.SelectedGridItem))
+                {
+                    var tmpPaddingLen = item.Item2 * 2;
+                    sb.Append(item.Item2==0?"":" ".PadLeft(tmpPaddingLen, ' '));
+                    sb.AppendFormat("{0,-"+(32- tmpPaddingLen) +"}\t{1}" + Environment.NewLine, 
+                        item.Item1.Label, 
+                        item.Item1.PropertyDescriptor.Converter.ConvertToString(item.Item1.Value)
+                        );
+                }
+            }
+            Clipboard.SetText(sb.ToString());
+        }
+
         
     }
 }
