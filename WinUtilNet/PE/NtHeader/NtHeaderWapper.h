@@ -52,7 +52,7 @@ namespace NAMESPACE {
 					return fileHeader;
 				}
 			};
-			[DisplayNameAttribute("Optional Header")]
+			//[DisplayNameAttribute("Optional Header")]
 			property OptionalHeaderWapper32^ OptionalHeader32
 			{
 				OptionalHeaderWapper32^ get()
@@ -68,7 +68,7 @@ namespace NAMESPACE {
 					return safe_cast<OptionalHeaderWapper32^>(optionalHeader);
 				}
 			};
-			[DisplayNameAttribute("Optional Header")]
+			//[DisplayNameAttribute("Optional Header")]
 			property OptionalHeaderWapper64^ OptionalHeader64
 			{
 				OptionalHeaderWapper64^ get()

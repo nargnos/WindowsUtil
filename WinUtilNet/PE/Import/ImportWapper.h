@@ -26,7 +26,7 @@ namespace NAMESPACE {
 
 			ImportThunkWapper(PIMAGE_THUNK_DATA32 othunk, PIMAGE_THUNK_DATA32 thunk, PeImage ^ pe);
 			ImportThunkWapper(PIMAGE_THUNK_DATA64 othunk, PIMAGE_THUNK_DATA64 thunk, PeImage ^ pe);
-			[DescriptionAttribute("Thunk")]
+			
 			property UnmanagedValue<DWORD>^   Thunk32
 			{
 				UnmanagedValue<DWORD>^ get()
@@ -38,7 +38,7 @@ namespace NAMESPACE {
 					return gcnew UnmanagedValue<DWORD>(IntPtr(thunk), GetBase());
 				}
 			}
-			[DescriptionAttribute("Thunk")]
+			
 			property UnmanagedValue<ULONGLONG>^   Thunk64
 			{
 				UnmanagedValue<ULONGLONG>^ get()
@@ -51,7 +51,7 @@ namespace NAMESPACE {
 				}
 			}
 
-			[DescriptionAttribute("Original Thunk")]
+			
 			property UnmanagedValue<DWORD>^   OriginalThunk32
 			{
 				UnmanagedValue<DWORD>^ get()
@@ -63,7 +63,7 @@ namespace NAMESPACE {
 					return gcnew UnmanagedValue<DWORD>(IntPtr(originalThunk), GetBase());
 				}
 			}
-			[DescriptionAttribute("Original Thunk")]
+			
 			property UnmanagedValue<ULONGLONG>^   OriginalThunk64
 			{
 				UnmanagedValue<ULONGLONG>^ get()
@@ -76,7 +76,6 @@ namespace NAMESPACE {
 				}
 			}
 
-			[DescriptionAttribute("Ordinal")]
 			[TypeConverter(ValueConverter::typeid)]
 			property DWORD   Ordinal32
 			{
@@ -91,7 +90,6 @@ namespace NAMESPACE {
 				}
 			}
 
-			[DescriptionAttribute("Ordinal")]
 			[TypeConverter(ValueConverter::typeid)]
 			property ULONGLONG   Ordinal64
 			{

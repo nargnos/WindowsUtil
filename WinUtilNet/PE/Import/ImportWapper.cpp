@@ -20,14 +20,14 @@ namespace NAMESPACE {
 			{
 				while (thunk->Next())
 				{
-					list->Add(gcnew ImportThunkWapper(thunk->CurrentOriginalThunk32(), thunk->CurrentOriginalThunk32(), pe));
+					list->Add(gcnew ImportThunkWapper(thunk->CurrentOriginalThunk32(), thunk->CurrentThunk32(), pe));
 				}
 			}
 			else
 			{
 				while (thunk->Next())
 				{
-					list->Add(gcnew ImportThunkWapper(thunk->CurrentOriginalThunk64(), thunk->CurrentOriginalThunk64(), pe));
+					list->Add(gcnew ImportThunkWapper(thunk->CurrentOriginalThunk64(), thunk->CurrentThunk64(), pe));
 				}
 			}
 		}
