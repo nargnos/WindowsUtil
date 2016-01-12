@@ -12,7 +12,7 @@ PIMAGE_SECTION_HEADER PE::SectionIterator::Current()
 PIMAGE_SECTION_HEADER PE::SectionIterator::operator[](int index)
 {
 	auto result = firstSectionHeader + index;
-	if (result < lastSectionHeader)
+	if (result < lastSectionHeader|| result>=firstSectionHeader)
 	{
 		return result;
 	}
