@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeDecoderWapperTest", "WinU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeExplorer", "PeExplorer\PeExplorer.csproj", "{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpcodeArrayBuilderTest", "OpcodeArrayBuilder\OpcodeArrayBuilderTest.csproj", "{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|Win32.Build.0 = Release|Any CPU
 		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|x64.ActiveCfg = Release|Any CPU
 		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F}.Release|x64.Build.0 = Release|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Debug|Win32.Build.0 = Debug|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Debug|x64.Build.0 = Debug|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Release|Win32.ActiveCfg = Release|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Release|Win32.Build.0 = Release|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Release|x64.ActiveCfg = Release|Any CPU
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
