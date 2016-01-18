@@ -1,4 +1,5 @@
-﻿using System;
+﻿// 类作用是把指令文本转成C++的数据定义弄到c++项目那边使用
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,186 +9,10 @@ using System.Threading.Tasks;
 
 namespace OpcodeArrayBuilder.Opcode
 {
-    public enum OpcodeType
-    {
-        Inst1, // 普通指令
-        Inst2, // 根据长度修改指令名的指令
-        Prefix,
-        Grp,
-        Table,
-        Esc
-
-    }
-    public interface IOpcode
-    {
-        void Init(string val);
-    }
-    public class Opcode : IOpcode
-    {
-        public Opcode()
-        {
-
-        }
-        public void Init(string val)
-        {
-            var tmpArr = val.Split('|');
-            Debug.Assert(tmpArr.Length == 5);
-            SetHex(tmpArr[0]);
-            SetSuperScript(tmpArr[1]);
-            SetPfx(tmpArr[2]);
-            SetName(tmpArr[3]);
-            SetOperand(tmpArr[4]);
-        }
-        private void SetHex(string val)
-        {
-            if (string.IsNullOrEmpty(val))
-            {
-                return;
-            }
-            Hex = new List<string>();
-
-            for (int i = 0; i < val.Length; i += 2)
-            {
-                Hex.Add(val.Substring(i, 2));
-            }
-        }
-        private void SetSuperScript(string val)
-        {
-            if (string.IsNullOrEmpty(val))
-            {
-                return;
-            }
-            SuperScript = new List<string>();
-            var ssArr = val.Split('&');
-            SuperScript.AddRange(ssArr);
-
-        }
-        private void SetPfx(string val)
-        {
-            if (string.IsNullOrEmpty(val))
-            {
-                return;
-            }
-            Pfx = new List<string>();
-            var pfxArr = val.Split('&');
-            Pfx.AddRange(pfxArr);
-        }
-        private void SetName(string val)
-        {
-            if (string.IsNullOrEmpty(val))
-            {
-                return;
-            }
-            Name = new List<string>();
-            val = val.Trim();
-            if (val.StartsWith("("))
-            {
-                var type = val.Trim('(', ')');
-                OpType = (OpcodeType)Enum.Parse(typeof(OpcodeType), type.Split('/')[0]);
-                Name.Add(val);
-            }
-            else
-            {
-                var nameArr = val.Split('_');
-
-                if (nameArr.Length > 1)
-                {
-                    Debug.Assert(nameArr.Length == 2);
-
-                    Name.Add(nameArr[0]);
-                    var sizeStr = nameArr[1].Split('/');
-                    // 根据长度改变名
-                    for (int i = 0; i < sizeStr.Length; i++)
-                    {
-                        Name.Add(sizeStr[i]);
-                    }
-                    OpType = OpcodeType.Inst2;
-                }
-                else
-                {
-                    // 同指令多名
-                    Name.AddRange(nameArr[0].Split('/'));
-                    OpType = OpcodeType.Inst1;
-                }
-
-
-            }
-
-
-        }
-        private void SetOperand(string val)
-        {
-            if (string.IsNullOrEmpty(val))
-            {
-                return;
-            }
-            Operand = new List<string>();
-
-            var opArr = val.Split(',');
-            foreach (var item in opArr)
-            {
-                Operand.Add(item);
-            }
-        }
-        public OpcodeType OpType { get; set; }
-        public List<string> Hex { get; set; }
-        public List<string> SuperScript { get; set; }
-        public List<string> Pfx { get; set; }
-        public List<string> Name { get; set; }
-        public List<string> Operand { get; set; }
-    }
-    public class GroupOpcode : IOpcode
-    {
-        public OpcodeType OpType { get; set; }
-        public string GrpName { get; set; }
-
-        public string SuperScript { get; set; }
-        public List<string> Pfx { get; set; }
-        public string RM76 { get; set; }
-        public string RM543 { get; set; }
-        public string RM210 { get; set; }
-        public List<string> Name { get; set; }
-        public List<string> Operand { get; set; }
-
-        public void Init(string val)
-        {
-            var arr = val.Split('|');
-            Debug.Assert(arr.Length == 8);
-            int index = 0;
-            GrpName = arr[index++];
-            SuperScript = arr[index++];
-            var pfx = arr[index++];
-            if (!string.IsNullOrEmpty(pfx))
-            {
-                Pfx = new List<string>();
-                Pfx.AddRange(pfx.Split('&'));
-            }
-            RM76 = arr[index++];
-            RM543 = arr[index++];
-            RM210 = arr[index++];
-            var name = arr[index++];
-            if (!string.IsNullOrEmpty(name))
-            {
-                Name = new List<string>();
-                Name.AddRange(name.Split('/'));
-            }
-            OpType = OpcodeType.Inst1;
-            var operand = arr[index++];
-            if (!string.IsNullOrEmpty(operand))
-            {
-                Operand = new List<string>();
-                Operand.AddRange(operand.Split(','));
-            }
-        }
-    }
     public class Builder
     {
-        Lazy<List<GroupOpcode>> grpOpcode = new Lazy<List<GroupOpcode>>(() => AnalyOpcodeStr<GroupOpcode>(".\\Opcode\\opcodeGrp"));
-        Lazy<List<Opcode>> opcodes = new Lazy<List<Opcode>>(() => AnalyOpcodeStr<Opcode>(".\\Opcode\\opcode"));
-
-        public Builder()
-        {
-        }
+        Lazy<List<GroupOpcodeData>> grpOpcode = new Lazy<List<GroupOpcodeData>>(() => AnalyOpcodeStr<GroupOpcodeData>(".\\Opcode\\opcodeGrp"));
+        Lazy<List<OpcodeData>> opcodes = new Lazy<List<OpcodeData>>(() => AnalyOpcodeStr<OpcodeData>(".\\Opcode\\opcode"));
         private static List<T> AnalyOpcodeStr<T>(string path) where T : IOpcode, new()
         {
             var result = new List<T>();
@@ -208,55 +33,224 @@ namespace OpcodeArrayBuilder.Opcode
             return result;
         }
 
-        // 取所有上标(文档里的全用上了),组就不选了
-        public IEnumerable<string> GetAllSuperScripts()
+        
+        
+        
+
+
+
+        public void GetTables()
         {
-            var result = from item in opcodes.Value
-                         where item.SuperScript != null
-                         from tmpSuperScript in item.SuperScript
-                         orderby tmpSuperScript
-                         select tmpSuperScript;
+            // 括号表示多少长度可以满足数据条数, grp esc 指令未包括, 各种ID要从1开始算（查询时再-1），0表示没有
+            // 关系数据转成表ID指向数据ID+数据长度形式
+            // 1Inst对应一个param，如果出现同名多参数的就分成2个
+
+            // V $pfxcdt(byte:3), xxx ...前缀条件，满足条件指令才成立
+            // V $pair(byte), xxx
+            // V $name(short:10), xxx
+            // V $superscript(byte:4), xxx
+
+            // V $param(byte), param_pairID
+            // V $param2(byte), param_pairID, param_pairID
+            // V $param3(byte), param_pairID, param_pairID, param_pairID
+            // V $param4(byte), param_pairID, param_pairID, param_pairID, param_pairID
 
 
-            return result.Distinct();
+            // X $hex(byte), hex_instID
+            // $inst(short), type, pfxcdtID(byte:3), superscriptID(byte:4), inst_nameID, paramCount(byte:3), paramID ...指令情况
+            // $inst_prefix, type, grp, rex...
+            // $inst_table, type,...
+            // $inst_esc,...
+            // $inst_grp,...
+
+            // X $param_pair(byte), pairID, len
+            // V $hex_inst(short), instID, len ...表的内容
+            // X $inst_name, nameID, len  // 并到inst里
+
+            // 缺rm1、rm2、sib、esc表
+
+            // $pair
+            var pairs = GetOperandPairs().ToList();
+            // 可以生成 $name $inst_name 
+            List<NameIndex> names = CreateNames();
+            // 可以生成param 1234
+            List<Param>[] param = GetParams(pairs);
+
+            // $hex_inst
+            Tuple<int, byte>[][] hexInst = new Tuple<int, byte>[4][];
+            for (int i = 0; i < hexInst.Length; i++)
+            {
+                hexInst[i] = new Tuple<int, byte>[0x100];
+            }
+
+
+            List<Inst> insts = new List<Inst>(); // $inst 无grp
+
+            // 根据指令字节分组
+            foreach (var table in GetByteTables())
+            {
+
+                Tuple<int, byte>[] tmp = null;
+                switch (table.Key)
+                {
+                    case "Byte1":
+                        tmp = hexInst[0];// byte1;
+                        break;
+                    case "Byte2_0F":
+                        tmp = hexInst[1];// byte2_0F;
+                        break;
+                    case "Byte3_38":
+                        tmp = hexInst[2];// byte3_0F38;
+                        break;
+                    case "Byte3_3A":
+                        tmp = hexInst[3];// byte3_0F3A;
+                        break;
+                    default:
+                        throw new Exception();
+                }
+                // 根据指令的HEX分组
+                foreach (var opcode in table.ToLookup((op) => op.Hex[op.Hex.Count - 1]))
+                {
+                    tmp[Convert.ToInt32(opcode.Key, 16)] = new Tuple<int, byte>( insts.Count + 1,(byte)opcode.Count());
+                    foreach (var instInfo in opcode)
+                    {
+                        Inst tmpInst = CreateInst(names, param, instInfo);
+
+                        insts.Add(tmpInst);
+                    }
+                }
+            }
+            // 映射组
+            var grpConv = from item in grpOpcode.Value
+                          select new
+                          {
+                              Grp = item,
+                              Name = names.Find((val) => val.Name.SequenceEqual(item.Name)),
+                              Pfxcdt = item.Pfx == null ? string.Empty : string.Join("_", item.Pfx),
+                              OpId = item.Operand == null ? 0 : param[item.Operand.Count - 1].FindIndex((p) => item.Operand.SequenceEqual(p.Params)) + 1
+                          };
+
+
+
+            // 统计一下表
+            var hexInstCount = from item in hexInst select item.Count((val) => val != null);
+            // 压缩byte3的两个表
+            List<Tuple<byte, Tuple<int, byte>>> zipByte3_38 = new List<Tuple<byte, Tuple<int, byte>>>();
+            List<Tuple<byte, Tuple<int, byte>>> zipByte3_3A = new List<Tuple<byte, Tuple<int, byte>>>();
+            for (int i = 0; i < hexInst[2].Length; i++)
+            {
+                var tmp38 = hexInst[2][i];
+                var tmp3A = hexInst[3][i];
+                if (tmp38 != null)
+                {
+                    zipByte3_38.Add(new Tuple<byte, Tuple<int, byte>>((byte)i,tmp38));
+                }
+                if (tmp3A != null)
+                {
+                    zipByte3_3A.Add(new Tuple<byte, Tuple<int, byte>>((byte)i, tmp3A));
+                }
+
+            }
+
+            //param
+            //insts
+            //hexInst
+            //zipByte3_38
+            //zipByte3_3A
+            //superscript
+            //pfx
+
+            //var pfx = GetAllPfxs();
+            //StringBuilder pfxcdtCode = new StringBuilder("enum ");
+            //var superscript = GetAllSuperScripts();
+
+            //StringBuilder superscriptCode = new StringBuilder();
+
+            var pairsCode = GetOperandDefs(pairs);
+            var namesCode = GetNamesDefCode(names);
+
+            var paramCode = GetOperandGroupDefCode(param);
+            
+            var byte1 = GetHexInstCode(hexInst,0);
+            var byte2 = GetHexInstCode(hexInst,1);
+
+            StringBuilder hexInstCode = new StringBuilder();
+            StringBuilder instsCode = new StringBuilder();
+
+
         }
-        // 取所有前缀条件(只有3个66、F2、F3),组就不选了
-        public IEnumerable<string> GetAllPfxs()
-        {
-            var result = from opcodeItem in opcodes.Value
-                         where opcodeItem.Pfx != null
-                         from item in opcodeItem.Pfx
-                         orderby item
-                         select item;
 
-            return result.Distinct();
+        private static string GetHexInstCode(Tuple<int, byte>[][] hexInst,int index)
+        {
+            //var idxStr = (from idx in hexInst[index] where idx!= null select idx.ToString()).ToArray();
+            //StringBuilder sb = new StringBuilder($"extern unsigned short Byte{index+1}[]={{");
+            //for (int i = 0; i < idxStr.Length; i += 16)
+            //{
+            //    sb.AppendLine(string.Join(",", idxStr, i, 16));
+            //}
+            //sb.AppendLine("};");
+            //return sb.ToString();
+            return "";
         }
 
-        // 取所有操作数
-        public IEnumerable<string> GetOperandPairs()
+        private List<Param>[] GetParams(List<string> pairs)
         {
-            var result = from opcodeItem in opcodes.Value
-                         where opcodeItem.Operand != null
-                         from item in opcodeItem.Operand
-                         from grp in item.Split('/')
-                         select grp;
 
-            result.Concat(
-                from opcodeItem in grpOpcode.Value
-                where opcodeItem.Operand != null
-                from item in opcodeItem.Operand
-                from grp in item.Split('/')
-                select grp
+            List<Param>[] param = new List<Param>[4];
+            foreach (var item in GetOperandGroups().ToLookup((obj) => obj.Count))
+            {
+                var tmp = new List<Param>();
+                foreach (var p in item)
+                {
+                    tmp.Add(new Param(p, pairs));
+                }
+                param[item.Key - 1] = tmp;
+            }
+
+            return param;
+        }
+
+        private List<NameIndex> CreateNames()
+        {
+
+            List<NameIndex> names = new List<NameIndex>();
+            {
+                int index = 0;
+
+                foreach (var item in GetAllNames())
+                {
+                    names.Add(new NameIndex(item, index));
+                    index += item.Count;
+                }
+            }
+
+            return names;
+        }
+
+        private ILookup<string, OpcodeData> GetByteTables()
+        {
+            return opcodes.Value.ToLookup(
+                (op) => $"Byte{op.Hex.Count}{(op.Hex.Count == 1 ? string.Empty : $"_{op.Hex[op.Hex.Count - 2]}") }"
                 );
-            return result.OrderBy((str) => str).Distinct();
         }
 
-
-        public string GetOperandDefs()
+        private static Inst CreateInst(List<NameIndex> names, List<Param>[] param, OpcodeData instInfo)
         {
-            var pairs = GetOperandPairs();
+            var paramID = instInfo.Operand == null ? 0 : param[instInfo.Operand.Count - 1].FindIndex((p) => instInfo.Operand.SequenceEqual(p.Params)) + 1;
+            var tmpName = names.Find((val) => val.Name.SequenceEqual(instInfo.Name));
+            Debug.Assert(paramID <= byte.MaxValue);
+            var tmpInst = new Inst(
+                instInfo,
+                tmpName,
+                (byte)paramID
+                );
+            return tmpInst;
+        }
+
+        public string GetOperandDefs(IEnumerable<string> pairs)
+        {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("RegOrOperandGroup Operands[]={");
+            sb.AppendLine("extern RegOrOperandGroup Operands[]={");
             int index = 0;
             foreach (var item in pairs)
             {
@@ -266,86 +260,113 @@ namespace OpcodeArrayBuilder.Opcode
             return sb.ToString();
         }
 
+        // 取所有上标(文档里的全用上了)
+        public IEnumerable<string> GetAllSuperScripts()
+        {
+            var result = from item in opcodes.Value
+                         where !string.IsNullOrEmpty(item.SuperScript)
+                         orderby item.SuperScript
+                         select item.SuperScript;
+            result.Concat(
+                from item in grpOpcode.Value
+                where !string.IsNullOrEmpty(item.SuperScript)
+                orderby item.SuperScript
+                select item.SuperScript
+                );
+
+            return result.Distinct();
+        }
+        // 取所有前缀条件
+        public IEnumerable<string> GetAllPfxs()
+        {
+            var result = from opcodeItem in opcodes.Value
+                         where !string.IsNullOrEmpty(opcodeItem.Pfx)
+                         orderby opcodeItem.Pfx
+                         select opcodeItem.Pfx;
+            result = result.Concat(
+              from opcodeItem in grpOpcode.Value
+              where !string.IsNullOrEmpty(opcodeItem.Pfx)
+              orderby opcodeItem.Pfx
+              select opcodeItem.Pfx
+               );
+            return result.Distinct();
+        }
+
+        // 取所有操作数
+        public IEnumerable<string> GetOperandPairs()
+        {
+            var result = from opcodeItem in opcodes.Value
+                         where opcodeItem.Operand != null
+                         from item in opcodeItem.Operand
+                         select item;
+
+            result = result.Concat(
+                from opcodeItem in grpOpcode.Value
+                where opcodeItem.Operand != null
+                from item in opcodeItem.Operand
+                select item
+                );
+            return result.OrderBy((str) => str).Distinct();
+        }
+
         // 取所有指令名称
         public IEnumerable<List<string>> GetAllNames()
         {
             var result = from opcodeItem in opcodes.Value
                          where opcodeItem.Name != null
                          select opcodeItem.Name;
-            result.Concat(
+            result = result.Concat(
                from opcodeItem in grpOpcode.Value
                where opcodeItem.Name != null
                select opcodeItem.Name);
             // 不排序，使同指令的多个名称可以靠在一起
             return result.OrderBy((item) => item.First()).Distinct(new DistinctStringList());
         }
-        public string GetNamesDefCode()
+        string GetNamesDefCode(List<NameIndex> names)
         {
-            StringBuilder names = new StringBuilder("extern PCSTR InstructionNames[] = {"+Environment.NewLine +"NULL," + Environment.NewLine);
-            StringBuilder nameEnums = new StringBuilder("enum InstructionNameIndexs{" + Environment.NewLine + "Name_null," + Environment.NewLine);
-            int index = 1;
-            foreach (var nameArr in GetAllNames())
-            {
-                if (nameArr.Count > 1)
-                {
-                    var name = nameArr.First();
-                    
-                    nameEnums.AppendFormat("Name_{0} = {1}, \t// Len:{2} {3}" + Environment.NewLine,
-                        nameArr.First(),index,nameArr.Count, nameArr[1].Length == 1 ? "Type:Size" : string.Empty);
-                    
-                    names.AppendFormat("/*{0,3}*/ \"{1}\", \t// Len:{2} {3}" + Environment.NewLine,
-                        index++,name,nameArr.Count, nameArr[1].Length == 1?"Type:Size":string.Empty);
+            StringBuilder nameCode = new StringBuilder("extern PCSTR InstructionNames[] = {" + Environment.NewLine);
 
-                    if (nameArr[1].Length == 1)
+            foreach (var nameArr in names)
+            {
+                if (nameArr.Name.Count > 1)
+                {
+                    var name = nameArr.Name.First();
+
+                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{name}\", \t// Len:{nameArr.Name.Count} {(nameArr.Name[1].Length == 1 ? "Type:Size" : string.Empty)}");
+
+                    if (nameArr.Name[1].Length == 1)
                     {
                         // 根据大小可变
-                        for (int i = 1; i < nameArr.Count; i++)
+                        for (int i = 1; i < nameArr.Name.Count; i++)
                         {
-                            names.AppendFormat("/*{0,3}*/ \"{1}{2}\","+Environment.NewLine,index++,name,nameArr[i]);
+                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{name}{nameArr.Name[i]}\",");
                         }
                     }
                     else
                     {
                         // 普通多名指令
-                        for (int i = 1; i < nameArr.Count; i++)
+                        for (int i = 1; i < nameArr.Name.Count; i++)
                         {
-                            names.AppendFormat("/*{0,3}*/ \"{1}\"," + Environment.NewLine, index++,nameArr[i]);
+                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{ nameArr.Name[i]}\",");
                         }
                     }
                 }
                 else
                 {
                     // 单名指令
-                    nameEnums.AppendLine($"Name_{nameArr.First().Trim('(',')').Replace('/','_').Replace('.','_').Replace('+','_')} = {index},");
-                    names.AppendFormat("/*{0,3}*/ \"{1}\", \t// Len:{2}" + Environment.NewLine, index++,nameArr.First(),nameArr.Count);
+                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{nameArr.Name.First()}\", \t// Len:{nameArr.Name.Count}");
                 }
 
             }
-            names.AppendLine("};");
-            nameEnums.AppendLine("};");
-            
-            return names.ToString() + nameEnums.ToString();
+            nameCode.AppendLine("};");
+
+            return nameCode.ToString();
         }
         class DistinctStringList : IEqualityComparer<List<string>>
         {
             public bool Equals(List<string> x, List<string> y)
             {
-                if (x == y)
-                {
-                    return true;
-                }
-                if (x != null && y != null && x.Count == y.Count)
-                {
-                    for (int i = 0; i < x.Count; i++)
-                    {
-                        if (x[i] != y[i])
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                return false;
+                return x.SequenceEqual(y);
             }
 
             public int GetHashCode(List<string> obj)
@@ -359,48 +380,48 @@ namespace OpcodeArrayBuilder.Opcode
             var result = from opcodeItem in opcodes.Value
                          where opcodeItem.Operand != null
                          select opcodeItem.Operand;
-            result.Concat(
+            result = result.Concat(
                 from opcodeItem in grpOpcode.Value
                 where opcodeItem.Operand != null
                 select opcodeItem.Operand
                 );
-            var klk = result.Distinct(new DistinctStringList()).ToList();
+
             return result.Distinct(new DistinctStringList());
         }
-        public string GetOperandGroupDefCode()
+        public string GetOperandGroupDefCode(List<Param>[] param)
         {
-            var opGrps = GetOperandGroups().ToLookup((obj) => obj.Count);
-            var operandList = GetOperandPairs().ToList();
             StringBuilder sb = new StringBuilder();
-            foreach (var item in opGrps)
+            foreach (var item in param)
             {
                 int index = 0;
-                sb.Append($"extern unsigned char OperandGroup{item.Key}[]");
-                int count = item.First().Count;
+                int count = item.First().Params.Count;
+                sb.Append($"extern unsigned char OperandGroup{count}");
+                
                 if (count > 1)
                 {
                     sb.Append($"[{count}]");
                 }
-                sb.AppendLine(" ={ ");
+                
+                
+                sb.AppendLine("[] ={ ");
                 foreach (var val in item)
                 {
-                    if (val.Count > 1)
+                    if (count > 1)
                     {
                         sb.Append($"/*{index++}*/ {{");
-                        val.ForEach((str) =>
+                        foreach (var idx in val.PairIndexes)
                         {
-                            int indexOf = operandList.IndexOf(str);
-                            Debug.Assert(indexOf != -1);
-                            sb.Append($"{indexOf},");
-                        });
+                            sb.Append($"{idx},");
+                        }
+                        
                         sb.Length--;
-                        sb.AppendLine($"}}, // {string.Join(",", val)}");
+                        sb.AppendLine($"}}, // {string.Join(",", val.Params)}");
                     }
                     else
                     {
-                        int indexOf = operandList.IndexOf(val[0]);
+                        int indexOf = val.PairIndexes.First();
                         Debug.Assert(indexOf != -1);
-                        sb.AppendLine($"/*{index++}*/ {indexOf}, // {val[0]}");
+                        sb.AppendLine($"/*{index++}*/ {indexOf}, // {val.Params.First()}");
                     }
                 }
                 sb.AppendLine("};");
@@ -425,6 +446,11 @@ namespace OpcodeArrayBuilder.Opcode
             if (segs.Contains(opPairStr))
             {
                 return $"{{SEG_{opPairStr},NULL}}, // {opPairStr}"; ;
+            }
+            if (opPairStr.Contains('/'))
+            {
+                // 特殊的多个参数类型
+                return $"{{SPC_{opPairStr.Replace('/','_')}}}, // {opPairStr}";
             }
             // 分开成枚举定义
             if (opPairStr.Length == 1)

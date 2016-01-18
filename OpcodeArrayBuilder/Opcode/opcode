@@ -59,22 +59,14 @@
 47|i64||INC|eDI
 47|o64||(Prefix/REX.RXB)|
 
-50|d64||PUSH|rAX
-50|d64||PUSH|R8
-51|d64||PUSH|rCX
-51|d64||PUSH|R9
-52|d64||PUSH|rDX
-52|d64||PUSH|R10
-53|d64||PUSH|rBX
-53|d64||PUSH|R11
-54|d64||PUSH|rSP
-54|d64||PUSH|R12
-55|d64||PUSH|rBP
-55|d64||PUSH|R13
-56|d64||PUSH|rSI
-56|d64||PUSH|R14
-57|d64||PUSH|rDI
-57|d64||PUSH|R15
+50|d64||PUSH|rAX/r8
+51|d64||PUSH|rCX/r9
+52|d64||PUSH|rDX/r10
+53|d64||PUSH|rBX/r11
+54|d64||PUSH|rSP/r12
+55|d64||PUSH|rBP/r13
+56|d64||PUSH|rSI/r14
+57|d64||PUSH|rDI/r15
 
 60|i64||PUSHA/PUSHAD|
 61|i64||POPA/POPAD|
@@ -97,7 +89,7 @@
 
 80|1A||(Grp/1)|Eb,Ib
 81|1A||(Grp/1)|Ev,Iz
-82|i64&1A||(Grp/1)|Eb,Ib
+82|1A_i64||(Grp/1)|Eb,Ib
 83|1A||(Grp/1)|Ev,Ib
 84|||TEST|Eb,Gb
 85|||TEST|Ev,Gv
@@ -106,21 +98,14 @@
 
 90|||NOP|
 90||F3|PAUSE|
-90|||XCHG|R8,rAX
-91|||XCHG|rCX,rAX
-91|||XCHG|R9,rAX
-92|||XCHG|rDX,rAX
-92|||XCHG|R10,rAX
-93|||XCHG|rBX,rAX
-93|||XCHG|R11,rAX
-94|||XCHG|rSP,rAX
-94|||XCHG|R12,rAX
-95|||XCHG|rBP,rAX
-95|||XCHG|R13,rAX
-96|||XCHG|rSI,rAX
-96|||XCHG|R14,rAX
-97|||XCHG|rDI,rAX
-97|||XCHG|R15,rAX
+90|||XCHG|r8,rAX
+91|||XCHG|rCX/r9,rAX
+92|||XCHG|rDX/r10,rAX
+93|||XCHG|rBX/r11,rAX
+94|||XCHG|rSP/r12,rAX
+95|||XCHG|rBP/r13,rAX
+96|||XCHG|rSI/r14,rAX
+97|||XCHG|rDI/r15,rAX
 
 A0|||MOV|AL,Ob
 A1|||MOV|rAX,Ov
@@ -131,22 +116,14 @@ A5|||MOVS_W/D/Q|Yv,Xv
 A6|||CMPS_B|Xb,Yb
 A7|||CMPS_W/D|Xv,Yv
 
-B0|||MOV|AL,Ib
-B0|||MOV|R8L,Ib
-B1|||MOV|CL,Ib
-B1|||MOV|R9L,Ib
-B2|||MOV|DL,Ib
-B2|||MOV|R10L,Ib
-B3|||MOV|BL,Ib
-B3|||MOV|R11L,Ib
-B4|||MOV|AH,Ib
-B4|||MOV|R12L,Ib
-B5|||MOV|CH,Ib
-B5|||MOV|R13L,Ib
-B6|||MOV|DH,Ib
-B6|||MOV|R14L,Ib
-B7|||MOV|BH,Ib
-B7|||MOV|R15L,Ib
+B0|||MOV|AL/R8L,Ib
+B1|||MOV|CL/R9L,Ib
+B2|||MOV|DL/R10L,Ib
+B3|||MOV|BL/R11L,Ib
+B4|||MOV|AH/R12L,Ib
+B5|||MOV|CH/R13L,Ib
+B6|||MOV|DH/R14L,Ib
+B7|||MOV|BH/R15L,Ib
 
 C0|1A||(Grp/2)|Eb,Ib
 C1|1A||(Grp/2)|Ev,Ib
@@ -239,22 +216,14 @@ F7|1A||(Grp/3)|Ev
 4F|i64||DEC|eDI
 4F|o64||(Prefix/REX.WRXB)|
 
-58|d64||POP|rAX
-58|d64||POP|R8
-59|d64||POP|rCX
-59|d64||POP|R9
-5A|d64||POP|rDX
-5A|d64||POP|R10
-5B|d64||POP|rBX
-5B|d64||POP|R11
-5C|d64||POP|rSP
-5C|d64||POP|R12
-5D|d64||POP|rBP
-5D|d64||POP|R13
-5E|d64||POP|rSI
-5E|d64||POP|R14
-5F|d64||POP|rDI
-5F|d64||POP|R15
+58|d64||POP|rAX/r8
+59|d64||POP|rCX/r9
+5A|d64||POP|rDX/r10
+5B|d64||POP|rBX/r11
+5C|d64||POP|rSP/r12
+5D|d64||POP|rBP/r13
+5E|d64||POP|rSI/r14
+5F|d64||POP|rDI/r15
 
 68|d64||PUSH|Iz
 69|||IMUL|Gv,Ev,Iz
@@ -303,22 +272,14 @@ AD|||LODS_W/D/Q|rAX,Xv
 AE|||SCAS_B|AL,Yb
 AF|||SCAS_W/D/Q|rAX,Yv
 
-B8|||MOV|rAX,Iv
-B8|||MOV|R8,Iv
-B9|||MOV|rCX,Iv
-B9|||MOV|R9,Iv
-BA|||MOV|rDX,Iv
-BA|||MOV|R10,Iv
-BB|||MOV|rBX,Iv
-BB|||MOV|R11,Iv
-BC|||MOV|rSP,Iv
-BC|||MOV|R12,Iv
-BD|||MOV|rBP,Iv
-BD|||MOV|R13,Iv
-BE|||MOV|rSI,Iv
-BE|||MOV|R14,Iv
-BF|||MOV|rDI,Iv
-BF|||MOV|R15,Iv
+B8|||MOV|rAX/r8,Iv
+B9|||MOV|rCX/r9,Iv
+BA|||MOV|rDX/r10,Iv
+BB|||MOV|rBX/r11,Iv
+BC|||MOV|rSP/r12,Iv
+BD|||MOV|rBP/r13,Iv
+BE|||MOV|rSI/r14,Iv
+BF|||MOV|rDI/r15,Iv
 
 
 C8|||ENTER|Iw,Ib
@@ -610,14 +571,12 @@ FF|1A||(Grp/5)|
 0FC1|||XADD|Ev,Gv
 0FC2|||vcmpps|Vps,Hps,Wps,Ib
 0FC3|||movnti|My,Gy
-0FC4|||pinsrw|Pq,Ry,Ib
-0FC4|||pinsrw|Pq,Mw,Ib
+0FC4|||pinsrw|Pq,Ry/Mw,Ib
 0FC5|||pextrw|Gd,Nq,Ib
 0FC6|||vshufps|Vps,Hps,Wps,Ib
 0FC7|1A||(Grp/9)|
 0FC2||66|vcmppd|Vpd,Hpd,Wpd,Ib
-0FC4||66|vpinsrw|Vdq,Hdq,Ry,Ib
-0FC4||66|vpinsrw|Vdq,Hdq,Mw,Ib
+0FC4||66|vpinsrw|Vdq,Hdq,Ry/Mw,Ib
 0FC5||66|vpextrw|Gd,Udq,Ib
 0FC6||66|vshufpd|Vpd,Hpd,Wpd,Ib
 0FC2||F3|vcmpss|Vss,Hss,Wss,Ib
@@ -700,7 +659,7 @@ FF|1A||(Grp/5)|
 0FAC|||SHRD|Ev,Gv,Ib
 0FAD|||SHRD|Ev,Gv,CL
 #组元素有1C
-0FAE|1C&1A||(Grp/15)|
+0FAE|1A_1C||(Grp/15)|
 0FAF|||IMUL|Gv,Ev
 
 0FB8|||JMPE|
@@ -715,38 +674,14 @@ FF|1A||(Grp/5)|
 0FBC||F3|TZCNT|Gv,Ev
 0FBD||F3|LZCNT|Gv,Ev
 
-0FC8|||BSWAP|RAX
-0FC8|||BSWAP|EAX
-0FC8|||BSWAP|R8
-0FC8|||BSWAP|R8D
-0FC9|||BSWAP|RCX
-0FC9|||BSWAP|ECX
-0FC9|||BSWAP|R9
-0FC9|||BSWAP|R9D
-0FCA|||BSWAP|RDX
-0FCA|||BSWAP|EDX
-0FCA|||BSWAP|R10
-0FCA|||BSWAP|R10D
-0FCB|||BSWAP|RBX
-0FCB|||BSWAP|EBX
-0FCB|||BSWAP|R11
-0FCB|||BSWAP|R11D
-0FCC|||BSWAP|RSP
-0FCC|||BSWAP|ESP
-0FCC|||BSWAP|R12
-0FCC|||BSWAP|R12D
-0FCD|||BSWAP|RBP
-0FCD|||BSWAP|EBP
-0FCD|||BSWAP|R13
-0FCD|||BSWAP|R13D
-0FCE|||BSWAP|RSI
-0FCE|||BSWAP|ESI
-0FCE|||BSWAP|R14
-0FCE|||BSWAP|R14D
-0FCF|||BSWAP|RDI
-0FCF|||BSWAP|EDI
-0FCF|||BSWAP|R15
-0FCF|||BSWAP|R15D
+0FC8|||BSWAP|RAX/EAX/R8/R8D
+0FC9|||BSWAP|RCX/ECX/R9/R9D
+0FCA|||BSWAP|RDX/EDX/R10/R10D
+0FCB|||BSWAP|RBX/EBX/R11/R11D
+0FCC|||BSWAP|RSP/ESP/R12/R12D
+0FCD|||BSWAP|RBP/EBP/R13/R13D
+0FCE|||BSWAP|RSI/ESI/R14/R14D
+0FCF|||BSWAP|RDI/EDI/R15/R15D
 
 0FD8|||psubusb|Pq,Qq
 0FD9|||psubusw|Pq,Qq
@@ -821,30 +756,18 @@ FF|1A||(Grp/5)|
 0F3815||66|blendvpd|Vdq,Wdq
 0F3816|v|66|vpermps|Vqq,Hqq,Wqq
 0F3817||66|vptest|Vx,Wx
-0F3820||66|vpmovsxbw|Vx,Ux
-0F3820||66|vpmovsxbw|Vx,Mq
-0F3821||66|vpmovsxbd|Vx,Ux
-0F3821||66|vpmovsxbd|Vx,Md
-0F3822||66|vpmovsxbq|Vx,Ux
-0F3822||66|vpmovsxbq|Vx,Mw
-0F3823||66|vpmovsxwd|Vx,Ux
-0F3823||66|vpmovsxwd|Vx,Mq
-0F3824||66|vpmovsxwq|Vx,Ux
-0F3824||66|vpmovsxwq|Vx,Md
-0F3825||66|vpmovsxdq|Vx,Ux
-0F3825||66|vpmovsxdq|Vx,Mq
-0F3830||66|vpmovzxbw|Vx,Ux
-0F3830||66|vpmovzxbw|Vx,Mq
-0F3831||66|vpmovzxbd|Vx,Ux
-0F3831||66|vpmovzxbd|Vx,Md
-0F3832||66|vpmovzxbq|Vx,Ux
-0F3832||66|vpmovzxbq|Vx,Mw
-0F3833||66|vpmovzxwd|Vx,Ux
-0F3833||66|vpmovzxwd|Vx,Mq
-0F3834||66|vpmovzxwq|Vx,Ux
-0F3834||66|vpmovzxwq|Vx,Md
-0F3835||66|vpmovzxdq|Vx,Ux
-0F3835||66|vpmovzxdq|Vx,Mq
+0F3820||66|vpmovsxbw|Vx,Ux/Mq
+0F3821||66|vpmovsxbd|Vx,Ux/Md
+0F3822||66|vpmovsxbq|Vx,Ux/Mw
+0F3823||66|vpmovsxwd|Vx,Ux/Mq
+0F3824||66|vpmovsxwq|Vx,Ux/Md
+0F3825||66|vpmovsxdq|Vx,Ux/Mq
+0F3830||66|vpmovzxbw|Vx,Ux/Mq
+0F3831||66|vpmovzxbd|Vx,Ux/Md
+0F3832||66|vpmovzxbq|Vx,Ux/Mw
+0F3833||66|vpmovzxwd|Vx,Ux/Mq
+0F3834||66|vpmovzxwq|Vx,Ux/Md
+0F3835||66|vpmovzxdq|Vx,Ux/Mq
 0F3836|v|66|vpermd|Vqq,Hqq,Wqq
 0F3837||66|vpcmpgtq|Vx,Hx,Wx
 0F3840||66|vpmulld|Vx,Hx,Wx
@@ -885,8 +808,8 @@ FF|1A||(Grp/5)|
 0F38F5|v|F2|PDEP|Gy,By,Ey
 0F38F6|v|F2|MULX|By,Gy,rDX,Ey
 0F38F7|v|F2|SHRX|Gy,Ey,By
-0F38F0||66&F2|CRC32|Gd,Eb
-0F38F1||66&F2|CRC32|Gd,Ew
+0F38F0||66_F2|CRC32|Gd,Eb
+0F38F1||66_F2|CRC32|Gd,Ew
 
 0F3808|||psignb|Pq,Qq
 0F3809|||psignw|Pq,Qq
@@ -970,17 +893,13 @@ FF|1A||(Grp/5)|
 0F3A05|v|66|vpermilpd|Vx,Wx,Ib
 0F3A06|v|66|vperm2f128|Vqq,Hqq,Wqq,Ib
 
-0F3A14||66|vpextrb|Rd,Vdq,Ib
-0F3A14||66|vpextrb|Mb,Vdq,Ib
-0F3A15||66|vpextrw|Rd,Vdq,Ib
-0F3A15||66|vpextrw|Mw,Vdq,Ib
+0F3A14||66|vpextrb|Rd/Mb,Vdq,Ib
+0F3A15||66|vpextrw|Rd/Mw,Vdq,Ib
 0F3A16||66|vpextrd_q|Ey,Vdq,Ib
 0F3A17||66|vextractps|Ed,Vdq,Ib
 
-0F3A20||66|vpinsrb|Vdq,Hdq,Ry,Ib
-0F3A20||66|vpinsrb|Vdq,Hdq,Mb,Ib
-0F3A21||66|vinsertps|Vdq,Hdq,Udq,Ib
-0F3A21||66|vinsertps|Vdq,Hdq,Md,Ib
+0F3A20||66|vpinsrb|Vdq,Hdq,Ry/Mb,Ib
+0F3A21||66|vinsertps|Vdq,Hdq,Udq/Md,Ib
 0F3A22||66|vpinsrd_q|Vdq,Hdq,Ey,Ib
 
 0F3A40||66|vdpps|Vx,Hx,Wx,Ib

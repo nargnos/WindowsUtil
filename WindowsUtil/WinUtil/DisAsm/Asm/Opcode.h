@@ -43,22 +43,22 @@ enum RegisterLength
 // 跟段标识共用一个表节约一下空间
 extern const char* Registers[16][6] =
 {
-	{ "AL",		"AX",		"EAX",		"RAX",		"MM0",		"XMM0" },
-	{ "CL",		"CX",		"ECX",		"RCX",		"MM1",		"XMM1" },
-	{ "DL",		"DX",		"EDX",		"RDX",		"MM2",		"XMM2" },
-	{ "BL",		"BX",		"EBX",		"RBX",		"MM3",		"XMM3" },
-	{ "AH",		"SP",		"ESP",		"RSP",		"MM4",		"XMM4" },
-	{ "CH",		"BP",		"EBP",		"RBP",		"MM5",		"XMM5" },
-	{ "DH",		"SI",		"ESI",		"RSI",		"MM6",		"XMM6" },
-	{ "BH",		"DI",		"EDI",		"RDI",		"MM7",		"XMM7" },
-	{ "R8L",	"R8W",		"R8D",		"R8",		0,			"XMM8" },
-	{ "R9L",	"R9W",		"R9D",		"R9",		0,			"XMM9" },
-	{ "R10L",	"R10W",		"R10D",		"R10",		"CS",		"XMM10" },
-	{ "R11L",	"R11W",		"R11D",		"R11",		"DS",		"XMM11" },
-	{ "R12L",	"R12W",		"R12D",		"R12",		"ES",		"XMM12" },
-	{ "R13L",	"R13W",		"R13D",		"R13",		"FS",		"XMM13" },
-	{ "R14L",	"R14W",		"R14D",		"R14",		"GS",		"XMM14" },
-	{ "R15L",	"R15W",		"R15D",		"R15",		"SS",		"XMM15" }
+	{ "al",		"ax",		"eax",		"rax",		"mm0",		"xmm0" },
+	{ "cl",		"cx",		"ecx",		"rcx",		"mm1",		"xmm1" },
+	{ "dl",		"dx",		"edx",		"rdx",		"mm2",		"xmm2" },
+	{ "bl",		"bx",		"ebx",		"rbx",		"mm3",		"xmm3" },
+	{ "ah",		"sp",		"esp",		"rsp",		"mm4",		"xmm4" },
+	{ "ch",		"bp",		"ebp",		"rbp",		"mm5",		"xmm5" },
+	{ "dh",		"si",		"esi",		"rsi",		"mm6",		"xmm6" },
+	{ "bh",		"di",		"edi",		"rdi",		"mm7",		"xmm7" },
+	{ "r8l",	"r8w",		"r8d",		"r8",		0,			"xmm8" },
+	{ "r9l",	"r9w",		"r9d",		"r9",		0,			"xmm9" },
+	{ "r10l",	"r10w",		"r10d",		"r10",		"cs",		"xmm10" },
+	{ "r11l",	"r11w",		"r11d",		"r11",		"ds",		"xmm11" },
+	{ "r12l",	"r12w",		"r12d",		"r12",		"es",		"xmm12" },
+	{ "r13l",	"r13w",		"r13d",		"r13",		"fs",		"xmm13" },
+	{ "r14l",	"r14w",		"r14d",		"r14",		"gs",		"xmm14" },
+	{ "r15l",	"r15w",		"r15d",		"r15",		"ss",		"xmm15" }
 };
 const char* GetRegisterName(unsigned char hex, RegisterLength type)
 {
@@ -237,7 +237,8 @@ enum PrefixGroups :unsigned char
 	G2,
 	G3,
 	G4,
-	GRex
+	GRex,
+	GVex
 };
 enum Prefixes :unsigned char
 {
@@ -331,7 +332,18 @@ enum Superscripts :unsigned char
 
 	S_v, // vex
 	S_v1,
+	S_1A_i64,
+	S_1A_1C
 };
+
+
+#pragma pack(push,1)
+struct ZipHexInst
+{
+	unsigned char Index;
+	unsigned short InstIndex;
+};
+#pragma pop
 
 // 指向条件判断的结构
 typedef struct

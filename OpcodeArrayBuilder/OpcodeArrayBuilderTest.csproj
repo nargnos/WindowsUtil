@@ -51,6 +51,14 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Opcode\Builder.cs" />
+    <Compile Include="Opcode\GroupOpcodeData.cs" />
+    <Compile Include="Opcode\Inst.cs" />
+    <Compile Include="Opcode\IOpcode.cs" />
+    <Compile Include="Opcode\NameIndex.cs" />
+    <Compile Include="Opcode\OpcodeData.cs" />
+    <Compile Include="Opcode\OpcodeType.cs" />
+    <Compile Include="Opcode\Param.cs" />
+    <Compile Include="Opcode\Sizes.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

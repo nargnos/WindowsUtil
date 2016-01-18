@@ -11,13 +11,15 @@ namespace OpcodeArrayBuilder
         {
             Builder builder = new Builder();
             var superScripts = builder.GetAllSuperScripts();
+            var ss = string.Join(",", superScripts);
             var pfxs = builder.GetAllPfxs();
             var operand = builder.GetOperandPairs();
             var names = builder.GetAllNames();
             var operandGroups = builder.GetOperandGroups();
-            var operandsDefineCode = builder.GetOperandDefs();
-            var operandsGrpDefineCode = builder.GetOperandGroupDefCode();
-            var namesCode = builder.GetNamesDefCode();
+            //var operandsDefineCode = builder.GetOperandDefs();
+            //var operandsGrpDefineCode = builder.GetOperandGroupDefCode();
+            //var namesCode = builder.GetNamesDefCode();
+            builder.GetTables();
         }
     }
 }
