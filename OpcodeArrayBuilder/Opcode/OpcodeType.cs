@@ -14,6 +14,5 @@ namespace OpcodeArrayBuilder.Opcode
         Grp,
         Table,
         Esc
-
     }
 }

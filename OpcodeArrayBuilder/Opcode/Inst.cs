@@ -29,11 +29,11 @@ namespace OpcodeArrayBuilder.Opcode
         #endregion
         public Inst(OpcodeData op, NameIndex name, byte paramID)
         {
-            
+
             Type = op.OpType;
             NameID = name.Index;
             NameCount = name.Name.Count;
-            ParamCount =(byte)( op.Operand == null ? 0 : op.Operand.Count);
+            ParamCount = (byte)(op.Operand == null ? 0 : op.Operand.Count);
             ParamID = paramID;
 
             SS = op.SuperScript == null ? string.Empty : string.Join("_", op.SuperScript);
@@ -42,6 +42,10 @@ namespace OpcodeArrayBuilder.Opcode
             SType = op.SType;
             PfxGrp = op.PfxGrp;
             GrpName = op.GrpName;
+        }
+        public override string ToString()
+        {
+            return $"{Type}, {Pfxcdt}, {SS}, {NameID}, {NameCount}, {ParamID}, {ParamCount}, {SType}, {PfxGrp}, {GrpName},";
         }
     }
 }

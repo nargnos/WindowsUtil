@@ -177,6 +177,12 @@
     <ClInclude Include="WinUtil\PE\Resource\LanguageIterator.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\OpcodeData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinUtil\PE\PeDecoder.cpp">
@@ -324,6 +330,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\PE\Resource\LanguageIterator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\OpcodeData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

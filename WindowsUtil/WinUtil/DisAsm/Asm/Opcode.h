@@ -68,11 +68,11 @@ const char* GetRegisterName(unsigned char hex, RegisterLength type)
 };
 
 #define _REG(hex,type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
-#define _OP(info) (unsigned char)((info)&0x7f)
+//#define _OP(info) (unsigned char)((info)&0x7f)
 
 // 寄存器定义，对应值可以在字符串表里找到
 
-enum OperandTypes:unsigned char
+enum OperandTypes :unsigned char
 {
 	// NULL = 0,
 	CHANGE_REG = 1, // 表示寄存器参数会随着长度限定改变
@@ -122,14 +122,55 @@ enum OperandTypes:unsigned char
 	H_W,
 	H_X,
 	H_Y,
+	// 特殊
+
+	SPC_AL_R8L,
+	SPC_CL_R9L,
+	SPC_DL_R10L,
+	SPC_BL_R11L,
+	SPC_AH_R12L,
+	SPC_CH_R13L,
+	SPC_DH_R14L,
+	SPC_BH_R15L,
+	SPC_AL_rAX,
+	SPC_rAX_r8,
+	SPC_rCX_r9,
+	SPC_rDX_r10,
+	SPC_rBX_r11,
+	SPC_rSP_r12,
+	SPC_rBP_r13,
+	SPC_rSI_r14,
+	SPC_rDI_r15,
+
+
+	SPC_RAX_EAX_R8_R8D,
+	SPC_RCX_ECX_R9_R9D,
+	SPC_RDX_EDX_R10_R10D,
+	SPC_RBX_EBX_R11_R11D,
+	SPC_RSP_ESP_R12_R12D,
+	SPC_RBP_EBP_R13_R13D,
+	SPC_RSI_ESI_R14_R14D,
+	SPC_RDI_EDI_R15_R15D,
+
+	SPC_Ib_Iz,
+	SPC_Mw_Rv,
+	SPC_Rd_Mb,
+	SPC_Rd_Mw,
+	SPC_Rv_Mw,
+	SPC_Ry_Mb,
+	SPC_Ry_Mw,
+	SPC_Udq_Md,
+	SPC_Ux_Md,
+	SPC_Ux_Mq,
+	SPC_Ux_Mw,
 	// Segs
 	// 使用长度赋值不代表是这个长度，共用名字表好查而已
-	SEG_CS= _REG(10, Len_64_MM),
-	SEG_DS= _REG(11, Len_64_MM),
-	SEG_ES= _REG(12, Len_64_MM),
-	SEG_FS= _REG(13, Len_64_MM),
-	SEG_GS= _REG(14, Len_64_MM),
-	SEG_SS= _REG(15, Len_64_MM),
+	SEG_CS = _REG(10, Len_64_MM),
+	SEG_DS = _REG(11, Len_64_MM),
+	SEG_ES = _REG(12, Len_64_MM),
+	SEG_FS = _REG(13, Len_64_MM),
+	SEG_GS = _REG(14, Len_64_MM),
+	SEG_SS = _REG(15, Len_64_MM),
 	// reg
 	REG_AL = _REG(0, Len_8),
 	REG_AX = _REG(0, Len_16),
@@ -229,7 +270,16 @@ const char* GetSegName(OperandTypes seg)
 	return Registers[op->Reg.Hex][op->Reg.LenType];
 }
 
-
+enum OpcodeType :unsigned char
+{
+	//None,
+	Inst = 1, // 普通指令
+	Inst_Change, // 根据长度修改指令名的指令
+	Prefix,
+	Grp,
+	Table,
+	Esc
+};
 
 enum PrefixGroups :unsigned char
 {
@@ -258,6 +308,8 @@ enum Prefixes :unsigned char
 	Rex_WRB = 0x4d,
 	Rex_WRX = 0x4e,
 	Rex_WRXB = 0x4f,
+	Vex_2Byte = 0xC4,
+	Vex_1Byte = 0xC5,
 	G4_address_size = 0x67,
 	G1_lock = 0xf0,
 	G3_operand_size = 0x66,
@@ -272,7 +324,7 @@ enum Prefixes :unsigned char
 };
 enum OpcodeGroups :unsigned char
 {
-	G1_80x83,
+	G1_80x83 = 1,
 	G1A_8F,
 	G2_C0C1_D0D1_D2D3,
 	G3_F6F7,
@@ -297,8 +349,8 @@ enum OpcodeGroups :unsigned char
 // 指令存在条件
 enum Conditions :unsigned char
 {
-	C_None,
-	C_Mod_210_000,
+	//C_None,
+	C_Mod_210_000 = 1,
 	C_Mod_210_001,
 	C_Mod_210_010,
 	C_Mod_210_011,
@@ -318,8 +370,8 @@ enum Conditions :unsigned char
 };
 enum Superscripts :unsigned char
 {
-	S_None,
-	S_1A, // ModRM3-5为扩展操作码
+	//S_None,
+	S_1A = 1, // ModRM3-5为扩展操作码
 	S_1B, // 使用0F0BH(UD2指令)或者0FB9H故意产生一个指令异常(#UD)
 	S_1C, // 使用ModRM区分不同指令
 
@@ -336,53 +388,94 @@ enum Superscripts :unsigned char
 	S_1A_1C
 };
 
-
-#pragma pack(push,1)
-struct ZipHexInst
+// 名字后缀
+enum NameExt :unsigned char
 {
-	unsigned char Index;
-	unsigned short InstIndex;
+	None = 0,
+	B = 1,
+	W = B << 1,
+	D = W << 1,
+	Q = D << 1
+};
+#pragma pack(push,1)
+// 1b\2b 表中元素结构
+typedef struct OpcodeData
+{
+	unsigned short InstIndex : 12;
+	unsigned short Count : 4;
+};
+// 3b 表中元素结构
+struct ZipOpcodeData
+{
+	unsigned short InstIndex : 12;
+	unsigned short Count : 4;
+	unsigned char Index; // OpcodeData下标
+};
+
+//Inst = 1, // 普通指令
+//Inst_Change, // 根据长度修改指令名的指令
+//Prefix,
+//Grp,
+//Table,
+//Esc
+struct Inst
+{
+	OpcodeType Type;
+	union
+	{
+		struct
+		{
+			Conditions Pfxcdt; // 前缀条件
+			Superscripts SS;
+			unsigned char ParamID;
+			unsigned char ParamCount;
+			NameExt Ext; // Inst_Change 类型特有
+			unsigned char NameCount;
+			unsigned short NameID;
+		};
+		// Prefix前缀类型
+		char PfxGrp;
+		// Grp组类型
+		char GrpName;
+
+		char TableNum; // Table
+
+	};
 };
 #pragma pop
+// 附加存储信息，
+// 前缀存前缀组，
+// 指令存操作数个数
+// Esc
+// 组
+// 下一个表
+// 其它不存
 
 // 指向条件判断的结构
-typedef struct
-{
-	unsigned char Count; // 个数
-	unsigned short Index; // 起始下标
-}CountIndexPair,*PCountIndexPair;
-
-// 指向参数数组结构,取消掉多名称
-typedef struct
-{
-	unsigned char Count; // 参数个数
-	unsigned char Index; // 对应参数个数表中的ID
-}NameCountIndexPair, *PNameCountIndexPair;
-
-// 条件表结构
-typedef struct
-{
-	unsigned char Condition; // 条件
-	unsigned short Index; // NameCountIndexPair的下标
-}ConditionNode, *PConditionNode;
+//typedef struct
+//{
+//	unsigned char Count; // 个数
+//	unsigned short Index; // 起始下标
+//}CountIndexPair, *PCountIndexPair;
+//
+//// 指向参数数组结构,取消掉多名称
+//typedef struct
+//{
+//	unsigned char Count; // 参数个数
+//	unsigned char Index; // 对应参数个数表中的ID
+//}NameCountIndexPair, *PNameCountIndexPair;
+//
+//// 条件表结构
+//typedef struct
+//{
+//	unsigned char Condition; // 条件
+//	unsigned short Index; // NameCountIndexPair的下标
+//}ConditionNode, *PConditionNode;
 
 // 参数数组元素结构在顶上
 
 
-// 1b\2b\3b 表中元素结构
-typedef struct Opcode
-{
-	unsigned char OpcodeType;
-	// 附加存储信息，
-	// 前缀存前缀组，
-	// 指令存操作数个数
-	// Esc
-	// 组
-	// 下一个表
-	// 其它不存
-	unsigned char Ex;
-	unsigned short Index;
-};
+
 
 
 

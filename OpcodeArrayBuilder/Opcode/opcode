@@ -98,7 +98,7 @@
 
 90|||NOP|
 90||F3|PAUSE|
-90|||XCHG|r8,rAX
+#90|||XCHG|r8,rAX
 91|||XCHG|rCX/r9,rAX
 92|||XCHG|rDX/r10,rAX
 93|||XCHG|rBX/r11,rAX

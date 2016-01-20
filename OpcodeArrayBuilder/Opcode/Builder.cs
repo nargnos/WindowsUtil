@@ -1,4 +1,6 @@
 ﻿// 类作用是把指令文本转成C++的数据定义弄到c++项目那边使用
+// 这里懒得管代码整齐了
+// 有可能理解文档理解错的，发现了再改
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -76,7 +78,7 @@ namespace OpcodeArrayBuilder.Opcode
             // 可以生成param 1234
             List<Param>[] param = GetParams(pairs);
 
-            // $hex_inst
+            // $hex_inst - id,count
             Tuple<int, byte>[][] hexInst = new Tuple<int, byte>[4][];
             for (int i = 0; i < hexInst.Length; i++)
             {
@@ -133,8 +135,8 @@ namespace OpcodeArrayBuilder.Opcode
 
 
             // 统计一下表
-            var hexInstCount = from item in hexInst select item.Count((val) => val != null);
-            // 压缩byte3的两个表
+            // var hexInstCount = from item in hexInst select item.Count((val) => val != null);
+            // 压缩byte3的两个表 - index - id,count
             List<Tuple<byte, Tuple<int, byte>>> zipByte3_38 = new List<Tuple<byte, Tuple<int, byte>>>();
             List<Tuple<byte, Tuple<int, byte>>> zipByte3_3A = new List<Tuple<byte, Tuple<int, byte>>>();
             for (int i = 0; i < hexInst[2].Length; i++)
@@ -159,7 +161,7 @@ namespace OpcodeArrayBuilder.Opcode
             //zipByte3_3A
             //superscript
             //pfx
-
+           
             //var pfx = GetAllPfxs();
             //StringBuilder pfxcdtCode = new StringBuilder("enum ");
             //var superscript = GetAllSuperScripts();
@@ -173,24 +175,41 @@ namespace OpcodeArrayBuilder.Opcode
             
             var byte1 = GetHexInstCode(hexInst,0);
             var byte2 = GetHexInstCode(hexInst,1);
-
-            StringBuilder hexInstCode = new StringBuilder();
+            
+            var byte3_38_zip = GetHexInstCode(zipByte3_38, "Byte3Zip_38");
+            var byte3_3A_zip = GetHexInstCode(zipByte3_3A, "Byte3Zip_3A");
+            
             StringBuilder instsCode = new StringBuilder();
-
-
+            // grpConv
+            var t = from val in insts select val.ToString();
         }
-
+        private static string GetHexInstCode(List<Tuple<byte, Tuple<int, byte>>> zipArray,string codeName)
+        {
+            //OpcodeData
+            var str = (from val in zipArray select $"{{{val.Item2.Item1},{val.Item2.Item2},{val.Item1}}}").ToArray();
+            StringBuilder sb = new StringBuilder($"extern ZipOpcodeData {codeName}[]={{" + Environment.NewLine);
+            ConcatOpStr(str, sb);
+            sb.AppendLine("};");
+            return sb.ToString();
+        }
         private static string GetHexInstCode(Tuple<int, byte>[][] hexInst,int index)
         {
-            //var idxStr = (from idx in hexInst[index] where idx!= null select idx.ToString()).ToArray();
-            //StringBuilder sb = new StringBuilder($"extern unsigned short Byte{index+1}[]={{");
-            //for (int i = 0; i < idxStr.Length; i += 16)
-            //{
-            //    sb.AppendLine(string.Join(",", idxStr, i, 16));
-            //}
-            //sb.AppendLine("};");
-            //return sb.ToString();
-            return "";
+            //OpcodeData
+            var str = (from inst in hexInst[index]
+                       select inst == null ? "{0,0}" : $"{{{inst.Item1},{inst.Item2}}}").ToArray();
+            StringBuilder sb = new StringBuilder($"extern OpcodeData Byte{index + 1}[]={{" + Environment.NewLine);
+            ConcatOpStr(str, sb);
+            sb.AppendLine("};");
+            return sb.ToString();
+        }
+
+        private static void ConcatOpStr(string[] str, StringBuilder sb)
+        {
+            for (int i = 0; i < str.Length; i += 8)
+            {
+                sb.Append(string.Join(",", str, i, (str.Length- i)>=8? 8: str.Length-i));
+                sb.AppendLine(",");
+            }
         }
 
         private List<Param>[] GetParams(List<string> pairs)
@@ -324,7 +343,7 @@ namespace OpcodeArrayBuilder.Opcode
         }
         string GetNamesDefCode(List<NameIndex> names)
         {
-            StringBuilder nameCode = new StringBuilder("extern PCSTR InstructionNames[] = {" + Environment.NewLine);
+            StringBuilder nameCode = new StringBuilder("extern LPCSTR InstructionNames[] = {" + Environment.NewLine);
 
             foreach (var nameArr in names)
             {
@@ -396,14 +415,14 @@ namespace OpcodeArrayBuilder.Opcode
                 int index = 0;
                 int count = item.First().Params.Count;
                 sb.Append($"extern unsigned char OperandGroup{count}");
-                
+                sb.Append("[]");
                 if (count > 1)
                 {
                     sb.Append($"[{count}]");
                 }
                 
                 
-                sb.AppendLine("[] ={ ");
+                sb.AppendLine(" ={ ");
                 foreach (var val in item)
                 {
                     if (count > 1)
@@ -450,7 +469,7 @@ namespace OpcodeArrayBuilder.Opcode
             if (opPairStr.Contains('/'))
             {
                 // 特殊的多个参数类型
-                return $"{{SPC_{opPairStr.Replace('/','_')}}}, // {opPairStr}";
+                return $"{{SPC_{opPairStr.Replace('/','_')},NULL}}, // {opPairStr}";
             }
             // 分开成枚举定义
             if (opPairStr.Length == 1)

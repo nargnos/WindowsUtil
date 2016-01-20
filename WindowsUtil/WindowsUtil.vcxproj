@@ -144,6 +144,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\OpcodeData.h" />
     <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h" />
     <ClInclude Include="WinUtil\PE\BoundImport\BoundImportDirectory.h" />
     <ClInclude Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.h" />
@@ -200,6 +202,7 @@
     <ClInclude Include="WinUtil\Process\Remote\RemoteProccess.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="WinUtil\DisAsm\Asm\OpcodeData.cpp" />
     <ClCompile Include="WinUtil\PE\Architecture\architecturedirectory.cpp" />
     <ClCompile Include="WinUtil\PE\BoundImport\BoundImportDirectory.cpp" />
     <ClCompile Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.cpp" />
