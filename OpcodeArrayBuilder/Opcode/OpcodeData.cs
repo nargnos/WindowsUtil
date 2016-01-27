@@ -45,7 +45,7 @@ namespace OpcodeArrayBuilder.Opcode
                 return;
             }
             Name = new List<string>();
-            val = val.Trim().ToLower();
+            val = val.Trim();
             if (val.StartsWith("("))
             {
                 var type = val.Trim('(', ')').Split('/');
@@ -63,25 +63,25 @@ namespace OpcodeArrayBuilder.Opcode
                             case 0x36:
                             case 0x65:
                             case 0x64:
-                                PfxGrp = "G2";
+                                PfxGrp = "PfxGrp_2";
                                 break;
                             case 0xf0:
                             case 0xf2:
                             case 0xf3:
-                                PfxGrp = "G1";
+                                PfxGrp = "PfxGrp_1";
                                 break;
                             case 0x66:
-                                PfxGrp = "G3";
+                                PfxGrp = "PfxGrp_3";
                                 break;
                             case 0x67:
-                                PfxGrp = "G4";
+                                PfxGrp = "PfxGrp_4";
                                 break;
                             case 0xc4:
                             case 0xc5:
-                                PfxGrp = "GVex";
+                                PfxGrp = "PfxGrp_Vex";
                                 break;
                             default:
-                                PfxGrp = "GRex";
+                                PfxGrp = "PfxGrp_Rex";
                                 break;
                         }
                         break;

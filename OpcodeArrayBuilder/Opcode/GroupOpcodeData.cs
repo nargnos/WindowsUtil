@@ -32,7 +32,7 @@ namespace OpcodeArrayBuilder.Opcode
             RM76 = arr[index++];
             RM543 = arr[index++];
             RM210 = arr[index++];
-            var name = arr[index++].ToLower();
+            var name = arr[index++];
             if (!string.IsNullOrEmpty(name))
             {
                 Name = new List<string>();

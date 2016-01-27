@@ -60,9 +60,9 @@ namespace OpcodeArrayBuilder.Opcode
 
             // X $hex(byte), hex_instID
             // $inst(short), type, pfxcdtID(byte:3), superscriptID(byte:4), inst_nameID, paramCount(byte:3), paramID ...指令情况
-            // $inst_prefix, type, grp, rex...
-            // $inst_table, type,...
-            // $inst_esc,...
+            // $inst_prefix, type, grp, rex...并到hex表里
+            // $inst_table, type,...并
+            // $inst_esc,...并
             // $inst_grp,...
 
             // X $param_pair(byte), pairID, len
@@ -72,11 +72,11 @@ namespace OpcodeArrayBuilder.Opcode
             // 缺rm1、rm2、sib、esc表
 
             // $pair
-            var pairs = GetOperandPairs().ToList();
+            var pairs = GetOperandPairs().ToList(); // 包含grp
             // 可以生成 $name $inst_name 
-            List<NameIndex> names = CreateNames();
+            List<NameIndex> names = CreateNames(); // 包含grp
             // 可以生成param 1234
-            List<Param>[] param = GetParams(pairs);
+            List<Param>[] param = GetParams(pairs); // 包含grp
 
             // $hex_inst - id,count
             Tuple<int, byte>[][] hexInst = new Tuple<int, byte>[4][];
@@ -86,7 +86,7 @@ namespace OpcodeArrayBuilder.Opcode
             }
 
 
-            List<Inst> insts = new List<Inst>(); // $inst 无grp
+            List<Inst> insts = new List<Inst>(); // $inst 不包含grp
 
             // 根据指令字节分组
             foreach (var table in GetByteTables())
@@ -113,7 +113,7 @@ namespace OpcodeArrayBuilder.Opcode
                 // 根据指令的HEX分组
                 foreach (var opcode in table.ToLookup((op) => op.Hex[op.Hex.Count - 1]))
                 {
-                    tmp[Convert.ToInt32(opcode.Key, 16)] = new Tuple<int, byte>( insts.Count + 1,(byte)opcode.Count());
+                    tmp[Convert.ToInt32(opcode.Key, 16)] = new Tuple<int, byte>(insts.Count + 1, (byte)opcode.Count());
                     foreach (var instInfo in opcode)
                     {
                         Inst tmpInst = CreateInst(names, param, instInfo);
@@ -145,7 +145,7 @@ namespace OpcodeArrayBuilder.Opcode
                 var tmp3A = hexInst[3][i];
                 if (tmp38 != null)
                 {
-                    zipByte3_38.Add(new Tuple<byte, Tuple<int, byte>>((byte)i,tmp38));
+                    zipByte3_38.Add(new Tuple<byte, Tuple<int, byte>>((byte)i, tmp38));
                 }
                 if (tmp3A != null)
                 {
@@ -153,41 +153,132 @@ namespace OpcodeArrayBuilder.Opcode
                 }
 
             }
-
-            //param
-            //insts
-            //hexInst
-            //zipByte3_38
-            //zipByte3_3A
-            //superscript
-            //pfx
-           
-            //var pfx = GetAllPfxs();
-            //StringBuilder pfxcdtCode = new StringBuilder("enum ");
-            //var superscript = GetAllSuperScripts();
-
-            //StringBuilder superscriptCode = new StringBuilder();
-
+            
             var pairsCode = GetOperandDefs(pairs);
             var namesCode = GetNamesDefCode(names);
 
             var paramCode = GetOperandGroupDefCode(param);
+
+            var byte1 = GetHexInstCode(hexInst, 0);
+            var byte2 = GetHexInstCode(hexInst, 1);
+
+            var byte3_38_zip = GetHexInstCode(zipByte3_38, "HexTable3Zip_38");
+            var byte3_3A_zip = GetHexInstCode(zipByte3_3A, "HexTable3Zip_3A");
+
+            var instDic = CreateEmptyInstDic();
+            var hexInstCode = GetHexInstCode(insts, instDic);
+
+            var instCode = GetInstCode(instDic);
             
-            var byte1 = GetHexInstCode(hexInst,0);
-            var byte2 = GetHexInstCode(hexInst,1);
-            
-            var byte3_38_zip = GetHexInstCode(zipByte3_38, "Byte3Zip_38");
-            var byte3_3A_zip = GetHexInstCode(zipByte3_3A, "Byte3Zip_3A");
-            
-            StringBuilder instsCode = new StringBuilder();
-            // grpConv
-            var t = from val in insts select val.ToString();
+            StringBuilder result = new StringBuilder();
+            result.AppendLine(pairsCode);
+            result.AppendLine(namesCode);
+            result.AppendLine(paramCode);
+            result.AppendLine(byte1);
+            result.AppendLine(byte2);
+            result.AppendLine(byte3_38_zip);
+            result.AppendLine(byte3_3A_zip);
+            result.AppendLine(hexInstCode);
+            result.AppendLine(instCode);
+            var file = Path.GetTempFileName();
+            File.AppendAllText(file, result.ToString());
+            Process.Start("notepad.exe", file).WaitForExit();
+            File.Delete(file);
+            // escTable escInst grpTable grpInst rmTable sibTable   缺表
         }
+
+        private static string GetInstCode(Dictionary<OpcodeType, List<Inst>> instDic)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("extern InstData Inst[]=" + Environment.NewLine + "{");
+            var inst = instDic[OpcodeType.Inst];
+            for (int i = 0; i < inst.Count; i++)
+            {
+                var item = inst[i];
+                sb.Append("{");
+                AppendProp(sb, item);
+                sb.AppendLine($"}}, // {i}");
+            }
+            sb.AppendLine("};");
+            sb.AppendLine("extern InstChangeData InstChange[]=" + Environment.NewLine + "{");
+            inst = instDic[OpcodeType.Inst_Change];
+            for (int i = 0; i < inst.Count; i++)
+            {
+                var item = inst[i];
+                sb.Append("{");
+                AppendProp(sb, item);
+                var splitExt = item.SType.ToString().Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
+                sb.Append("," + string.Join("|", from val in splitExt select "Ext_" + val));
+                sb.AppendLine($"}}, // {i}");
+            }
+            sb.AppendLine("};");
+
+            var gg = sb.ToString();
+            return gg;
+        }
+
+        private static void AppendProp(StringBuilder sb, Inst item)
+        {
+            sb.Append((string.IsNullOrEmpty(item.Pfxcdt) ? "NULL" : "C_" + item.Pfxcdt) + ",");
+            sb.Append((string.IsNullOrEmpty(item.SS) ? "NULL" : "S_" + item.SS) + ",");
+            sb.Append(item.ParamID + ",");
+            sb.Append(item.ParamCount + ",");
+            sb.Append(item.NameCount + ",");
+            sb.Append(item.NameID);
+        }
+
+        private static Dictionary<OpcodeType, List<Inst>> CreateEmptyInstDic()
+        {
+            var instDic = new Dictionary<OpcodeType, List<Inst>>();
+            foreach (OpcodeType item in Enum.GetValues(typeof(OpcodeType)))
+            {
+                instDic[item] = new List<Inst>();
+            }
+
+            return instDic;
+        }
+
+        // 另外会返回分组好的指令
+        private static string GetHexInstCode(List<Inst> insts, Dictionary<OpcodeType, List<Inst>> instDic)
+        {
+            StringBuilder sb = new StringBuilder($"extern Hex_Inst HexInsts[]={Environment.NewLine}{{{Environment.NewLine}");
+            for (int i = 0; i < insts.Count; i++)
+            {
+                var item = insts[i];
+                var tmpDic = instDic[item.Type];
+                switch (item.Type)
+                {
+                    case OpcodeType.None:
+                        throw new Exception();
+                    case OpcodeType.Prefix:
+                        sb.AppendLine($"{{OT_{item.Type.ToString()},{item.PfxGrp}}}, // {i}");
+                        break;
+                    case OpcodeType.Grp:
+                        sb.AppendLine($"{{OT_{item.Type.ToString()},{item.GrpName}}}, // {i}");
+                        break;
+                    case OpcodeType.Table:
+                        sb.AppendLine($"{{OT_{item.Type.ToString()},{item.TableName}}}, // {i}");
+                        break;
+                    case OpcodeType.Esc:
+                        sb.AppendLine($"{{OT_{item.Type.ToString()},0}}, // {i}");
+                        break;
+                    default:
+                        sb.AppendLine($"{{OT_{item.Type.ToString()},{tmpDic.Count}}}, // {i}");
+                        tmpDic.Add(item);
+                        break;
+                }
+                
+                
+            }
+            sb.AppendLine("};");
+            return sb.ToString();
+        }
+
         private static string GetHexInstCode(List<Tuple<byte, Tuple<int, byte>>> zipArray,string codeName)
         {
             //OpcodeData
             var str = (from val in zipArray select $"{{{val.Item2.Item1},{val.Item2.Item2},{val.Item1}}}").ToArray();
-            StringBuilder sb = new StringBuilder($"extern ZipOpcodeData {codeName}[]={{" + Environment.NewLine);
+            StringBuilder sb = new StringBuilder($"extern ZipOpcodeData {codeName}[]={Environment.NewLine}{{{Environment.NewLine}");
             ConcatOpStr(str, sb);
             sb.AppendLine("};");
             return sb.ToString();
@@ -197,7 +288,7 @@ namespace OpcodeArrayBuilder.Opcode
             //OpcodeData
             var str = (from inst in hexInst[index]
                        select inst == null ? "{0,0}" : $"{{{inst.Item1},{inst.Item2}}}").ToArray();
-            StringBuilder sb = new StringBuilder($"extern OpcodeData Byte{index + 1}[]={{" + Environment.NewLine);
+            StringBuilder sb = new StringBuilder($"extern OpcodeData HexTable{index + 1}[]={Environment.NewLine}{{{Environment.NewLine}");
             ConcatOpStr(str, sb);
             sb.AppendLine("};");
             return sb.ToString();
@@ -231,7 +322,7 @@ namespace OpcodeArrayBuilder.Opcode
 
         private List<NameIndex> CreateNames()
         {
-
+            // grp esc table 不用有名字
             List<NameIndex> names = new List<NameIndex>();
             {
                 int index = 0;
@@ -269,7 +360,7 @@ namespace OpcodeArrayBuilder.Opcode
         public string GetOperandDefs(IEnumerable<string> pairs)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("extern RegOrOperandGroup Operands[]={");
+            sb.AppendLine($"extern RegOrOperandGroup Operands[]={Environment.NewLine}{{");
             int index = 0;
             foreach (var item in pairs)
             {
@@ -332,24 +423,43 @@ namespace OpcodeArrayBuilder.Opcode
         public IEnumerable<List<string>> GetAllNames()
         {
             var result = from opcodeItem in opcodes.Value
-                         where opcodeItem.Name != null
+                         where opcodeItem.Name != null && HasInstName(opcodeItem)
                          select opcodeItem.Name;
             result = result.Concat(
                from opcodeItem in grpOpcode.Value
-               where opcodeItem.Name != null
+               where opcodeItem.Name != null && HasInstName(opcodeItem)
                select opcodeItem.Name);
             // 不排序，使同指令的多个名称可以靠在一起
             return result.OrderBy((item) => item.First()).Distinct(new DistinctStringList());
         }
+
+        private static bool HasInstName(IOpcode opcodeItem)
+        {
+            dynamic tmpItem=null;
+            if (opcodeItem is GroupOpcodeData)
+            {
+                tmpItem = (GroupOpcodeData)opcodeItem;
+            }
+            else if (opcodeItem is OpcodeData)
+            {
+                tmpItem = (OpcodeData)opcodeItem;
+            }
+            else
+            {
+                throw new Exception();
+            }
+            return (tmpItem.OpType == OpcodeType.Inst || tmpItem.OpType == OpcodeType.Inst_Change || tmpItem.OpType == OpcodeType.Prefix);
+        }
+
         string GetNamesDefCode(List<NameIndex> names)
         {
-            StringBuilder nameCode = new StringBuilder("extern LPCSTR InstructionNames[] = {" + Environment.NewLine);
+            StringBuilder nameCode = new StringBuilder($"extern LPCSTR InstructionNames[] = {Environment.NewLine}{{{Environment.NewLine}");
 
             foreach (var nameArr in names)
             {
                 if (nameArr.Name.Count > 1)
                 {
-                    var name = nameArr.Name.First();
+                    var name = nameArr.Name.First().ToLower();
 
                     nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{name}\", \t// Len:{nameArr.Name.Count} {(nameArr.Name[1].Length == 1 ? "Type:Size" : string.Empty)}");
 
@@ -358,7 +468,7 @@ namespace OpcodeArrayBuilder.Opcode
                         // 根据大小可变
                         for (int i = 1; i < nameArr.Name.Count; i++)
                         {
-                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{name}{nameArr.Name[i]}\",");
+                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{name}{nameArr.Name[i].ToLower()}\",");
                         }
                     }
                     else
@@ -366,14 +476,14 @@ namespace OpcodeArrayBuilder.Opcode
                         // 普通多名指令
                         for (int i = 1; i < nameArr.Name.Count; i++)
                         {
-                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{ nameArr.Name[i]}\",");
+                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{ nameArr.Name[i].ToLower()}\",");
                         }
                     }
                 }
                 else
                 {
                     // 单名指令
-                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{nameArr.Name.First()}\", \t// Len:{nameArr.Name.Count}");
+                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{nameArr.Name.First().ToLower()}\", \t// Len:{nameArr.Name.Count}");
                 }
 
             }
@@ -422,7 +532,7 @@ namespace OpcodeArrayBuilder.Opcode
                 }
                 
                 
-                sb.AppendLine(" ={ ");
+                sb.AppendLine($" ={Environment.NewLine}{{ ");
                 foreach (var val in item)
                 {
                     if (count > 1)
@@ -483,7 +593,7 @@ namespace OpcodeArrayBuilder.Opcode
                     // U L 操作数组合
                     return $"{{H_{opPairStr.First()},L_{opPairStr.Substring(1)}}}, // {opPairStr}";
                 }
-                else if (char.IsLower(opPairStr[0]) && char.IsUpper(opPairStr[1]))
+                else if (char.IsLower(opPairStr[0]) && (char.IsUpper(opPairStr[1]) || char.IsDigit(opPairStr[1])))
                 {
                     // L U 寄存器（可根据大小变）
                     return $"{{REG_{opPairStr.ToUpper()},CHANGE_REG}}, // {opPairStr}";

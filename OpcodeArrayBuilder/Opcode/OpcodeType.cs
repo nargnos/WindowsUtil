@@ -8,6 +8,7 @@ namespace OpcodeArrayBuilder.Opcode
 {
     public enum OpcodeType
     {
+        None,
         Inst, // 普通指令
         Inst_Change, // 根据长度修改指令名的指令
         Prefix,

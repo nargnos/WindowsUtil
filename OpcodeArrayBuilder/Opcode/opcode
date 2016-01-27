@@ -5,6 +5,7 @@
 #多名字有_，表示根据长度选择后面的字符组合新名字
 #名字用/分开的表示同指令多名
 #1字节表
+#组自带1A上标
 
 00|||ADD|Eb,Gb
 01|||ADD|Ev,Gv
@@ -87,10 +88,10 @@
 76|f64||JBE/JNA|Jb
 77|f64||JNBE/JA|Jb
 
-80|1A||(Grp/1)|Eb,Ib
-81|1A||(Grp/1)|Ev,Iz
-82|1A_i64||(Grp/1)|Eb,Ib
-83|1A||(Grp/1)|Ev,Ib
+80|||(Grp/Grp_1)|Eb,Ib
+81|||(Grp/Grp_1)|Ev,Iz
+82|i64||(Grp/Grp_1)|Eb,Ib
+83|||(Grp/Grp_1)|Ev,Ib
 84|||TEST|Eb,Gb
 85|||TEST|Ev,Gv
 86|||XCHG|Eb,Gb
@@ -98,7 +99,7 @@
 
 90|||NOP|
 90||F3|PAUSE|
-#90|||XCHG|r8,rAX
+90|||XCHG|r8,rAX
 91|||XCHG|rCX/r9,rAX
 92|||XCHG|rDX/r10,rAX
 93|||XCHG|rBX/r11,rAX
@@ -125,8 +126,8 @@ B5|||MOV|CH/R13L,Ib
 B6|||MOV|DH/R14L,Ib
 B7|||MOV|BH/R15L,Ib
 
-C0|1A||(Grp/2)|Eb,Ib
-C1|1A||(Grp/2)|Ev,Ib
+C0|||(Grp/Grp_2)|Eb,Ib
+C1|||(Grp/Grp_2)|Ev,Ib
 C2|f64||RET|Iw
 C3|f64||RET|
 C4|i64||LES|Gz,Mp
@@ -134,14 +135,14 @@ C4|||(Prefix/VEX+2byte)|
 C5|i64||LDS|Gz,Mp
 C5|||(Prefix/VEX+1byte)|
 #组元素MOV-Eb,Ib
-C6|1A||(Grp/11)|
+C6|||(Grp/Grp_11_C6)|
 #组元素MOV-Ev,Iz
-C7|1A||(Grp/11)|
+C7|||(Grp/Grp_11_C7)|
 
-D0|1A||(Grp/2)|Eb,1
-D1|1A||(Grp/2)|Ev,1
-D2|1A||(Grp/2)|Eb,CL
-D3|1A||(Grp/2)|Ev,CL
+D0|||(Grp/Grp_2)|Eb,1
+D1|||(Grp/Grp_2)|Ev,1
+D2|||(Grp/Grp_2)|Eb,CL
+D3|||(Grp/Grp_2)|Ev,CL
 D4|i64||AAM|Ib
 D5|i64||AAD|Ib
 D7|||XLAT_B|
@@ -160,8 +161,8 @@ F2|||(Prefix/RepneXacquire)|
 F3|||(Prefix/RepXrelease/RepeXrelease)|
 F4|||HLT|
 F5|||CMC|
-F6|1A||(Grp/3)|Eb
-F7|1A||(Grp/3)|Ev
+F6|||(Grp/Grp_3)|Eb
+F7|||(Grp/Grp_3)|Ev
 
 08|||OR|Eb,Gb
 09|||OR|Ev,Gv
@@ -170,7 +171,7 @@ F7|1A||(Grp/3)|Ev
 0C|||OR|AL,Ib
 0D|||OR|rAX,Iz
 0E|i64||PUSH|CS
-0F|||(Table/0F)|
+0F|||(Table/T_0F)|
 
 18|||SBB|Eb,Gb
 19|||SBB|Ev,Gv
@@ -251,7 +252,7 @@ F7|1A||(Grp/3)|Ev
 8D|||LEA|Gv,M
 8E|||MOV|Sw,Ew
 #组元素有前缀d64-POP-Ev
-8F|1A||(Grp/1A)|
+8F|||(Grp/Grp_1A)|
 
 #不知道是不是按长度区分还是同名
 98|||CBW/CWDE/CDQE|
@@ -315,12 +316,12 @@ FA|||CLI|
 FB|||STI|
 FC|||CLD|
 FD|||STD|
-FE|1A||(Grp/4)|
-FF|1A||(Grp/5)|
+FE|||(Grp/Grp_4)|
+FF|||(Grp/Grp_5)|
 
 #2字节表_0F
-0F00|1A||(Grp/6)|
-0F01|1A||(Grp/7)|
+0F00|||(Grp/Grp_6)|
+0F01|||(Grp/Grp_7)|
 0F02|||LAR|Gv,Ew
 0F03|||LSL|Gv,Ew
 0F05|o64||SYSCALL|
@@ -413,9 +414,9 @@ FF|1A||(Grp/5)|
 0F67||66|vpackuswb|Vx,Hx,Wx
 
 0F70|||pshufw|Pq,Qq,Ib
-0F71|1A||(Grp/12)|
-0F72|1A||(Grp/13)|
-0F73|1A||(Grp/14)|
+0F71|||(Grp/Grp_12)|
+0F72|||(Grp/Grp_13)|
+0F73|||(Grp/Grp_14)|
 0F74|||pcmpeqb|Pq,Qq
 0F75|||pcmpeqw|Pq,Qq
 0F76|||pcmpeqd|Pq,Qq
@@ -434,7 +435,7 @@ FF|1A||(Grp/5)|
 0F0B|1B||UD2|
 0F0D|||prefetchw|Ev
 
-0F18|1A||(Grp/16)|
+0F18|||(Grp/Grp_16)|
 0F1F|||NOP|Ev
 
 0F28|||vmovaps|Vps,Wps
@@ -460,8 +461,8 @@ FF|1A||(Grp/5)|
 0F2C||F2|vcvttsd2si|Gy,Wsd
 0F2D||F2|vcvtsd2si|Gy,Wsd
 
-0F38|||(Table/0F38)|
-0F3A|||(Table/0F3A)|
+0F38|||(Table/T_0F38)|
+0F3A|||(Table/T_0F3A)|
 
 0F48|||CMOVS|Gv,Ev
 0F49|||CMOVNS|Gv,Ev
@@ -574,7 +575,7 @@ FF|1A||(Grp/5)|
 0FC4|||pinsrw|Pq,Ry/Mw,Ib
 0FC5|||pextrw|Gd,Nq,Ib
 0FC6|||vshufps|Vps,Hps,Wps,Ib
-0FC7|1A||(Grp/9)|
+0FC7|||(Grp/Grp_9)|
 0FC2||66|vcmppd|Vpd,Hpd,Wpd,Ib
 0FC4||66|vpinsrw|Vdq,Hdq,Ry/Mw,Ib
 0FC5||66|vpextrw|Gd,Udq,Ib
@@ -659,12 +660,12 @@ FF|1A||(Grp/5)|
 0FAC|||SHRD|Ev,Gv,Ib
 0FAD|||SHRD|Ev,Gv,CL
 #组元素有1C
-0FAE|1A_1C||(Grp/15)|
+0FAE|1C||(Grp/Grp_15)|
 0FAF|||IMUL|Gv,Ev
 
 0FB8|||JMPE|
-0FB9|1A||(Grp/10)|
-0FBA|1A||(Grp/8)|Ev,Ib
+0FB9|||(Grp/Grp_10)|
+0FBA|||(Grp/Grp_8)|Ev,Ib
 0FBB|||BTC|Ev,Gv
 0FBC|||BSF|Gv,Ev
 0FBD|||BSR|Gv,Ev
@@ -793,7 +794,7 @@ FF|1A||(Grp/5)|
 0F38F0|||MOVBE|Gy,My
 0F38F1|||MOVBE|My,Gy
 0F38F2|v||ANDN|Gy,By,Ey
-0F38F3|1A||(Grp/17)|
+0F38F3|||(Grp/Grp_17)|
 0F38F5|v||BZHI|Gy,Ey,By
 0F38F7|v||BEXTR|Gy,Ey,By
 0F38F0||66|MOVBE|Gw,Mw

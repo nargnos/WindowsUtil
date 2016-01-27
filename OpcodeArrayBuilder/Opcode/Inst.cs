@@ -21,18 +21,20 @@ namespace OpcodeArrayBuilder.Opcode
 
         public Sizes SType { get; set; }
 
-        #region  前缀类型
+        //  前缀类型
         public string PfxGrp { get; set; }
-        #endregion
-        #region  组类型
+        
+        //  组类型
         public string GrpName { get; set; }
-        #endregion
+
+        // 表名
+        public string TableName { get; set; }
         public Inst(OpcodeData op, NameIndex name, byte paramID)
         {
 
             Type = op.OpType;
             NameID = name.Index;
-            NameCount = name.Name.Count;
+            NameCount = name.Name?.Count??0;
             ParamCount = (byte)(op.Operand == null ? 0 : op.Operand.Count);
             ParamID = paramID;
 
@@ -42,6 +44,7 @@ namespace OpcodeArrayBuilder.Opcode
             SType = op.SType;
             PfxGrp = op.PfxGrp;
             GrpName = op.GrpName;
+            TableName = op.TableName;
         }
         public override string ToString()
         {
