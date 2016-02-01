@@ -7,11 +7,14 @@
 #include "..\..\PE\Export\Export.h"
 #include "WinApiDynamicCallDef.h"
 #include "..\OverwriteWinApi\OverwriteWinApi.h"
-using namespace Process::EnvironmentBlock;
+//using namespace Process::EnvironmentBlock;
 namespace Process
 {
 	namespace LazyLoad
 	{
+		using EnvironmentBlock::CLIENT_ID;
+		using EnvironmentBlock::PCLIENT_ID;
+		using EnvironmentBlock::MEMORY_INFORMATION_CLASS;
 		// 取dll用的是LdrLoadDll,取函数用的是本地自实现的版本
 #pragma region 基本核心函数
 	
@@ -25,7 +28,7 @@ namespace Process
 		class _NtDll:public _LoadDll
 		{
 		public:
-			_NtDll(LPCWSTR dllName);
+			explicit _NtDll(LPCWSTR dllName);
 			
 			WinApiDynamicCall<NTSTATUS WINAPI(_In_opt_ PWSTR SearchPath,
 				_In_opt_ PULONG LoadFlags,

@@ -2,8 +2,7 @@
 #include "SectionIterator.h"
 namespace PE
 {
-	
-	
+	// ½Ú±í·â×°
 	class SectionHeaders :
 		public PeStruct,
 		public GetIterator<SectionIterator, SectionHeaders>
@@ -15,7 +14,8 @@ namespace PE
 	public:
 		friend class PeDecoder;
 		friend GetIteratorBase::Iterator;
-		SectionHeaders(PeDecoder& pe);
+
+		explicit SectionHeaders(PeDecoder& pe);
 
 		~SectionHeaders();
 		

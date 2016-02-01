@@ -15,7 +15,7 @@ namespace PE
 		static PIMAGE_RESOURCE_DATA_ENTRY LocateResourceDataEntry(PIMAGE_RESOURCE_DIRECTORY directoryRoot, PIMAGE_RESOURCE_DIRECTORY_ENTRY entry);
 	public:
 		friend GetIteratorBase::Iterator;
-		ResourceDirectory(PeDecoder& pe);
+		explicit ResourceDirectory(PeDecoder& pe);
 
 		~ResourceDirectory();
 		

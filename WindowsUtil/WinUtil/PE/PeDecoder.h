@@ -42,6 +42,7 @@ namespace PE
 		void BindPtr();
 		
 	public:
+		// 用来延迟创建子结构
 		template<typename T>
 		class PeStructInstance
 		{

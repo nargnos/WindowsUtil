@@ -11,7 +11,7 @@ namespace PE
 		ExportDirectory& exportDir;
 		int currentIndex;
 	public:
-		ExportIterator(ExportDirectory& exportDir);
+		explicit ExportIterator(ExportDirectory& exportDir);
 		~ExportIterator();
 
 		PDWORD CurrentFuncRva();

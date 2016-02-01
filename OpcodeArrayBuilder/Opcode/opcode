@@ -171,7 +171,7 @@ F7|||(Grp/Grp_3)|Ev
 0C|||OR|AL,Ib
 0D|||OR|rAX,Iz
 0E|i64||PUSH|CS
-0F|||(Table/T_0F)|
+0F|||(Table/0F)|
 
 18|||SBB|Eb,Gb
 19|||SBB|Ev,Gv
@@ -461,8 +461,8 @@ FF|||(Grp/Grp_5)|
 0F2C||F2|vcvttsd2si|Gy,Wsd
 0F2D||F2|vcvtsd2si|Gy,Wsd
 
-0F38|||(Table/T_0F38)|
-0F3A|||(Table/T_0F3A)|
+0F38|||(Table/0F38)|
+0F3A|||(Table/0F3A)|
 
 0F48|||CMOVS|Gv,Ev
 0F49|||CMOVNS|Gv,Ev

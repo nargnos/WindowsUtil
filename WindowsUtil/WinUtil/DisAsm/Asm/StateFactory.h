@@ -1,5 +1,6 @@
 #pragma once
-#include "..\Common\Common.h"
+#include "AsmCommon.h"
+#include "Opcode\OpcodeDef.h"
 #include "InitState.h"
 #include "SibState.h"
 #include "RMState.h"
@@ -7,14 +8,25 @@
 #include "GroupState.h"
 #include "ParameterState.h"
 #include "PrefixState.h"
-#include "Byte1State.h"
-#include "Byte2State.h"
-#include "Byte3State.h"
+#include "ByteState.h"
 #include "EndState.h"
+#include "ExitState.h"
+
 class StateFactory :
 	public IStateFactory
 {
-	enum States:unsigned char
+public:
+	friend class InitState;
+	friend class SibState;
+	friend class RmState;
+	friend class EscapeState;
+	friend class GroupState;
+	friend class ParameterState;
+	friend class PrefixState;
+	friend class ByteState;
+	friend class EndState;
+	friend class ExitState;
+	enum States :unsigned char
 	{
 		_Enum_States_Start,
 		State_Init = _Enum_States_Start,
@@ -24,83 +36,118 @@ class StateFactory :
 		State_Group,
 		State_Parameter,
 		State_Prefix,
-		State_Byte1,
-		State_Byte2,
-		State_Byte3,
+		State_Byte,
 		State_End,
+		State_Exit,
 		_Enum_States_End
 	};
-	friend class InitState;
-	friend class SibState;
-	friend class RmState;
-	friend class EscapeState;
-	friend class GroupState;
-	friend class ParameterState;
-	friend class PrefixState;
-	friend class Byte1State;
-	friend class Byte2State;
-	friend class Byte3State;
-	friend class EndState;
-	shared_ptr<IState> states[_Enum_States_End];
-protected:
-	virtual shared_ptr<IState> GetState(unsigned char index) override
+	StateFactory()
 	{
-		assert(index >= _Enum_States_Start && index <_Enum_States_End);
+		Reset();
+	}
+	virtual void Reset() override
+	{
+		currentState = lastState = _Enum_States_Start;
+	}
+	~StateFactory()
+	{
+	}
+	inline  States GetCurrentState()
+	{
+		return currentState;
+	}
+	inline  States GetLastState()
+	{
+		return lastState;
+	}
+
+	virtual  const unique_ptr<IState>& GetBeginStateInstance() override;
+
+private:
+	
+	unique_ptr<IState> states[_Enum_States_End];
+protected:
+	States currentState;
+	States lastState;
+	const unique_ptr<IState>& GetState(OpcodeType opType)
+	{
+		
+		switch (opType)
+		{
+		case OT_Inst:
+		case OT_Inst_Change:
+			assert(currentState == StateFactory::State_Byte);
+			return GetState(StateFactory::State_Parameter);
+		case OT_Grp:
+			assert(currentState == StateFactory::State_Byte);
+			return GetState(StateFactory::State_Group);
+		case OT_Table_0F:
+		case OT_Table_0F38:
+		case OT_Table_0F3A:
+			assert(currentState == StateFactory::State_Byte);
+			return GetState(StateFactory::State_Byte);
+		case OT_Esc:
+			assert(currentState == StateFactory::State_Byte);
+			return GetState(StateFactory::State_Escape);
+		case OT_Prefix:
+			assert(currentState == StateFactory::State_Byte);
+			return GetState(StateFactory::State_Prefix);
+			break;
+		default:
+			break;
+		}
+
+		return GetState(StateFactory::State_End);
+	}
+
+	virtual const unique_ptr<IState>& GetState(unsigned char index) override
+	{
+		assert(index >= _Enum_States_Start && index < _Enum_States_End);
 		auto& tmpState = states[index];
+		lastState = currentState;
+		currentState = static_cast<States>(index);
 		if (!tmpState)
 		{
-			switch (static_cast<States>(index))
+			switch (currentState)
 			{
 			case StateFactory::State_Init:
-				tmpState = make_shared<InitState>();
+				tmpState = make_unique<InitState>();
 				break;
 			case StateFactory::State_Sib:
-				tmpState = make_shared<SibState>();
+				tmpState = make_unique<SibState>();
 				break;
 			case StateFactory::State_Rm:
-				tmpState = make_shared<RmState>();
+				tmpState = make_unique<RmState>();
 				break;
 			case StateFactory::State_Escape:
-				tmpState = make_shared<EscapeState>();
+				tmpState = make_unique<EscapeState>();
 				break;
 			case StateFactory::State_Group:
-				tmpState = make_shared<GroupState>();
+				tmpState = make_unique<GroupState>();
 				break;
 			case StateFactory::State_Parameter:
-				tmpState = make_shared<ParameterState>();
+				tmpState = make_unique<ParameterState>();
 				break;
 			case StateFactory::State_Prefix:
-				tmpState = make_shared<PrefixState>();
+				tmpState = make_unique<PrefixState>();
 				break;
-			case StateFactory::State_Byte1:
-				tmpState = make_shared<Byte1State>();
-				break;
-			case StateFactory::State_Byte2:
-				tmpState = make_shared<Byte2State>();
-				break;
-			case StateFactory::State_Byte3:
-				tmpState = make_shared<Byte3State>();
+			case StateFactory::State_Byte:
+				tmpState = make_unique<ByteState>();
 				break;
 			case StateFactory::State_End:
-				tmpState = make_shared<EndState>();
+				tmpState = make_unique<EndState>();
 				break;
+			case StateFactory::State_Exit:
+				tmpState = make_unique<ExitState>();
+				break; 
 			default:
 				break;
 			}
 		}
+
 		return tmpState;
 	}
-public:
 
-	StateFactory()
-	{
-	}
 
-	~StateFactory()
-	{
-	}
-
-	// Í¨¹ý IStateFactory ¼Ì³Ð
-	virtual shared_ptr<IState> GetBeginStateInstance() override;
 };
 

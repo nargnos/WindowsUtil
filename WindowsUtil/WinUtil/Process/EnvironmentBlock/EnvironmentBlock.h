@@ -294,7 +294,10 @@ namespace Process
 			InMemoryOrderModuleList,
 			InInitializationOrderModuleList
 		}LdrDataTableModuleList;
-		// ldr双链表迭代器
+
+
+
+		// ldr双链表迭代器，可以用3种方式遍历
 		class LdrDataTableEntryReader
 		{
 		public:

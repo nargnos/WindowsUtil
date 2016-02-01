@@ -12,7 +12,7 @@ namespace PE
 
 	public:
 		friend GetIteratorBase::Iterator;
-		DelayImportDirectory(PeDecoder& pe);
+		explicit DelayImportDirectory(PeDecoder& pe);
 
 		~DelayImportDirectory();
 

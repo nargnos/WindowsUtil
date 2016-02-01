@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Common\Common.h"
+#include "AsmCommon.h"
 class InitState :
 	public State
 {
@@ -14,7 +14,7 @@ public:
 	}
 
 	// Í¨¹ý State ¼Ì³Ð
-	virtual shared_ptr<IState> Next(shared_ptr<IInstruction>& inst) override;
+	virtual  const unique_ptr<IState>&  Next(shared_ptr<Instruction>& inst) override;
 	
 };
 

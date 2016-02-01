@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApiHookTest.cpp" />
+    <ClCompile Include="DisAsmTest.cpp" />
     <ClCompile Include="WinApiDynamicCallTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

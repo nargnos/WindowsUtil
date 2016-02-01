@@ -3,7 +3,7 @@
 namespace PE
 {
 	class SectionHeaders;
-	// 节读取器
+	// 节迭代器
 	class SectionIterator :
 		public IIterator<PIMAGE_SECTION_HEADER>
 	{
@@ -12,7 +12,7 @@ namespace PE
 		PIMAGE_SECTION_HEADER lastSectionHeader;
 		PIMAGE_SECTION_HEADER currentSectionPointer;
 	public:
-		SectionIterator(SectionHeaders& section);
+		explicit SectionIterator(SectionHeaders& section);
 
 		PIMAGE_SECTION_HEADER Current();
 		PIMAGE_SECTION_HEADER operator[](int index);

@@ -15,7 +15,7 @@ namespace PE
 		PVOID thunk;
 		void Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder& pe);
 	public:
-		ImportThunkIterator(ImportDescriptorIterator& importDescriptorIterator);
+		explicit ImportThunkIterator(ImportDescriptorIterator& importDescriptorIterator);
 		ImportThunkIterator(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder& pe)
 		{
 			Init(descriptor, pe);

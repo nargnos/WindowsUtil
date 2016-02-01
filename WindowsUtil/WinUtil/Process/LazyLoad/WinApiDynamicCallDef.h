@@ -13,10 +13,12 @@ namespace Process
 		// 析构时不会unload dll
 		class _LoadDll 
 		{
+			_LoadDll(const _LoadDll&) = delete;
+			_LoadDll& operator = (const _LoadDll&) = delete;
 		public:
-			_LoadDll(LPCWSTR dllName);
-			_LoadDll(HMODULE dllModule); 
-			_LoadDll(_LoadDll& obj);
+			explicit _LoadDll(LPCWSTR dllName);
+			explicit _LoadDll(HMODULE dllModule); 
+			explicit _LoadDll(_LoadDll& obj);
 			~_LoadDll();
 			bool Load();
 			HMODULE GetDllModule();
@@ -31,12 +33,14 @@ namespace Process
 
 		template<typename T>
 		class WinApiDynamicCall;
-
+		// 只适用于_stdcall的函数
 		template<typename Ret, typename... T>
 		class WinApiDynamicCall<Ret WINAPI (T...)>
 		{
 		private:
 			bool hasModule = false;
+			WinApiDynamicCall(const WinApiDynamicCall&) = delete;
+			WinApiDynamicCall& operator = (const WinApiDynamicCall&) = delete;
 		protected:
 			typedef Ret(WINAPI* Func)(T...);
 			Func ptr = NULL;

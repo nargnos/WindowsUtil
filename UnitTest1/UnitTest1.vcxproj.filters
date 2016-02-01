@@ -29,5 +29,8 @@
     <ClCompile Include="WinApiDynamicCallTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DisAsmTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

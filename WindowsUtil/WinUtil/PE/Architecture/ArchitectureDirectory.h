@@ -6,7 +6,7 @@ namespace PE
 		public DataDirectory<ArchitectureDirectory, PIMAGE_ARCHITECTURE_HEADER, IMAGE_DIRECTORY_ENTRY_ARCHITECTURE>
 	{
 	public:
-		ArchitectureDirectory(PeDecoder& pe);
+		explicit ArchitectureDirectory(PeDecoder& pe);
 		~ArchitectureDirectory();
 	};
 

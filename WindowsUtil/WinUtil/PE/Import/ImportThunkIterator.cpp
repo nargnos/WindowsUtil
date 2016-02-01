@@ -10,7 +10,7 @@
 			currentOriginalThunk = tmpThunk;
 
 
-inline void PE::ImportThunkIterator::Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder & pe)
+ void PE::ImportThunkIterator::Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder & pe)
 {
 	is32 = pe.HasNtHeader32();
 	originalThunk = pe.GetRvaData(descriptor->OriginalFirstThunk);

@@ -2,11 +2,14 @@
 namespace PE
 {
 #define ALIGN_UP(value, alignment) ((UINT)(value + alignment - 1)&~(alignment - 1))
-
+	
+	// 判断文件是否映射（值由外部传入）
 	bool PeDecoder::IsMapped()
 	{
 		return isMapped;
 	}
+
+	// 附加到指针
 	bool PeDecoder::Attach(PVOID base, bool isMapped)
 	{
 		if (base==NULL)
@@ -17,6 +20,7 @@ namespace PE
 		{
 			return true;
 		}
+		// 初始化数据
 		isPE = false;
 		Clear();
 		isAttached = true;
@@ -41,12 +45,16 @@ namespace PE
 		
 		return true;
 	}
+
+	// 脱离，重置成员
 	void PeDecoder::Dettach()
 	{
 		base = NULL;
 		Clear();
 		isAttached = false;
 	}
+
+	// 将延迟初始化结构绑定到自身
 	void PeDecoder::BindPtr()
 	{
 		if (!isBinded)
@@ -72,6 +80,8 @@ namespace PE
 			GetComDescriptor.Bind(this);
 		}
 	}
+
+	// 取基址
 	PVOID PeDecoder::GetBase()
 	{
 		return this->base;
@@ -82,6 +92,7 @@ namespace PE
 		isAttached = false;
 		Clear();
 	}
+	// 重置
 	void PeDecoder::Clear()
 	{
 		GetDosHeader.Reset();
@@ -103,21 +114,22 @@ namespace PE
 		GetDelayImport.Reset();
 		GetComDescriptor.Reset();
 	}
-
+	// 判断是否为32位程序，忽略了一种情况
 	bool PeDecoder::HasNtHeader32()
 	{
 		return hasNtHeader32;
 	}
+	// 判断是否是PE文件
 	bool PeDecoder::IsPE()
 	{
 		return isPE;
 	}
-
+	// 判断是否附加成功
 	bool PeDecoder::IsAttached()
 	{
 		return isAttached;
 	}
-
+	// 相对偏移找节地址
 	PIMAGE_SECTION_HEADER PeDecoder::RvaToSection(DWORD rva)
 	{
 		auto currentSection = GetSection->firstSectionHeader;
@@ -132,6 +144,7 @@ namespace PE
 		}
 		return NULL;
 	}
+	// 文件偏移找节地址
 	PIMAGE_SECTION_HEADER PeDecoder::OffsetToSection(DWORD fileOffset)
 	{
 		auto currentSection = GetSection->firstSectionHeader;
@@ -145,6 +158,7 @@ namespace PE
 		}
 		return NULL;
 	}
+	// 相对偏移转成文件偏移
 	DWORD PeDecoder::RvaToOffset(DWORD rva)
 	{
 		if (!rva)
@@ -158,7 +172,7 @@ namespace PE
 		}
 		return rva - section->VirtualAddress + section->PointerToRawData;
 	}
-
+	// 文件偏移转成相对偏移
 	DWORD PeDecoder::OffsetToRva(DWORD fileOffset)
 	{
 		if (fileOffset)
@@ -171,14 +185,13 @@ namespace PE
 		}
 		return 0;
 	}
+	// 取得相对偏移指向的数据
 	PVOID PeDecoder::GetRvaData(DWORD rva)
 	{
 		return base + (isMapped ? rva : RvaToOffset(rva));
 	}
 
-
-
-
+	// 通过ID获取DataDirectoryEntry地址，失败返回NULL
 	PIMAGE_DATA_DIRECTORY PeDecoder::GetDataDirectory(DWORD index)
 	{
 		if (*GetNtHeader->imageDataDirectorySize > index && IMAGE_NUMBEROF_DIRECTORY_ENTRIES > index)
@@ -187,7 +200,7 @@ namespace PE
 		}
 		return NULL;
 	}
-
+	// 取得DataDirectoryEntry指向的数据地址
 	PVOID PeDecoder::DirectoryEntryToData(DWORD index, PDWORD* size)
 	{
 		auto dir = GetDataDirectory(index);

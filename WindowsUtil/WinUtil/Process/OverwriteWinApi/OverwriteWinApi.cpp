@@ -11,7 +11,9 @@ namespace Process
 
 		using EnvironmentBlock::PTEB_Ex;
 		using EnvironmentBlock::PBASE_STATIC_SERVER_DATA;
-		using namespace Process::Overwrite;
+		using EnvironmentBlock::CLIENT_ID;
+		using EnvironmentBlock::MemoryBasicInformation;
+		//using namespace Process::Overwrite;
 
 		HANDLE WINAPI _OpenProcess(_In_ DWORD dwDesiredAccess, _In_ BOOL bInheritHandle, _In_ DWORD dwProcessId)
 		{

@@ -9,7 +9,7 @@ namespace PE
 	{
 	public:
 		friend GetIteratorBase::Iterator;
-		ImportDirectory(PeDecoder& pe);
+		explicit ImportDirectory(PeDecoder& pe);
 		~ImportDirectory();
 	};
 

@@ -1,5 +1,6 @@
 #pragma once
-#include "..\Common\Common.h"
+#include "AsmCommon.h"
+// 用来做一些收尾工作
 class EndState :
 	public State
 {
@@ -12,6 +13,6 @@ public:
 	~EndState()
 	{
 	}
-	virtual shared_ptr<IState> Next(shared_ptr<IInstruction>& inst) override { return shared_ptr<IState>(); }
+	virtual  const unique_ptr<IState>&  Next(shared_ptr<Instruction>& inst) override;
 };
 

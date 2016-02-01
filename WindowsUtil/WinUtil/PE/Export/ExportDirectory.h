@@ -18,7 +18,7 @@ namespace PE
 		PWORD nameOrdinalTable;
 	public:
 		friend GetIteratorBase::Iterator;
-		ExportDirectory(PeDecoder& pe);
+		explicit ExportDirectory(PeDecoder& pe);
 		~ExportDirectory();
 
 		virtual PIMAGE_EXPORT_DIRECTORY GetValue() override;

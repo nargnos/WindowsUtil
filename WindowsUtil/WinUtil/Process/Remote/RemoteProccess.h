@@ -7,7 +7,7 @@ namespace Process
 		class RemoteProccess
 		{
 		public:
-			RemoteProccess(HANDLE process);
+			explicit RemoteProccess(HANDLE process);
 			~RemoteProccess();
 		private:
 			

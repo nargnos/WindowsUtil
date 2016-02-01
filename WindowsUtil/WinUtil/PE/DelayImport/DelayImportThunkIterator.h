@@ -15,7 +15,7 @@ namespace PE
 
 	public:
 
-		DelayImportThunkIterator(DelayImportDescriptorIterator& delayImportDescriptorIterator);
+		explicit DelayImportThunkIterator(DelayImportDescriptorIterator& delayImportDescriptorIterator);
 
 		~DelayImportThunkIterator();
 		PVOID CurrentNameTable();

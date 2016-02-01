@@ -7,7 +7,7 @@ namespace PE
 	{
 	public:
 
-		LanguageIterator(ResourceNameIterator& resourceDirectoryResourceNameIterator);
+		explicit LanguageIterator(ResourceNameIterator& resourceDirectoryResourceNameIterator);
 
 		~LanguageIterator();
 	};

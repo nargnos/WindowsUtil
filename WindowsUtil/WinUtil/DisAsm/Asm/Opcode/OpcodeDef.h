@@ -1,5 +1,5 @@
 #pragma once
-#include <assert.h>
+#include <Windows.h>
 #pragma region 操作数存储结构
 typedef struct
 {
@@ -41,31 +41,9 @@ enum RegisterLength
 };
 
 // 跟段标识共用一个表节约一下空间
-extern const char* Registers[16][6] =
-{
-	{ "al",		"ax",		"eax",		"rax",		"mm0",		"xmm0" },
-	{ "cl",		"cx",		"ecx",		"rcx",		"mm1",		"xmm1" },
-	{ "dl",		"dx",		"edx",		"rdx",		"mm2",		"xmm2" },
-	{ "bl",		"bx",		"ebx",		"rbx",		"mm3",		"xmm3" },
-	{ "ah",		"sp",		"esp",		"rsp",		"mm4",		"xmm4" },
-	{ "ch",		"bp",		"ebp",		"rbp",		"mm5",		"xmm5" },
-	{ "dh",		"si",		"esi",		"rsi",		"mm6",		"xmm6" },
-	{ "bh",		"di",		"edi",		"rdi",		"mm7",		"xmm7" },
-	{ "r8l",	"r8w",		"r8d",		"r8",		0,			"xmm8" },
-	{ "r9l",	"r9w",		"r9d",		"r9",		0,			"xmm9" },
-	{ "r10l",	"r10w",		"r10d",		"r10",		"cs",		"xmm10" },
-	{ "r11l",	"r11w",		"r11d",		"r11",		"ds",		"xmm11" },
-	{ "r12l",	"r12w",		"r12d",		"r12",		"es",		"xmm12" },
-	{ "r13l",	"r13w",		"r13d",		"r13",		"fs",		"xmm13" },
-	{ "r14l",	"r14w",		"r14d",		"r14",		"gs",		"xmm14" },
-	{ "r15l",	"r15w",		"r15d",		"r15",		"ss",		"xmm15" }
-};
-const char* GetRegisterName(unsigned char hex, RegisterLength type)
-{
-	assert(hex < 16 && (unsigned char)type < 6);
-	assert(hex < 8 ? true : (type != Len_64_MM));
-	return Registers[hex][type];
-};
+extern const char* Registers[16][6];
+
+//const char* GetRegisterName(unsigned char hex, RegisterLength type);
 
 #define _REG(hex,type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
 //#define _OP(info) (unsigned char)((info)&0x7f)
@@ -263,27 +241,26 @@ enum OperandType :unsigned char
 	REG_XMM15 = _REG(15, Len_128_XMM),
 };
 
-const char* GetSegName(OperandType seg)
-{
-	assert(seg >= SEG_CS&& seg <= SEG_SS);
-	auto op = reinterpret_cast<RegOrOperand*>(&seg);
-	return Registers[op->Reg.Hex][op->Reg.LenType];
-}
+//const char* GetSegName(OperandType seg);
+
 
 enum OpcodeType :unsigned char
 {
-	//None,
-	OT_Inst = 1, // 普通指令
+	OT_None,
+	OT_Inst, // 普通指令
 	OT_Inst_Change, // 根据长度修改指令名的指令
 	OT_Prefix,
+
 	OT_Grp,
-	OT_Table,
+	OT_Table_0F,
+	OT_Table_0F38,
+	OT_Table_0F3A,
 	OT_Esc
 };
 
 enum PrefixGroup :unsigned char
 {
-	PfxGrp_1,
+	PfxGrp_1=1,
 	PfxGrp_2,
 	PfxGrp_3,
 	PfxGrp_4,
@@ -351,9 +328,8 @@ enum PrefixCondition :unsigned char
 {
 	//C_None,
 	C_66 = 1,
-	C_F2,
-	C_F3,
-	C_66_F2,
+	C_F2 = 1 << 1,
+	C_F3 = 1 << 2,
 	/*C_x32,
 	C_x64*/
 };
@@ -406,25 +382,17 @@ enum NameExt :unsigned char
 	Ext_Q = Ext_D << 1
 };
 
-enum TableX
-{
-	T_0F,
-	T_0F38,
-	T_0F3A
-};
-
-
 #pragma pack(push,1)
-// 1b\2b 表中元素结构
+// 1b\2b 表中元素结构,Count为0表示指令不存在
 typedef struct OpcodeData
 {
-	unsigned short InstIndex : 12;
+	unsigned short Hex_InstIndex : 12;
 	unsigned short Count : 4;
 };
 // 3b 表中元素结构
 struct ZipOpcodeData
 {
-	unsigned short InstIndex : 12;
+	unsigned short Hex_InstIndex : 12;
 	unsigned short Count : 4;
 	unsigned char Index; // OpcodeData下标
 };
@@ -439,17 +407,17 @@ struct Hex_Inst
 
 struct InstData
 {
-	unsigned char Pfxcdt:3; // 前缀条件PrefixCondition
-	unsigned char Ss:4;//Superscript
+	unsigned char Pfxcdt : 4; // 前缀条件PrefixCondition
+	unsigned char Ss : 4;//Superscript
 	unsigned char ParamID;
-	unsigned short ParamCount:3;	
-	unsigned short NameCount:3;
-	unsigned short NameID:10;
+	unsigned short ParamCount : 3;
+	unsigned short NameCount : 3;
+	unsigned short NameID : 10;
 	//unsigned char Ext:4; // Inst_Change 类型特有NameExt
 };
 struct InstChangeData
 {
-	unsigned char Pfxcdt : 3; // 前缀条件PrefixCondition
+	unsigned char Pfxcdt : 4; // 前缀条件PrefixCondition
 	unsigned char Ss : 4;//Superscript
 	unsigned char ParamID;
 	unsigned short ParamCount : 3;
@@ -457,5 +425,19 @@ struct InstChangeData
 	unsigned short NameID : 10;
 	unsigned char Ext : 4; // Inst_Change 类型特有NameExt
 };
+struct PrefixInstData
+{
+	unsigned short Ss : 4;//Superscript
+	unsigned short PfxGrp:3;
+	unsigned short NameID : 9; // prefix 名字靠前所以9位足够
+};
 
+struct GrpInstData
+{
+	unsigned char Ss : 4;//Superscript 
+	unsigned char:4;
+	unsigned char ParamID;
+	unsigned char ParamCount : 3;
+	unsigned char GrpID : 5;
+};
 #pragma pop

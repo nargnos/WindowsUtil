@@ -6,7 +6,7 @@ namespace PE
 		public DataDirectory<DebugDirectory, PIMAGE_DEBUG_DIRECTORY, IMAGE_DIRECTORY_ENTRY_DEBUG>
 	{
 	public:
-		DebugDirectory(PeDecoder& pe);
+		explicit DebugDirectory(PeDecoder& pe);
 		~DebugDirectory();
 	};
 

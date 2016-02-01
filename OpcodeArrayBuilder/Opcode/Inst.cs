@@ -38,9 +38,9 @@ namespace OpcodeArrayBuilder.Opcode
             ParamCount = (byte)(op.Operand == null ? 0 : op.Operand.Count);
             ParamID = paramID;
 
-            SS = op.SuperScript == null ? string.Empty : string.Join("_", op.SuperScript);
+            SS = op.SuperScript;
 
-            Pfxcdt = op.Pfx == null ? string.Empty : string.Join("_", op.Pfx);
+            Pfxcdt = op.Pfx;
             SType = op.SType;
             PfxGrp = op.PfxGrp;
             GrpName = op.GrpName;

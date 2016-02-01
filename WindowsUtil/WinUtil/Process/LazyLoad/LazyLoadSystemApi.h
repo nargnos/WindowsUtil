@@ -3,19 +3,19 @@
 #include <WinBase.h>
 #include <intrin.h>
 #include "LazyLoad.h"
-using namespace Process::EnvironmentBlock;
+//using namespace Process::EnvironmentBlock;
 namespace Process
 {
 	namespace LazyLoad
 	{
-		// 编写成必须先load才能使用, 如果自动设置,启动程序会花太久时间
+		// 编写成必须先load才能使用, 如果自动初始化,启动程序会花太久时间
 		// 不使用decltype定义,因为要include太多头文件
 		class _Kernel32 :public _LoadDll
 		{
 		protected:
 			virtual void FuncRegister();
 		public:
-			_Kernel32(LPCWSTR dllName);
+			explicit _Kernel32(LPCWSTR dllName);
 			WinApiDynamicCall<VOID WINAPI(
 				_Out_ LPSYSTEM_INFO lpSystemInfo
 				)> _GetSystemInfo;
@@ -71,7 +71,7 @@ namespace Process
 				_In_ SIZE_T dwSize
 				)> _VirtualUnlock;
 
-			// 下面的重写的不用dll的版本, 可以不用下面的函数
+			// 下面有重写的不用dll的版本, 可以不用下面的函数
 			WinApiDynamicCall<HANDLE WINAPI(
 					_In_ DWORD dwDesiredAccess,
 					_In_ BOOL bInheritHandle,
@@ -159,7 +159,7 @@ namespace Process
 		class _User32 :public _LoadDll
 		{
 		public:
-			_User32(LPCWSTR dllName);
+			explicit _User32(LPCWSTR dllName);
 			WinApiDynamicCall<int WINAPI(
 				_In_opt_ HWND hWnd,
 				_In_opt_ LPCSTR lpText,

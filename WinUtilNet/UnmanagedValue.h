@@ -114,7 +114,7 @@ namespace NAMESPACE {
 					strLen = System::Text::Encoding::ASCII->GetByteCount(result); // 限制字符串长度
 					return result;
 				}
-				// FIX: 遇到字符串中间有\0时会把后面的也输出来，但是又必须限制长度
+				// FIX: 遇到字符串中间有\0时会把后面的也输出来，但是又必须限制长度（这里的str不一定以0结尾）
 				return Marshal::PtrToStringAnsi(addr, strLen)->TrimEnd(' ', '\0');
 			}
 			void set(System::String^ value)

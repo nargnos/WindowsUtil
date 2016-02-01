@@ -15,7 +15,7 @@ namespace PE
 		PImgDelayDescr currentDelay;
 	public:
 		friend class DelayImportThunkIterator;
-		DelayImportDescriptorIterator(DelayImportDirectory& delayImport);
+		explicit DelayImportDescriptorIterator(DelayImportDirectory& delayImport);
 
 		~DelayImportDescriptorIterator();
 

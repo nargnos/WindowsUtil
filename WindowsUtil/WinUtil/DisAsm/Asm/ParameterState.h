@@ -12,6 +12,6 @@ public:
 	~ParameterState()
 	{
 	}
-	virtual shared_ptr<IState> Next(shared_ptr<IInstruction>& inst) override;
+	virtual  const unique_ptr<IState>&  Next(shared_ptr<Instruction>& inst) override;
 };
 

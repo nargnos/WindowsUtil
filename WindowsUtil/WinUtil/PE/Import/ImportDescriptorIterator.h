@@ -12,7 +12,7 @@ namespace PE
 		int currentIndex;
 	public:
 		friend GetIteratorBase::Iterator;
-		ImportDescriptorIterator(ImportDirectory& importDirectory);
+		explicit ImportDescriptorIterator(ImportDirectory& importDirectory);
 		~ImportDescriptorIterator();
 		bool Next();
 

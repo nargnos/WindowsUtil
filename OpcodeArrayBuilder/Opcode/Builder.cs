@@ -11,6 +11,13 @@ using System.Threading.Tasks;
 
 namespace OpcodeArrayBuilder.Opcode
 {
+    public static class StringBuilderEx
+    {
+        public static void AddStrItem(this StringBuilder sb, string signStr, string str)
+        {
+            sb.Append((string.IsNullOrEmpty(str) ? "NULL" : signStr + str) + ",");
+        }
+    }
     public class Builder
     {
         Lazy<List<GroupOpcodeData>> grpOpcode = new Lazy<List<GroupOpcodeData>>(() => AnalyOpcodeStr<GroupOpcodeData>(".\\Opcode\\opcodeGrp"));
@@ -34,12 +41,7 @@ namespace OpcodeArrayBuilder.Opcode
             }
             return result;
         }
-
         
-        
-        
-
-
 
         public void GetTables()
         {
@@ -79,12 +81,7 @@ namespace OpcodeArrayBuilder.Opcode
             List<Param>[] param = GetParams(pairs); // 包含grp
 
             // $hex_inst - id,count
-            Tuple<int, byte>[][] hexInst = new Tuple<int, byte>[4][];
-            for (int i = 0; i < hexInst.Length; i++)
-            {
-                hexInst[i] = new Tuple<int, byte>[0x100];
-            }
-
+            Tuple<int, byte>[][] hexInst = CreateEmptyHexInst();
 
             List<Inst> insts = new List<Inst>(); // $inst 不包含grp
 
@@ -113,7 +110,7 @@ namespace OpcodeArrayBuilder.Opcode
                 // 根据指令的HEX分组
                 foreach (var opcode in table.ToLookup((op) => op.Hex[op.Hex.Count - 1]))
                 {
-                    tmp[Convert.ToInt32(opcode.Key, 16)] = new Tuple<int, byte>(insts.Count + 1, (byte)opcode.Count());
+                    tmp[Convert.ToInt32(opcode.Key, 16)] = new Tuple<int, byte>(insts.Count/* + 1*/, (byte)opcode.Count());
                     foreach (var instInfo in opcode)
                     {
                         Inst tmpInst = CreateInst(names, param, instInfo);
@@ -137,23 +134,9 @@ namespace OpcodeArrayBuilder.Opcode
             // 统计一下表
             // var hexInstCount = from item in hexInst select item.Count((val) => val != null);
             // 压缩byte3的两个表 - index - id,count
-            List<Tuple<byte, Tuple<int, byte>>> zipByte3_38 = new List<Tuple<byte, Tuple<int, byte>>>();
-            List<Tuple<byte, Tuple<int, byte>>> zipByte3_3A = new List<Tuple<byte, Tuple<int, byte>>>();
-            for (int i = 0; i < hexInst[2].Length; i++)
-            {
-                var tmp38 = hexInst[2][i];
-                var tmp3A = hexInst[3][i];
-                if (tmp38 != null)
-                {
-                    zipByte3_38.Add(new Tuple<byte, Tuple<int, byte>>((byte)i, tmp38));
-                }
-                if (tmp3A != null)
-                {
-                    zipByte3_3A.Add(new Tuple<byte, Tuple<int, byte>>((byte)i, tmp3A));
-                }
+            List<Tuple<byte, Tuple<int, byte>>> zipByte3_38, zipByte3_3A;
+            CreateZipByteTable(hexInst, out zipByte3_38, out zipByte3_3A);
 
-            }
-            
             var pairsCode = GetOperandDefs(pairs);
             var namesCode = GetNamesDefCode(names);
 
@@ -169,7 +152,10 @@ namespace OpcodeArrayBuilder.Opcode
             var hexInstCode = GetHexInstCode(insts, instDic);
 
             var instCode = GetInstCode(instDic);
-            
+            var pfxInstCode = GetPfxInstCode(instDic);
+            var grpInstCode = GetGrpInstCode(instDic); // inst里描述的grp，非grp表里描述的指令
+
+
             StringBuilder result = new StringBuilder();
             result.AppendLine(pairsCode);
             result.AppendLine(namesCode);
@@ -180,6 +166,9 @@ namespace OpcodeArrayBuilder.Opcode
             result.AppendLine(byte3_3A_zip);
             result.AppendLine(hexInstCode);
             result.AppendLine(instCode);
+            result.AppendLine(pfxInstCode);
+            result.AppendLine(grpInstCode);
+
             var file = Path.GetTempFileName();
             File.AppendAllText(file, result.ToString());
             Process.Start("notepad.exe", file).WaitForExit();
@@ -187,10 +176,79 @@ namespace OpcodeArrayBuilder.Opcode
             // escTable escInst grpTable grpInst rmTable sibTable   缺表
         }
 
+        private static Tuple<int, byte>[][] CreateEmptyHexInst()
+        {
+            Tuple<int, byte>[][] hexInst = new Tuple<int, byte>[4][];
+            for (int i = 0; i < hexInst.Length; i++)
+            {
+                hexInst[i] = new Tuple<int, byte>[0x100];
+            }
+
+            return hexInst;
+        }
+
+        private static void CreateZipByteTable(Tuple<int, byte>[][] hexInst, out List<Tuple<byte, Tuple<int, byte>>> zipByte3_38, out List<Tuple<byte, Tuple<int, byte>>> zipByte3_3A)
+        {
+            zipByte3_38 = new List<Tuple<byte, Tuple<int, byte>>>();
+            zipByte3_3A = new List<Tuple<byte, Tuple<int, byte>>>();
+            for (int i = 0; i < hexInst[2].Length; i++)
+            {
+                var tmp38 = hexInst[2][i];
+                var tmp3A = hexInst[3][i];
+                if (tmp38 != null)
+                {
+                    zipByte3_38.Add(new Tuple<byte, Tuple<int, byte>>((byte)i, tmp38));
+                }
+                if (tmp3A != null)
+                {
+                    zipByte3_3A.Add(new Tuple<byte, Tuple<int, byte>>((byte)i, tmp3A));
+                }
+
+            }
+        }
+
+        private static string GetGrpInstCode(Dictionary<OpcodeType, List<Inst>> instDic)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("const GrpInstData GrpInst[]=" + Environment.NewLine + "{");
+            var grp = instDic[OpcodeType.Grp];
+            for (int i = 0; i < grp.Count; i++)
+            {
+                var item = grp[i];
+                sb.Append("{");
+                sb.AddStrItem("S_", item.SS);
+                sb.Append(item.ParamID + ",");
+                sb.Append(item.ParamCount + ",");
+                sb.Append(item.GrpName);
+                sb.AppendLine($"}}, // {i}");
+            }
+            sb.AppendLine("};");        
+            
+            return sb.ToString();
+        }
+
+        private static string GetPfxInstCode(Dictionary<OpcodeType, List<Inst>> instDic)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("const PrefixInstData PfxInst[]=" + Environment.NewLine + "{");
+            var pfx = instDic[OpcodeType.Prefix];
+            for (int i = 0; i < pfx.Count; i++)
+            {
+                var item = pfx[i];
+                sb.Append("{");
+                sb.AddStrItem("S_", item.SS);
+                sb.AddStrItem(string.Empty, item.PfxGrp);
+                sb.Append(item.NameID);
+                sb.AppendLine($"}}, // {i}");
+            }
+            sb.AppendLine("};");
+            return sb.ToString();
+        }
+
         private static string GetInstCode(Dictionary<OpcodeType, List<Inst>> instDic)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("extern InstData Inst[]=" + Environment.NewLine + "{");
+            sb.AppendLine("const InstData Inst[]=" + Environment.NewLine + "{");
             var inst = instDic[OpcodeType.Inst];
             for (int i = 0; i < inst.Count; i++)
             {
@@ -200,7 +258,7 @@ namespace OpcodeArrayBuilder.Opcode
                 sb.AppendLine($"}}, // {i}");
             }
             sb.AppendLine("};");
-            sb.AppendLine("extern InstChangeData InstChange[]=" + Environment.NewLine + "{");
+            sb.AppendLine("const InstChangeData InstChange[]=" + Environment.NewLine + "{");
             inst = instDic[OpcodeType.Inst_Change];
             for (int i = 0; i < inst.Count; i++)
             {
@@ -219,8 +277,10 @@ namespace OpcodeArrayBuilder.Opcode
 
         private static void AppendProp(StringBuilder sb, Inst item)
         {
-            sb.Append((string.IsNullOrEmpty(item.Pfxcdt) ? "NULL" : "C_" + item.Pfxcdt) + ",");
-            sb.Append((string.IsNullOrEmpty(item.SS) ? "NULL" : "S_" + item.SS) + ",");
+            var tmpPfx = item.Pfxcdt.Split('_');
+            var pfxStr=string.Join("|", from val in tmpPfx select $"C_{val}");
+            sb.Append((string.IsNullOrEmpty(item.Pfxcdt) ? "NULL" : pfxStr) + ",");
+            sb.AddStrItem("S_",item.SS);
             sb.Append(item.ParamID + ",");
             sb.Append(item.ParamCount + ",");
             sb.Append(item.NameCount + ",");
@@ -241,7 +301,7 @@ namespace OpcodeArrayBuilder.Opcode
         // 另外会返回分组好的指令
         private static string GetHexInstCode(List<Inst> insts, Dictionary<OpcodeType, List<Inst>> instDic)
         {
-            StringBuilder sb = new StringBuilder($"extern Hex_Inst HexInsts[]={Environment.NewLine}{{{Environment.NewLine}");
+            StringBuilder sb = new StringBuilder($"const Hex_Inst HexInsts[]={Environment.NewLine}{{{Environment.NewLine}");
             for (int i = 0; i < insts.Count; i++)
             {
                 var item = insts[i];
@@ -250,14 +310,8 @@ namespace OpcodeArrayBuilder.Opcode
                 {
                     case OpcodeType.None:
                         throw new Exception();
-                    case OpcodeType.Prefix:
-                        sb.AppendLine($"{{OT_{item.Type.ToString()},{item.PfxGrp}}}, // {i}");
-                        break;
-                    case OpcodeType.Grp:
-                        sb.AppendLine($"{{OT_{item.Type.ToString()},{item.GrpName}}}, // {i}");
-                        break;
                     case OpcodeType.Table:
-                        sb.AppendLine($"{{OT_{item.Type.ToString()},{item.TableName}}}, // {i}");
+                        sb.AppendLine($"{{OT_{item.Type.ToString()}_{item.TableName},0}}, // {i}");
                         break;
                     case OpcodeType.Esc:
                         sb.AppendLine($"{{OT_{item.Type.ToString()},0}}, // {i}");
@@ -278,7 +332,7 @@ namespace OpcodeArrayBuilder.Opcode
         {
             //OpcodeData
             var str = (from val in zipArray select $"{{{val.Item2.Item1},{val.Item2.Item2},{val.Item1}}}").ToArray();
-            StringBuilder sb = new StringBuilder($"extern ZipOpcodeData {codeName}[]={Environment.NewLine}{{{Environment.NewLine}");
+            StringBuilder sb = new StringBuilder($"const ZipOpcodeData {codeName}[]={Environment.NewLine}{{{Environment.NewLine}");
             ConcatOpStr(str, sb);
             sb.AppendLine("};");
             return sb.ToString();
@@ -288,7 +342,7 @@ namespace OpcodeArrayBuilder.Opcode
             //OpcodeData
             var str = (from inst in hexInst[index]
                        select inst == null ? "{0,0}" : $"{{{inst.Item1},{inst.Item2}}}").ToArray();
-            StringBuilder sb = new StringBuilder($"extern OpcodeData HexTable{index + 1}[]={Environment.NewLine}{{{Environment.NewLine}");
+            StringBuilder sb = new StringBuilder($"const OpcodeData HexTable{index + 1}[]={Environment.NewLine}{{{Environment.NewLine}");
             ConcatOpStr(str, sb);
             sb.AppendLine("};");
             return sb.ToString();
@@ -360,7 +414,7 @@ namespace OpcodeArrayBuilder.Opcode
         public string GetOperandDefs(IEnumerable<string> pairs)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"extern RegOrOperandGroup Operands[]={Environment.NewLine}{{");
+            sb.AppendLine($"const RegOrOperandGroup Operands[]={Environment.NewLine}{{");
             int index = 0;
             foreach (var item in pairs)
             {
@@ -453,7 +507,7 @@ namespace OpcodeArrayBuilder.Opcode
 
         string GetNamesDefCode(List<NameIndex> names)
         {
-            StringBuilder nameCode = new StringBuilder($"extern LPCSTR InstructionNames[] = {Environment.NewLine}{{{Environment.NewLine}");
+            StringBuilder nameCode = new StringBuilder($"const LPCSTR InstructionNames[] = {Environment.NewLine}{{{Environment.NewLine}");
 
             foreach (var nameArr in names)
             {
@@ -524,7 +578,7 @@ namespace OpcodeArrayBuilder.Opcode
             {
                 int index = 0;
                 int count = item.First().Params.Count;
-                sb.Append($"extern unsigned char OperandGroup{count}");
+                sb.Append($"const unsigned char OperandGroup{count}");
                 sb.Append("[]");
                 if (count > 1)
                 {

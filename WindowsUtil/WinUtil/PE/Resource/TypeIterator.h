@@ -13,7 +13,7 @@ namespace PE
 		PIMAGE_RESOURCE_DIRECTORY_ENTRY currentTypeDirectoryEntry;
 	public:
 
-		TypeIterator(ResourceDirectory& resourceDirectory);
+		explicit TypeIterator(ResourceDirectory& resourceDirectory);
 
 		~TypeIterator();
 
