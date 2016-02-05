@@ -1,7 +1,7 @@
 #pragma once
-#include <cassert>
 #include <Windows.h>
 #include <winternl.h>
+#include <cassert>
 namespace Process
 {
 	namespace EnvironmentBlock
@@ -251,7 +251,7 @@ namespace Process
 			WCHAR sLocaleName[85];
 			LCID UserLocaleId;
 			LUID InteractiveUserLuid;
-			CHAR InteractiveUserSid[68]; // SECURITY_MAX_SID_SIZE to make ros happy
+			CHAR InteractiveUserSid[68];  // SECURITY_MAX_SID_SIZE to make ros happy
 			ULONG ulCacheUpdateCount;
 		} NLS_USER_INFO, *PNLS_USER_INFO;
 
@@ -302,7 +302,7 @@ namespace Process
 		{
 		public:
 
-			LdrDataTableEntryReader(LdrDataTableModuleList desList);
+			explicit LdrDataTableEntryReader(LdrDataTableModuleList desList);
 			LdrDataTableEntryReader(PPEB_Ex peb, LdrDataTableModuleList desList);
 			LdrDataTableEntryReader(PPEB_LDR_DATA_Ex ldr, LdrDataTableModuleList desList);
 			~LdrDataTableEntryReader();
@@ -323,5 +323,5 @@ namespace Process
 			MemorySectionName,
 			MemoryBasicVlmInformation
 		} MEMORY_INFORMATION_CLASS;
-	}
-}
+	}  // namespace EnvironmentBlock
+}  // namespace Process

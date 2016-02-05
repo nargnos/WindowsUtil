@@ -12,11 +12,11 @@ namespace PE
 
 	public:
 		friend GetIteratorBase::Iterator;
-		explicit DelayImportDirectory(PeDecoder& pe);
+		explicit DelayImportDirectory(PeDecoder & pe);
 
 		~DelayImportDirectory();
 
 		virtual PImgDelayDescr GetValue() override;
 	};
 
-}
+}  // namespace PE

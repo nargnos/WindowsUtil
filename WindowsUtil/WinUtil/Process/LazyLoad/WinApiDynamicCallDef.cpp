@@ -55,5 +55,5 @@ namespace Process
 		}
 
 
-	}
-}
+	}  // namespace LazyLoad
+}  // namespace Process

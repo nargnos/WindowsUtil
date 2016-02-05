@@ -2,9 +2,9 @@
 namespace PE
 {
 #define ALIGN_UP(value, alignment) ((UINT)(value + alignment - 1)&~(alignment - 1))
-	
+
 	// 判断文件是否映射（值由外部传入）
-	bool PeDecoder::IsMapped()
+	bool PeDecoder::IsMapped() const
 	{
 		return isMapped;
 	}
@@ -12,7 +12,7 @@ namespace PE
 	// 附加到指针
 	bool PeDecoder::Attach(PVOID base, bool isMapped)
 	{
-		if (base==NULL)
+		if (base == NULL)
 		{
 			return false;
 		}
@@ -42,7 +42,6 @@ namespace PE
 		}
 		this->hasNtHeader32 = GetNtHeader->HasNtHeader32();
 		isPE = true;
-		
 		return true;
 	}
 
@@ -115,17 +114,17 @@ namespace PE
 		GetComDescriptor.Reset();
 	}
 	// 判断是否为32位程序，忽略了一种情况
-	bool PeDecoder::HasNtHeader32()
+	bool PeDecoder::HasNtHeader32() const
 	{
 		return hasNtHeader32;
 	}
 	// 判断是否是PE文件
-	bool PeDecoder::IsPE()
+	bool PeDecoder::IsPE() const
 	{
 		return isPE;
 	}
 	// 判断是否附加成功
-	bool PeDecoder::IsAttached()
+	bool PeDecoder::IsAttached() const
 	{
 		return isAttached;
 	}
@@ -190,6 +189,7 @@ namespace PE
 	{
 		return base + (isMapped ? rva : RvaToOffset(rva));
 	}
+	
 
 	// 通过ID获取DataDirectoryEntry地址，失败返回NULL
 	PIMAGE_DATA_DIRECTORY PeDecoder::GetDataDirectory(DWORD index)
@@ -214,4 +214,4 @@ namespace PE
 		}
 		return GetRvaData(dir->VirtualAddress);
 	}
-}
+}  // namespace PE

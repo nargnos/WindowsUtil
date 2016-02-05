@@ -2,7 +2,7 @@
 
 namespace Process
 {
-	
+
 	namespace Overwrite
 	{
 
@@ -13,8 +13,7 @@ namespace Process
 		using EnvironmentBlock::PBASE_STATIC_SERVER_DATA;
 		using EnvironmentBlock::CLIENT_ID;
 		using EnvironmentBlock::MemoryBasicInformation;
-		//using namespace Process::Overwrite;
-
+		
 		HANDLE WINAPI _OpenProcess(_In_ DWORD dwDesiredAccess, _In_ BOOL bInheritHandle, _In_ DWORD dwProcessId)
 		{
 			NTSTATUS Status;
@@ -38,8 +37,8 @@ namespace Process
 				dwDesiredAccess,
 				&ObjectAttributes,
 				&ClientId);
-	
-			return NT_SUCCESS(Status)?ProcessHandle:NULL;
+
+			return NT_SUCCESS(Status) ? ProcessHandle : NULL;
 		}
 		bool WINAPI _SetThreadContext(_In_ HANDLE hThread, _In_ CONST CONTEXT * lpContext)
 		{
@@ -89,7 +88,7 @@ namespace Process
 				nSize,
 				&nSize);
 			if (lpNumberOfBytesRead) *lpNumberOfBytesRead = nSize;
-			
+
 			return NT_SUCCESS(Status);
 		}
 
@@ -99,7 +98,7 @@ namespace Process
 			ULONG OldValue;
 			SIZE_T RegionSize;
 			PVOID Base;
-			//BOOLEAN UnProtect;
+			// BOOLEAN UnProtect;
 			if (!NtDll_Dll.Load() ||
 				!NtDll_Dll._NtProtectVirtualMemory ||
 				!NtDll_Dll._NtWriteVirtualMemory ||
@@ -178,7 +177,7 @@ namespace Process
 				Status = 0;
 			}
 
-			return NT_SUCCESS(Status)?lpAddress:NULL;
+			return NT_SUCCESS(Status) ? lpAddress : NULL;
 		}
 		SIZE_T WINAPI _VirtualQuery(_In_opt_ LPCVOID lpAddress, _Out_writes_bytes_to_(dwLength, return) PMEMORY_BASIC_INFORMATION lpBuffer, _In_ SIZE_T dwLength)
 		{
@@ -218,7 +217,7 @@ namespace Process
 					&lpAddress,
 					&dwSize,
 					dwFreeType);
-				
+
 				return NT_SUCCESS(Status);
 			}
 			return false;
@@ -227,5 +226,5 @@ namespace Process
 		{
 			return _VirtualFreeEx(NtCurrentProcess(), lpAddress, dwSize, dwFreeType);
 		}
-	}
-}
+	}  // namespace Overwrite
+}  // namespace Process

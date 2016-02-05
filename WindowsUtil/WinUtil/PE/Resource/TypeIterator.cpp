@@ -48,5 +48,5 @@ void PE::TypeIterator::Reset()
 
 PIMAGE_RESOURCE_DIRECTORY PE::TypeIterator::GetValue()
 {
-	return NULL;// ResourceDirectory::LocateResourceDirectory()
+	return NULL;  // ResourceDirectory::LocateResourceDirectory()
 }

@@ -2,7 +2,7 @@
 #include "../Common/Common.h"
 namespace PE
 {
-	
+
 	class NtHeader :
 		public PeStruct,
 		public InitStruct
@@ -13,7 +13,7 @@ namespace PE
 		bool hasNtHeader32;
 	public:
 		friend class PeDecoder;
-		explicit NtHeader(PeDecoder& pe);
+		explicit NtHeader(PeDecoder & pe);
 		~NtHeader();
 		 bool VerifyNtSignature();
 		 const PIMAGE_NT_HEADERS32 GetNtHeader32();
@@ -26,4 +26,4 @@ namespace PE
 		 const PDWORD GetImageDataDirectorySize();
 	};
 
-}
+}  // namespace PE

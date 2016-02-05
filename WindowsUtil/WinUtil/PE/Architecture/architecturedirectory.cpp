@@ -1,4 +1,4 @@
-#include "architecturedirectory.h"
+#include "Architecturedirectory.h"
 
 PE::ArchitectureDirectory::ArchitectureDirectory(PeDecoder & pe) :DataDirectoryBase(pe)
 {

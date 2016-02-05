@@ -25,4 +25,4 @@ namespace PE
 		// Í¨¹ý IGetValue ¼Ì³Ð
 		virtual PIMAGE_RESOURCE_DIRECTORY GetValue() override;
 	};
-}
+}  // namespace PE

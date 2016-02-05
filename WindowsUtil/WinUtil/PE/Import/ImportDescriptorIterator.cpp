@@ -11,7 +11,8 @@ bool PE::ImportDescriptorIterator::Next()
 {
 	if (importDirectory.size)
 	{
-		if (++currentIndex < *importDirectory.size)
+		++currentIndex;
+		if (static_cast<unsigned int>(currentIndex) < *importDirectory.size)
 		{
 			auto checkResult = importDirectory.data[currentIndex];
 			canCreateIterator = !(checkResult.Name == NULL || checkResult.FirstThunk == NULL);

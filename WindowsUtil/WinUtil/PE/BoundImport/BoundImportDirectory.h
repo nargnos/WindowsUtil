@@ -10,4 +10,4 @@ namespace PE
 		~BoundImportDirectory();
 	};
 
-}
+}  // namespace PE

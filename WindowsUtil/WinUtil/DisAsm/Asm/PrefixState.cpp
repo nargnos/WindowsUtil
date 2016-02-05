@@ -1,3 +1,3 @@
 #include "..\Common\Common.h"
 #include "StateFactory.h"
-const unique_ptr<IState>&  PrefixState::Next(shared_ptr<Instruction>& inst) { return unique_ptr<IState>(); }
+const State*  PrefixState::Next(const shared_ptr<Instruction>& inst) const { return NULL; }

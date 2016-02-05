@@ -7,9 +7,6 @@ class AsmOpcodeWapper
 {
 	_STD unique_ptr<OpcodeData[]> table0F38;
 	_STD unique_ptr<OpcodeData[]> table0F3A;
-	typedef const unsigned char(&OperandGroup2NodeType)[2];
-	typedef const unsigned char(&OperandGroup3NodeType)[3];
-	typedef const unsigned char(&OperandGroup4NodeType)[4];
 
 public:
 	AsmOpcodeWapper();
@@ -19,7 +16,7 @@ public:
 	static _STD unique_ptr<OpcodeData[]> UnzipOpcodeData(const ZipOpcodeData zipArray[], int count);
 
 
-
+	const unsigned char* GetOperandGroup(int opCount, int index);
 	// 取1字节表
 	const OpcodeData& GetOpcodeData(int hex);
 	// 取2字节表
@@ -31,11 +28,8 @@ public:
 	const OpcodeData& GetTable0F3AOpcodeData(int hex);
 	const Hex_Inst& GetHex_Inst(int index);
 
-	const unsigned char& GetOperandGroup1(int index);
 
-	OperandGroup2NodeType GetOperandGroup2(int index);
-	OperandGroup3NodeType GetOperandGroup3(int index);
-	OperandGroup4NodeType GetOperandGroup4(int index);
+	
 
 	const GrpInstData& GetGrpInst(int index);
 	const PrefixInstData& GetPfxInst(int index);

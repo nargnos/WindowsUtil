@@ -8,14 +8,13 @@ public:
 	{
 	}
 	// 返回读取长度, 读取信息保存在inst参数里
-	int Read(shared_ptr<Instruction>& inst)
+	int Read(const shared_ptr<Instruction>& inst) const
 	{
-		auto current = inst->GetFactory()->GetBeginStateInstance().get();
-		while (current!=NULL && current->HasNext())
+		auto current = inst->GetFactory()->GetBeginStateInstance();
+		while (current != NULL && current->HasNext())
 		{
-			auto& tmpState = current->Next(inst);
-			assert(tmpState);
-			current = tmpState.get();
+			current = current->Next(inst);
+			assert(current);
 		}
 		return inst->GetLength();
 	}

@@ -18,4 +18,4 @@ namespace PE
 		}
 	};
 
-}
+}  // namespace PE

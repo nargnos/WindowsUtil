@@ -10,4 +10,4 @@ namespace PE
 		~ComDescriptorDirectory();
 	};
 
-}
+}  // namespace PE

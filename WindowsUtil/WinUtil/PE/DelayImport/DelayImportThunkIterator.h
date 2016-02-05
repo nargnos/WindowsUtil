@@ -24,4 +24,4 @@ namespace PE
 		void Reset();
 	};
 
-}
+}  // namespace PE

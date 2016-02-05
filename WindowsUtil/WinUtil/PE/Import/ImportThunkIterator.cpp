@@ -2,7 +2,7 @@
 #define CONVERT_THUNK_POINTER(thunkPointer, x) ((PIMAGE_THUNK_DATA##x)thunkPointer)
 #define CHECK_THUNK(x) \
 			auto tmpThunk = CONVERT_THUNK_POINTER(currentOriginalThunk, x) + 1;\
-			if (CONVERT_THUNK_POINTER(tmpThunk,x)->u1.AddressOfData == NULL)   \
+			if (CONVERT_THUNK_POINTER(tmpThunk, x)->u1.AddressOfData == NULL)  \
 			{																   \
 				return false;												   \
 			}																   \
@@ -10,7 +10,7 @@
 			currentOriginalThunk = tmpThunk;
 
 
- void PE::ImportThunkIterator::Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder & pe)
+void PE::ImportThunkIterator::Init(PIMAGE_IMPORT_DESCRIPTOR descriptor, PeDecoder & pe)
 {
 	is32 = pe.HasNtHeader32();
 	originalThunk = pe.GetRvaData(descriptor->OriginalFirstThunk);

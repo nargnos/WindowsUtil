@@ -20,5 +20,4 @@ namespace PE
 		virtual PIMAGE_IMPORT_DESCRIPTOR Current() override;
 	};
 
-
-}
+}  // namespace PE

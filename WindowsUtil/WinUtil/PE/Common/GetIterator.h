@@ -24,4 +24,4 @@ namespace PE
 		}
 	};
 
-}
+}  // namespace PE

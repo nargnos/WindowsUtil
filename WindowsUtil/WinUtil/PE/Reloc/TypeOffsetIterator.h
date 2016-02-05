@@ -15,10 +15,10 @@ namespace PE
 		void Reset();
 		WORD CurrentType();
 		DWORD CurrentRelocRva();
-		
+
 		// 应用重定位使用的函数（读取时不需要）
 		void ApplyCurrentReloc(PVOID oldBase, PVOID currentBase);
-				
+
 		static void RelocHighLow(PVOID oldBase, PVOID currentBase, DWORD relocRva);
 		static void RelocLow(PVOID oldBase, PVOID currentBase, DWORD relocRva);
 		static void RelocHigh(PVOID oldBase, PVOID currentBase, DWORD relocRva);
@@ -36,4 +36,4 @@ namespace PE
 
 
 
-}
+}  // namespace PE

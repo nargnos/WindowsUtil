@@ -7,7 +7,7 @@ namespace Process
 		PVOID HookEat(LPCWSTR dllName, LPCSTR procName, LPCVOID hookFunc, OUT PDWORD oldFuncRva)
 		{
 			auto dllBase = LazyLoad::_LoadLibraryW(dllName);
-			
+
 			PE::PeDecoder dll;
 			if (!dll.Attach(dllBase, true))
 			{
@@ -32,7 +32,7 @@ namespace Process
 			else
 			{
 				auto tmpDta = (LONGLONG)hookFunc - (LONGLONG)dllBase;
-				if (tmpDta>0 && tmpDta<LONG_MAX)
+				if (tmpDta > 0 && tmpDta < LONG_MAX)
 				{
 					setRva = (LONG)tmpDta;
 				}
@@ -41,10 +41,10 @@ namespace Process
 					// NOTICE: 因为导出表结构原因,存储的数据总是DWORD,不能在附加64位的base之后往前偏移,所以无法hook
 					return NULL;
 				}
-				
+
 			}
 			Process::Overwrite::_WriteProcessMemory(NtCurrentProcess(), result, &setRva, sizeof(DWORD), NULL);
 			return result;
 		}
-	}
-}
+	}  // namespace Hook
+}  // namespace Process

@@ -17,7 +17,6 @@ namespace Process
 		// backupLen :原函数需要备份的指令长度,需要正确分割且>=10(64位为14,使用ff25 jmp[xxx],绝对地址跟在这条指令后)
 		// return :返回备份后的Api地址（原函数内容,这个地址unhook需要用）,错误时返回NULL
 		PVOID _HookApi(PVOID api, PVOID hook, int backupLen);
-		
 		// 自动确定备份字长的版本
 		// 可以重复使用，只要中间的hook函数有一个不运行原函数，则整个链会断开
 		PVOID HookApi(PVOID api, PVOID hook);
@@ -33,5 +32,5 @@ namespace Process
 
 
 		// TODO: UnHook
-	}
-}
+	}  // namespace Hook
+}  // namespace Process

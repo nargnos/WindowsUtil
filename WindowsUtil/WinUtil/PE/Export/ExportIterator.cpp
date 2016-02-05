@@ -38,7 +38,8 @@ bool PE::ExportIterator::Next()
 {
 	if (exportDir.numberOfNames)
 	{
-		if (++currentIndex < *exportDir.numberOfNames)
+		++currentIndex;
+		if (static_cast<unsigned int>(currentIndex) < *exportDir.numberOfNames)
 		{
 			return true;
 		}

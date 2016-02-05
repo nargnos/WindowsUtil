@@ -4,7 +4,7 @@ namespace Process
 	namespace LazyLoad
 	{
 #pragma region LoadDllºËÐÄº¯Êý
-		
+
 		_NtDll NtDll_Dll = _NtDll(L"ntdll.dll");
 		_NtDll::_NtDll(LPCWSTR dllName) :_LoadDll(dllName)
 		{
@@ -80,7 +80,7 @@ namespace Process
 				return hInst;
 			}
 			_RtlInitUnicodeString(&DllName, (PCWSTR)lpLibFileName);
-			if (!NT_SUCCESS(NtDll_Dll._LdrLoadDll(NULL, &DllCharacteristics, &DllName, (PVOID*)&hInst)))
+			if (!NT_SUCCESS(NtDll_Dll._LdrLoadDll(NULL, &DllCharacteristics, &DllName, reinterpret_cast<PVOID*>(&hInst))))
 			{
 				return NULL;
 			}
@@ -113,5 +113,5 @@ namespace Process
 		}
 #pragma endregion
 
-	}
-}
+	}  // namespace LazyLoad
+}  // namespace Process

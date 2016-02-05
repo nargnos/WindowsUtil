@@ -15,4 +15,4 @@ namespace PE
 		virtual ~InitStruct();
 	};
 
-}
+}  // namespace PE

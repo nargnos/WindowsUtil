@@ -10,9 +10,9 @@ namespace PE
 	public:
 		friend class DataDirectoryBase;
 		friend class OverloadDirectoryEntryToData;
-		explicit SecurityDirectory(PeDecoder& pe);
+		explicit SecurityDirectory(PeDecoder & pe);
 
 		~SecurityDirectory();
 	};
 
-}
+}  // namespace PE

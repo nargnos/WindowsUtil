@@ -45,5 +45,5 @@ namespace Process
 			_MessageBoxA = decltype(_MessageBoxA)(this, "MessageBoxA");
 		}
 
-	}
-}
+	}  // namespace LazyLoad
+}  // namespace Process

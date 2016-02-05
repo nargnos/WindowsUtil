@@ -2,7 +2,7 @@
 namespace PE
 {
 
-	PDWORD GetProcExportFuncTableAddress(PeDecoder& pe, LPCSTR lpProcName)
+	PDWORD GetProcExportFuncTableAddress(PeDecoder & pe, LPCSTR lpProcName)
 	{
 		assert(lpProcName != NULL);
 		if (!pe.IsPE())
@@ -37,7 +37,7 @@ namespace PE
 		}
 		return NULL;
 	}
-	FARPROC GetProcAddress(PeDecoder& pe, LPCSTR lpProcName)
+	FARPROC GetProcAddress(PeDecoder & pe, LPCSTR lpProcName)
 	{
 		auto result = GetProcExportFuncTableAddress(pe, lpProcName);
 		if (!result)
@@ -56,9 +56,9 @@ namespace PE
 		return GetProcAddress(pe, lpProcName);
 	}
 
-	FARPROC GetProcAddress(PeDecoder& pe, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
+	FARPROC GetProcAddress(PeDecoder & pe, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
 	{
-		assert(compareCallback != NULL && compareName!=NULL);
+		assert(compareCallback != NULL && compareName != NULL);
 		if (!pe.IsPE())
 		{
 			return NULL;
@@ -87,4 +87,4 @@ namespace PE
 		}
 		return GetProcAddress(pe, compareName, compareCallback);
 	}
-}
+}  // namespace PE

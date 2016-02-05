@@ -214,5 +214,5 @@ namespace Process
 		extern const OpcodeEx ThreeByteTable_0F3A[];
 		extern const BYTE EscMap[][8];
 		extern const OpcodeGrp GroupTable[][8];
-	}
-}
+	}  // namespace Hook
+}  // namespace Process

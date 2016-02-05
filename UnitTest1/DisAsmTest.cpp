@@ -29,7 +29,7 @@ namespace UnitTest1
 			auto ai = make_shared<AsmInstruction>(fac,true);
 			ai->Init(code);
 			OpcodeReader opReader;
-			opReader.Read(ai->Cast<Instruction>());
+			opReader.Read(ai);
 		}
 	private:
 

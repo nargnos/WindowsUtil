@@ -2,33 +2,38 @@
 #include "Common.h"
 
 // 表示一条指令，用来临时存储供状态机用的变量
-class Instruction :public _STD enable_shared_from_this<Instruction>
+class Instruction
 {
 protected:
 	bool isSuccess;
-	unsigned char* beginPtr;
-	unsigned char* currentPtr;
-	shared_ptr<IStateFactory>& factory;
+	const unsigned char* beginPtr;
+	const unsigned char* currentPtr;
+	shared_ptr<IStateFactory> factory;
+	void SetSuccess()
+	{
+		isSuccess = true;
+	}
 public:
 
-	explicit Instruction(shared_ptr<IStateFactory> factory)
-		:factory(factory)
+	explicit Instruction(const shared_ptr<IStateFactory>& factory)
 	{
+		assert(factory != nullptr);
+		this->factory = factory;
+		isSuccess = false;
 	}
-	virtual ~Instruction()
-	{
-	}
+	virtual ~Instruction() = default;
 	template<typename TCast>
-	shared_ptr<TCast> Cast()
+	TCast* Cast()
 	{
-		return dynamic_pointer_cast<TCast>(shared_from_this());
+		return dynamic_cast<TCast*>(this);
 	}
 	// ptr为读取起始位置
-	virtual void Init(void* ptr)
+	virtual void Init(const void* ptr)
 	{
 		assert(ptr != NULL);
-		currentPtr = beginPtr = reinterpret_cast<unsigned char*>(ptr);
+		currentPtr = beginPtr = reinterpret_cast<const unsigned char*>(ptr);
 		isSuccess = false;
+		assert(factory!=nullptr);
 		factory->Reset();
 	}
 	// 以当前读取位置重置存储环境
@@ -38,7 +43,7 @@ public:
 	}
 
 	// 成功返回指令长度
-	virtual int GetLength()
+	virtual int GetLength() const
 	{
 		if (IsSuccess())
 		{
@@ -48,16 +53,16 @@ public:
 	}
 
 	template<typename TStateFactory = IStateFactory>
-	shared_ptr<TStateFactory> GetFactory()
+	shared_ptr<TStateFactory> GetFactory() const
 	{
 		return dynamic_pointer_cast<TStateFactory>(factory);
 	}
 	template<>
-	shared_ptr<IStateFactory> GetFactory()
+	shared_ptr<IStateFactory> GetFactory() const
 	{
 		return factory;
 	}
-	virtual unsigned char* CurrentBytePtr()
+	virtual const unsigned char* CurrentBytePtr() const
 	{
 		return currentPtr;
 	}
@@ -66,7 +71,7 @@ public:
 		currentPtr++;
 	}
 	// 是否解析成功
-	virtual bool IsSuccess()
+	virtual bool IsSuccess() const
 	{
 		return isSuccess;
 	}

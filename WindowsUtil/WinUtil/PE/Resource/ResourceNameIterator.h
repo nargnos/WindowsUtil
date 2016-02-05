@@ -20,4 +20,4 @@ namespace PE
 		virtual bool Next() override;
 		virtual void Reset() override;
 	};
-}
+}  // namespace PE

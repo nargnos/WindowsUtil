@@ -45,10 +45,10 @@ DWORD PE::TypeOffsetIterator::CurrentRelocRva()
 	return ((*currentTypeOffset) & 0xFFF) + virtualAddress;
 }
 
-void PE::TypeOffsetIterator::ApplyCurrentReloc(PVOID oldBase, PVOID currentBase)// 当程序已经映射完毕后不要使用
+void PE::TypeOffsetIterator::ApplyCurrentReloc(PVOID oldBase, PVOID currentBase)  // 当程序已经映射完毕后不要使用
 {
 	// oldValAddr + baseDelta = 要应用的值
-	// 应用方式		
+	// 应用方式
 	switch (CurrentType())
 	{
 	case IMAGE_REL_BASED_HIGH:

@@ -1,11 +1,11 @@
 #include "ExitState.h"
 #include "StateFactory.h"
-const unique_ptr<IState>&  ExitState::Next(shared_ptr<Instruction>& inst)
+const State*  ExitState::Next(const shared_ptr<Instruction>& inst) const
 {
-	return unique_ptr<IState>();
+	return NULL;
 }
 
- bool ExitState::HasNext()
+ bool ExitState::HasNext() const
 {
 	return false;
 }

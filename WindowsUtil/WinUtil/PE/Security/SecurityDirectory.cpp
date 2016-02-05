@@ -2,7 +2,7 @@
 
 PVOID PE::SecurityDirectory::DirectoryEntryToData()
 {
-	if (peDecoder.IsMapped()) // 不会映射到内存，VirtualAddress即offset
+	if (peDecoder.IsMapped())  // 不会映射到内存，VirtualAddress即offset
 	{
 		return NULL;
 	}

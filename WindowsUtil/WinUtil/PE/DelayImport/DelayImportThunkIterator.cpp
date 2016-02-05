@@ -26,9 +26,10 @@ bool PE::DelayImportThunkIterator::Next()
 {
 	if (currentImportAddressTable && currentImportNameTable)
 	{
-		currentImportAddressTable = (HANDLE_PTR*)currentImportAddressTable + 1;
-		currentImportNameTable = (HANDLE_PTR*)currentImportNameTable + 1;
-		if (*(HANDLE_PTR*)currentImportAddressTable && *(HANDLE_PTR*)currentImportNameTable)
+		currentImportAddressTable = reinterpret_cast<HANDLE_PTR*>(currentImportAddressTable) + 1;
+		currentImportNameTable = reinterpret_cast<HANDLE_PTR*>(currentImportNameTable) + 1;
+		if (*reinterpret_cast<HANDLE_PTR*>(currentImportAddressTable) &&
+			*reinterpret_cast<HANDLE_PTR*>(currentImportNameTable))
 		{
 			return true;
 		}

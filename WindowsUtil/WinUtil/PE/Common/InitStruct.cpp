@@ -27,4 +27,4 @@ namespace PE
 	InitStruct::~InitStruct()
 	{
 	}
-}
+}  // namespace PE

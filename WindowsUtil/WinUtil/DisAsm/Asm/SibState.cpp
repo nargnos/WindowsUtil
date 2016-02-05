@@ -1,3 +1,9 @@
 #include "..\Common\Common.h"
 #include "StateFactory.h"
-const unique_ptr<IState>& SibState::Next(shared_ptr<Instruction>& inst) { return unique_ptr<IState>(); }
+// 解析SIB表
+// 会跳到Operand、End
+const State* SibState::Next(const shared_ptr<Instruction>& inst) const 
+{
+	// TODO: 依赖RM
+	return NULL; 
+}

@@ -2,7 +2,7 @@
 #include "../Common/Common.h"
 namespace PE
 {
-	// 导出表读取器 
+	// 导出表读取器
 	// 只对名字遍历, 因为结构关系, 没有名字的函数会被漏掉
 
 	class ExportDirectory;
@@ -21,5 +21,4 @@ namespace PE
 		void Reset();
 	};
 
-
-}
+}  // namespace PE

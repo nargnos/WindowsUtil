@@ -11,13 +11,11 @@ namespace Process
 		HINSTANCE WINAPI _LoadLibraryW(LPCWSTR lpLibFileName);
 
 		// 析构时不会unload dll
-		class _LoadDll 
+		class _LoadDll
 		{
-			_LoadDll(const _LoadDll&) = delete;
-			_LoadDll& operator = (const _LoadDll&) = delete;
 		public:
 			explicit _LoadDll(LPCWSTR dllName);
-			explicit _LoadDll(HMODULE dllModule); 
+			explicit _LoadDll(HMODULE dllModule);
 			explicit _LoadDll(_LoadDll& obj);
 			~_LoadDll();
 			bool Load();
@@ -35,17 +33,16 @@ namespace Process
 		class WinApiDynamicCall;
 		// 只适用于_stdcall的函数
 		template<typename Ret, typename... T>
-		class WinApiDynamicCall<Ret WINAPI (T...)>
+		class WinApiDynamicCall<Ret WINAPI(T...)>
 		{
 		private:
 			bool hasModule = false;
-			WinApiDynamicCall(const WinApiDynamicCall&) = delete;
-			WinApiDynamicCall& operator = (const WinApiDynamicCall&) = delete;
+
 		protected:
 			typedef Ret(WINAPI* Func)(T...);
 			Func ptr = NULL;
-			_LoadDll* dll=NULL;
-			LPCSTR func=NULL;
+			_LoadDll* dll = NULL;
+			LPCSTR func = NULL;
 			virtual Func GetAddress()
 			{
 				auto result = _GetProcAddress(dll->GetDllModule(), func);
@@ -58,7 +55,7 @@ namespace Process
 
 		public:
 			WinApiDynamicCall() {}
-			WinApiDynamicCall(_LoadDll* dllObject, LPCSTR funcName) :dll(dllObject), func(funcName) 
+			WinApiDynamicCall(_LoadDll* dllObject, LPCSTR funcName) :dll(dllObject), func(funcName)
 			{
 
 			}
@@ -114,5 +111,5 @@ namespace Process
 			}
 		};
 
-	}
-}
+	}  // namespace LazyLoad
+}  // namespace Process

@@ -1,6 +1,6 @@
 #include "StateFactory.h"
 
-const unique_ptr<IState>& StateFactory::GetBeginStateInstance()
+const State* StateFactory::GetBeginStateInstance()
 {
 	return GetState(State_Init);
 }

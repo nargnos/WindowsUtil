@@ -13,6 +13,6 @@ public:
 	~EndState()
 	{
 	}
-	virtual  const unique_ptr<IState>&  Next(shared_ptr<Instruction>& inst) override;
+	virtual  const State*  Next(const shared_ptr<Instruction>& inst) const override;
 };
 

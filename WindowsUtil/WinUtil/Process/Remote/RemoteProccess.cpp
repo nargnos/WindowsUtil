@@ -12,5 +12,5 @@ namespace Process
 		{
 		}
 		
-	}
-}
+	}  // namespace Remote
+}  // namespace Process

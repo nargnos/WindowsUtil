@@ -15,7 +15,7 @@ namespace OpcodeArrayBuilder.Opcode
     {
         public static void AddStrItem(this StringBuilder sb, string signStr, string str)
         {
-            sb.Append((string.IsNullOrEmpty(str) ? "NULL" : signStr + str) + ",");
+            sb.Append((string.IsNullOrEmpty(str) ? "NULL" : signStr + str) + ", ");
         }
     }
     public class Builder
@@ -41,7 +41,7 @@ namespace OpcodeArrayBuilder.Opcode
             }
             return result;
         }
-        
+
 
         public void GetTables()
         {
@@ -215,15 +215,17 @@ namespace OpcodeArrayBuilder.Opcode
             for (int i = 0; i < grp.Count; i++)
             {
                 var item = grp[i];
-                sb.Append("{");
-                sb.AddStrItem("S_", item.SS);
-                sb.Append(item.ParamID + ",");
-                sb.Append(item.ParamCount + ",");
-                sb.Append(item.GrpName);
-                sb.AppendLine($"}}, // {i}");
+                var tmpSb = new StringBuilder("{");
+               
+                tmpSb.AddStrItem("S_", item.SS);
+                tmpSb.Append(item.ParamID + ", ");
+                tmpSb.Append(item.ParamCount + ", ");
+                tmpSb.Append(item.GrpName);
+                tmpSb.Append("},");
+                sb.AppendLine($"{tmpSb.ToString(),paddingSizeNoIndex}// {i}");
             }
-            sb.AppendLine("};");        
-            
+            sb.AppendLine("};");
+
             return sb.ToString();
         }
 
@@ -235,11 +237,12 @@ namespace OpcodeArrayBuilder.Opcode
             for (int i = 0; i < pfx.Count; i++)
             {
                 var item = pfx[i];
-                sb.Append("{");
-                sb.AddStrItem("S_", item.SS);
-                sb.AddStrItem(string.Empty, item.PfxGrp);
-                sb.Append(item.NameID);
-                sb.AppendLine($"}}, // {i}");
+                var tmpSb = new StringBuilder("{");
+                tmpSb.AddStrItem("S_", item.SS);
+                tmpSb.AddStrItem(string.Empty, item.PfxGrp);
+                tmpSb.Append(item.NameID);
+                tmpSb.Append("},");
+                sb.AppendLine($"{tmpSb.ToString(),paddingSizeNoIndex}// {i}");
             }
             sb.AppendLine("};");
             return sb.ToString();
@@ -253,9 +256,11 @@ namespace OpcodeArrayBuilder.Opcode
             for (int i = 0; i < inst.Count; i++)
             {
                 var item = inst[i];
-                sb.Append("{");
-                AppendProp(sb, item);
-                sb.AppendLine($"}}, // {i}");
+                var tmpSb = new StringBuilder("{");
+
+                AppendProp(tmpSb, item);
+                tmpSb.Append("},");
+                sb.AppendLine($"{tmpSb.ToString(),paddingSizeNoIndex}// {i}");
             }
             sb.AppendLine("};");
             sb.AppendLine("const InstChangeData InstChange[]=" + Environment.NewLine + "{");
@@ -263,11 +268,13 @@ namespace OpcodeArrayBuilder.Opcode
             for (int i = 0; i < inst.Count; i++)
             {
                 var item = inst[i];
-                sb.Append("{");
-                AppendProp(sb, item);
+                var tmpSb = new StringBuilder("{");
+                AppendProp(tmpSb, item);
+                tmpSb.Append(", ");
                 var splitExt = item.SType.ToString().Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
-                sb.Append("," + string.Join("|", from val in splitExt select "Ext_" + val));
-                sb.AppendLine($"}}, // {i}");
+                tmpSb.Append(string.Join(" | ", from val in splitExt select "Ext_" + val));
+                tmpSb.Append("},");
+                sb.AppendLine($"{tmpSb.ToString(),paddingSizeNoIndex}// {i}");
             }
             sb.AppendLine("};");
 
@@ -278,12 +285,12 @@ namespace OpcodeArrayBuilder.Opcode
         private static void AppendProp(StringBuilder sb, Inst item)
         {
             var tmpPfx = item.Pfxcdt.Split('_');
-            var pfxStr=string.Join("|", from val in tmpPfx select $"C_{val}");
-            sb.Append((string.IsNullOrEmpty(item.Pfxcdt) ? "NULL" : pfxStr) + ",");
-            sb.AddStrItem("S_",item.SS);
-            sb.Append(item.ParamID + ",");
-            sb.Append(item.ParamCount + ",");
-            sb.Append(item.NameCount + ",");
+            var pfxStr = string.Join(" | ", from val in tmpPfx select $"C_{val}");
+            sb.Append((string.IsNullOrEmpty(item.Pfxcdt) ? "NULL" : pfxStr) + ", ");
+            sb.AddStrItem("S_", item.SS);
+            sb.Append(item.ParamID + ", ");
+            sb.Append(item.ParamCount + ", ");
+            sb.Append(item.NameCount + ", ");
             sb.Append(item.NameID);
         }
 
@@ -304,6 +311,7 @@ namespace OpcodeArrayBuilder.Opcode
             StringBuilder sb = new StringBuilder($"const Hex_Inst HexInsts[]={Environment.NewLine}{{{Environment.NewLine}");
             for (int i = 0; i < insts.Count; i++)
             {
+
                 var item = insts[i];
                 var tmpDic = instDic[item.Type];
                 switch (item.Type)
@@ -311,37 +319,37 @@ namespace OpcodeArrayBuilder.Opcode
                     case OpcodeType.None:
                         throw new Exception();
                     case OpcodeType.Table:
-                        sb.AppendLine($"{{OT_{item.Type.ToString()}_{item.TableName},0}}, // {i}");
+                        sb.AppendLine($"{$"{{OT_{item.Type.ToString()}_{item.TableName}, 0}},",paddingSize}// {i}");
                         break;
                     case OpcodeType.Esc:
-                        sb.AppendLine($"{{OT_{item.Type.ToString()},0}}, // {i}");
+                        sb.AppendLine($"{$"{{OT_{item.Type.ToString()}, 0}},",paddingSize}// {i}");
                         break;
                     default:
-                        sb.AppendLine($"{{OT_{item.Type.ToString()},{tmpDic.Count}}}, // {i}");
+                        sb.AppendLine($"{$"{{OT_{item.Type.ToString()}, {tmpDic.Count}}},",paddingSize}// {i}");
                         tmpDic.Add(item);
                         break;
                 }
-                
-                
+
+
             }
             sb.AppendLine("};");
             return sb.ToString();
         }
 
-        private static string GetHexInstCode(List<Tuple<byte, Tuple<int, byte>>> zipArray,string codeName)
+        private static string GetHexInstCode(List<Tuple<byte, Tuple<int, byte>>> zipArray, string codeName)
         {
             //OpcodeData
-            var str = (from val in zipArray select $"{{{val.Item2.Item1},{val.Item2.Item2},{val.Item1}}}").ToArray();
+            var str = (from val in zipArray select $"{{{val.Item2.Item1}, {val.Item2.Item2}, {val.Item1}}}").ToArray();
             StringBuilder sb = new StringBuilder($"const ZipOpcodeData {codeName}[]={Environment.NewLine}{{{Environment.NewLine}");
             ConcatOpStr(str, sb);
             sb.AppendLine("};");
             return sb.ToString();
         }
-        private static string GetHexInstCode(Tuple<int, byte>[][] hexInst,int index)
+        private static string GetHexInstCode(Tuple<int, byte>[][] hexInst, int index)
         {
             //OpcodeData
             var str = (from inst in hexInst[index]
-                       select inst == null ? "{0,0}" : $"{{{inst.Item1},{inst.Item2}}}").ToArray();
+                       select inst == null ? "{0, 0}" : $"{{{inst.Item1}, {inst.Item2}}}").ToArray();
             StringBuilder sb = new StringBuilder($"const OpcodeData HexTable{index + 1}[]={Environment.NewLine}{{{Environment.NewLine}");
             ConcatOpStr(str, sb);
             sb.AppendLine("};");
@@ -352,7 +360,7 @@ namespace OpcodeArrayBuilder.Opcode
         {
             for (int i = 0; i < str.Length; i += 8)
             {
-                sb.Append(string.Join(",", str, i, (str.Length- i)>=8? 8: str.Length-i));
+                sb.Append(string.Join(", ", str, i, (str.Length - i) >= 8 ? 8 : str.Length - i));
                 sb.AppendLine(",");
             }
         }
@@ -385,6 +393,8 @@ namespace OpcodeArrayBuilder.Opcode
                 {
                     names.Add(new NameIndex(item, index));
                     index += item.Count;
+
+
                 }
             }
 
@@ -418,7 +428,7 @@ namespace OpcodeArrayBuilder.Opcode
             int index = 0;
             foreach (var item in pairs)
             {
-                sb.AppendLine($"/*{index++}*/ {GetOperandDefStr(item)}");
+                sb.AppendLine($"/*{index++,indexPaddingSize}*/ {GetOperandDefStr(item)}");
             }
             sb.Append("};");
             return sb.ToString();
@@ -489,7 +499,7 @@ namespace OpcodeArrayBuilder.Opcode
 
         private static bool HasInstName(IOpcode opcodeItem)
         {
-            dynamic tmpItem=null;
+            dynamic tmpItem = null;
             if (opcodeItem is GroupOpcodeData)
             {
                 tmpItem = (GroupOpcodeData)opcodeItem;
@@ -504,6 +514,10 @@ namespace OpcodeArrayBuilder.Opcode
             }
             return (tmpItem.OpType == OpcodeType.Inst || tmpItem.OpType == OpcodeType.Inst_Change || tmpItem.OpType == OpcodeType.Prefix);
         }
+        private const int paddingSize = -36;
+        private const int paddingSizeNoIndex = -56;
+
+        private const int indexPaddingSize = 3;
 
         string GetNamesDefCode(List<NameIndex> names)
         {
@@ -515,29 +529,21 @@ namespace OpcodeArrayBuilder.Opcode
                 {
                     var name = nameArr.Name.First().ToLower();
 
-                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{name}\", \t// Len:{nameArr.Name.Count} {(nameArr.Name[1].Length == 1 ? "Type:Size" : string.Empty)}");
+                    nameCode.AppendLine($"/*{nameArr.Index,indexPaddingSize}*/ {$"\"{name}\",",paddingSize}// Count: {nameArr.Name.Count}");
 
-                    if (nameArr.Name[1].Length == 1)
-                    {
-                        // 根据大小可变
-                        for (int i = 1; i < nameArr.Name.Count; i++)
-                        {
-                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{name}{nameArr.Name[i].ToLower()}\",");
-                        }
-                    }
-                    else
+                    if (nameArr.Name[1].Length != 1)
                     {
                         // 普通多名指令
                         for (int i = 1; i < nameArr.Name.Count; i++)
                         {
-                            nameCode.AppendLine($"/*{nameArr.Index + i,3}*/ \"{ nameArr.Name[i].ToLower()}\",");
+                            nameCode.AppendLine($"/*{nameArr.Index + i,indexPaddingSize}*/ \"{ nameArr.Name[i].ToLower()}\",");
                         }
                     }
                 }
                 else
                 {
                     // 单名指令
-                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ \"{nameArr.Name.First().ToLower()}\", \t// Len:{nameArr.Name.Count}");
+                    nameCode.AppendLine($"/*{nameArr.Index,3}*/ {$"\"{nameArr.Name.First().ToLower()}\",",paddingSize}// Count: {nameArr.Name.Count}");
                 }
 
             }
@@ -584,27 +590,30 @@ namespace OpcodeArrayBuilder.Opcode
                 {
                     sb.Append($"[{count}]");
                 }
-                
-                
+
+
                 sb.AppendLine($" ={Environment.NewLine}{{ ");
                 foreach (var val in item)
                 {
                     if (count > 1)
                     {
-                        sb.Append($"/*{index++}*/ {{");
+                        sb.Append($"/*{index++,indexPaddingSize}*/ ");
+                        var tmpSb = new StringBuilder("{");  // 为了让生成的代码对齐所以要生成一个临时的字符串
+
                         foreach (var idx in val.PairIndexes)
                         {
-                            sb.Append($"{idx},");
+                            tmpSb.Append($"{idx}, ");
                         }
-                        
-                        sb.Length--;
-                        sb.AppendLine($"}}, // {string.Join(",", val.Params)}");
+
+                        tmpSb.Length--;
+                        tmpSb.Append("},");
+                        sb.AppendLine($"{tmpSb.ToString(),paddingSize}// {string.Join(", ", val.Params)}");
                     }
                     else
                     {
                         int indexOf = val.PairIndexes.First();
                         Debug.Assert(indexOf != -1);
-                        sb.AppendLine($"/*{index++}*/ {indexOf}, // {val.Params.First()}");
+                        sb.AppendLine($"/*{index++,indexPaddingSize}*/ {$"{indexOf},",paddingSize}// {val.Params.First()}");
                     }
                 }
                 sb.AppendLine("};");
@@ -628,34 +637,34 @@ namespace OpcodeArrayBuilder.Opcode
             // 段寄存器
             if (segs.Contains(opPairStr))
             {
-                return $"{{SEG_{opPairStr},NULL}}, // {opPairStr}"; ;
+                return $"{$"{{SEG_{opPairStr}, NULL}},",paddingSize}// {opPairStr}"; ;
             }
             if (opPairStr.Contains('/'))
             {
                 // 特殊的多个参数类型
-                return $"{{SPC_{opPairStr.Replace('/','_')},NULL}}, // {opPairStr}";
+                return $"{$"{{SPC_{opPairStr.Replace('/', '_')}, NULL}},",paddingSize}// {opPairStr}";
             }
             // 分开成枚举定义
             if (opPairStr.Length == 1)
             {
-                return $"{{H_{opPairStr},NULL}}, // {opPairStr}";
+                return $"{$"{{H_{opPairStr}, NULL}},",paddingSize}// {opPairStr}";
             }
             else
             {
                 if (char.IsUpper(opPairStr[0]) && char.IsLower(opPairStr[1]))
                 {
                     // U L 操作数组合
-                    return $"{{H_{opPairStr.First()},L_{opPairStr.Substring(1)}}}, // {opPairStr}";
+                    return $"{$"{{H_{opPairStr.First()}, L_{opPairStr.Substring(1)}}},",paddingSize}// {opPairStr}";
                 }
                 else if (char.IsLower(opPairStr[0]) && (char.IsUpper(opPairStr[1]) || char.IsDigit(opPairStr[1])))
                 {
                     // L U 寄存器（可根据大小变）
-                    return $"{{REG_{opPairStr.ToUpper()},CHANGE_REG}}, // {opPairStr}";
+                    return $"{$"{{REG_{opPairStr.ToUpper()}, CHANGE_REG}},",paddingSize}// {opPairStr}";
                 }
                 else
                 {
                     // 段寄存器排除了，这里都是寄存器
-                    return $"{{REG_{opPairStr},NULL}}, // {opPairStr}";
+                    return $"{$"{{REG_{opPairStr}, NULL}},",paddingSize}// {opPairStr}";
                 }
 
             }

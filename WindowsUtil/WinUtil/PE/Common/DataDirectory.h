@@ -9,7 +9,7 @@ namespace PE
 		PIMAGE_DATA_DIRECTORY dataDirectory;
 		PDWORD size;
 	public:
-		DataDirectoryBase(PeDecoder& pe);
+		explicit DataDirectoryBase(PeDecoder& pe);
 		PVOID DirectoryEntryToData();
 	};
 	template<typename DataDirectoryChild, typename DataType>
@@ -24,7 +24,7 @@ namespace PE
 			{
 				size = &dataDirectory->Size;
 				DataDirectoryChild* child = static_cast<DataDirectoryChild*>(this);
-				data = reinterpret_cast<DataType>(child->DirectoryEntryToData()); // 执行子类的
+				data = reinterpret_cast<DataType>(child->DirectoryEntryToData());  // 执行子类的
 			}
 			else
 			{
@@ -34,11 +34,11 @@ namespace PE
 		}
 	public:
 		// 需要先判断结构存在才能进行下一步操作
-		bool IsExist()
+		bool IsExist() const
 		{
 			return data != NULL;
 		}
-		DataDirectory_DataType(PeDecoder& pe) :DataDirectoryBase(pe)
+		explicit DataDirectory_DataType(PeDecoder& pe) :DataDirectoryBase(pe)
 		{
 		}
 	};
@@ -50,7 +50,7 @@ namespace PE
 	public:
 		typedef DataDirectory<DataDirectoryChild, DataType, Index> DataDirectoryBase;
 
-		DataDirectory(PeDecoder& pe) :DataDirectory_DataType<DataDirectoryChild, DataType>(pe)
+		explicit DataDirectory(PeDecoder& pe) :DataDirectory_DataType<DataDirectoryChild, DataType>(pe)
 		{
 			dataDirectory = peDecoder.GetDataDirectory(Index);
 			Init();
@@ -58,4 +58,4 @@ namespace PE
 
 
 	};
-}
+}  // namespace PE

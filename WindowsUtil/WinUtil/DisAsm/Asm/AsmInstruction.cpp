@@ -17,28 +17,6 @@ void AsmInstruction::ClearTmpData()
 	tmpInstData = NULL;
 }
 
-/* virtual shared_ptr<StateFactory> GetCastFactory()
-{
-return dynamic_pointer_cast<StateFactory>(factory);
-}*/
-
-
-// 初始化,设置起始读取位置
-
-
-// 实例化时设置解析指令字长，默认32位
-
-
-// 判断是否选择该指令关系 ,需要判断当前读取到的前缀组合（只有66、F2、F3）
-// 成功后会把相应数据存储在自身临时变量里，返回失败表示指令不存在，不要使用
-// 选择失败返回false，同时GetTmpInstType()为NULL，成功返回true，类型设置为选择到的类型
-
-
-// 以当前游标位置作为起始读取指令（表123指令）并步进, 参数表示表类型，只有1(用None表示)、0F、0F38、0F3A表
-
-
-// TODO:取得当前前缀判断条件（非已有前缀）
-
 std::shared_ptr<AsmOpcodeWapper>& AsmInstruction::GetOpcodeDataWapper()
 {
 	return wapper;
@@ -145,7 +123,7 @@ bool AsmInstruction::SelectInst(const Hex_Inst & hexInst)
 
 bool AsmInstruction::VerifyCondition(Superscript ss, PrefixCondition pfx)
 {
-	if (pfx != NULL && (pfx & GetCurrentPfxcdt() != pfx))
+	if (pfx != NULL && ((pfx & GetCurrentPfxcdt()) != pfx))
 	{
 		return false;
 	}
@@ -160,16 +138,16 @@ bool AsmInstruction::VerifyCondition(Superscript ss, PrefixCondition pfx)
 	}
 }
 
-AsmInstruction::AsmInstruction(shared_ptr<StateFactory> factory, bool isX32)
+AsmInstruction::AsmInstruction(const shared_ptr<StateFactory>& factory, bool isX32)
 	:Instruction(dynamic_pointer_cast<IStateFactory>(factory)), isX32(isX32)
 {
 	wapper = make_shared<AsmOpcodeWapper>();
 	ClearTmpData();
 }
 
-void AsmInstruction::Init(void * ptr)
+void AsmInstruction::Init(const void * ptr)
 {
-	Instruction::Init(ptr);
+	this->Instruction::Init(ptr);
 	ClearTmpData();
 }
 

@@ -1,6 +1,6 @@
 #include "PeStruct.h"
 
-PE::PeStruct::PeStruct(PeDecoder & pe) :peDecoder(pe)
+PE::PeStruct::PeStruct(PeDecoder & pe) :peDecoder(const_cast<PeDecoder&>(pe))
 {
 }
 

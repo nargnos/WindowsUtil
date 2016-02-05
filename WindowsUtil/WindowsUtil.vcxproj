@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="WinUtil\DisAsm\Asm\OperandState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Asm.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\AsmCommon.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\AsmInstruction.h" />
@@ -156,14 +157,14 @@
     <ClInclude Include="WinUtil\DisAsm\Asm\InitState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\ParameterState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\InstructionState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\PrefixState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\RMState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\SibState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\StateFactory.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\Common.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\Instruction.h" />
-    <ClInclude Include="WinUtil\DisAsm\Common\IState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\State.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\IStateFactory.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\OpcodeReader.h" />
     <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h" />
@@ -233,7 +234,8 @@
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeWapper.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\ParameterState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\OperandState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\PrefixState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\RMState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\SibState.cpp" />

@@ -25,4 +25,4 @@ namespace PE
 		virtual void Reset() override;
 	};
 
-}
+}  // namespace PE

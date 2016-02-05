@@ -18,7 +18,7 @@ namespace PE
 		PWORD nameOrdinalTable;
 	public:
 		friend GetIteratorBase::Iterator;
-		explicit ExportDirectory(PeDecoder& pe);
+		explicit ExportDirectory(PeDecoder & pe);
 		~ExportDirectory();
 
 		virtual PIMAGE_EXPORT_DIRECTORY GetValue() override;
@@ -28,4 +28,4 @@ namespace PE
 		const PDWORD NumberOfFunctions();
 		const PDWORD NumberOfNames();
 	};
-}
+}  // namespace PE

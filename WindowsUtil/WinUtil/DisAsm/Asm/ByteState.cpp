@@ -1,6 +1,9 @@
 #include "ByteState.h"
 #include "StateFactory.h"
-const unique_ptr<IState>&  ByteState::Next(shared_ptr<Instruction>& inst)
+// 读Hex的状态，根据HexInst类型跳转，可能会多次进入
+// Grp和Esc指令记录格式不同，所以由各自的状态分别读取
+// 会跳到的状态：Instruction、Group、Byte、Escape、Prefix、End
+const State*  ByteState::Next(const shared_ptr<Instruction>& inst) const
 {
 	auto asmInst = inst->Cast<AsmInstruction>();
 	// 返回下个状态

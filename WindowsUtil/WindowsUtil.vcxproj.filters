@@ -186,9 +186,6 @@
     <ClInclude Include="WinUtil\DisAsm\Common\IStateFactory.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Common\IState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\AsmCommon.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -205,9 +202,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\SibState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\ParameterState.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\PrefixState.h">
@@ -241,6 +235,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Common\Instruction.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\InstructionState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\OperandState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\State.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -401,9 +404,6 @@
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\ParameterState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\PrefixState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -438,6 +438,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeWapper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\OperandState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

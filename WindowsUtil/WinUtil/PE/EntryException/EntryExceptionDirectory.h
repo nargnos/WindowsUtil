@@ -7,8 +7,8 @@ namespace PE
 		public DataDirectory<EntryExceptionDirectory, PIMAGE_RUNTIME_FUNCTION_ENTRY, IMAGE_DIRECTORY_ENTRY_EXCEPTION>
 	{
 	public:
-		explicit EntryExceptionDirectory(PeDecoder& pe);
+		explicit EntryExceptionDirectory(PeDecoder & pe);
 		~EntryExceptionDirectory();
 	};
 
-}
+}  // namespace PE

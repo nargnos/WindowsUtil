@@ -10,8 +10,8 @@ namespace Process
 			explicit RemoteProccess(HANDLE process);
 			~RemoteProccess();
 		private:
-			
+
 		};
 
-	}
-}
+	}  // namespace Remote
+}  // namespace Process

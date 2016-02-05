@@ -43,17 +43,14 @@ enum RegisterLength
 // 跟段标识共用一个表节约一下空间
 extern const char* Registers[16][6];
 
-//const char* GetRegisterName(unsigned char hex, RegisterLength type);
-
-#define _REG(hex,type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
-//#define _OP(info) (unsigned char)((info)&0x7f)
+#define _REG(hex, type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
 
 // 寄存器定义，对应值可以在字符串表里找到
 
 enum OperandType :unsigned char
 {
 	// NULL = 0,
-	CHANGE_REG = 1, // 表示寄存器参数会随着长度限定改变
+	CHANGE_REG = 1,  // 表示寄存器参数会随着长度限定改变
 	// OperandTypes
 	L_a,
 	L_b,
@@ -75,8 +72,8 @@ enum OperandType :unsigned char
 	L_x,
 	L_y,
 	L_z,
-	//AddressingMethods
-	H_1,// 不知道是什么
+	// AddressingMethods
+	H_1,  // 不知道是什么
 	H_A,
 	H_B,
 	H_C,
@@ -241,14 +238,11 @@ enum OperandType :unsigned char
 	REG_XMM15 = _REG(15, Len_128_XMM),
 };
 
-//const char* GetSegName(OperandType seg);
-
-
 enum OpcodeType :unsigned char
 {
 	OT_None,
-	OT_Inst, // 普通指令
-	OT_Inst_Change, // 根据长度修改指令名的指令
+	OT_Inst,  //  普通指令
+	OT_Inst_Change,  //  根据长度修改指令名的指令
 	OT_Prefix,
 
 	OT_Grp,
@@ -260,7 +254,7 @@ enum OpcodeType :unsigned char
 
 enum PrefixGroup :unsigned char
 {
-	PfxGrp_1=1,
+	PfxGrp_1 = 1,
 	PfxGrp_2,
 	PfxGrp_3,
 	PfxGrp_4,
@@ -301,32 +295,32 @@ enum Prefix :unsigned char
 };
 enum OpcodeGroup :unsigned char
 {
-	Grp_1 = 1,//_80x83
-	Grp_1A,//_8F
-	Grp_2,//_C0C1_D0D1_D2D3,
-	Grp_3,//_F6F7,
-	Grp_4,//_FE,
-	Grp_5,//_FF,
-	Grp_6,//_0F00,
-	Grp_7,//_0F01,
-	Grp_8,//_0FBA,
-	Grp_9,//_0FC7,
-	Grp_10,//_0FB9,
+	Grp_1 = 1,  // _80x83
+	Grp_1A,  // _8F
+	Grp_2,  // _C0C1_D0D1_D2D3,
+	Grp_3,  // _F6F7,
+	Grp_4,  // _FE,
+	Grp_5,  // _FF,
+	Grp_6,  // _0F00,
+	Grp_7,  // _0F01,
+	Grp_8,  // _0FBA,
+	Grp_9,  // _0FC7,
+	Grp_10,  // _0FB9,
 	Grp_11_C6,
 	Grp_11_C7,
-	Grp_12,//_0F71,
-	Grp_13,//_0F72,
-	Grp_14,//_0F73,
-	Grp_15,//_0FAE,
-	Grp_16,//_0F18,
-	Grp_17,//_VEX_0F38_F3
+	Grp_12,  // _0F71,
+	Grp_13,  // _0F72,
+	Grp_14,  // _0F73,
+	Grp_15,  // _0FAE,
+	Grp_16,  // _0F18,
+	Grp_17,  // _VEX_0F38_F3
 };
 
 
 // 指令存在条件
 enum PrefixCondition :unsigned char
 {
-	//C_None,
+	// C_None,
 	C_66 = 1,
 	C_F2 = 1 << 1,
 	C_F3 = 1 << 2,
@@ -354,37 +348,37 @@ enum Mod76Condition :unsigned char
 
 enum Superscript :unsigned char
 {
-	//S_None,
-	//S_1A , // ModRM3-5为扩展操作码,组特有上标
-	S_1B = 1, // 使用0F0BH(UD2指令)或者0FB9H故意产生一个指令异常(#UD)
-	S_1C, // 使用ModRM区分不同指令
+	// S_None,
+	// S_1A ,  // ModRM3-5为扩展操作码,组特有上标
+	S_1B = 1,  // 使用0F0BH(UD2指令)或者0FB9H故意产生一个指令异常(#UD)
+	S_1C,  // 使用ModRM区分不同指令
 
- // 条件
-	S_i64, // 在64位非法或未编码，40-4f在64为中做REX前缀，使用FE/FF/Grp4 5代替inc/dec
-	S_o64, // 仅64位可用
+	// 条件
+	S_i64,  // 在64位非法或未编码，40-4f在64为中做REX前缀，使用FE/FF/Grp4 5代替inc/dec
+	S_o64,  // 仅64位可用
 
-	S_d64, // 在64位中操作数默认64位，不能编码32位数据
-	S_f64, // 64位时操作数强制64位，操作数尺寸前缀无效
+	S_d64,  // 在64位中操作数默认64位，不能编码32位数据
+	S_f64,  // 64位时操作数强制64位，操作数尺寸前缀无效
 
-	S_v, // vex
+	S_v,  // vex
 	S_v1,
-	//S_1A_i64,
-	//S_1A_1C
+	// S_1A_i64,
+	// S_1A_1C
 };
 
 // 名字后缀
 enum NameExt :unsigned char
 {
-	//Ext_None = 0,
+	// Ext_None = 0,
 	Ext_B = 1,
 	Ext_W = Ext_B << 1,
 	Ext_D = Ext_W << 1,
 	Ext_Q = Ext_D << 1
 };
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 // 1b\2b 表中元素结构,Count为0表示指令不存在
-typedef struct OpcodeData
+struct OpcodeData
 {
 	unsigned short Hex_InstIndex : 12;
 	unsigned short Count : 4;
@@ -394,7 +388,7 @@ struct ZipOpcodeData
 {
 	unsigned short Hex_InstIndex : 12;
 	unsigned short Count : 4;
-	unsigned char Index; // OpcodeData下标
+	unsigned char Index;  // OpcodeData下标
 };
 
 // hex和inst的关系表元素
@@ -405,39 +399,47 @@ struct Hex_Inst
 
 };
 
+// 注意这里InstData和InstChangeData的参数顺序和类型大小必须相同，
+// 在不需要使用指令名的场合可以把它们当作同一类型
 struct InstData
 {
-	unsigned char Pfxcdt : 4; // 前缀条件PrefixCondition
-	unsigned char Ss : 4;//Superscript
+	unsigned char Pfxcdt : 4;  // 前缀条件PrefixCondition
+	unsigned char Ss : 4;  // Superscript
 	unsigned char ParamID;
 	unsigned short ParamCount : 3;
 	unsigned short NameCount : 3;
 	unsigned short NameID : 10;
-	//unsigned char Ext:4; // Inst_Change 类型特有NameExt
+	// unsigned char Ext:4; // Inst_Change 类型特有NameExt
 };
 struct InstChangeData
 {
-	unsigned char Pfxcdt : 4; // 前缀条件PrefixCondition
-	unsigned char Ss : 4;//Superscript
+	unsigned char Pfxcdt : 4;  // 前缀条件PrefixCondition
+	unsigned char Ss : 4;  // Superscript
 	unsigned char ParamID;
 	unsigned short ParamCount : 3;
 	unsigned short NameCount : 3;
 	unsigned short NameID : 10;
-	unsigned char Ext : 4; // Inst_Change 类型特有NameExt
+	unsigned char Ext : 4;   // Inst_Change 类型特有NameExt
 };
 struct PrefixInstData
 {
-	unsigned short Ss : 4;//Superscript
-	unsigned short PfxGrp:3;
-	unsigned short NameID : 9; // prefix 名字靠前所以9位足够
+	unsigned short Ss : 4;  // Superscript
+	unsigned short PfxGrp : 3;
+	unsigned short NameID : 9;  // prefix 名字靠前所以9位足够
 };
 
 struct GrpInstData
 {
-	unsigned char Ss : 4;//Superscript 
-	unsigned char:4;
+	unsigned char Ss : 4;  // Superscript
+	unsigned char : 4;
 	unsigned char ParamID;
 	unsigned char ParamCount : 3;
 	unsigned char GrpID : 5;
 };
-#pragma pop
+typedef struct
+{
+	BYTE Rm : 3;
+	BYTE Reg : 3;
+	BYTE Mod : 2;
+}OpcodeModRM, *POpcodeModRM;
+#pragma pack(pop)

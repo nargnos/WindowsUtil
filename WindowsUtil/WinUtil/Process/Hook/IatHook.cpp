@@ -24,7 +24,7 @@ namespace Process
 				{
 					*oldFuncAddress = (PVOID)*(PDWORD)thunkAddress;
 				}
-				//*(PDWORD)thunkAddress = (DWORD)hookFunc;
+				// *(PDWORD)thunkAddress = (DWORD)hookFunc;
 			}
 			else
 			{
@@ -32,7 +32,7 @@ namespace Process
 				{
 					*oldFuncAddress = (PVOID)*(PDWORDLONG)thunkAddress;
 				}
-				//*(PDWORDLONG)thunkAddress = (DWORDLONG)hookFunc;
+				// *(PDWORDLONG)thunkAddress = (DWORDLONG)hookFunc;
 			}
 			DWORD size = sizeof(PVOID);
 			// 原本需要设置区块可读写性, 这里使用替代的写入函数, 里面包含了这个设置
@@ -46,5 +46,5 @@ namespace Process
 		{
 			return HookIat(NULL, procName, hookFunc, oldFuncAddress);
 		}
-	}
-}
+	}  // namespace Hook
+}  // namespace Process

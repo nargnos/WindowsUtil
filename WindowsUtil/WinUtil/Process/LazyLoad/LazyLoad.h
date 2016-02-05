@@ -7,7 +7,7 @@
 #include "..\..\PE\Export\Export.h"
 #include "WinApiDynamicCallDef.h"
 #include "..\OverwriteWinApi\OverwriteWinApi.h"
-//using namespace Process::EnvironmentBlock;
+// using namespace Process::EnvironmentBlock;
 namespace Process
 {
 	namespace LazyLoad
@@ -17,7 +17,7 @@ namespace Process
 		using EnvironmentBlock::MEMORY_INFORMATION_CLASS;
 		// 取dll用的是LdrLoadDll,取函数用的是本地自实现的版本
 #pragma region 基本核心函数
-	
+
 		VOID NTAPI _RtlInitUnicodeString(IN OUT PUNICODE_STRING DestinationString, IN PCWSTR SourceString);
 
 		HINSTANCE WINAPI _LoadLibraryExW(LPCWSTR lpLibFileName, HANDLE ignore, DWORD dwFlags);
@@ -25,27 +25,31 @@ namespace Process
 		FARPROC _GetProcAddress(HMODULE module, LPCSTR procName);
 		FARPROC _GetProcAddressEx(LPCWSTR dllName, LPCSTR procName);
 
-		class _NtDll:public _LoadDll
+		class _NtDll :public _LoadDll
 		{
 		public:
 			explicit _NtDll(LPCWSTR dllName);
-			
+
 			WinApiDynamicCall<NTSTATUS WINAPI(_In_opt_ PWSTR SearchPath,
 				_In_opt_ PULONG LoadFlags,
 				_In_ PUNICODE_STRING Name,
-				_Out_opt_ PVOID *BaseAddress)> _LdrLoadDll;
-			
+				_Out_opt_ PVOID *BaseAddress
+				)>
+				_LdrLoadDll;
+
 			WinApiDynamicCall<NTSTATUS WINAPI(
-					OUT PHANDLE ProcessHandle,
-					IN ACCESS_MASK DesiredAccess,
-					IN POBJECT_ATTRIBUTES ObjectAttributes,
-					IN PCLIENT_ID ClientId
-				)> _NtOpenProcess;
+				OUT PHANDLE ProcessHandle,
+				IN ACCESS_MASK DesiredAccess,
+				IN POBJECT_ATTRIBUTES ObjectAttributes,
+				IN PCLIENT_ID ClientId
+				)>
+				_NtOpenProcess;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ThreadHandle,
 				_In_ PCONTEXT Context
-				)> _NtSetContextThread;
+				)>
+				_NtSetContextThread;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -53,7 +57,8 @@ namespace Process
 				_In_ SIZE_T *NumberOfBytesToProtect,
 				_In_ ULONG NewAccessProtection,
 				_Out_ PULONG OldAccessProtection
-				)> _NtProtectVirtualMemory;
+				)>
+				_NtProtectVirtualMemory;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -61,7 +66,8 @@ namespace Process
 				_Out_ PVOID Buffer,
 				_In_ SIZE_T NumberOfBytesToRead,
 				_Out_opt_ PSIZE_T NumberOfBytesRead
-				)> _NtReadVirtualMemory;
+				)>
+				_NtReadVirtualMemory;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -69,13 +75,15 @@ namespace Process
 				_In_ PVOID Buffer,
 				_In_ SIZE_T NumberOfBytesToWrite,
 				_Out_opt_ PSIZE_T NumberOfBytesWritten
-				)> _NtWriteVirtualMemory;
+				)>
+				_NtWriteVirtualMemory;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
 				_In_ PVOID BaseAddress,
 				_In_ ULONG NumberOfBytesToFlush
-				)> _NtFlushInstructionCache;
+				)>
+				_NtFlushInstructionCache;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -84,7 +92,8 @@ namespace Process
 				_Inout_ PSIZE_T RegionSize,
 				_In_ ULONG AllocationType,
 				_In_ ULONG Protect
-				)> _NtAllocateVirtualMemory;
+				)>
+				_NtAllocateVirtualMemory;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
@@ -93,14 +102,16 @@ namespace Process
 				_Out_ PVOID VirtualMemoryInformation,
 				_In_ SIZE_T Length,
 				_Out_opt_ PSIZE_T ResultLength
-				)> _NtQueryVirtualMemory;
+				)>
+				_NtQueryVirtualMemory;
 
 			WinApiDynamicCall<NTSTATUS WINAPI(
 				_In_ HANDLE ProcessHandle,
 				_Inout_ __drv_freesMem(Mem) PVOID *BaseAddress,
 				_Inout_ PSIZE_T RegionSize,
 				_In_ ULONG FreeType
-				)> _NtFreeVirtualMemory;
+				)>
+				_NtFreeVirtualMemory;
 			~_NtDll();
 		protected:
 			virtual void FuncRegister();
@@ -110,5 +121,5 @@ namespace Process
 		};
 
 		extern  _NtDll NtDll_Dll;
-	}
-}
+	}  // namespace LazyLoad
+}  // namespace Process

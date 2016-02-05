@@ -10,4 +10,4 @@ namespace PE
 		~ArchitectureDirectory();
 	};
 
-}
+}  // namespace PE

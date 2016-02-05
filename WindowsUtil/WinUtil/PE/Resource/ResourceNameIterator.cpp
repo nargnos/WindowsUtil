@@ -19,7 +19,6 @@ bool PE::ResourceNameIterator::Next()
 	{
 		if (++currentResourceNameDirectoryEntry < lastResourceNameDirectoryEntry)
 		{
-			
 			return true;
 		}
 	}
@@ -28,7 +27,6 @@ bool PE::ResourceNameIterator::Next()
 		if (firstResourceNameDirectoryEntry)
 		{
 			currentResourceNameDirectoryEntry = firstResourceNameDirectoryEntry;
-		
 			return true;
 		}
 	}

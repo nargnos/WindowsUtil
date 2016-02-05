@@ -10,4 +10,4 @@ namespace PE
 		~ResourceDataIterator();
 	};
 
-}
+}  // namespace PE

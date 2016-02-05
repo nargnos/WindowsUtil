@@ -1,3 +1,7 @@
 #include "..\Common\Common.h"
 #include "StateFactory.h"
-const unique_ptr<IState>&  GroupState::Next(shared_ptr<Instruction>& inst) { return unique_ptr<IState>(); }
+const State*  GroupState::Next(const shared_ptr<Instruction>& inst) const
+{
+	// TODO: 表没录入, 可能需要子状态
+	return NULL; 
+}

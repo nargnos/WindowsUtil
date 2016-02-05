@@ -40,7 +40,7 @@ namespace PE
 		bool isBinded;
 		bool isAttached;
 		void BindPtr();
-		
+
 	public:
 		// 用来延迟创建子结构
 		template<typename T>
@@ -48,7 +48,7 @@ namespace PE
 		{
 			_STD shared_ptr<T> data;
 			PeDecoder* peDecoder;
-			void Bind(PeDecoder* const peDecoder)
+			void Bind(PeDecoder* PeDecoder)
 			{
 				this->peDecoder = peDecoder;
 			}
@@ -61,8 +61,6 @@ namespace PE
 				}*/
 			}
 			PeStructInstance() = default;
-			PeStructInstance(PeStructInstance&) = delete;
-			void operator =(PeStructInstance&) = delete;
 		public:
 			friend PeDecoder;
 
@@ -87,7 +85,7 @@ namespace PE
 		PeDecoder();
 		~PeDecoder() = default;
 		void Clear();
-		PeDecoder(PeDecoder& pe) = delete;
+		PeDecoder(const PeDecoder & pe) = delete;
 		bool Attach(PVOID base, bool isMapped);
 		void Dettach();
 		PVOID GetBase();
@@ -110,10 +108,10 @@ namespace PE
 		PeStructInstance<DelayImportDirectory> GetDelayImport;
 		PeStructInstance<ComDescriptorDirectory> GetComDescriptor;
 
-		bool IsMapped();
-		bool HasNtHeader32();
-		bool IsPE();
-		bool IsAttached();
+		bool IsMapped() const;
+		bool HasNtHeader32() const;
+		bool IsPE() const;
+		bool IsAttached() const;
 		PIMAGE_SECTION_HEADER RvaToSection(DWORD rva);
 		PIMAGE_SECTION_HEADER OffsetToSection(DWORD fileOffset);
 		DWORD RvaToOffset(DWORD rva);
@@ -168,4 +166,4 @@ namespace PE
 
 	};
 
-}
+}  // namespace PE

@@ -11,4 +11,4 @@ namespace PE
 
 		~LanguageIterator();
 	};
-}
+}  // namespace PE

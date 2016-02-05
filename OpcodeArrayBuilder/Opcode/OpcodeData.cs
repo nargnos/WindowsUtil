@@ -111,7 +111,7 @@ namespace OpcodeArrayBuilder.Opcode
                     for (int i = 0; i < sizeStr.Length; i++)
                     {
                         SType |= (Sizes)Enum.Parse(typeof(Sizes), sizeStr[i].ToUpper());
-                        Name.Add(sizeStr[i]);
+                       // Name.Add(sizeStr[i]);
                     }
                     OpType = OpcodeType.Inst_Change;
                 }

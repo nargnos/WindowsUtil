@@ -6,7 +6,7 @@ namespace PE
 	class ImportDescriptorIterator;
 	class ImportThunkIterator
 	{
-		
+
 		bool is32;
 		PVOID currentThunk;
 		PVOID currentOriginalThunk;
@@ -36,4 +36,4 @@ namespace PE
 
 	};
 
-}
+}  // namespace PE

@@ -1,11 +1,11 @@
 #include "GetInstructionLen.h"
-
+#include <queue>
 
 namespace Process
 {
 	namespace Hook
 	{
-		
+
 		GetInstructionLen::GetInstructionLen(bool is32)
 		{
 			this->is32 = is32;
@@ -24,10 +24,10 @@ namespace Process
 			{
 				prefix.swap(std::queue<OpcodePrefixGroup>());
 			}
-			has66 = has67 = hasF2= hasF3= 
-			isGroupExist[0] = isGroupExist[1] = isGroupExist[2] = isGroupExist[3] = false;
+			has66 = has67 = hasF2 = hasF3 =
+				isGroupExist[0] = isGroupExist[1] = isGroupExist[2] = isGroupExist[3] = false;
 			count = 0;
-			rex.Val= 0;
+			rex.Val = 0;
 			isModBit00 = true;
 		}
 		int GetInstructionLen::GetLen(PBYTE hex)
@@ -37,7 +37,7 @@ namespace Process
 			do
 			{
 				count++;
-				
+
 				switch (stat)
 				{
 				case Stat_ReadHex:
@@ -84,7 +84,7 @@ namespace Process
 			return IsPrefixVerify((OpcodePrefixCondition)cmd.PrefixCondition);
 		}
 
-		bool GetInstructionLen::IsPrefixVerify(OpcodePrefixCondition&& opc)
+		bool GetInstructionLen::IsPrefixVerify(OpcodePrefixCondition opc)
 		{
 			BYTE verifyOpc = OPC_None;
 			if (has66)
@@ -100,11 +100,11 @@ namespace Process
 				verifyOpc |= OPC_F3;
 			}
 			// 验证,只要有一个通过都算
-			
+
 			// 不通过则指令未定义
-			return (verifyOpc&opc)>0;
+			return (verifyOpc & opc) > 0;
 		}
-		
+
 		// 这个函数的64位判断长度的地方存在疑惑, 所以先保留跟32位一样的代码, 等弄明白再做修改
 		void GetInstructionLen::AddImmCount(OpcodeLenType len)
 		{
@@ -115,14 +115,14 @@ namespace Process
 			case Process::Hook::OLT_B:
 				size = sizeof(BYTE);
 				break;
-			case Process::Hook::OLT_W_D: // 16位时W，32、64时D
-				
+			case Process::Hook::OLT_W_D:  // 16位时W，32、64时D
+
 				size = has66 ? sizeof(WORD) : sizeof(DWORD);
 				break;
 			case Process::Hook::OLT_W:
 				size = sizeof(WORD);
 				break;
-			case Process::Hook::OLT_W_D_D64:// 64默认64不能编32
+			case Process::Hook::OLT_W_D_D64:  // 64默认64不能编32
 				if (is32)
 				{
 					size = has66 ? sizeof(WORD) : sizeof(DWORD);
@@ -137,35 +137,35 @@ namespace Process
 					{
 						size = has66 ? sizeof(WORD) : sizeof(DWORD);
 					}
-					
+
 				}
 				break;
-			case Process::Hook::OLT_B_D64: // fixed
+			case Process::Hook::OLT_B_D64:  // fixed
 				if (is32)
 				{
-					size = has66 ?   sizeof(DWORD):sizeof(BYTE);
+					size = has66 ? sizeof(DWORD) : sizeof(BYTE);
 				}
 				else
 				{
-					size = has66 ?  sizeof(DWORD): sizeof(BYTE);
+					size = has66 ? sizeof(DWORD) : sizeof(BYTE);
 				}
 				break;
-			case Process::Hook::OLT_W_D_Q://fixed
+			case Process::Hook::OLT_W_D_Q:  // fixed
 				if (is32)
 				{
-					size = has66 ?  sizeof(WORD): sizeof(DWORD);
+					size = has66 ? sizeof(WORD) : sizeof(DWORD);
 				}
 				else
 				{
-					if (rex.W) // 有REX.W时无视66
+					if (rex.W)  // 有REX.W时无视66
 					{
 						size = sizeof(DWORD64);
 					}
 					else
 					{
-						size = has66 ? sizeof(WORD) : sizeof(DWORD);// REX: 64?,这里在有rex前缀时会变化
+						size = has66 ? sizeof(WORD) : sizeof(DWORD);  // REX: 64?,这里在有rex前缀时会变化
 					}
-					
+
 				}
 				break;
 			case  OLT_B_O:
@@ -179,14 +179,14 @@ namespace Process
 					size = sizeof(DWORD64);
 				}
 				break;
-			case Process::Hook::OLT_W_And_B:// 3字节
+			case Process::Hook::OLT_W_And_B:  // 3字节
 				size = sizeof(WORD) + sizeof(BYTE);
 				break;
 			case Process::Hook::OLT_B_F64:
-				size = is32 ? sizeof(BYTE) : sizeof(BYTE);// 64?
+				size = is32 ? sizeof(BYTE) : sizeof(BYTE);  // 64?
 				break;
 			case Process::Hook::OLT_W_F64:
-				size = is32 ? sizeof(WORD) : sizeof(WORD);// 64?
+				size = is32 ? sizeof(WORD) : sizeof(WORD);  // 64?
 				break;
 			case Process::Hook::OLT_W_D_F64:
 				if (is32)
@@ -195,17 +195,17 @@ namespace Process
 				}
 				else
 				{
-					size = sizeof(DWORD); // 64?
+					size = sizeof(DWORD);  // 64?
 				}
 				break;
 			case Process::Hook::OLT_SP_Ap:
 				if (is32)
 				{
-					size = has66 ? sizeof(WORD) + sizeof(WORD) : sizeof(DWORD)+ sizeof(WORD);
+					size = has66 ? sizeof(WORD) + sizeof(WORD) : sizeof(DWORD) + sizeof(WORD);
 				}
 				else
 				{
-					size = has66 ? sizeof(DWORD) + sizeof(WORD) : sizeof(DWORD64) + sizeof(WORD); // 可能有错
+					size = has66 ? sizeof(DWORD) + sizeof(WORD) : sizeof(DWORD64) + sizeof(WORD);  // 可能有错
 				}
 				break;
 			default:
@@ -236,7 +236,7 @@ namespace Process
 					if (hex >= 0x40 && hex <= 0x4f)
 					{
 						// rex前缀
-						rex.Val=hex;
+						rex.Val = hex;
 						return Stat_ReadHex;
 					}
 				}
@@ -259,7 +259,7 @@ namespace Process
 					NotDefine();
 					return Stat_End;
 				}
-			
+
 				tmpOpcode = *(POpcode)&tmpOpcodeEx;
 
 				break;
@@ -309,12 +309,12 @@ namespace Process
 				isModBit00 = false;
 			}
 			auto rm = modrm->Rm;
-			if (has67&&is32)
+			if (has67 && is32)
 			{
 				switch (mod)
 				{
 				case (BYTE)0:
-					if (rm==(BYTE)6)
+					if (rm == (BYTE)6)
 					{
 						count += sizeof(WORD);
 					}
@@ -355,7 +355,7 @@ namespace Process
 					return Stat_End;
 				}
 				// mod 1 2 的rm4有sib
-				if (rm==(BYTE)4)
+				if (rm == (BYTE)4)
 				{
 					return Stat_ReadSib;
 				}
@@ -377,7 +377,7 @@ namespace Process
 			this->table = table;
 			return Stat_ReadHex;
 		}
-	
+
 		GetInstructionLen::NextStat GetInstructionLen::_AnalyPrefix(OpcodePrefixGroup prefixGroup, BYTE hex)
 		{
 			assert(prefixGroup != OPG_None);
@@ -397,7 +397,7 @@ namespace Process
 					{
 						prefix.pop();
 					}
-				} 
+				}
 				count -= prefix.size() + 1;
 				// 这个冲突前缀是下个命令的开始
 				return Stat_End;
@@ -408,7 +408,7 @@ namespace Process
 				prefix.push(prefixGroup);
 			}
 			// 设置多字节表标记
-			if (hex==(BYTE)0x66)
+			if (hex == (BYTE)0x66)
 			{
 				has66 = true;
 			}
@@ -424,26 +424,26 @@ namespace Process
 			{
 				hasF3 = true;
 			}
-			
+
 			return Stat_ReadHex;
 		}
 		GetInstructionLen::NextStat GetInstructionLen::_AnalyCmd(OpcodeCmd& cmd)
 		{
-			AddImmCount((OpcodeLenType)cmd.LenType);// 添加立即数长度
+			AddImmCount((OpcodeLenType)cmd.LenType);  // 添加立即数长度
 			return cmd.HasRM ? Stat_ReadRM : Stat_End;
 		}
 		GetInstructionLen::NextStat GetInstructionLen::_AnalyGroup(BYTE grpIndex)
 		{
-			auto grpByte = (POpcodeModRM)(currentPos+1);
+			auto grpByte = (POpcodeModRM)(currentPos + 1);
 			auto mod = grpByte->Mod;
-			auto nnn = grpByte->Reg; // nnn字段（op/reg
+			auto nnn = grpByte->Reg;  // nnn字段（op/reg
 
 			auto grpOpcode = GroupTable[grpIndex][nnn];
-			if (grpOpcode.Val==NULL)
+			if (grpOpcode.Val == NULL)
 			{
 				return Stat_End;
 			}
-			
+
 			// 判断mod，判断前缀，判断指令
 			if (((grpOpcode.Mod&Mod_11b) == Mod_11b) &&
 				(grpByte->Mod == (BYTE)3) &&
@@ -469,12 +469,12 @@ namespace Process
 		{
 			// 读rm且读组表,这里定义处理过不会出现冲突(同组号，同指令，不同操作数长度的情况
 			AddImmCount((OpcodeLenType)grpe.IbIzNone);
-			return _AnalyGroup(grpe.GroupIndex);// 借普通组的函数
+			return _AnalyGroup(grpe.GroupIndex);  // 借普通组的函数
 		}
 		GetInstructionLen::NextStat GetInstructionLen::_AnalyEsc(BYTE hex)
 		{
 			assert(hex >= 0xd8 && hex <= 0xdf);
-			
+
 			auto nextByte = *(currentPos + 1);
 			if (nextByte <= 0xbf)
 			{
@@ -484,11 +484,11 @@ namespace Process
 					return Stat_ReadRM;
 				}
 			}
-			count++; // 添加预读计数
+			count++;  // 添加预读计数
 			// 大于bf用的表无读rm的,返回结束
 			return  Stat_End;
 
 		}
-		
-	}
-}
+
+	}  // namespace Hook
+}  // namespace Process

@@ -92,5 +92,5 @@ namespace Process
 			}
 			return NULL;
 		}
-	}
-}
+	}  // namespace EnvironmentBlock
+}  // namespace Process

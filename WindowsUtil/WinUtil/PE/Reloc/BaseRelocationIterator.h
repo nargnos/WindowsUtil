@@ -14,14 +14,11 @@ namespace PE
 		friend GetIteratorBase::Iterator;
 		explicit BaseRelocationIterator(RelocDirectory& reloc);
 		~BaseRelocationIterator();
-		
-		
 		bool Next();
 		PIMAGE_BASE_RELOCATION Current();
-		
+
 		void Reset();
-		
+
 	};
 
-
-}
+}  // namespace PE

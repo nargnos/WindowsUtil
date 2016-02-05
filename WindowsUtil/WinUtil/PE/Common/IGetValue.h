@@ -11,4 +11,4 @@ namespace PE
 		virtual T GetValue() = 0;
 	};
 
-}
+}  // namespace PE

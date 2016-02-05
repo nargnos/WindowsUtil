@@ -21,7 +21,7 @@ namespace Process
 #endif
 
 
-		
+
 
 		void _EmitE9Jmp(PVOID pos, PVOID des)
 		{
@@ -45,7 +45,7 @@ namespace Process
 #endif
 			apiAddr += sizeof(DWORD);
 			// 写入目标地址
-			*(HANDLE_PTR*)apiAddr = (HANDLE_PTR)des;
+			*reinterpret_cast<HANDLE_PTR*>(apiAddr) = reinterpret_cast<HANDLE_PTR>(des);
 
 		}
 
@@ -73,10 +73,10 @@ namespace Process
 				}
 #endif
 				return true;
-		}
+			}
 			return false;
 			// TODO: 还有其它跳转情况,如果存在使用不同方式hook的时候需要注意
-	}
+		}
 
 
 		int GetCodeBackupLen(PVOID api, int minLen)
@@ -86,12 +86,12 @@ namespace Process
 #else
 			GetInstructionLen gil(true);
 #endif
-			int len = 0; // 实际指令备份长度
+			int len = 0;  // 实际指令备份长度
 			int loopTimes = 0;
 			// 获取函数头备份长度
 			while (len < minLen)
 			{
-				if (loopTimes++>minLen)
+				if (loopTimes++ > minLen)
 				{
 					return 0;
 				}
@@ -135,7 +135,7 @@ namespace Process
 			}
 			return result;
 		}
-		
+
 		PVOID HookApi(PVOID api, PVOID hook)
 		{
 #ifdef _WIN64
@@ -144,7 +144,7 @@ namespace Process
 			GetInstructionLen gil(true);
 #endif
 			int len = 0;
-			int tmpLen = 0; // 假定每一个指令都是1BYTE时累计的长度
+			int tmpLen = 0;  // 假定每一个指令都是1BYTE时累计的长度
 			if (IsFF25Jmp(api))
 			{
 				len = BACKUPLEN;
@@ -171,7 +171,7 @@ namespace Process
 				tmpLen = 0;
 				while (tmpLen < len)
 				{
-					// 修复跳转					
+					// 修复跳转
 					if (_RelocJmp((PBYTE)result, api, tmpLen))
 					{
 						break;
@@ -187,7 +187,7 @@ namespace Process
 		// 使用e9 jmp的版本,当距离过远不适用
 		PVOID _HookApi_E9Jmp(PVOID api, PVOID hook, int backupLen)
 		{
-			PBYTE result = new BYTE[backupLen + BACKUPLEN]; // 使用当前字长的最大长度, 后面跳回需要用
+			PBYTE result = new BYTE[backupLen + BACKUPLEN];  // 使用当前字长的最大长度, 后面跳回需要用
 			// 备份原函数
 			memcpy(result, api, backupLen);
 
@@ -208,7 +208,7 @@ namespace Process
 			// 设置跳回,需要考虑距离
 			LONGLONG distance = (PBYTE)result - (PBYTE)api;
 			distance = distance > 0 ? distance : -distance;
-			if (distance<0x7fff0000)
+			if (distance < 0x7fff0000)
 			{
 				_EmitE9Jmp(result + backupLen, (PBYTE)api + backupLen);
 			}
@@ -216,7 +216,7 @@ namespace Process
 			{
 				_EmitFF25Jmp(result + backupLen, (PBYTE)api + backupLen);
 			}
-			
+
 
 
 			// 恢复访问性
@@ -232,14 +232,14 @@ namespace Process
 
 		PVOID HookApiOnce(PVOID api, PVOID hook)
 		{
-			if (((PBYTE)api)[0]==0xe9 || IsFF25Jmp(api))
+			if (((PBYTE)api)[0] == 0xe9 || IsFF25Jmp(api))
 			{
 				return NULL;
 			}
 			LONGLONG distance = (PBYTE)hook - (PBYTE)api;
 			distance = distance > 0 ? distance : -distance;
 			int codeLen = 0;
-			if (distance<0x7fff0000)
+			if (distance < 0x7fff0000)
 			{
 				// e9 jmp
 				codeLen = GetCodeBackupLen(api, E9_JMP_LEN);
@@ -252,5 +252,5 @@ namespace Process
 				return _HookApi(api, hook, codeLen);
 			}
 		}
-	}
-}
+	}  // namespace Hook
+}  // namespace Process

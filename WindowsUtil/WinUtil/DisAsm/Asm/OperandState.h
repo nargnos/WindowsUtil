@@ -1,15 +1,15 @@
 #pragma once
 #include "..\Common\Common.h"
-class EscapeState :
+class OperandState :
 	public State
 {
 public:
 
-	EscapeState()
+	OperandState()
 	{
 	}
 
-	~EscapeState()
+	~OperandState()
 	{
 	}
 	virtual  const State*  Next(const shared_ptr<Instruction>& inst) const override;

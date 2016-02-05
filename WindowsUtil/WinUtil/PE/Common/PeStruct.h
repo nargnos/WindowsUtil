@@ -8,9 +8,9 @@ namespace PE
 		PeDecoder& peDecoder;
 	public:
 		typedef PeStruct PeStructBase;
-		explicit PeStruct(PeDecoder& pe);
+		explicit PeStruct(PeDecoder & pe);
 		PeDecoder& GetPeDecoder();
 		virtual ~PeStruct();
 	};
 
-}
+}  // namespace PE

@@ -13,7 +13,7 @@ public:
 	~ExitState()
 	{
 	}
-	virtual  const unique_ptr<IState>&  Next(shared_ptr<Instruction>& inst) override;
-	virtual bool HasNext()  override;;
+	virtual  const State*  Next(const shared_ptr<Instruction>& inst) const override;
+	virtual bool HasNext() const  override;
 };
 
