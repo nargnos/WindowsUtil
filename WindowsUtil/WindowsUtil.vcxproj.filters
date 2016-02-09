@@ -201,13 +201,7 @@
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\SibState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\PrefixState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\RMState.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\GroupState.h">
@@ -405,12 +399,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\PrefixState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\RMState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\SibState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\EscapeState.cpp">

@@ -22,6 +22,11 @@ std::shared_ptr<AsmOpcodeWapper>& AsmInstruction::GetOpcodeDataWapper()
 	return wapper;
 }
 
+void AsmInstruction::SetOutputStream(const shared_ptr<std::ostringstream>& output)
+{
+	outputStr = output;
+}
+
 bool AsmInstruction::IsX32()
 {
 	return isX32;
@@ -39,24 +44,7 @@ OpcodeType AsmInstruction::ReadInst(OpcodeType table)
 
 	const OpcodeData* opcodeData = NULL;
 	auto index = *CurrentBytePtr();
-	switch (table)
-	{
-	case OT_None:
-		opcodeData = &wapper->GetOpcodeData(index);
-		break;
-	case OT_Table_0F:
-		opcodeData = &wapper->GetTable0FOpcodeData(index);
-		break;
-	case OT_Table_0F38:
-		opcodeData = &wapper->GetTable0F38OpcodeData(index);
-		break;
-	case OT_Table_0F3A:
-		opcodeData = &wapper->GetTable0F3AOpcodeData(index);
-		break;
-	default:
-		assert(false);
-		break;
-	}
+	opcodeData = &wapper->GetOpcodeData(table, index);
 	// 根据已有条件选择指令
 	for (auto i = 0; i < opcodeData->Count; i++)
 	{
@@ -149,6 +137,7 @@ void AsmInstruction::Init(const void * ptr)
 {
 	this->Instruction::Init(ptr);
 	ClearTmpData();
+	ClearOperand();
 }
 
 AsmInstruction::~AsmInstruction()

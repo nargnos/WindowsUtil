@@ -19,6 +19,5 @@ public:
 	}
 	virtual  const State*  Next(const shared_ptr<Instruction>& inst)  const override;
 	
-	bool HasRM(OperandType ot) const;
 };
 

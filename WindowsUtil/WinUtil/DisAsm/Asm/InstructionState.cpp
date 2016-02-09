@@ -1,23 +1,39 @@
 #include "InstructionState.h"
 #include "StateFactory.h"
-// 如果需要读RM会跳转到Rm状态再跳到读操作数
-// 会跳到的状态：End、Rm、Operand
+// 预读需要的操作数信息，输出指令名
+// 会跳到的状态：End、Rm
 const State*  InstructionState::Next(const shared_ptr<Instruction>& inst) const
 {
 	auto asmInst = inst->Cast<AsmInstruction>();
 	auto type = asmInst->GetTmpInstType();
-	// TODO: 输出名字
-	
+
+	if (asmInst->outputStr)
+	{
+		// TODO: 输出名字
+	}
 	// 这里跟InstChangeData共用结构，这两个结构成员变量类型大小顺序必须相同
 	// InstChangeData的最后一个成员变量是用来添加名字后缀用的，这里不需要
 	auto instData = asmInst->GetTmpData<InstData>();
 	if (instData->ParamCount == 0)
 	{
+		asmInst->operandGrp = NULL;
 		asmInst->SetSuccess();
 		return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_End);
 	}
 	auto operandGrp = asmInst->wapper->GetOperandGroup(instData->ParamCount, instData->ParamID);
-	for (auto i = 0; i < instData->ParamCount; i++)
+	assert(operandGrp != NULL);
+	asmInst->SetOperandGrp(instData->ParamCount, operandGrp);
+	return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Operand);
+
+	// TODO: 不用先确定rm存在，整合到读操作数类型里，边读操作数边读rm（或者rm先读出来，用到再查）。
+	// 现在对于3字节指令有疑问，66 0F3A 0F C1 08H为什么是palignr Vdq, Wdq, Ib
+	// 而不是palignr Pq, Qq, Ib 或vpalignr Vx,Hx,Wx,Ib
+	// 这个设定表里没有记录啊！！Vs的解析结果使用了3个操作数，是不是我漏看了什么？
+	// 按强制前缀查到的应该是第3个（4操作数），至少不要前缀也是第二个结果，为什么例子写的是表里没记录的第一个结果？
+	// TODO: 弄明白前无法往下编，暂时放下先，可能跟SSE版本有关，H解释为旧版不存在，得到结果就会跟例子一样。
+	// 可能4操作数需要Vex前缀, 测试了一下，64位加了vex前缀vs不解析，可能用法不对。64位下的指令还是跟32位的一样
+
+	/*for (auto i = 0; i < instData->ParamCount; i++)
 	{
 		auto& tmpOperand = asmInst->wapper->GetOperands(operandGrp[i]);
 		if (!tmpOperand.H.IsReg && HasRM((OperandType)tmpOperand.H.Operand))
@@ -25,39 +41,6 @@ const State*  InstructionState::Next(const shared_ptr<Instruction>& inst) const
 			return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Rm);
 		}
 	}
-	return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Operand);
+	return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Operand);*/
 }
 
-bool InstructionState::HasRM(OperandType ot) const
-{
-	switch (ot)
-	{
-	case H_C:
-	case H_D:
-	case H_E:
-	case H_G:
-	case H_M:
-	case H_N:
-	case H_P:
-	case H_Q:
-	case H_R:
-	case H_S:
-	case H_U:
-	case H_V:
-	case H_W:
-	case SPC_Mw_Rv:
-	case SPC_Rd_Mb:
-	case SPC_Rd_Mw:
-	case SPC_Rv_Mw:
-	case SPC_Ry_Mb:
-	case SPC_Ry_Mw:
-	case SPC_Udq_Md:
-	case SPC_Ux_Md:
-	case SPC_Ux_Mq:
-	case SPC_Ux_Mw:
-		return true;
-	default:
-		break;
-	}
-	return false;
-}

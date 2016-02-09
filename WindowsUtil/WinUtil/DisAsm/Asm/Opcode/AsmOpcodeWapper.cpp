@@ -47,36 +47,32 @@ const unsigned char * AsmOpcodeWapper::GetOperandGroup(int opCount, int index)
 	return NULL;
 }
 
-const OpcodeData & AsmOpcodeWapper::GetOpcodeData(int hex)
-{
-	assert(hex >= 0 && hex <= 0xff);
-	return HexTable1[hex];
-}
 
-const OpcodeData & AsmOpcodeWapper::GetTable0FOpcodeData(int hex)
+const OpcodeData & AsmOpcodeWapper::GetOpcodeData(OpcodeType tableType, int hex)
 {
 	assert(hex >= 0 && hex <= 0xff);
-	return HexTable2[hex];
-}
-
-const OpcodeData & AsmOpcodeWapper::GetTable0F38OpcodeData(int hex)
-{
-	assert(hex >= 0 && hex <= 0xff);
-	if (!table0F38)
+	switch (tableType)
 	{
-		table0F38 = UnzipOpcodeData(HexTable3Zip_38, sizeof(HexTable3Zip_38) / sizeof(ZipOpcodeData));
+	case OT_None:
+		return HexTable1[hex];
+	case OT_Table_0F:
+		return HexTable2[hex];
+	case OT_Table_0F38:
+		if (!table0F38)
+		{
+			table0F38 = UnzipOpcodeData(HexTable3Zip_38, sizeof(HexTable3Zip_38) / sizeof(ZipOpcodeData));
+		}
+		return table0F38[hex];
+	case OT_Table_0F3A:
+		if (!table0F3A)
+		{
+			table0F3A = UnzipOpcodeData(HexTable3Zip_3A, sizeof(HexTable3Zip_3A) / sizeof(ZipOpcodeData));
+		}
+		return table0F3A[hex];
+	default:
+		assert(false);
+		break;
 	}
-	return table0F38[hex];
-}
-
-const OpcodeData & AsmOpcodeWapper::GetTable0F3AOpcodeData(int hex)
-{
-	assert(hex >= 0 && hex <= 0xff);
-	if (!table0F3A)
-	{
-		table0F3A = UnzipOpcodeData(HexTable3Zip_3A, sizeof(HexTable3Zip_3A) / sizeof(ZipOpcodeData));
-	}
-	return table0F3A[hex];
 }
 
 const Hex_Inst & AsmOpcodeWapper::GetHex_Inst(int index)

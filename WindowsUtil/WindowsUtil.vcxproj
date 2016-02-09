@@ -159,8 +159,6 @@
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\InstructionState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\PrefixState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\RMState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\SibState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\StateFactory.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\Common.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\Instruction.h" />
@@ -237,8 +235,6 @@
     <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\OperandState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\PrefixState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\RMState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\SibState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\StateFactory.cpp" />
     <ClCompile Include="WinUtil\PE\Architecture\architecturedirectory.cpp" />
     <ClCompile Include="WinUtil\PE\BoundImport\BoundImportDirectory.cpp" />

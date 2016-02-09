@@ -46,59 +46,153 @@ extern const char* Registers[16][6];
 #define _REG(hex, type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
 
 // 寄存器定义，对应值可以在字符串表里找到
-
+// 把文档翻译了一下做参考，可能不准
 enum OperandType :unsigned char
 {
 	// NULL = 0,
-	CHANGE_REG = 1,  // 表示寄存器参数会随着长度限定改变
-	// OperandTypes
-	L_a,
-	L_b,
-	L_c,
-	L_d,
-	L_dq,
-	L_p,
-	L_pd,
-	L_pi,
-	L_ps,
-	L_q,
-	L_qq,
-	L_s,
-	L_sd,
-	L_ss,
-	L_si,
-	L_v,
-	L_w,
-	L_x,
-	L_y,
-	L_z,
-	// AddressingMethods
-	H_1,  // 不知道是什么
-	H_A,
-	H_B,
-	H_C,
-	H_D,
-	H_E,
-	H_F,
-	H_G,
-	H_H,
-	H_I,
-	H_J,
-	H_L,
-	H_M,
-	H_N,
-	H_O,
-	H_P,
-	H_Q,
-	H_R,
-	H_S,
-	H_U,
-	H_V,
-	H_W,
-	H_X,
-	H_Y,
-	// 特殊
+	CHANGE_REG = 1,  // 表示寄存器参数(字符串)会随着长度限定改变
+	// OperandTypes 操作数类型
 
+	// 两个WORD或两个DWORD内存操作数，取决于操作数大小属性（只用在BOUND指令中）
+	L_a,  // 只有Ma组合
+
+	// BYTE，不管操作数大小属性
+	L_b,
+
+	// BYTE或WORD，取决于操作数大小属性
+	L_c,  // 没有使用
+
+	// DWORD，无视大小属性
+	L_d,  // 只组合了有RM的寻址方式
+
+	// 2*QWORD，无视属性
+	L_dq,
+
+	// 32位，48位，或80位的指针，取决于操作数大小属性。
+	L_p,
+
+	// 128位或256位紧缩双精度浮点数。
+	L_pd,
+
+	// QWORD MMX寄存器（如mm0）
+	L_pi,  // 只组合了有RM的寻址方式
+
+	// 128位或256位紧缩单精度浮点数。
+	L_ps,
+
+	// QWORD，不管属性
+	L_q,
+
+	// 4*QWORD（256位），无视属性
+	L_qq,
+
+	// 6字节或10字节的伪描述符
+	L_s,
+
+	// 128位双精度浮点数的标量元素
+	L_sd,
+
+	// 128位单精度浮点数的标量元素
+	L_ss,
+
+	// DWORD整数寄存器（如eax）
+	L_si,  // 没有使用，为什么？
+
+	// WORD、DWORD、QWORD（64位），取决属性
+	L_v,
+
+	// WORD，无视属性
+	L_w,
+
+	// 基于dq或qq的操作数大小属性
+	L_x,
+
+	// DWORD或QWORD，取决于属性
+	L_y,
+
+	// 16位大小时为WORD，32位或64位大小时为DWORD
+	L_z,
+
+	// AddressingMethods 寻址方式
+	H_1,  // 不知道是什么
+
+	// 直接寻址：该指令没有ModR/M字节；操作数的地址被编码在指令中。
+	// 没有基址寄存器、变址寄存器，也没有比例因数可以应用。
+	H_A,  // 只组合了p
+
+	// 用VEX前缀的VEX.vvvv字段表示一个通用寄存器
+	H_B,  // 只组合了y
+
+	// 用ModR/M字节的reg域表示控制寄存器
+	H_C,  // 只组合了d
+
+	// 用ModR/M字节的reg域表示调试寄存器
+	H_D,  // 只组合了d
+
+	// 一个ModR/M字节跟在Opcode之后并指定操作数。这个操作数可以是通用寄存器或内存地址。
+	// 如果它是内存地址，该地址用段寄存器和以下任何值：基址寄存器、变址寄存器、比例因数和位移相加来计算
+	H_E,
+
+	// EFLAGS/RFLAGS 寄存器
+	H_F,  // 只组合了v
+
+	// 用ModR/M字节的reg域表示通用寄存器
+	H_G,
+
+	// 用VEX前缀的VEX.vvvv字段选择一个128位的XMM寄存器或256位的YMM寄存器，取决于操作数类型。
+	// 对于旧版SSE编码这个操作并不存在
+	H_H,
+
+	// 立即数
+	H_I,
+
+	// 该指令包含一个相对指令指针寄存器的偏移
+	H_J,
+
+	// 8位立即数的高4位用作表示128位的XMM寄存器或256位的YMM寄存器，取决于操作数类型（在32位模式下忽略MSB）
+	H_L,  // 只组合了x
+
+	// ModR/M字节可能只引用内存(例如, BOUND, LES, LDS, LSS, LFS, LGS,CMPXCHG8B)
+	H_M,
+
+	// ModR/M字节的R/M域表示一个紧缩4字MMX寄存器
+	H_N,  // 只组合了q
+
+	// 该指令没有ModR/M字节。操作数的偏移被编码为字或双字(取决于地址大小属性)。
+	// 没有基址寄存器、变址寄存器或比例因数可以应用。
+	H_O,
+
+	// ModR/M字节的reg域表示一个紧缩4字MMX寄存器
+	H_P,
+
+	// 一个ModR/M字节跟在Opcode之后并指定操作数。这个操作数可以是MMX寄存器或内存地址。
+	// 如果是内存地址，该地址用段寄存器和以下任何值：基址寄存器、变址寄存器、比例因数和位移相加来计算
+	H_Q,
+
+	// ModR/M字节可能只引用通用寄存器
+	H_R,
+
+	// ModR/M字节的reg域表示一个段寄存器
+	H_S,  // 只组合了w
+
+	// ModR/M字节的R/M域表示128位的XMM寄存器或256位的YMM寄存器，取决于操作数类型
+	H_U,
+
+	// ModR/M字节的reg域表示128位的XMM寄存器或256位的YMM寄存器，取决于操作数类型
+	H_V,
+
+	// 一个ModR/M字节跟在Opcode之后并指定操作数。操作数可能为一个128位的XMM寄存器或256位的YMM寄存器（取决于操作数类型）或内存地址。
+	// 如果是内存地址，该地址用段寄存器和以下任何值：基址寄存器、变址寄存器、比例因数和位移相加来计算
+	H_W,
+
+	// 内存寻址为DS:rSI寄存器对
+	H_X,
+	// 内存寻址为ES:rDI寄存器对
+	H_Y,
+
+	// 特殊，寄存器与操作数大小属性相关
+	// 比如eAX在16（AX）或32位（EAX）出现，rAX可能为AX（16）、EAX（32）、RAX（64）
+	// 当REX.B被用于改变opcode的reg域时，使用 /xxx 表示其可能性
 	SPC_AL_R8L,
 	SPC_CL_R9L,
 	SPC_DL_R10L,
@@ -259,6 +353,22 @@ enum PrefixGroup :unsigned char
 	PfxGrp_3,
 	PfxGrp_4,
 	PfxGrp_Rex,
+	// Instructions that include a VEX prefix are organized relative to the 2-byte and 3-byte opcode maps, 
+	// based on the VEX.mmmmm field encoding of implied 0F, 0F38H, 0F3AH, respectively. 
+	// Each entry in the opcode map of a VEX-encoded instruction is based on the value of the opcode byte, 
+	// similar to non-VEX-encoded instructions.
+	// A VEX prefix includes several bit fields that encode implied 66H, F2H, F3H prefix functionality(VEX.pp) 
+	// and operand size / opcode information(VEX.L).See chapter 4 for details.
+	// Opcode tables A2 - A6 include both instructions with a VEX prefix and instructions without a VEX prefix.
+	// Many entries are only made once, but represent both the VEX and non - VEX forms of the instruction.
+	// If the VEX prefix is present all the operands are valid and the mnemonic is usually prefixed with a “v”.
+	// If the VEX prefix is not present the VEX.vvvv operand is not available and the prefix “v” is dropped from the mnemonic.
+	// A few instructions exist only in VEX form and these are marked with a superscript “v”.
+	// Operand size of VEX prefix instructions can be determined by the operand type code. 
+	// 128 - bit vectors are indicated by 'dq', 256 - bit vectors are indicated by 'qq', 
+	// and instructions with operands supporting either 128 or 256 - bit,
+	// determined by VEX.L, are indicated by 'x'.
+	// For example, the entry "VMOVUPD Vx,Wx" indicates both VEX.L = 0 and VEX.L = 1 are supported.
 	PfxGrp_Vex
 };
 enum Prefix :unsigned char
@@ -350,20 +460,18 @@ enum Superscript :unsigned char
 {
 	// S_None,
 	// S_1A ,  // ModRM3-5为扩展操作码,组特有上标
-	S_1B = 1,  // 使用0F0BH(UD2指令)或者0FB9H故意产生一个指令异常(#UD)
-	S_1C,  // 使用ModRM区分不同指令
+	S_1B = 1,  // 使用0F0B操作码（UD2指令）或0FB9H操作码时，刻意生成无效的操作码异常（#UD）。
+	S_1C,  // 有些指令使用相同的两个字节码。如果该指令有变化，或者操作码表示不同的指令，该MODR/ M字节将用于区分该指令。
 
 	// 条件
-	S_i64,  // 在64位非法或未编码，40-4f在64为中做REX前缀，使用FE/FF/Grp4 5代替inc/dec
+	S_i64,  // 在64位非法或未编码，40-4f在64位中做REX前缀，使用FE/FF/Grp4 5代替inc/dec
 	S_o64,  // 仅64位可用
 
 	S_d64,  // 在64位中操作数默认64位，不能编码32位数据
-	S_f64,  // 64位时操作数强制64位，操作数尺寸前缀无效
+	S_f64,  // 64位时操作数强制64位，操作数尺寸前缀在64位下无效
 
-	S_v,  // vex
-	S_v1,
-	// S_1A_i64,
-	// S_1A_1C
+	S_v,  // 只存在vex形式。没有旧的SSE指令形式。对于整数GPR指令它表示VEX前缀
+	S_v1,  // 当不能从数据大小推断时，只存在VEX128和SSE形式（没有VEX256）
 };
 
 // 名字后缀
@@ -377,7 +485,7 @@ enum NameExt :unsigned char
 };
 
 #pragma pack(push, 1)
-// 1b\2b 表中元素结构,Count为0表示指令不存在
+// 1b\2b 表中元素结构,Count表示可选择的指令数，0表示指令不存在
 struct OpcodeData
 {
 	unsigned short Hex_InstIndex : 12;

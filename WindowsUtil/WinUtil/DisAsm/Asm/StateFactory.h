@@ -17,8 +17,8 @@ class StateFactory :
 {
 public:
 	friend class InitState;
-	friend class SibState;
-	friend class RmState;
+	//friend class SibState;
+	//friend class RmState;
 	friend class EscapeState;
 	friend class GroupState;
 	friend class InstructionState;
@@ -31,8 +31,8 @@ public:
 	{
 		_Enum_States_Start,
 		State_Init = _Enum_States_Start,
-		State_Sib,
-		State_Rm,
+		//State_Sib,
+		//State_Rm,
 		State_Operand,
 		State_Escape,
 		State_Group,
@@ -113,12 +113,12 @@ protected:
 			case StateFactory::State_Init:
 				tmpState = make_shared<InitState>();
 				break;
-			case StateFactory::State_Sib:
+			/*case StateFactory::State_Sib:
 				tmpState = make_shared<SibState>();
 				break;
 			case StateFactory::State_Rm:
 				tmpState = make_shared<RmState>();
-				break;
+				break;*/
 			case StateFactory::State_Escape:
 				tmpState = make_shared<EscapeState>();
 				break;
