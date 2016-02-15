@@ -3,6 +3,7 @@
 
 // TODO: 从文档63页CHAPTER 3 BASIC EXECUTION ENVIRONMENT 开始看
 // TODO: 好像关于SSE的还挺乱的，先看一段时间文档再说
+// TODO: 缺了文档3A，下载了再说吧
 
 // 解析并输出操作数信息
 const State* OperandState::Next(const shared_ptr<Instruction>& inst) const
@@ -14,13 +15,14 @@ const State* OperandState::Next(const shared_ptr<Instruction>& inst) const
 	// 读RM、sib或读操作数都会步进该类型的长度，
 	// 如果是操作数，需要记录数据起始地址、类型长度和类型（方便后面输出时用，类型是指整型单精度双精度浮点啥的）
 	// 如果是寄存器，会记录reg枚举值（可变长的会选定到正确字长的寄存器）
+	// TODO: 需要确定好存储什么内容，Dflag怎么用等
 
 	for (auto i = 0; i < grpCount; i++)
 	{
 		auto& tmpOperand = asmInst->GetOpcodeDataWapper()->GetOperands(operandGrp[i]);
 		ReadOperand(asmInst, i, tmpOperand);
 	}
-	// TODO: 处理完就结束啦
+	
 	asmInst->SetSuccess();
 	return inst->GetFactory()->GetState(StateFactory::State_End);
 }
@@ -381,12 +383,12 @@ void OperandState::Handle_SPC_Ux_Mw(AsmInstruction* asmInst, int index)
 
 }
 
-void OperandState::Handle_SEG(AsmInstruction * asmInst, int index, const RegOrOperand & seg)
+void OperandState::Handle_SEG(AsmInstruction* asmInst, int index, const RegOrOperand& seg)
 {
 	// asmInst->opcodeDataWapper.GetSegName((OperandType)seg.Val);
 }
 
-void OperandState::Handle_REG(AsmInstruction * asmInst, int index, const RegOrOperand & reg, bool isChange)
+void OperandState::Handle_REG(AsmInstruction* asmInst, int index, const RegOrOperand& reg, bool isChange)
 {
 	auto ot = (OperandType)reg.Val;
 	auto tmpReg = reinterpret_cast<RegOrOperand*>(&ot);
