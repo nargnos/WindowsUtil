@@ -7,7 +7,7 @@ namespace PE
 		public DataDirectory<LoadConfigDirectory, PVOID, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG>
 	{
 	public:
-		explicit LoadConfigDirectory(PeDecoder & pe);
+		explicit LoadConfigDirectory(PeDecoder* pe);
 		~LoadConfigDirectory();
 	};
 

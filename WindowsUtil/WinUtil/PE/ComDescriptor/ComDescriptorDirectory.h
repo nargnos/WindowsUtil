@@ -6,7 +6,7 @@ namespace PE
 		public DataDirectory<ComDescriptorDirectory, PIMAGE_COR20_HEADER, IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR>
 	{
 	public:
-		explicit ComDescriptorDirectory(PeDecoder& pe);
+		explicit ComDescriptorDirectory(PeDecoder* pe);
 		~ComDescriptorDirectory();
 	};
 

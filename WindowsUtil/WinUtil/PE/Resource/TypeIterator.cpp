@@ -1,9 +1,10 @@
 #include "ResourceDirectory.h"
 
-PE::TypeIterator::TypeIterator(ResourceDirectory& resourceDirectory)
+PE::TypeIterator::TypeIterator(ResourceDirectory* resourceDirectory)
 {
-	firstTypeDirectoryEntry = resourceDirectory.LocateFirstEntry(resourceDirectory.data);
-	lastTypeDirectoryEntry = firstTypeDirectoryEntry + resourceDirectory.GetNumberOfEntries(resourceDirectory.data);
+	assert(resourceDirectory != NULL);
+	firstTypeDirectoryEntry = resourceDirectory->LocateFirstEntry(resourceDirectory->data);
+	lastTypeDirectoryEntry = firstTypeDirectoryEntry + resourceDirectory->GetNumberOfEntries(resourceDirectory->data);
 }
 
 PE::TypeIterator::~TypeIterator()

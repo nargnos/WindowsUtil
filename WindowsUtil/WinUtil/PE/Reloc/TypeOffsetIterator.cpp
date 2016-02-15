@@ -1,8 +1,9 @@
 #include "RelocDirectory.h"
 
-PE::TypeOffsetIterator::TypeOffsetIterator(BaseRelocationIterator & baseRelocationIterator)
+PE::TypeOffsetIterator::TypeOffsetIterator(BaseRelocationIterator* baseRelocationIterator)
 {
-	Init(baseRelocationIterator.currentReloc);
+	assert(baseRelocationIterator != NULL);
+	Init(baseRelocationIterator->currentReloc);
 }
 
 PE::TypeOffsetIterator::~TypeOffsetIterator() {}

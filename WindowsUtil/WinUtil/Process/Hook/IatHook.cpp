@@ -13,7 +13,7 @@ namespace Process
 			{
 				return NULL;
 			}
-			auto thunkAddress = PE::GetProcImportThunkAddress(pe, dllName, procName);
+			auto thunkAddress = PE::GetProcImportThunkAddress(&pe, dllName, procName);
 			if (!thunkAddress)
 			{
 				return NULL;

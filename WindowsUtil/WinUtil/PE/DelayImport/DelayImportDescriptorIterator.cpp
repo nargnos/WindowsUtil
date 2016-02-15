@@ -1,6 +1,7 @@
 #include "DelayImportDirectory.h"
-PE::DelayImportDescriptorIterator::DelayImportDescriptorIterator(DelayImportDirectory & delayImport) :delayImport(delayImport)
+PE::DelayImportDescriptorIterator::DelayImportDescriptorIterator(DelayImportDirectory* delayImport) :delayImport(delayImport)
 {
+	assert(delayImport != NULL);
 }
 
 PE::DelayImportDescriptorIterator::~DelayImportDescriptorIterator()
@@ -19,7 +20,7 @@ bool PE::DelayImportDescriptorIterator::Next()
 {
 	if (!currentDelay)
 	{
-		currentDelay = delayImport.data;
+		currentDelay = delayImport->data;
 		canCreateIterator = true;
 		return true;
 	}

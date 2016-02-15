@@ -1,6 +1,6 @@
 #include "RelocDirectory.h"
 
-PE::RelocDirectory::RelocDirectory(PeDecoder & pe) :DataDirectoryBase(pe)
+PE::RelocDirectory::RelocDirectory(PeDecoder* pe) :DataDirectoryBase(pe)
 {
 	canCreateIterator = true;
 }

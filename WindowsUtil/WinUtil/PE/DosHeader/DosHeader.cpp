@@ -1,8 +1,8 @@
 #include "DosHeader.h"
 
-PE::DosHeader::DosHeader(PeDecoder & pe) :PeStructBase(pe)
+PE::DosHeader::DosHeader(PeDecoder* pe) :PeStructBase(pe)
 {
-	dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(peDecoder.GetBase());
+	dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(peDecoder->GetBase());
 }
 
 PE::DosHeader::~DosHeader() {}

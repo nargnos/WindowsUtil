@@ -1,10 +1,11 @@
 #include "PeStruct.h"
-
-PE::PeStruct::PeStruct(PeDecoder & pe) :peDecoder(const_cast<PeDecoder&>(pe))
+#include <assert.h>
+PE::PeStruct::PeStruct(PeDecoder* pe) :peDecoder(pe)
 {
+	assert(pe != NULL);
 }
 
-PE::PeDecoder& PE::PeStruct::GetPeDecoder()
+PE::PeDecoder* PE::PeStruct::GetPeDecoder()
 {
 	return peDecoder;
 }

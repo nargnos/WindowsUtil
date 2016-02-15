@@ -5,11 +5,11 @@ namespace PE
 	class PeStruct
 	{
 	protected :
-		PeDecoder& peDecoder;
+		PeDecoder* peDecoder;
 	public:
 		typedef PeStruct PeStructBase;
-		explicit PeStruct(PeDecoder & pe);
-		PeDecoder& GetPeDecoder();
+		explicit PeStruct(PeDecoder* pe);
+		PeDecoder* GetPeDecoder();
 		virtual ~PeStruct();
 	};
 

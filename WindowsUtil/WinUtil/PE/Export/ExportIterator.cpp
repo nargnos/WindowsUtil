@@ -1,7 +1,8 @@
 #include "ExportDirectory.h"
 
-PE::ExportIterator::ExportIterator(ExportDirectory & exportDir) :exportDir(exportDir)
+PE::ExportIterator::ExportIterator(ExportDirectory* exportDir) :exportDir(exportDir)
 {
+	assert(exportDir != NULL);
 	Reset();
 }
 
@@ -13,7 +14,7 @@ PDWORD PE::ExportIterator::CurrentFuncRva()
 	{
 		return NULL;
 	}
-	return &exportDir.funcTable[exportDir.nameOrdinalTable[currentIndex]];
+	return &exportDir->funcTable[exportDir->nameOrdinalTable[currentIndex]];
 }
 
 PDWORD PE::ExportIterator::CurrentNameRva()
@@ -22,7 +23,7 @@ PDWORD PE::ExportIterator::CurrentNameRva()
 	{
 		return NULL;
 	}
-	return &exportDir.nameTable[currentIndex];
+	return &exportDir->nameTable[currentIndex];
 }
 
 PWORD PE::ExportIterator::CurrentNameOrdinals()
@@ -31,15 +32,15 @@ PWORD PE::ExportIterator::CurrentNameOrdinals()
 	{
 		return NULL;
 	}
-	return &exportDir.nameOrdinalTable[currentIndex];
+	return &exportDir->nameOrdinalTable[currentIndex];
 }
 
 bool PE::ExportIterator::Next()
 {
-	if (exportDir.numberOfNames)
+	if (exportDir->numberOfNames)
 	{
 		++currentIndex;
-		if (static_cast<unsigned int>(currentIndex) < *exportDir.numberOfNames)
+		if (static_cast<unsigned int>(currentIndex) < *exportDir->numberOfNames)
 		{
 			return true;
 		}

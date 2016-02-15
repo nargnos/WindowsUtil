@@ -17,7 +17,7 @@ namespace Process
 			{
 				return NULL;
 			}
-			auto result = reinterpret_cast<PVOID*>(PE::GetDelayLoadAddressTableAddress(pe, dllName, procName));
+			auto result = reinterpret_cast<PVOID*>(PE::GetDelayLoadAddressTableAddress(&pe, dllName, procName));
 			if (result)
 			{
 				if (oldFuncAddr)

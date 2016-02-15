@@ -1,10 +1,11 @@
 #include "RelocDirectory.h"
 
-PE::BaseRelocationIterator::BaseRelocationIterator(RelocDirectory & reloc)
+PE::BaseRelocationIterator::BaseRelocationIterator(RelocDirectory* reloc)
 {
+	assert(reloc != NULL);
 	Reset();
-	startReloc = reloc.data;
-	endReloc = startReloc + *reloc.size / sizeof(IMAGE_BASE_RELOCATION);
+	startReloc = reloc->data;
+	endReloc = startReloc + *reloc->size / sizeof(IMAGE_BASE_RELOCATION);
 }
 
 PE::BaseRelocationIterator::~BaseRelocationIterator() {}

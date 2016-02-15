@@ -15,7 +15,7 @@ namespace NAMESPACE {
 		inline void ImportThunkArrayWapper::InitArrayList()
 		{
 			list = gcnew List<IElementName^>();
-			auto thunk = new PE::ImportThunkIterator(descriptor, *pe->GetPeDecoder());
+			auto thunk = new PE::ImportThunkIterator(descriptor, pe->GetPeDecoder());
 			if (pe->HasNtHeader32)
 			{
 				while (thunk->Next())
@@ -111,7 +111,7 @@ namespace NAMESPACE {
 				{
 					return nullptr;
 				}
-				return PE::GetNameStruct(*pe->GetPeDecoder(), ot);
+				return PE::GetNameStruct(pe->GetPeDecoder(), ot);
 			}
 			else
 			{
@@ -120,7 +120,7 @@ namespace NAMESPACE {
 				{
 					return nullptr;
 				}
-				return PE::GetNameStruct(*pe->GetPeDecoder(), ot);
+				return PE::GetNameStruct(pe->GetPeDecoder(), ot);
 			}
 			return nullptr;
 		}

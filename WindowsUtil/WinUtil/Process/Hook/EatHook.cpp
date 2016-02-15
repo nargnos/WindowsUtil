@@ -13,7 +13,7 @@ namespace Process
 			{
 				return NULL;
 			}
-			auto result = PE::GetProcExportFuncTableAddress(dll, procName);
+			auto result = PE::GetProcExportFuncTableAddress(&dll, procName);
 			if (!result)
 			{
 				return NULL;

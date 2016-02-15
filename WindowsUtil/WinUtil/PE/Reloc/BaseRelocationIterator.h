@@ -12,7 +12,7 @@ namespace PE
 		PIMAGE_BASE_RELOCATION endReloc;
 	public:
 		friend GetIteratorBase::Iterator;
-		explicit BaseRelocationIterator(RelocDirectory& reloc);
+		explicit BaseRelocationIterator(RelocDirectory* reloc);
 		~BaseRelocationIterator();
 		bool Next();
 		PIMAGE_BASE_RELOCATION Current();

@@ -6,7 +6,7 @@ namespace PE
 		public DataDirectory<GlobalptrDirectory, PVOID, IMAGE_DIRECTORY_ENTRY_GLOBALPTR>
 	{
 	public:
-		explicit GlobalptrDirectory(PeDecoder & pe);
+		explicit GlobalptrDirectory(PeDecoder* pe);
 		~GlobalptrDirectory();
 	};
 

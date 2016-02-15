@@ -11,11 +11,11 @@ namespace PE
 		public IIterator<PImgDelayDescr>,
 		public GetIterator<DelayImportThunkIterator, DelayImportDescriptorIterator>
 	{
-		DelayImportDirectory& delayImport;
+		DelayImportDirectory* delayImport;
 		PImgDelayDescr currentDelay;
 	public:
 		friend class DelayImportThunkIterator;
-		explicit DelayImportDescriptorIterator(DelayImportDirectory& delayImport);
+		explicit DelayImportDescriptorIterator(DelayImportDirectory* delayImport);
 
 		~DelayImportDescriptorIterator();
 

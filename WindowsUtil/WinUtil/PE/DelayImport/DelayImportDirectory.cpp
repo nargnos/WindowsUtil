@@ -1,6 +1,6 @@
 #include "DelayImportDirectory.h"
 
-PE::DelayImportDirectory::DelayImportDirectory(PeDecoder & pe) :DataDirectoryBase(pe)
+PE::DelayImportDirectory::DelayImportDirectory(PeDecoder* pe) :DataDirectoryBase(pe)
 {
 	canCreateIterator = true;
 }

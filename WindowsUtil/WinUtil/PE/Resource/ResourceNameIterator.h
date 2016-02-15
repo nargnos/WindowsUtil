@@ -11,7 +11,7 @@ namespace PE
 		PIMAGE_RESOURCE_DIRECTORY_ENTRY currentResourceNameDirectoryEntry;
 	public:
 
-		explicit ResourceNameIterator(TypeIterator& resourceDirectoryTypeIterator);
+		explicit ResourceNameIterator(TypeIterator* resourceDirectoryTypeIterator);
 
 		~ResourceNameIterator();
 

@@ -1,15 +1,15 @@
 #include "DelayImport.h"
 
-LPCSTR PE::GetDelayloadDllName(PeDecoder & pe, PImgDelayDescr descriptor)
+LPCSTR PE::GetDelayloadDllName(PeDecoder* pe, PImgDelayDescr descriptor)
 {
 	assert(descriptor != NULL);
-	return (LPCSTR)pe.GetRvaData(descriptor->rvaDLLName);
+	return (LPCSTR)pe->GetRvaData(descriptor->rvaDLLName);
 }
 
-PVOID PE::GetDelayLoadAddressTableAddress(PeDecoder & pe, LPCSTR dllName, LPCSTR procName)
+PVOID PE::GetDelayLoadAddressTableAddress(PeDecoder* pe, LPCSTR dllName, LPCSTR procName)
 {
-	assert(dllName != NULL && procName != NULL);
-	auto delayImport = pe.GetDelayImport();
+	assert(dllName != NULL && procName != NULL && pe!=NULL);
+	auto delayImport = pe->GetDelayImport();
 	if (!delayImport->IsExist())
 	{
 		return NULL;
@@ -29,11 +29,11 @@ PVOID PE::GetDelayLoadAddressTableAddress(PeDecoder & pe, LPCSTR dllName, LPCSTR
 		{
 			auto curNameTable = dtr->CurrentNameTable();
 			PIMAGE_IMPORT_BY_NAME funcName = NULL;
-			if (pe.HasNtHeader32())
+			if (pe->HasNtHeader32())
 			{
 				if (!PE::IsSnapByOrdinal((PIMAGE_THUNK_DATA32)curNameTable))
 				{
-					funcName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe.GetRvaData(*reinterpret_cast<HANDLE_PTR*>(curNameTable)));
+					funcName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe->GetRvaData(*reinterpret_cast<HANDLE_PTR*>(curNameTable)));
 
 				}
 				// else
@@ -46,7 +46,7 @@ PVOID PE::GetDelayLoadAddressTableAddress(PeDecoder & pe, LPCSTR dllName, LPCSTR
 			{
 				if (!PE::IsSnapByOrdinal((PIMAGE_THUNK_DATA64)curNameTable))
 				{
-					funcName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe.GetRvaData(*reinterpret_cast<HANDLE_PTR*>(curNameTable)));
+					funcName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe->GetRvaData(*reinterpret_cast<HANDLE_PTR*>(curNameTable)));
 				}
 			}
 			if (funcName && (strcmp(reinterpret_cast<char*>(funcName->Name), procName) == 0))

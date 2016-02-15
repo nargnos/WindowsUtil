@@ -171,7 +171,7 @@ namespace NAMESPACE {
 			{
 				UnmanagedString^ get()
 				{
-					return gcnew UnmanagedString(IntPtr(PE::GetDescriptorName(*GetPeDecoder(), GetPointer())), base, 0);
+					return gcnew UnmanagedString(IntPtr(PE::GetDescriptorName(GetPeDecoder(), GetPointer())), base, 0);
 				}
 			}
 			property UnmanagedValue<DWORD>^   OriginalFirstThunk

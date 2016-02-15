@@ -1,7 +1,8 @@
 #include "ResourceDirectory.h"
 
-PE::ResourceNameIterator::ResourceNameIterator(TypeIterator& resourceDirectoryTypeIterator)
+PE::ResourceNameIterator::ResourceNameIterator(TypeIterator* resourceDirectoryTypeIterator)
 {
+	assert(resourceDirectoryTypeIterator != NULL);
 }
 
 PE::ResourceNameIterator::~ResourceNameIterator()

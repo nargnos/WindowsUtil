@@ -9,7 +9,7 @@ namespace PE
 		public DataDirectory<TlsDirectory, PVOID, IMAGE_DIRECTORY_ENTRY_TLS>
 	{
 	public:
-		explicit TlsDirectory(PeDecoder & pe);
+		explicit TlsDirectory(PeDecoder* pe);
 		~TlsDirectory();
 	};
 

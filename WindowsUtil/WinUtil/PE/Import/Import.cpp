@@ -1,19 +1,19 @@
 #include "Import.h"
 namespace PE
 {
-	LPSTR GetDescriptorName(PeDecoder & pe, PIMAGE_IMPORT_DESCRIPTOR descriptor)
+	LPSTR GetDescriptorName(PeDecoder* pe, PIMAGE_IMPORT_DESCRIPTOR descriptor)
 	{
-		return reinterpret_cast<LPSTR>(pe.GetRvaData(descriptor->Name));
+		return reinterpret_cast<LPSTR>(pe->GetRvaData(descriptor->Name));
 	}
 
-	PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder & pe, PIMAGE_THUNK_DATA32 thunk)
+	PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder* pe, PIMAGE_THUNK_DATA32 thunk)
 	{
-		return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe.GetRvaData(thunk->u1.AddressOfData));
+		return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe->GetRvaData(thunk->u1.AddressOfData));
 	}
-	PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder & pe, PIMAGE_THUNK_DATA64 thunk)
+	PIMAGE_IMPORT_BY_NAME GetNameStruct(PeDecoder* pe, PIMAGE_THUNK_DATA64 thunk)
 	{
 		// FIX: 32Î»´æÔÚ½Ø¶Ï
-		return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe.GetRvaData(thunk->u1.AddressOfData));
+		return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe->GetRvaData(thunk->u1.AddressOfData));
 	}
 	bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
 	{
@@ -31,10 +31,10 @@ namespace PE
 	{
 		return IMAGE_ORDINAL32(thunk->u1.Ordinal);
 	}
-	PVOID GetProcImportThunkAddress(PeDecoder & pe, LPCSTR dllName, LPCSTR procName)
+	PVOID GetProcImportThunkAddress(PeDecoder* pe, LPCSTR dllName, LPCSTR procName)
 	{
-		assert(procName && pe.IsMapped());
-		auto idr = pe.GetImport()->CreateIterator();
+		assert(procName && pe->IsMapped());
+		auto idr = pe->GetImport()->CreateIterator();
 		while (idr->Next())
 		{
 			auto currentDescriptor = idr->Current();
@@ -49,7 +49,7 @@ namespace PE
 			auto itr = idr->CreateIterator();
 			while (itr->Next())
 			{
-				if (pe.HasNtHeader32())
+				if (pe->HasNtHeader32())
 				{
 					auto currentThunk = itr->CurrentOriginalThunk32();
 					if (!IsSnapByOrdinal(currentThunk))

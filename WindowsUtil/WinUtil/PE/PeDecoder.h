@@ -64,6 +64,7 @@ namespace PE
 			{
 				data = NULL;
 			}
+			LazyInstance<T>& operator=(const LazyInstance<T>&) = delete;
 		public:
 			friend PeDecoder;
 
@@ -71,7 +72,7 @@ namespace PE
 			{
 				if (!data && peDecoder->isAttached)
 				{
-					data = _STD make_shared<T>(*peDecoder);
+					data = _STD make_shared<T>(peDecoder);
 				}
 				return data;
 			}
@@ -84,10 +85,10 @@ namespace PE
 		PeDecoder();
 		~PeDecoder() = default;
 		void Clear();
-		explicit PeDecoder(const PeDecoder & pe) = delete;
+		explicit PeDecoder(const PeDecoder* pe) = delete;
 		bool Attach(PVOID base, bool isMapped);
 		void Dettach();
-		PVOID GetBase();
+		PVOID GetBase() const;
 		LazyInstance<DosHeader> GetDosHeader;
 		LazyInstance<NtHeader> GetNtHeader;
 		LazyInstance<SectionHeaders> GetSection;

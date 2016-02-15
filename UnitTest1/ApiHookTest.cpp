@@ -451,7 +451,7 @@ namespace UnitTest1
 			auto importItr = pe->GetImport->CreateIterator();
 			while (importItr->Next())
 			{
-				Logger::WriteMessage(PE::GetDescriptorName(*pe.get(), importItr->Current()));
+				Logger::WriteMessage(PE::GetDescriptorName(pe.get(), importItr->Current()));
 				auto thunkItr = importItr->CreateIterator();
 				while (thunkItr->Next())
 				{
@@ -459,7 +459,7 @@ namespace UnitTest1
 					auto t = thunkItr->CurrentThunk32();
 					if (!PE::IsSnapByOrdinal(ot))
 					{
-						auto ns = PE::GetNameStruct(*pe.get(), ot);
+						auto ns = PE::GetNameStruct(pe.get(), ot);
 						ostringstream str;
 						str << " => ";
 						str << ns->Name;

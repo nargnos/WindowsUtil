@@ -10,13 +10,13 @@ namespace PE
 	}
 
 	// 附加到指针
-	bool PeDecoder::Attach(PVOID base, bool isMapped)
+	bool PeDecoder::Attach(PVOID baseAddr, bool isMapped)
 	{
-		if (base == NULL)
+		if (baseAddr == NULL)
 		{
 			return false;
 		}
-		if (base == this->base)
+		if (baseAddr == this->base)
 		{
 			return true;
 		}
@@ -26,7 +26,7 @@ namespace PE
 		Clear();
 		isAttached = true;
 
-		this->base = (PBYTE)(base);
+		this->base = (PBYTE)(baseAddr);
 		this->isMapped = isMapped;
 		// 绑定结构
 		BindPtr();
@@ -82,7 +82,7 @@ namespace PE
 	}
 
 	// 取基址
-	PVOID PeDecoder::GetBase()
+	PVOID PeDecoder::GetBase() const
 	{
 		return this->base;
 	}

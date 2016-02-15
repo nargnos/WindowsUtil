@@ -9,7 +9,7 @@ namespace PE
 		PIMAGE_DATA_DIRECTORY dataDirectory;
 		PDWORD size;
 	public:
-		explicit DataDirectoryBase(PeDecoder& pe);
+		explicit DataDirectoryBase(PeDecoder* pe);
 		PVOID DirectoryEntryToData();
 	};
 	template<typename DataDirectoryChild, typename DataType>
@@ -38,7 +38,7 @@ namespace PE
 		{
 			return data != NULL;
 		}
-		explicit DataDirectory_DataType(PeDecoder& pe) :DataDirectoryBase(pe)
+		explicit DataDirectory_DataType(PeDecoder* pe) :DataDirectoryBase(pe)
 		{
 		}
 	};
@@ -50,9 +50,9 @@ namespace PE
 	public:
 		typedef DataDirectory<DataDirectoryChild, DataType, Index> DataDirectoryBase;
 
-		explicit DataDirectory(PeDecoder& pe) :DataDirectory_DataType<DataDirectoryChild, DataType>(pe)
+		explicit DataDirectory(PeDecoder* pe) :DataDirectory_DataType<DataDirectoryChild, DataType>(pe)
 		{
-			dataDirectory = peDecoder.GetDataDirectory(Index);
+			dataDirectory = peDecoder->GetDataDirectory(Index);
 			Init();
 		}
 

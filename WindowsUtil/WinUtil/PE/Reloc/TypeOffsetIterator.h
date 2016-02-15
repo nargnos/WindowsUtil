@@ -7,7 +7,7 @@ namespace PE
 		public IIterator<PWORD>
 	{
 	public:
-		explicit TypeOffsetIterator(BaseRelocationIterator& baseRelocationIterator);
+		explicit TypeOffsetIterator(BaseRelocationIterator* baseRelocationIterator);
 		~TypeOffsetIterator();
 
 		PWORD Current();

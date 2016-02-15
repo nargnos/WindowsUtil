@@ -1,8 +1,8 @@
 #include "NtHeader.h"
 
-PE::NtHeader::NtHeader(PeDecoder & pe) :PeStructBase(pe)
+PE::NtHeader::NtHeader(PeDecoder* pe) :PeStructBase(pe)
 {
-	ntHeader = reinterpret_cast<PBYTE>(peDecoder.GetBase()) + peDecoder.GetDosHeader()->GetValue()->e_lfanew;
+	ntHeader = reinterpret_cast<PBYTE>(peDecoder->GetBase()) + peDecoder->GetDosHeader()->GetValue()->e_lfanew;
 	hasNtHeader32 = false;
 }
 

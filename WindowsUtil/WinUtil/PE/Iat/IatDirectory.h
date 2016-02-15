@@ -7,7 +7,7 @@ namespace PE
 		public DataDirectory<IatDirectory, PVOID, IMAGE_DIRECTORY_ENTRY_IAT>
 	{
 	public:
-		explicit IatDirectory(PeDecoder & pe);
+		explicit IatDirectory(PeDecoder* pe);
 		~IatDirectory();
 	};
 

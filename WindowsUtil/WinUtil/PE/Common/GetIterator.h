@@ -17,7 +17,7 @@ namespace PE
 		_STD shared_ptr<IteratorType> CreateIterator()
 		{
 			assert(canCreateIterator);
-			return _STD make_shared<IteratorType>(dynamic_cast<ParamType&>(*this));
+			return _STD make_shared<IteratorType>(dynamic_cast<ParamType*>(this));
 		}
 		virtual ~GetIterator()
 		{

@@ -1,7 +1,8 @@
 #include "Section.h"
 
-PE::SectionIterator::SectionIterator(SectionHeaders & section) :section(section)
+PE::SectionIterator::SectionIterator(SectionHeaders* section) :section(section)
 {
+	assert(section != NULL);
 	Reset();
 }
 
@@ -41,6 +42,6 @@ bool PE::SectionIterator::Next()
 void PE::SectionIterator::Reset()
 {
 	currentSectionPointer = NULL;
-	firstSectionHeader = section.firstSectionHeader;
-	lastSectionHeader = section.lastSectionHeader;
+	firstSectionHeader = section->firstSectionHeader;
+	lastSectionHeader = section->lastSectionHeader;
 }

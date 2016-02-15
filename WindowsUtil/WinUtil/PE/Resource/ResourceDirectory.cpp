@@ -25,7 +25,7 @@ PIMAGE_RESOURCE_DATA_ENTRY PE::ResourceDirectory::LocateResourceDataEntry(PIMAGE
 	return PIMAGE_RESOURCE_DATA_ENTRY((PUINT8)directoryRoot + entry->OffsetToDirectory);
 }
 
-PE::ResourceDirectory::ResourceDirectory(PeDecoder & pe) :DataDirectoryBase(pe)
+PE::ResourceDirectory::ResourceDirectory(PeDecoder* pe) :DataDirectoryBase(pe)
 {
 	canCreateIterator = true;
 }

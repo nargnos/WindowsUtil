@@ -8,7 +8,7 @@ namespace PE
 		PIMAGE_DOS_HEADER  dosHeader;
 	public:
 		friend class PeDecoder;
-		explicit DosHeader(PeDecoder & pe);
+		explicit DosHeader(PeDecoder* pe);
 		~DosHeader();
 		bool VerifyDosSignature();
 		virtual PIMAGE_DOS_HEADER GetValue() override;

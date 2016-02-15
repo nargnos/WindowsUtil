@@ -6,7 +6,7 @@ namespace PE
 	class ResourceDataIterator
 	{
 	public:
-		explicit ResourceDataIterator(LanguageIterator& resourceDirectoryLanguageIterator);
+		explicit ResourceDataIterator(LanguageIterator* resourceDirectoryLanguageIterator);
 		~ResourceDataIterator();
 	};
 

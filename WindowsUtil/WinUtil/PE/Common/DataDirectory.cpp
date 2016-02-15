@@ -1,6 +1,6 @@
 #include "Common.h"
 
-PE::DataDirectoryBase::DataDirectoryBase(PeDecoder & pe) :PeStruct(pe)
+PE::DataDirectoryBase::DataDirectoryBase(PeDecoder* pe) :PeStruct(pe)
 {
 
 }
@@ -11,5 +11,5 @@ PVOID PE::DataDirectoryBase::DirectoryEntryToData()
 	{
 		return NULL;
 	}
-	return peDecoder.GetRvaData(dataDirectory->VirtualAddress);
+	return peDecoder->GetRvaData(dataDirectory->VirtualAddress);
 }

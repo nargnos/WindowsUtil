@@ -9,7 +9,7 @@ namespace PE
 	{
 	public:
 		friend GetIteratorBase::Iterator;
-		explicit RelocDirectory(PeDecoder & pe);
+		explicit RelocDirectory(PeDecoder* pe);
 
 		~RelocDirectory();
 

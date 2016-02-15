@@ -13,7 +13,7 @@ namespace PE
 		bool hasNtHeader32;
 	public:
 		friend class PeDecoder;
-		explicit NtHeader(PeDecoder & pe);
+		explicit NtHeader(PeDecoder* pe);
 		~NtHeader();
 		 bool VerifyNtSignature();
 		 const PIMAGE_NT_HEADERS32 GetNtHeader32();

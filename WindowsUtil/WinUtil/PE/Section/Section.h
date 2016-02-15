@@ -15,7 +15,7 @@ namespace PE
 		friend class PeDecoder;
 		friend GetIteratorBase::Iterator;
 
-		explicit SectionHeaders(PeDecoder & pe);
+		explicit SectionHeaders(PeDecoder* pe);
 
 		~SectionHeaders();
 

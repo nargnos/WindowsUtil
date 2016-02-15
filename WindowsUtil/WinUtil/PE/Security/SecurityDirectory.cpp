@@ -2,7 +2,7 @@
 
 PVOID PE::SecurityDirectory::DirectoryEntryToData()
 {
-	if (peDecoder.IsMapped())  // 不会映射到内存，VirtualAddress即offset
+	if (peDecoder->IsMapped())  // 不会映射到内存，VirtualAddress即offset
 	{
 		return NULL;
 	}
@@ -10,10 +10,10 @@ PVOID PE::SecurityDirectory::DirectoryEntryToData()
 	{
 		return NULL;
 	}
-	return reinterpret_cast<PBYTE>(peDecoder.GetBase()) + dataDirectory->VirtualAddress;
+	return reinterpret_cast<PBYTE>(peDecoder->GetBase()) + dataDirectory->VirtualAddress;
 }
 
-PE::SecurityDirectory::SecurityDirectory(PeDecoder & pe) :DataDirectoryBase(pe)
+PE::SecurityDirectory::SecurityDirectory(PeDecoder* pe) :DataDirectoryBase(pe)
 {
 }
 

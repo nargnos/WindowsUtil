@@ -2,15 +2,15 @@
 namespace PE
 {
 
-	PDWORD GetProcExportFuncTableAddress(PeDecoder & pe, LPCSTR lpProcName)
+	PDWORD GetProcExportFuncTableAddress(PeDecoder* pe, LPCSTR lpProcName)
 	{
-		assert(lpProcName != NULL);
-		if (!pe.IsPE())
+		assert(pe!=NULL && lpProcName != NULL);
+		if (!pe->IsPE())
 		{
 			return NULL;
 		}
 		// 导出表名字有序, 二分
-		auto er = pe.GetExport();
+		auto er = pe->GetExport();
 		PDWORD nameTable = er->NameTable();
 		DWORD right = *er->NumberOfNames();
 		DWORD left = 0;
@@ -19,7 +19,7 @@ namespace PE
 		while (left <= right)
 		{
 			mid = (left + right) >> 1;
-			cmpResult = strcmp(lpProcName, (LPCSTR)pe.GetRvaData(nameTable[mid]));
+			cmpResult = strcmp(lpProcName, (LPCSTR)pe->GetRvaData(nameTable[mid]));
 			if (!cmpResult)
 			{
 				// 找到
@@ -37,14 +37,14 @@ namespace PE
 		}
 		return NULL;
 	}
-	FARPROC GetProcAddress(PeDecoder & pe, LPCSTR lpProcName)
+	FARPROC GetProcAddress(PeDecoder* pe, LPCSTR lpProcName)
 	{
 		auto result = GetProcExportFuncTableAddress(pe, lpProcName);
 		if (!result)
 		{
 			return NULL;
 		}
-		return (FARPROC)pe.GetRvaData(*result);
+		return (FARPROC)pe->GetRvaData(*result);
 	}
 	FARPROC GetProcAddress(HMODULE module, LPCSTR lpProcName)
 	{
@@ -53,26 +53,26 @@ namespace PE
 		{
 			return NULL;
 		}
-		return GetProcAddress(pe, lpProcName);
+		return GetProcAddress(&pe, lpProcName);
 	}
 
-	FARPROC GetProcAddress(PeDecoder & pe, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
+	FARPROC GetProcAddress(PeDecoder* pe, PVOID compareName, bool compareCallback(PVOID compare, LPCSTR procName))
 	{
 		assert(compareCallback != NULL && compareName != NULL);
-		if (!pe.IsPE())
+		if (!pe->IsPE())
 		{
 			return NULL;
 		}
-		auto er = pe.GetExport()->CreateIterator();
+		auto er = pe->GetExport()->CreateIterator();
 		while (er->Next())
 		{
 			auto nameRva = er->CurrentNameRva();
 			if (nameRva)
 			{
-				auto name = (PCHAR)pe.GetRvaData(*nameRva);
+				auto name = (PCHAR)pe->GetRvaData(*nameRva);
 				if (compareCallback(compareName, name))
 				{
-					return (FARPROC)pe.GetRvaData(*er->CurrentFuncRva());
+					return (FARPROC)pe->GetRvaData(*er->CurrentFuncRva());
 				}
 			}
 		}
@@ -85,6 +85,6 @@ namespace PE
 		{
 			return NULL;
 		}
-		return GetProcAddress(pe, compareName, compareCallback);
+		return GetProcAddress(&pe, compareName, compareCallback);
 	}
 }  // namespace PE

@@ -1,10 +1,11 @@
 #include "DelayImportDirectory.h"
 
-PE::DelayImportThunkIterator::DelayImportThunkIterator(DelayImportDescriptorIterator & delayImportDescriptorIterator)
+PE::DelayImportThunkIterator::DelayImportThunkIterator(DelayImportDescriptorIterator* delayImportDescriptorIterator)
 {
-	descriptor = delayImportDescriptorIterator.currentDelay;
-	importAddressTable = delayImportDescriptorIterator.delayImport.GetPeDecoder().GetRvaData(descriptor->rvaIAT);
-	importNameTable = delayImportDescriptorIterator.delayImport.GetPeDecoder().GetRvaData(descriptor->rvaINT);
+	assert(delayImportDescriptorIterator != NULL);
+	descriptor = delayImportDescriptorIterator->currentDelay;
+	importAddressTable = delayImportDescriptorIterator->delayImport->GetPeDecoder()->GetRvaData(descriptor->rvaIAT);
+	importNameTable = delayImportDescriptorIterator->delayImport->GetPeDecoder()->GetRvaData(descriptor->rvaINT);
 	Reset();
 }
 

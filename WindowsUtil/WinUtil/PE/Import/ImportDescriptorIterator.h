@@ -8,11 +8,11 @@ namespace PE
 		public IIterator<PIMAGE_IMPORT_DESCRIPTOR>,
 		public GetIterator<ImportThunkIterator, ImportDescriptorIterator>
 	{
-		ImportDirectory& importDirectory;
+		ImportDirectory* importDirectory;
 		int currentIndex;
 	public:
 		friend GetIteratorBase::Iterator;
-		explicit ImportDescriptorIterator(ImportDirectory& importDirectory);
+		explicit ImportDescriptorIterator(ImportDirectory* importDirectory);
 		~ImportDescriptorIterator();
 		bool Next();
 

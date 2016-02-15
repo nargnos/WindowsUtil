@@ -8,10 +8,10 @@ namespace PE
 	class ExportDirectory;
 	class ExportIterator
 	{
-		ExportDirectory& exportDir;
+		ExportDirectory* exportDir;
 		int currentIndex;
 	public:
-		explicit ExportIterator(ExportDirectory& exportDir);
+		explicit ExportIterator(ExportDirectory* exportDir);
 		~ExportIterator();
 
 		PDWORD CurrentFuncRva();
