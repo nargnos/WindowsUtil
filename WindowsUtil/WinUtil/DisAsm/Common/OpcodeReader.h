@@ -14,9 +14,9 @@ public:
 		while (current != NULL && current->HasNext())
 		{
 			current = current->Next(inst);
-			assert(current);
+			assert(current);  // TODO: grp/esc类指令代码未写，读到这类指令会有NULL
 		}
-		return inst->GetLength();
+		return inst->ReadCount();
 	}
 	~OpcodeReader()
 	{

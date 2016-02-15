@@ -6,10 +6,14 @@
 const State*  ByteState::Next(const shared_ptr<Instruction>& inst) const
 {
 	auto asmInst = inst->Cast<AsmInstruction>();
+	if (!asmInst->NextByte())
+	{
+		return asmInst->GetFactory()->GetState(StateFactory::State_End);
+	}
 	// 返回下个状态
 	auto asmFac = asmInst->GetFactory<StateFactory>();
 	// 需要根据上个指令的类型确定应该读取哪个表（多字节指令）
-	auto lastInstType = asmInst->GetTmpInstType();
+	auto lastInstType = asmInst->opcodeDataStorage.GetType();
 	auto currentInstType = asmInst->ReadInst(lastInstType);
-	return asmFac->GetState(currentInstType);
+	return asmFac->GetState(currentInstType);  // 跳转过后的读取位置是没有步进的
 }

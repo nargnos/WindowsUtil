@@ -164,7 +164,7 @@ namespace NAMESPACE {
 		[TypeConverter(PeStructArrayConverter::typeid)]
 		public ref class ExportFuncArrayWapper :
 			public IWapperArray,
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::ExportDirectory>>
+			public PeStructWapper<PE::PeDecoder::LazyInstance<PE::ExportDirectory>>
 		{
 			System::Collections::Generic::IList<IElementName^>^ list;
 			void InitArrayList();
@@ -187,7 +187,7 @@ namespace NAMESPACE {
 
 		// 导出表头，可取到导出表函数数组
 		public ref class ExportWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::ExportDirectory>>
+			public PeStructWapper<PE::PeDecoder::LazyInstance<PE::ExportDirectory>>
 		{
 			static array<String^>^ sortList;
 			int numberOfSections;

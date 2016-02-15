@@ -1,15 +1,15 @@
-#include "AsmOpcodeWapper.h"
+#include "AsmOpcodeDataWapper.h"
 #include "OpcodeData.h"
 
-AsmOpcodeWapper::AsmOpcodeWapper()
+AsmOpcodeDataWapper::AsmOpcodeDataWapper()
 {
 }
 
-AsmOpcodeWapper::~AsmOpcodeWapper()
+AsmOpcodeDataWapper::~AsmOpcodeDataWapper()
 {
 }
 
-std::unique_ptr<OpcodeData[]> AsmOpcodeWapper::UnzipOpcodeData(const ZipOpcodeData zipArray[], int count)
+std::unique_ptr<OpcodeData[]> AsmOpcodeDataWapper::UnzipOpcodeData(const ZipOpcodeData zipArray[], int count)
 {
 	auto result = _STD make_unique<OpcodeData[]>(0x100);
 
@@ -23,7 +23,7 @@ std::unique_ptr<OpcodeData[]> AsmOpcodeWapper::UnzipOpcodeData(const ZipOpcodeDa
 	return result;
 }
 
-const unsigned char * AsmOpcodeWapper::GetOperandGroup(int opCount, int index)
+const unsigned char* AsmOpcodeDataWapper::GetOperandGroup(int opCount, int index) const
 {
 	assert(opCount > 0 && opCount <= 4);
 	switch (opCount)
@@ -48,13 +48,11 @@ const unsigned char * AsmOpcodeWapper::GetOperandGroup(int opCount, int index)
 }
 
 
-const OpcodeData & AsmOpcodeWapper::GetOpcodeData(OpcodeType tableType, int hex)
+const OpcodeData& AsmOpcodeDataWapper::GetOpcodeData(OpcodeType tableType, int hex)
 {
 	assert(hex >= 0 && hex <= 0xff);
 	switch (tableType)
 	{
-	case OT_None:
-		return HexTable1[hex];
 	case OT_Table_0F:
 		return HexTable2[hex];
 	case OT_Table_0F38:
@@ -70,63 +68,69 @@ const OpcodeData & AsmOpcodeWapper::GetOpcodeData(OpcodeType tableType, int hex)
 		}
 		return table0F3A[hex];
 	default:
-		assert(false);
-		break;
+		return HexTable1[hex];
 	}
 }
 
-const Hex_Inst & AsmOpcodeWapper::GetHex_Inst(int index)
+const Hex_Inst& AsmOpcodeDataWapper::GetHex_Inst(int index) const
 {
 	assert(index >= 0 && index < sizeof(HexInsts) / sizeof(Hex_Inst));
 	return HexInsts[index];
 }
 
-const GrpInstData & AsmOpcodeWapper::GetGrpInst(int index)
+const GrpInstData& AsmOpcodeDataWapper::GetGrpInst(int index) const
 {
 	assert(index >= 0 && index < sizeof(GrpInst) / sizeof(GrpInstData));
 	return GrpInst[index];
 }
 
-const PrefixInstData & AsmOpcodeWapper::GetPfxInst(int index)
+const PrefixInstData& AsmOpcodeDataWapper::GetPfxInst(int index) const
 {
 	assert(index >= 0 && index < sizeof(PfxInst) / sizeof(PrefixInstData));
 	return PfxInst[index];
 }
 
-const InstChangeData & AsmOpcodeWapper::GetInstChange(int index)
+const InstChangeData& AsmOpcodeDataWapper::GetInstChange(int index) const
 {
 	assert(index >= 0 && index < sizeof(InstChange) / sizeof(InstChangeData));
 	return InstChange[index];
 }
 
-const RegOrOperandGroup & AsmOpcodeWapper::GetOperands(int index)
+const RegOrOperandGroup& AsmOpcodeDataWapper::GetOperands(int index) const
 {
 	assert(index >= 0 && index < sizeof(Operands) / sizeof(RegOrOperandGroup));
 	return Operands[index];
 }
 
-const InstData & AsmOpcodeWapper::GetInst(int index)
+const InstData& AsmOpcodeDataWapper::GetInst(int index) const
 {
 	assert(index >= 0 && index < sizeof(Inst) / sizeof(InstData));
 	return Inst[index];
 }
 
-const LPCSTR & AsmOpcodeWapper::GetInstructionNames(int index)
+const LPCSTR& AsmOpcodeDataWapper::GetInstructionNames(int index) const
 {
 	assert(index >= 0 && index < sizeof(InstructionNames) / sizeof(LPCSTR));
 	return InstructionNames[index];
 }
 
-const char * AsmOpcodeWapper::GetRegisterName(unsigned char hex, RegisterLength type)
+const char* AsmOpcodeDataWapper::GetRegisterName(unsigned char hex, RegisterLength type) const
 {
 	assert(hex < 16 && (unsigned char)type < 6);
 	assert(hex < 8 ? true : (type != Len_64_MM));
 	return Registers[hex][type];
 }
 
-const char * AsmOpcodeWapper::GetSegName(OperandType seg)
+const char * AsmOpcodeDataWapper::GetRegisterName(OperandType reg) const
 {
-	assert(seg >= SEG_CS && seg <= SEG_SS);
+	auto tmpReg = reinterpret_cast<RegOrOperand*>(&reg);
+	assert(tmpReg->IsReg);
+	return GetRegisterName(tmpReg->Reg.Hex, (RegisterLength)tmpReg->Reg.LenType);
+}
+
+const char* AsmOpcodeDataWapper::GetSegName(OperandType seg) const
+{
+	assert(IsSeg(seg));
 	auto op = reinterpret_cast<RegOrOperand*>(&seg);
 	return Registers[op->Reg.Hex][op->Reg.LenType];
 }

@@ -4,10 +4,12 @@
 // 表示一条指令，用来临时存储供状态机用的变量
 class Instruction
 {
+	Instruction(const Instruction&) = delete;
 protected:
 	bool isSuccess;
 	const unsigned char* beginPtr;
 	const unsigned char* currentPtr;
+	unsigned int range;  // 读取的限制范围，设置为0表示无限
 	shared_ptr<IStateFactory> factory;
 	void SetSuccess()
 	{
@@ -28,47 +30,63 @@ public:
 		return dynamic_cast<TCast*>(this);
 	}
 	// ptr为读取起始位置
-	virtual void Init(const void* ptr)
+	virtual void Init(const void* ptr, unsigned int range)
 	{
 		assert(ptr != NULL);
-		currentPtr = beginPtr = reinterpret_cast<const unsigned char*>(ptr);
+		beginPtr = reinterpret_cast<const unsigned char*>(ptr);
+		currentPtr = 0;
 		isSuccess = false;
-		assert(factory!=nullptr);
+		assert(factory != nullptr);
 		factory->Reset();
+		this->range = range;
+	}
+	void Init(const void* ptr)
+	{
+		Init(ptr, 0);
 	}
 	// 以当前读取位置重置存储环境
 	virtual void Reset()
 	{
 		Init(CurrentBytePtr());
 	}
+	// 返回已读长度
+	int ReadCount() const
+	{
+		return currentPtr == NULL ? 0 : currentPtr - beginPtr;
+	}
 
 	// 成功返回指令长度
-	virtual int GetLength() const
+	virtual int GetInstructionLength() const
 	{
-		if (IsSuccess())
-		{
-			return currentPtr - beginPtr;
-		}
-		return 0;
+		return IsSuccess() ? ReadCount() : 0;
 	}
 
 	template<typename TStateFactory = IStateFactory>
-	shared_ptr<TStateFactory> GetFactory() const
+	TStateFactory* GetFactory() const
 	{
-		return dynamic_pointer_cast<TStateFactory>(factory);
+		return dynamic_cast<TStateFactory*>(factory.get());
 	}
 	template<>
-	shared_ptr<IStateFactory> GetFactory() const
+	IStateFactory* GetFactory() const
 	{
-		return factory;
+		return factory.get();
 	}
+
 	virtual const unsigned char* CurrentBytePtr() const
 	{
 		return currentPtr;
 	}
-	virtual void NextByte()
+	// 第一次步进设置初始位置开始读取
+	virtual bool NextByte()
 	{
-		currentPtr++;
+		if (currentPtr == 0)
+		{
+			currentPtr = beginPtr;
+			return true;
+		}
+
+		++currentPtr;
+		return (range == 0) | (ReadCount() < range);
 	}
 	// 是否解析成功
 	virtual bool IsSuccess() const

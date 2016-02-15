@@ -12,6 +12,6 @@ public:
 	~PrefixState()
 	{
 	}
-	virtual  const State*  Next(const shared_ptr<Instruction>& inst) const override;
+	virtual const State* Next(const shared_ptr<Instruction>& inst) const override;
 };
 

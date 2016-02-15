@@ -8,7 +8,7 @@ namespace NAMESPACE {
 		ref class PeImage;
 		[TypeConverter(ShowPropertiesConverter::typeid)]
 		public ref class NtHeaderWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::NtHeader>>,
+			public PeStructWapper<PE::PeDecoder::LazyInstance<PE::NtHeader>>,
 			public IPropertiesFilter
 		{
 			static array<String^>^ sortList;

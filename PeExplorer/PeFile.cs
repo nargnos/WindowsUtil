@@ -12,6 +12,10 @@ namespace PeExplorer
     public class PeFile
     {
         private SafeMemoryMappedViewHandle smmv;
+        private FileStream fs;
+        private MemoryMappedFile mmf;
+        private MemoryMappedViewAccessor mmva;
+
         private PeImage pe;
         private string fileName;
 
@@ -61,36 +65,51 @@ namespace PeExplorer
                 smmv.ReleasePointer();
                 smmv = null;
             }
+            if (mmva != null)
+            {
+                // mmva.Dispose(); 会自己析构不用管，下同
+                mmva = null;
+            }
+            if (mmf != null)
+            {
+                mmf = null;
+            }
+            if (fs!=null)
+            {
+                fs.Close();
+                fs = null;
+            }
         }
         public bool Open(string path, bool isReadOnly)
         {
 
             Close();
-            IntPtr ptr;
             FileAccess fileAccess = isReadOnly ? FileAccess.Read : FileAccess.ReadWrite;
             MemoryMappedFileAccess memoryMappedFileAccess = isReadOnly ? MemoryMappedFileAccess.Read : MemoryMappedFileAccess.ReadWrite;
             var tmpFileName = Path.GetFileName(path);
 
-            using (FileStream fs = new FileStream(path, FileMode.Open, fileAccess, FileShare.Read))
-            using (MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile(
+            fs = new FileStream(path, FileMode.Open, fileAccess, FileShare.Read);
+            mmf = MemoryMappedFile.CreateFromFile(
                 fs,
                 tmpFileName,
                 0,
-                memoryMappedFileAccess, HandleInheritability.None, true)
-                )
-            using (var va = mmf.CreateViewAccessor(0, 0, memoryMappedFileAccess))
+                memoryMappedFileAccess, HandleInheritability.None, true);
+
+            mmva = mmf.CreateViewAccessor(0, 0, memoryMappedFileAccess);
+
+            smmv = mmva.SafeMemoryMappedViewHandle;
+            bool result = false;
+            unsafe
             {
-                smmv = va.SafeMemoryMappedViewHandle;
-                unsafe
+                byte* pointer = null;
+                smmv.AcquirePointer(ref pointer);
+                if (pointer == null)
                 {
-                    byte* pointer = null;
-                    smmv.AcquirePointer(ref pointer);
-                    ptr = new IntPtr(pointer);
+                    throw new FileLoadException("无法载入文件");
                 }
+                result = PE.Attach(pointer, false);
             }
-
-
-            var result = PE.Attach(ptr, false);
+            
             if (result)
             {
                 fileName = tmpFileName;

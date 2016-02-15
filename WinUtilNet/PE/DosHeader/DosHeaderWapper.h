@@ -7,7 +7,7 @@ namespace NAMESPACE {
 
 		[TypeConverter(ShowPropertiesConverter::typeid)]
 		public ref class DosHeaderWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::DosHeader>>
+			public PeStructWapper<PE::PeDecoder::LazyInstance<PE::DosHeader>>
 		{
 			static array<String^>^ sortList;
 			UnmanagedArray<WORD>^ e_res2;

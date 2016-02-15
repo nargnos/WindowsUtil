@@ -235,7 +235,7 @@ namespace NAMESPACE {
 
 		[TypeConverter(PeStructArrayConverter::typeid)]
 		ref class SectionHeaderArrayWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::SectionHeaders>>,
+			public PeStructWapper<PE::PeDecoder::LazyInstance<PE::SectionHeaders>>,
 			public IWapperArray
 		{
 			List<IElementName^>^ list;

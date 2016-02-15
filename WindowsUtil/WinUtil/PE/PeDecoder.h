@@ -44,13 +44,13 @@ namespace PE
 	public:
 		// 用来延迟创建子结构
 		template<typename T>
-		class PeStructInstance
+		class LazyInstance
 		{
 			_STD shared_ptr<T> data;
 			PeDecoder* peDecoder;
-			void Bind(PeDecoder* PeDecoder)
+			void Bind(PeDecoder* val)
 			{
-				this->peDecoder = peDecoder;
+				peDecoder = val;
 			}
 			void Reset()
 			{
@@ -60,23 +60,22 @@ namespace PE
 					data->Reset();
 				}*/
 			}
-			PeStructInstance() = default;
+			LazyInstance()
+			{
+				data = NULL;
+			}
 		public:
 			friend PeDecoder;
 
-			_STD shared_ptr<T> operator->()
+			const _STD shared_ptr<T>& operator->()
 			{
-				if (!data)
+				if (!data && peDecoder->isAttached)
 				{
-					if (peDecoder->isAttached)
-					{
-						data = _STD make_shared<T>(*peDecoder);
-					}
-
+					data = _STD make_shared<T>(*peDecoder);
 				}
 				return data;
 			}
-			_STD shared_ptr<T> operator()()
+			const _STD shared_ptr<T>& operator()()
 			{
 				return this->operator->();
 			}
@@ -85,28 +84,28 @@ namespace PE
 		PeDecoder();
 		~PeDecoder() = default;
 		void Clear();
-		PeDecoder(const PeDecoder & pe) = delete;
+		explicit PeDecoder(const PeDecoder & pe) = delete;
 		bool Attach(PVOID base, bool isMapped);
 		void Dettach();
 		PVOID GetBase();
-		PeStructInstance<DosHeader> GetDosHeader;
-		PeStructInstance<NtHeader> GetNtHeader;
-		PeStructInstance<SectionHeaders> GetSection;
-		PeStructInstance<RelocDirectory> GetReloc;
-		PeStructInstance<ExportDirectory> GetExport;
-		PeStructInstance<ImportDirectory> GetImport;
-		PeStructInstance<ResourceDirectory> GetResource;
-		PeStructInstance<EntryExceptionDirectory> GetException;
-		PeStructInstance<SecurityDirectory> GetSecurity;
-		PeStructInstance<DebugDirectory> GetDebug;
-		PeStructInstance<ArchitectureDirectory> GetArchitecture;
-		PeStructInstance<GlobalptrDirectory> GetGlobalptr;
-		PeStructInstance<TlsDirectory> GetTls;
-		PeStructInstance<LoadConfigDirectory> GetLoadConfig;
-		PeStructInstance<BoundImportDirectory> GetBoundImport;
-		PeStructInstance<IatDirectory> GetIat;
-		PeStructInstance<DelayImportDirectory> GetDelayImport;
-		PeStructInstance<ComDescriptorDirectory> GetComDescriptor;
+		LazyInstance<DosHeader> GetDosHeader;
+		LazyInstance<NtHeader> GetNtHeader;
+		LazyInstance<SectionHeaders> GetSection;
+		LazyInstance<RelocDirectory> GetReloc;
+		LazyInstance<ExportDirectory> GetExport;
+		LazyInstance<ImportDirectory> GetImport;
+		LazyInstance<ResourceDirectory> GetResource;
+		LazyInstance<EntryExceptionDirectory> GetException;
+		LazyInstance<SecurityDirectory> GetSecurity;
+		LazyInstance<DebugDirectory> GetDebug;
+		LazyInstance<ArchitectureDirectory> GetArchitecture;
+		LazyInstance<GlobalptrDirectory> GetGlobalptr;
+		LazyInstance<TlsDirectory> GetTls;
+		LazyInstance<LoadConfigDirectory> GetLoadConfig;
+		LazyInstance<BoundImportDirectory> GetBoundImport;
+		LazyInstance<IatDirectory> GetIat;
+		LazyInstance<DelayImportDirectory> GetDelayImport;
+		LazyInstance<ComDescriptorDirectory> GetComDescriptor;
 
 		bool IsMapped() const;
 		bool HasNtHeader32() const;

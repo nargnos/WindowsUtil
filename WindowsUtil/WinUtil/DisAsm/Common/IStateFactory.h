@@ -5,13 +5,14 @@ class IStateFactory
 {
 	IStateFactory(const IStateFactory&) = delete;
 protected:
-	// 取任意状态
-	virtual const State* GetState(unsigned char) = 0;
+	
 public:
 
 	IStateFactory()
 	{
 	}
+	// 取任意状态
+	virtual const State* GetState(unsigned char) = 0;
 	// 取得入口
 	virtual const State* GetBeginStateInstance() = 0;
 	// 重置

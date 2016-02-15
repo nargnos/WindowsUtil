@@ -1,117 +1,99 @@
 #include "AsmInstruction.h"
 #include "StateFactory.h"
-OpcodeType AsmInstruction::GetTmpInstType()
+
+// 操作数(立即数)所占的字长，在读取operandGrp会将对应参数字长设置好
+
+const AsmOpcodeDataWapper* AsmInstruction::GetOpcodeDataWapper() const
 {
-	return tmpInstType;
+	return &opcodeDataWapper;
 }
 
-void AsmInstruction::SetTmpData(OpcodeType type, const void * ptr)
-{
-	tmpInstType = type;
-	tmpInstData = ptr;
-}
-
-void AsmInstruction::ClearTmpData()
-{
-	tmpInstType = OT_None;
-	tmpInstData = NULL;
-}
-
-std::shared_ptr<AsmOpcodeWapper>& AsmInstruction::GetOpcodeDataWapper()
-{
-	return wapper;
-}
-
-void AsmInstruction::SetOutputStream(const shared_ptr<std::ostringstream>& output)
-{
-	outputStr = output;
-}
-
-bool AsmInstruction::IsX32()
+bool AsmInstruction::IsX32() const
 {
 	return isX32;
 }
 
-int AsmInstruction::GetCurrentPfxcdt()
-{
-	return 0;
-}
-
 OpcodeType AsmInstruction::ReadInst(OpcodeType table)
 {
-	auto curStat = GetFactory<StateFactory>()->GetCurrentState();
-	assert(curStat == StateFactory::State_Byte);
+	assert(GetFactory<StateFactory>()->GetCurrentState() == StateFactory::State_Byte);
 
 	const OpcodeData* opcodeData = NULL;
 	auto index = *CurrentBytePtr();
-	opcodeData = &wapper->GetOpcodeData(table, index);
+	opcodeData = &opcodeDataWapper.GetOpcodeData(table, index);
 	// 根据已有条件选择指令
 	for (auto i = 0; i < opcodeData->Count; i++)
 	{
-		if (SelectInst(wapper->GetHex_Inst(opcodeData->Hex_InstIndex + i)))
+		if (SelectInst(opcodeDataWapper.GetHex_Inst(opcodeData->Hex_InstIndex + i)))
 		{
 			break;
 		}
 	}
-	NextByte();
-	return GetTmpInstType();
+	return opcodeDataStorage.GetType();
 }
+
 
 bool AsmInstruction::SelectInst(const Hex_Inst & hexInst)
 {
 	Superscript tmpInstSs = (Superscript)NULL;
 	PrefixCondition tmpInstPfxcdt = (PrefixCondition)NULL;
-	ClearTmpData();
+	if (!opcodeDataStorage.IsEmpty())
+	{
+		opcodeDataStorage.Clear();
+	}
 	auto instType = (OpcodeType)hexInst.Type;
 	assert(instType != (OpcodeType)NULL);
 	switch (instType)
 	{
 	case OT_Inst:
-	{
-		auto tmpInst = &wapper->GetInst(hexInst.InstIndex);
-		SetTmpData(instType, tmpInst);
-		tmpInstSs = (Superscript)tmpInst->Ss;
-		tmpInstPfxcdt = (PrefixCondition)tmpInst->Pfxcdt;
-	}
-	break;
 	case OT_Inst_Change:
 	{
-		auto tmpInst = &wapper->GetInstChange(hexInst.InstIndex);
-		SetTmpData(instType, tmpInst);
+		const InstData* tmpInst = NULL;
+		if (instType == OT_Inst_Change)
+		{
+			// 两个结构体类型只有最后一个成员变量的区别，此时不使用所以当作同一类型
+			tmpInst = reinterpret_cast<const InstData*>(&opcodeDataWapper.GetInstChange(hexInst.InstIndex));
+		}
+		else
+		{
+			tmpInst = &opcodeDataWapper.GetInst(hexInst.InstIndex);
+		}
+		assert(tmpInst != NULL);
+		opcodeDataStorage.SetData(instType, tmpInst);
 		tmpInstSs = (Superscript)tmpInst->Ss;
 		tmpInstPfxcdt = (PrefixCondition)tmpInst->Pfxcdt;
 	}
 	break;
 	case OT_Prefix:
 	{
-		auto tmpInst = &wapper->GetPfxInst(hexInst.InstIndex);
-		SetTmpData(instType, tmpInst);
+		auto tmpInst = &opcodeDataWapper.GetPfxInst(hexInst.InstIndex);
+		opcodeDataStorage.SetData(instType, tmpInst);
 		tmpInstSs = (Superscript)tmpInst->Ss;
 	}
 	break;
 	case OT_Grp:
 	{
-		auto tmpInst = &wapper->GetGrpInst(hexInst.InstIndex);
-		SetTmpData(instType, tmpInst);
+		auto tmpInst = &opcodeDataWapper.GetGrpInst(hexInst.InstIndex);
+		opcodeDataStorage.SetData(instType, tmpInst);
 		tmpInstSs = (Superscript)tmpInst->Ss;
 	}
 	break;
 	default:
-		SetTmpData(instType, NULL);
-		break;
+		opcodeDataStorage.SetData(instType, NULL);
+		return true;
 	}
 	auto result = VerifyCondition(tmpInstSs, tmpInstPfxcdt);
 	if (!result)
 	{
 		// 验证失败清空临时数据
-		ClearTmpData();
+		opcodeDataStorage.Clear();
 	}
 	return result;
 }
 
-bool AsmInstruction::VerifyCondition(Superscript ss, PrefixCondition pfx)
+// ss和pfx都为指令数据
+bool AsmInstruction::VerifyCondition(Superscript ss, PrefixCondition pfx) const
 {
-	if (pfx != NULL && ((pfx & GetCurrentPfxcdt()) != pfx))
+	if (pfx != NULL && ((pfx & prefixStorage.GetCurrentPfxcdt()) != pfx))
 	{
 		return false;
 	}
@@ -126,19 +108,18 @@ bool AsmInstruction::VerifyCondition(Superscript ss, PrefixCondition pfx)
 	}
 }
 
-AsmInstruction::AsmInstruction(const shared_ptr<StateFactory>& factory, bool isX32)
-	:Instruction(dynamic_pointer_cast<IStateFactory>(factory)), isX32(isX32)
+bool AsmInstruction::IsNeedOutput() const
 {
-	wapper = make_shared<AsmOpcodeWapper>();
-	ClearTmpData();
+	return needOutput;
 }
 
-void AsmInstruction::Init(const void * ptr)
+AsmInstruction::AsmInstruction(const shared_ptr<StateFactory>& factory, bool isX32, bool needOutput)
+	:Instruction(dynamic_pointer_cast<IStateFactory>(factory)),
+	isX32(isX32),
+	needOutput(needOutput)
 {
-	this->Instruction::Init(ptr);
-	ClearTmpData();
-	ClearOperand();
 }
+
 
 AsmInstruction::~AsmInstruction()
 {

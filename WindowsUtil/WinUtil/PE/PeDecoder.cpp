@@ -20,12 +20,13 @@ namespace PE
 		{
 			return true;
 		}
+		
 		// 初始化数据
 		isPE = false;
 		Clear();
 		isAttached = true;
 
-		this->base = reinterpret_cast<PBYTE>(base);
+		this->base = (PBYTE)(base);
 		this->isMapped = isMapped;
 		// 绑定结构
 		BindPtr();

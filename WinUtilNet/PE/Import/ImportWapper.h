@@ -223,7 +223,7 @@ namespace NAMESPACE {
 		// dllÃû³Æ
 		[TypeConverter(PeStructArrayConverter::typeid)]
 		public ref class ImportDescriptorArrayWapper :
-			public PeStructWapper<PE::PeDecoder::PeStructInstance<PE::ImportDirectory>>,
+			public PeStructWapper<PE::PeDecoder::LazyInstance<PE::ImportDirectory>>,
 			public IWapperArray
 		{
 			List<IElementName^>^ list;

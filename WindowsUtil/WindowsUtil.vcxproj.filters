@@ -216,9 +216,6 @@
     <ClInclude Include="WinUtil\DisAsm\Asm\Asm.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\AsmInstruction.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -238,6 +235,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Common\State.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -425,13 +425,13 @@
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\OperandState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -30,7 +30,7 @@ typedef struct
 }RegOrOperandGroup, *PRegOrOperandGroup;
 #pragma endregion
 
-enum RegisterLength
+enum RegisterLength :unsigned char
 {
 	Len_8,
 	Len_16,
@@ -49,8 +49,8 @@ extern const char* Registers[16][6];
 // 把文档翻译了一下做参考，可能不准
 enum OperandType :unsigned char
 {
-	// NULL = 0,
-	CHANGE_REG = 1,  // 表示寄存器参数(字符串)会随着长度限定改变
+	OT_NULL = 0,
+
 	// OperandTypes 操作数类型
 
 	// 两个WORD或两个DWORD内存操作数，取决于操作数大小属性（只用在BOUND指令中）
@@ -211,7 +211,6 @@ enum OperandType :unsigned char
 	SPC_rSI_r14,
 	SPC_rDI_r15,
 
-
 	SPC_RAX_EAX_R8_R8D,
 	SPC_RCX_ECX_R9_R9D,
 	SPC_RDX_EDX_R10_R10D,
@@ -232,6 +231,11 @@ enum OperandType :unsigned char
 	SPC_Ux_Md,
 	SPC_Ux_Mq,
 	SPC_Ux_Mw,
+
+	// 表示寄存器参数(字符串)会随着长度限定改变
+	// 这个是配合后面REG用的标识
+	CHANGE_REG,
+
 	// Segs
 	// 使用长度赋值不代表是这个长度，共用名字表好查而已
 	SEG_CS = _REG(10, Len_64_MM),
@@ -369,7 +373,8 @@ enum PrefixGroup :unsigned char
 	// and instructions with operands supporting either 128 or 256 - bit,
 	// determined by VEX.L, are indicated by 'x'.
 	// For example, the entry "VMOVUPD Vx,Wx" indicates both VEX.L = 0 and VEX.L = 1 are supported.
-	PfxGrp_Vex
+	PfxGrp_Vex,
+	PfxGrp_End
 };
 enum Prefix :unsigned char
 {
@@ -430,7 +435,7 @@ enum OpcodeGroup :unsigned char
 // 指令存在条件
 enum PrefixCondition :unsigned char
 {
-	// C_None,
+	C_None,
 	C_66 = 1,
 	C_F2 = 1 << 1,
 	C_F3 = 1 << 2,
@@ -477,7 +482,7 @@ enum Superscript :unsigned char
 // 名字后缀
 enum NameExt :unsigned char
 {
-	// Ext_None = 0,
+	Ext_None = 0,
 	Ext_B = 1,
 	Ext_W = Ext_B << 1,
 	Ext_D = Ext_W << 1,

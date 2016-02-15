@@ -1,29 +1,38 @@
 #include "InstructionState.h"
 #include "StateFactory.h"
-// 预读需要的操作数信息，输出指令名
-// 会跳到的状态：End、Rm
+// 读需要的操作数信息，输出指令名
 const State*  InstructionState::Next(const shared_ptr<Instruction>& inst) const
 {
 	auto asmInst = inst->Cast<AsmInstruction>();
-	auto type = asmInst->GetTmpInstType();
-
-	if (asmInst->outputStr)
-	{
-		// TODO: 输出名字
-	}
+	auto type = asmInst->opcodeDataStorage.GetType();
+	assert(type == OT_Inst || type == OT_Inst_Change);
+	
 	// 这里跟InstChangeData共用结构，这两个结构成员变量类型大小顺序必须相同
 	// InstChangeData的最后一个成员变量是用来添加名字后缀用的，这里不需要
-	auto instData = asmInst->GetTmpData<InstData>();
+	auto instData = asmInst->opcodeDataStorage.GetData<InstData>();
+	auto wapper = asmInst->GetOpcodeDataWapper();
+	if (asmInst->IsNeedOutput())
+	{
+		// 输出名字
+		asmInst->nameStorage.SetInstName(wapper->GetInstructionNames(instData->NameID));
+		if (type == OT_Inst_Change)
+		{
+			// 解析后缀
+			auto instChange = reinterpret_cast<const InstChangeData*>(instData);
+			// TODO: 需要prefix解析，判断操作数长度从选项中选出“后缀”
+		}
+	}
+
 	if (instData->ParamCount == 0)
 	{
-		asmInst->operandGrp = NULL;
+		asmInst->operandGrpStorage.SetOperandGrp(0, NULL);
 		asmInst->SetSuccess();
-		return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_End);
+		return asmInst->GetFactory()->GetState(StateFactory::State_End);
 	}
-	auto operandGrp = asmInst->wapper->GetOperandGroup(instData->ParamCount, instData->ParamID);
+	auto operandGrp = wapper->GetOperandGroup(instData->ParamCount, instData->ParamID);
 	assert(operandGrp != NULL);
-	asmInst->SetOperandGrp(instData->ParamCount, operandGrp);
-	return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Operand);
+	asmInst->operandGrpStorage.SetOperandGrp(instData->ParamCount, operandGrp);
+	return asmInst->GetFactory()->GetState(StateFactory::State_Operand);
 
 	// TODO: 不用先确定rm存在，整合到读操作数类型里，边读操作数边读rm（或者rm先读出来，用到再查）。
 	// 现在对于3字节指令有疑问，66 0F3A 0F C1 08H为什么是palignr Vdq, Wdq, Ib
@@ -33,14 +42,5 @@ const State*  InstructionState::Next(const shared_ptr<Instruction>& inst) const
 	// TODO: 弄明白前无法往下编，暂时放下先，可能跟SSE版本有关，H解释为旧版不存在，得到结果就会跟例子一样。
 	// 可能4操作数需要Vex前缀, 测试了一下，64位加了vex前缀vs不解析，可能用法不对。64位下的指令还是跟32位的一样
 
-	/*for (auto i = 0; i < instData->ParamCount; i++)
-	{
-		auto& tmpOperand = asmInst->wapper->GetOperands(operandGrp[i]);
-		if (!tmpOperand.H.IsReg && HasRM((OperandType)tmpOperand.H.Operand))
-		{
-			return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Rm);
-		}
-	}
-	return asmInst->GetFactory<StateFactory>()->GetState(StateFactory::State_Operand);*/
 }
 

@@ -152,7 +152,7 @@
     <ClInclude Include="WinUtil\DisAsm\Asm\EscapeState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\ExitState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\GroupState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeWapper.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\ByteState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\InitState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.h" />
@@ -229,7 +229,7 @@
     <ClCompile Include="WinUtil\DisAsm\Asm\ExitState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\GroupState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\InitState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeWapper.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp" />
