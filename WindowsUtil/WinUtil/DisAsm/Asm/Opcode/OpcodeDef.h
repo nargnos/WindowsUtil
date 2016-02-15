@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #pragma region 操作数存储结构
+#pragma pack(push, 1)
 typedef struct
 {
 	union
@@ -10,7 +11,7 @@ typedef struct
 			struct
 			{
 				unsigned char Operand : 7;
-				unsigned char : 1;
+				unsigned char IsReg : 1;
 			};
 			struct
 			{
@@ -18,7 +19,6 @@ typedef struct
 				unsigned char LenType : 3;
 				unsigned char : 1;
 			}Reg;
-			unsigned char IsReg : 1;
 		};
 		unsigned char Val;
 	};
@@ -28,6 +28,7 @@ typedef struct
 	RegOrOperand H;
 	RegOrOperand L;
 }RegOrOperandGroup, *PRegOrOperandGroup;
+#pragma pack(pop)
 #pragma endregion
 
 enum RegisterLength :unsigned char
@@ -41,7 +42,7 @@ enum RegisterLength :unsigned char
 };
 
 // 跟段标识共用一个表节约一下空间
-extern const char* Registers[16][6];
+extern const char Registers[16][6][6];
 
 #define _REG(hex, type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
 
@@ -236,14 +237,19 @@ enum OperandType :unsigned char
 	// 这个是配合后面REG用的标识
 	CHANGE_REG,
 
-	// Segs
-	// 使用长度赋值不代表是这个长度，共用名字表好查而已
-	SEG_CS = _REG(10, Len_64_MM),
-	SEG_DS = _REG(11, Len_64_MM),
-	SEG_ES = _REG(12, Len_64_MM),
-	SEG_FS = _REG(13, Len_64_MM),
-	SEG_GS = _REG(14, Len_64_MM),
-	SEG_SS = _REG(15, Len_64_MM),
+	// SPL,BPL,SIL,DIL（Len_8长度，需要REX前缀，会替换掉ah、ch、dh、bh）
+	// 使用长度赋值不代表是这个长度,放在那里节省空间
+	// 注意大小的转换需要考虑到这里
+	REG_SPL = _REG(8, Len_64_MM),
+	REG_BPL = _REG(9, Len_64_MM),
+	REG_SIL = _REG(10, Len_64_MM),
+	REG_DIL = _REG(11, Len_64_MM),
+	// 待定
+	REG_X12 = _REG(12, Len_64_MM),
+	REG_X13 = _REG(13, Len_64_MM),
+	REG_X14 = _REG(14, Len_64_MM),
+	REG_X15 = _REG(15, Len_64_MM),
+
 	// reg
 	REG_AL = _REG(0, Len_8),
 	REG_AX = _REG(0, Len_16),
@@ -334,6 +340,17 @@ enum OperandType :unsigned char
 	REG_R15D = _REG(15, Len_32),
 	REG_R15 = _REG(15, Len_64),
 	REG_XMM15 = _REG(15, Len_128_XMM),
+	// 到223
+	REG_END = REG_XMM15,
+	// Segs
+	// 从SEG_XX按顺序递增,需要做一些处理才能取到字符串
+	SEG_XX = 250,
+	SEG_CS = SEG_XX,
+	SEG_DS = SEG_XX + 1,
+	SEG_ES = SEG_XX + 2,
+	SEG_FS = SEG_XX + 3,
+	SEG_GS = SEG_XX + 4,
+	SEG_SS = SEG_XX + 5,
 };
 
 enum OpcodeType :unsigned char

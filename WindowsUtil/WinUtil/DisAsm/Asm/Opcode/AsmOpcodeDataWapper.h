@@ -20,7 +20,7 @@ public:
 	// 返回值是否在OperandType枚举中定义为SEG
 	bool IsSeg(unsigned char val) const
 	{
-		return val >= SEG_CS && val <= SEG_SS;
+		return val >= SEG_XX;
 	}
 
 	// 其它:取1字节表
@@ -43,7 +43,6 @@ public:
 	// 取指令名称
 	const LPCSTR& GetInstructionNames(int index) const;
 	// 取寄存器名称
-	const char * GetRegisterName(unsigned char hex, RegisterLength type) const;
 	const char * GetRegisterName(OperandType reg) const;
 
 	// 取段寄存器名称

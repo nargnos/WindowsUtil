@@ -114,23 +114,19 @@ const LPCSTR& AsmOpcodeDataWapper::GetInstructionNames(int index) const
 	return InstructionNames[index];
 }
 
-const char* AsmOpcodeDataWapper::GetRegisterName(unsigned char hex, RegisterLength type) const
-{
-	assert(hex < 16 && (unsigned char)type < 6);
-	assert(hex < 8 ? true : (type != Len_64_MM));
-	return Registers[hex][type];
-}
 
 const char * AsmOpcodeDataWapper::GetRegisterName(OperandType reg) const
 {
 	auto tmpReg = reinterpret_cast<RegOrOperand*>(&reg);
+	assert(reg <= REG_END);
 	assert(tmpReg->IsReg);
-	return GetRegisterName(tmpReg->Reg.Hex, (RegisterLength)tmpReg->Reg.LenType);
+
+	return Registers[tmpReg->Reg.Hex][tmpReg->Reg.LenType];
 }
 
 const char* AsmOpcodeDataWapper::GetSegName(OperandType seg) const
 {
 	assert(IsSeg(seg));
-	auto op = reinterpret_cast<RegOrOperand*>(&seg);
-	return Registers[op->Reg.Hex][op->Reg.LenType];
+	auto index = (unsigned char)seg - SEG_XX;
+	return Registers[index][0] + 3;
 }
