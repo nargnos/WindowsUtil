@@ -8,13 +8,13 @@ namespace Disassembler
 {
 	// 参数为子类
 	template<typename TChild, typename TTrait = Disassembler_Trait<TChild>>
-	class DisassemblerBase 
+	class DisassemblerBase
 		:public IDisassembler,
 		protected IStateUsed<TTrait>
 	{
 	public:
 		typedef TTrait Trait;
-		
+
 		DisassemblerBase()
 		{
 			auto isChild = std::is_base_of<IDisassembler, TChild>::value;
@@ -23,6 +23,21 @@ namespace Disassembler
 
 		~DisassemblerBase()
 		{
+		}
+		virtual unsigned int Parse(void * pos) override
+		{
+			this->GetStorage()->SetInitialPosition(pos);
+			Trait::TStateFactory::NextStateFunction getNextStateID = NULL;
+			auto stateUsed = dynamic_cast<Trait::TStateUsed*>(this);
+			auto endID = Trait::TStateFactory::GetEndStateID();
+
+			for (auto i = Trait::TStateFactory::GetBeginStateID(); i != endID; i = getNextStateID(stateUsed))
+			{
+				getNextStateID = Trait::TStateFactory::GetStateFunction(i);
+				assert(getNextStateID);
+			}
+			// TODO: 判断解析是否成功，并输出读取长度
+			return 0;
 		}
 	protected:
 		typename TTrait::TOpcodeDataWapper opcodeDataWapper;

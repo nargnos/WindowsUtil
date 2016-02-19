@@ -207,6 +207,8 @@ namespace Disassembler
 		bool hasGrp[PfxGrp_End];
 		bool hasPfx[0x100];  // 只用到前缀对应hex下标的元素
 	};
+
+	// 主要的存储区
 	class AsmStorage :public StorageBase
 	{
 	public:

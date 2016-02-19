@@ -10,11 +10,7 @@ namespace Disassembler
 	class AsmState<AsmStateFactory::State_Init>:public IState
 	{
 	public:
-		static int Next(AsmStateFactory::ParamType* param)
-		{
-			auto storage = param->GetStorage();
-			storage->Clear();
-			return AsmStateFactory::State_Byte;
-		}
+		static int Next(AsmStateFactory::ParamType* param);
 	};
+	 
 }  // namespace Disassembler

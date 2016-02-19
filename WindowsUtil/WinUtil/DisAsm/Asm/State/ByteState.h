@@ -10,136 +10,22 @@ namespace Disassembler
 	class AsmState<AsmStateFactory::State_Byte> :public IState
 	{
 	public:
-		static int Next(AsmStateFactory::ParamType* param)
-		{
-			auto storage = param->GetStorage();
-			storage->NextByte();
-			// 需要根据上个指令的类型确定应该读取哪个表（多字节指令）
-			auto lastInstType = storage->GetOpcodeDataStorage()->GetType();
-			auto currentInstType = ReadInst(param, lastInstType);
-			return OpcodeTypeToStateID(currentInstType);  // 跳转过后的读取位置是没有步进的
-		}
+		static int Next(AsmStateFactory::ParamType* param);
 	private:
-		static OpcodeType ReadInst(AsmStateFactory::ParamType* param, OpcodeType table)
-		{
-			const OpcodeData* opcodeData = NULL;
-			auto storage = param->GetStorage();
-			auto index = *storage->GetCurrentPosition();
-			auto wapper = param->GetOpcodeDataWapper();
-			opcodeData = &wapper->GetOpcodeData(table, index);
-			// 根据已有条件选择指令
-			for (auto i = 0; i < opcodeData->Count; i++)
-			{
-				if (SelectInst(param, wapper->GetHex_Inst(opcodeData->Hex_InstIndex + i)))
-				{
-					break;
-				}
-			}
-			return storage->GetOpcodeDataStorage()->GetType();
-		}
-		
-		
-		static bool SelectInst(AsmStateFactory::ParamType* param, const Hex_Inst & hexInst)
-		{
-			Superscript tmpInstSs = (Superscript)NULL;
-			PrefixCondition tmpInstPfxcdt = (PrefixCondition)NULL;
-			auto storage = param->GetStorage();
-			auto opcodeDataStorage = storage->GetOpcodeDataStorage();
-			auto opcodeDataWapper = param->GetOpcodeDataWapper();
-			if (!opcodeDataStorage->IsEmpty())
-			{
-				opcodeDataStorage->Clear();
-			}
-			auto instType = (OpcodeType)hexInst.Type;
-			assert(instType != (OpcodeType)NULL);
-			switch (instType)
-			{
-			case OT_Inst:
-			case OT_Inst_Change:
-			{
-				const InstData* tmpInst = NULL;
-				if (instType == OT_Inst_Change)
-				{
-					// 两个结构体类型只有最后一个成员变量的区别，此时不使用所以当作同一类型
-					tmpInst = reinterpret_cast<const InstData*>(&opcodeDataWapper->GetInstChange(hexInst.InstIndex));
-				}
-				else
-				{
-					tmpInst = &opcodeDataWapper->GetInst(hexInst.InstIndex);
-				}
-				assert(tmpInst != NULL);
-				opcodeDataStorage->SetData(instType, tmpInst);
-				tmpInstSs = (Superscript)tmpInst->Ss;
-				tmpInstPfxcdt = (PrefixCondition)tmpInst->Pfxcdt;
-			}
-			break;
-			case OT_Prefix:
-			{
-				auto tmpInst = &opcodeDataWapper->GetPfxInst(hexInst.InstIndex);
-				opcodeDataStorage->SetData(instType, tmpInst);
-				tmpInstSs = (Superscript)tmpInst->Ss;
-			}
-			break;
-			case OT_Grp:
-			{
-				auto tmpInst = &opcodeDataWapper->GetGrpInst(hexInst.InstIndex);
-				opcodeDataStorage->SetData(instType, tmpInst);
-				tmpInstSs = (Superscript)tmpInst->Ss;
-			}
-			break;
-			default:
-				opcodeDataStorage->SetData(instType, NULL);
-				return true;
-			}
-			auto result = VerifyCondition(param,tmpInstSs, tmpInstPfxcdt);
-			if (!result)
-			{
-				// 验证失败清空临时数据
-				opcodeDataStorage->Clear();
-			}
-			return result;
-		}
-		
+		// 以当前游标位置作为起始读取指令（表123指令）
+		// 参数表示表类型，只有1(用None表示)、0F、0F38、0F3A表
+		static OpcodeType ReadInst(AsmStateFactory::ParamType* param, OpcodeType table);
+
+		// 判断是否选择该指令关系, 如果通过则存储 ,需要判断当前读取到的前缀组合（只有66、F2、F3）
+		// 成功后返回true会把 OT_Inst\OT_Inst_Change\OT_Prefix\OT_Grp 的对应类型指针存入opcodeDataStorage
+		// 返回失败返回false表示指令不存在，同时GetType()为NULL
+		// 非switch里的类型会无条件返回true
+		static bool SelectInst(AsmStateFactory::ParamType* param, const Hex_Inst & hexInst);
+
+		// 以当前读取到的信息验证指令是否存在
 		// ss和pfx都为指令数据
-		static bool VerifyCondition(AsmStateFactory::ParamType* param, Superscript ss, PrefixCondition pfx)
-		{
-			auto storage = param->GetStorage();
-			auto prefixStorage = storage->GetPrefixStorage();
-			if (pfx != NULL && ((pfx & prefixStorage->GetCurrentPfxcdt()) != pfx))
-			{
-				return false;
-			}
-			switch (ss)
-			{
-			case S_i64:
-				return storage->IsX32();
-			case S_o64:
-				return !storage->IsX32();
-			default:
-				return true;
-			}
-		}
-		static int OpcodeTypeToStateID(OpcodeType opType)
-		{
-			switch (opType)
-			{
-			case OT_Inst:
-			case OT_Inst_Change:
-				return AsmStateFactory::State_Instruction;
-			case OT_Grp:
-				return AsmStateFactory::State_Group;
-			case OT_Table_0F:
-			case OT_Table_0F38:
-			case OT_Table_0F3A:
-				return AsmStateFactory::State_Byte;
-			case OT_Esc:
-				return AsmStateFactory::State_Escape;
-			case OT_Prefix:
-				return AsmStateFactory::State_Prefix;
-			default:
-				break;
-			}
-			return AsmStateFactory::State_PreEnd;
-		}
+		static bool VerifyCondition(AsmStateFactory::ParamType* param, Superscript ss, PrefixCondition pfx);
+		static int OpcodeTypeToStateID(OpcodeType opType);
 	};
+
 }  // namespace Disassembler

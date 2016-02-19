@@ -1,13 +1,11 @@
 #include "InitState.h"
-//// 会跳到的状态：Byte
-//const State*  InitState::Next(const shared_ptr<Instruction>& inst) const
-//{
-//	// Init
-//	auto asmInst = inst->Cast<AsmInstruction>();
-//	asmInst->opcodeDataStorage.Clear();
-//	asmInst->operandGrpStorage.Clear();
-//	asmInst->nameStorage.Clear();
-//	asmInst->prefixStorage.Clear();
-//	return inst->GetFactory()->GetState(StateFactory::State_Byte);
-//}
-//
+// 会跳到的状态：Byte
+namespace Disassembler
+{
+	int AsmState<AsmStateFactory::State_Init>::Next(AsmStateFactory::ParamType * param)
+	{
+		auto storage = param->GetStorage();
+		storage->Clear();
+		return AsmStateFactory::State_Byte;
+	}
+}  // namespace Disassembler

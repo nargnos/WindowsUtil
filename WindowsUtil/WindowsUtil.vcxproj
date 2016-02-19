@@ -237,12 +237,15 @@
     <ClCompile Include="WinUtil\DisAsm\Asm\AsmDisassembler.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\AsmInstruction.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\State\ByteState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\EscapeState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\GroupState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\State\InitState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\State\InstructionState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\InstructionState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\State\OperandState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\PreEndState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\State\PrefixState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Common\DisassemblerBase.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Common\Storage.cpp" />
@@ -295,9 +298,6 @@
     <ClCompile Include="WinUtil\Process\LazyLoad\WinApiDynamicCallDef.cpp" />
     <ClCompile Include="WinUtil\Process\OverwriteWinApi\OverwriteWinApi.cpp" />
     <ClCompile Include="WinUtil\Process\Remote\RemoteProccess.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

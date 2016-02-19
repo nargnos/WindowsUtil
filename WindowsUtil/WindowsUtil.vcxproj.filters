@@ -452,20 +452,26 @@
     <ClCompile Include="WinUtil\DisAsm\Common\Storage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\State\InstructionState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\State\OperandState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\State\PrefixState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\AsmStorage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\PrefixState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\GroupState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\EscapeState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\PreEndState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\InstructionState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

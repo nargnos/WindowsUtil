@@ -23,7 +23,7 @@ namespace Disassembler
 			
 		}
 	
-		virtual unsigned int Parse(void * pos) override;
+		
 		virtual unique_ptr<IInstruction> GetResult() const override;
 
 	};

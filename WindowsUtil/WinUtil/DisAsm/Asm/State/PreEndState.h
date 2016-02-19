@@ -9,9 +9,7 @@ namespace Disassembler
 	class AsmState<AsmStateFactory::State_PreEnd>:public IState
 	{
 	public:
-		static int Next(AsmStateFactory::ParamType* param)
-		{
-			return AsmStateFactory::State_End;
-		}
+		static int Next(AsmStateFactory::ParamType* param);
 	};
+	
 }  // namespace Disassembler
