@@ -20,8 +20,8 @@ namespace OpcodeArrayBuilder.Opcode
     }
     public class Builder
     {
-        Lazy<List<GroupOpcodeData>> grpOpcode = new Lazy<List<GroupOpcodeData>>(() => AnalyOpcodeStr<GroupOpcodeData>(".\\Opcode\\opcodeGrp");
-        Lazy<List<OpcodeData>> opcodes = new Lazy<List<OpcodeData>>(() => AnalyOpcodeStr<OpcodeData>(".\\Opcode\\opcode");
+        Lazy<List<GroupOpcodeData>> grpOpcode = new Lazy<List<GroupOpcodeData>>(() => AnalyOpcodeStr<GroupOpcodeData>(".\\Opcode\\opcodeGrp"));
+        Lazy<List<OpcodeData>> opcodes = new Lazy<List<OpcodeData>>(() => AnalyOpcodeStr<OpcodeData>(".\\Opcode\\opcode"));
         private static List<T> AnalyOpcodeStr<T>(string path) where T : IOpcode, new()
         {
             var result = new List<T>();

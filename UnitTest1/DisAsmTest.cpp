@@ -4,8 +4,10 @@
 #include <string>
 #include <strstream>
 #include <DisAsm\Asm\Asm.h>
+#include <Windows.h>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
+
 namespace UnitTest1
 {
 
@@ -24,16 +26,13 @@ namespace UnitTest1
 				0xFF,0x6A,0x01,0x8D,0x4D,0xAC,0xE8,0x6B,0x48,0xFE,0xFF,0xC7,0x45,0xFC,0x00,0x00,
 				0x00,0x00
 			};
-			auto fac = make_shared<StateFactory>();
 
-			auto ai = make_shared<AsmInstruction>(fac, true, true);
-			ai->Init(code);
-			OpcodeReader opReader;
-			opReader.Read(ai);
+			Disassembler::AsmDisassembler disasm(true);
+			disasm.Parse(code);
 		}
 		TEST_METHOD(GetReg_Test)
 		{
-			AsmOpcodeDataWapper wapper;
+			Disassembler::AsmOpcodeDataWapper wapper;
 			LPCSTR str = NULL;
 			// reg
 			str = wapper.GetRegisterName(REG_AL);

@@ -180,64 +180,97 @@
     <ClInclude Include="WinUtil\DisAsm\Common\Common.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Common\OpcodeReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Common\IStateFactory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\AsmCommon.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\StateFactory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\InitState.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\PrefixState.h">
+    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\GroupState.h">
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\InterfaceDefine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\EndState.h">
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IInstruction.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\EscapeState.h">
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IDisassembler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\Asm.h">
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmDisassembler.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Asm\AsmInstruction.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\ByteState.h">
+    <ClInclude Include="WinUtil\DisAsm\Common\DisassemblerBase.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\ExitState.h">
+    <ClInclude Include="WinUtil\DisAsm\Common\ToStringBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmToString.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\StateFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\InitState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\ByteState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\AsmState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\AsmStateFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\GroupState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\EscapeState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IStorage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\Storage.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinUtil\DisAsm\Common\Instruction.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\InstructionState.h">
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmStorage.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\OperandState.h">
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\InstructionState.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Common\State.h">
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\OperandState.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.h">
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\PrefixState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmDisassembler_Trait.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\PreEndState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\Disassembler_Trait.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IStateUsed.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinUtil\DisAsm\Asm\Asm.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -389,50 +422,50 @@
     <ClCompile Include="WinUtil\PE\Resource\LanguageIterator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\StateFactory.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\InitState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\PrefixState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\EscapeState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\GroupState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\AsmCommon.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\EndState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\AsmInstruction.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\ByteState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\ExitState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WinUtil\DisAsm\Asm\OperandState.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\AsmDisassembler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\AsmInstruction.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Common\DisassemblerBase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\InitState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\ByteState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\AsmStateFactory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Common\Storage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\InstructionState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\OperandState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\PrefixState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinUtil\DisAsm\Asm\AsmStorage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

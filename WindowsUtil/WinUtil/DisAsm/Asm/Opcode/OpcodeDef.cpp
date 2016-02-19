@@ -21,3 +21,5 @@ const char Registers[16][6][6] =
 	{ "r14l",		"r14w",		"r14d",		"r14",		"error",	"xmm14" },
 	{ "r15l",		"r15w",		"r15d",		"r15",		"error",	"xmm15" },
 };
+
+// TODO: È±cr¡¢dr

@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeExplorer", "PeExplorer\Pe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpcodeArrayBuilderTest", "OpcodeArrayBuilder\OpcodeArrayBuilderTest.csproj", "{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{31B9DA21-6A88-4F0A-8BB4-98266A6B4A6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PeExplorer", "PeExplorer", "{785789B1-9D03-49D5-A648-0CE38B5F0BAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,5 +104,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2D17935F-28E6-4581-9E22-B997320033E6} = {31B9DA21-6A88-4F0A-8BB4-98266A6B4A6A}
+		{80D4F4BA-BC91-4E01-BABC-9E1C1CB2E199} = {785789B1-9D03-49D5-A648-0CE38B5F0BAD}
+		{415CDA56-0012-4901-BF43-E2530F103024} = {31B9DA21-6A88-4F0A-8BB4-98266A6B4A6A}
+		{F10CA7AE-9DBB-4B94-92F4-13E3553C9F7F} = {785789B1-9D03-49D5-A648-0CE38B5F0BAD}
+		{D0AC23C6-24DB-4EFE-8B1B-BC3A4511FA14} = {31B9DA21-6A88-4F0A-8BB4-98266A6B4A6A}
 	EndGlobalSection
 EndGlobal

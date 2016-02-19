@@ -144,27 +144,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="WinUtil\DisAsm\Asm\OperandState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Asm.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\AsmCommon.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmDisassembler_Trait.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmStorage.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\AsmStateFactory.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\AsmState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmToString.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Disassembler_Trait.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Instruction.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IStateUsed.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IStorage.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\StateFactory.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\ToStringBase.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\AsmInstruction.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\EndState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\EscapeState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\ExitState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\GroupState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\AsmDisassembler.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\ByteState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\PreEndState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\EscapeState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\GroupState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\InitState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\InstructionState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\ByteState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\InitState.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.h" />
     <ClInclude Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\InstructionState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\PrefixState.h" />
-    <ClInclude Include="WinUtil\DisAsm\Asm\StateFactory.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\OperandState.h" />
+    <ClInclude Include="WinUtil\DisAsm\Asm\State\PrefixState.h" />
     <ClInclude Include="WinUtil\DisAsm\Common\Common.h" />
-    <ClInclude Include="WinUtil\DisAsm\Common\Instruction.h" />
-    <ClInclude Include="WinUtil\DisAsm\Common\State.h" />
-    <ClInclude Include="WinUtil\DisAsm\Common\IStateFactory.h" />
-    <ClInclude Include="WinUtil\DisAsm\Common\OpcodeReader.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\DisassemblerBase.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Storage.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IInstruction.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\InterfaceDefine.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IDisassembler.h" />
+    <ClInclude Include="WinUtil\DisAsm\Common\Interface\IState.h" />
     <ClInclude Include="WinUtil\PE\Architecture\ArchitectureDirectory.h" />
     <ClInclude Include="WinUtil\PE\BoundImport\BoundImportDirectory.h" />
     <ClInclude Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.h" />
@@ -221,21 +232,20 @@
     <ClInclude Include="WinUtil\Process\Remote\RemoteProccess.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinUtil\DisAsm\Asm\AsmCommon.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\AsmStorage.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\AsmStateFactory.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\AsmDisassembler.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\AsmInstruction.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\ByteState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\EndState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\EscapeState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\ExitState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\GroupState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\InitState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\ByteState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\InitState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\InstructionState.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\AsmOpcodeDataWapper.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeData.cpp" />
     <ClCompile Include="WinUtil\DisAsm\Asm\Opcode\OpcodeDef.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\InstructionState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\OperandState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\PrefixState.cpp" />
-    <ClCompile Include="WinUtil\DisAsm\Asm\StateFactory.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\OperandState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Asm\State\PrefixState.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Common\DisassemblerBase.cpp" />
+    <ClCompile Include="WinUtil\DisAsm\Common\Storage.cpp" />
     <ClCompile Include="WinUtil\PE\Architecture\architecturedirectory.cpp" />
     <ClCompile Include="WinUtil\PE\BoundImport\BoundImportDirectory.cpp" />
     <ClCompile Include="WinUtil\PE\ComDescriptor\ComDescriptorDirectory.cpp" />
@@ -285,6 +295,9 @@
     <ClCompile Include="WinUtil\Process\LazyLoad\WinApiDynamicCallDef.cpp" />
     <ClCompile Include="WinUtil\Process\OverwriteWinApi\OverwriteWinApi.cpp" />
     <ClCompile Include="WinUtil\Process\Remote\RemoteProccess.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

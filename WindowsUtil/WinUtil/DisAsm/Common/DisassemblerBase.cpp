@@ -1,4 +1,4 @@
-#include "AsmInstruction.h"
+#include "DisassemblerBase.h"
 
 namespace Disassembler
 {
