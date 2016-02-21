@@ -28,7 +28,8 @@ namespace Disassembler
 		}
 		virtual unsigned int Parse(void * pos) override
 		{
-			this->GetStorage()->SetInitialPosition(pos);
+			auto storage = GetStorage();
+			storage->SetInitialPosition(pos);
 			TStateFactory::NextStateFunction getNextStateID = NULL;
 			auto stateUsed = dynamic_cast<TTrait::TStateUsed*>(this);
 			auto endID = TStateFactory::GetEndStateID();
@@ -38,7 +39,12 @@ namespace Disassembler
 				getNextStateID = TStateFactory::GetStateFunction(i);
 				assert(getNextStateID);
 			}
-			// TODO: 判断解析是否成功，并输出读取长度
+
+			if (storage->IsSuccess())
+			{
+				// TODO: 内部的指针偏移还有很多未完成
+				return storage->GetCurrentPosition() - pos;
+			}
 			return 0;
 		}
 	protected:

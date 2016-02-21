@@ -42,4 +42,9 @@ namespace Disassembler
 		isSuccess = true;
 	}
 
+	void StorageBase::Seek(int offset)
+	{
+		currentPos += offset;
+	}
+
 }  // namespace Disassembler

@@ -104,6 +104,7 @@ enum OperandValueType :unsigned char
 	OVT_Offset,
 	OVT_PseudoDescriptor,
 	OVT_REG,
+	OVT_SEG,
 	OVT_MMX
 };
 // 寄存器定义，对应值可以在字符串表里找到
@@ -254,6 +255,8 @@ enum OperandType :unsigned char
 	// 特殊，寄存器与操作数大小属性相关
 	// 比如eAX在16（AX）或32位（EAX）出现，rAX可能为AX（16）、EAX（32）、RAX（64）
 	// 当REX.B被用于改变opcode的reg域时，使用 /xxx 表示其可能性
+
+	// al:8 /rex.b r8l:8
 	SPC_AL_R8L,
 	SPC_CL_R9L,
 	SPC_DL_R10L,
@@ -262,7 +265,9 @@ enum OperandType :unsigned char
 	SPC_CH_R13L,
 	SPC_DH_R14L,
 	SPC_BH_R15L,
+	// al:8 ax:16 eax:32 rax:64
 	SPC_AL_rAX,
+	// ax:16 eax:32 rax:64 /rex.b r8:64
 	SPC_rAX_r8,
 	SPC_rCX_r9,
 	SPC_rDX_r10,
@@ -271,7 +276,7 @@ enum OperandType :unsigned char
 	SPC_rBP_r13,
 	SPC_rSI_r14,
 	SPC_rDI_r15,
-
+	// rax:64 eax:32 /rex.b r8:64 r8d:32
 	SPC_RAX_EAX_R8_R8D,
 	SPC_RCX_ECX_R9_R9D,
 	SPC_RDX_EDX_R10_R10D,
@@ -280,7 +285,7 @@ enum OperandType :unsigned char
 	SPC_RBP_EBP_R13_R13D,
 	SPC_RSI_ESI_R14_R14D,
 	SPC_RDI_EDI_R15_R15D,
-
+	// ib /rex.b iz ?
 	SPC_Ib_Iz,
 	SPC_Mw_Rv,
 	SPC_Rd_Mb,
@@ -555,7 +560,6 @@ enum OpcodeGroup :unsigned char
 	Grp_17,  // _VEX_0F38_F3
 };
 
-
 // 指令存在条件
 enum PrefixCondition :unsigned char
 {
@@ -612,12 +616,13 @@ enum NameExt :unsigned char
 	Ext_D = Ext_W << 1,
 	Ext_Q = Ext_D << 1
 };
+
 enum SizeAttribute :unsigned char
 {
-	BitNotSet,
-	Bit16,
-	Bit32,
-	Bit64
+	BitNotSet = Len_8,
+	Bit16 = Len_16,
+	Bit32 = Len_32,
+	Bit64 = Len_64
 };
 enum EffectiveSizeIndex :unsigned char
 {

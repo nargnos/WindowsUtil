@@ -7,6 +7,7 @@ namespace Disassembler
 	{
 		auto storage = param->GetStorage();
 		auto opcodeDataStorage = storage->GetOpcodeDataStorage();
+		auto operandGrpStorage = storage->GetOperandGroupStorage();
 		// 查看上个状态保存的指令类型
 		auto type = opcodeDataStorage->GetType();
 		assert(type == OT_Inst || type == OT_Inst_Change);
@@ -23,10 +24,10 @@ namespace Disassembler
 		{
 			// 解析后缀
 			auto instChange = reinterpret_cast<const InstChangeData*>(instData);
-			// TODO: 需要prefix解析，判断操作数长度从选项中选出“后缀”
+			// 存入“后缀”选择，输出时再做处理
+			nameStorage->SetNameExt((NameExt)instChange->Ext);
 		}
-		// 如果无操作数直接返回
-		auto operandGrpStorage = storage->GetOperandGroupStorage();
+		// 如果无操作数直接返回		
 		if (instData->ParamCount == 0)
 		{
 			operandGrpStorage->SetOperandGrp(0, NULL);
@@ -45,11 +46,12 @@ namespace Disassembler
 		bool hasRexW = pfxStorage->HasRex() ? pfxStorage->GetRex()->W : false;
 		bool hasOPfx = pfxStorage->IsOverrideOperandSize();
 		bool hasAPfx = pfxStorage->IsOverrideAddressSize();
+		// 查找操作数大小转换表
 		auto sizeAttribute = wapper->FindSizeAttribute(is32, hasRexW, hasOPfx, hasAPfx);
 		// 操作数大小
 		operandGrpStorage->SetOperandSizeAttribute(sizeAttribute[EffectiveOperand]);
 		// 地址大小
-		operandGrpStorage->SetOperandSizeAttribute(sizeAttribute[EffectiveAddress]);
+		operandGrpStorage->SetAddressSizeAttribute(sizeAttribute[EffectiveAddress]);
 
 		return AsmStateFactory::State_Operand;
 

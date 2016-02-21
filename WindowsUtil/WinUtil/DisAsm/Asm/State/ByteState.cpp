@@ -98,7 +98,7 @@ namespace Disassembler
 	{
 		auto storage = param->GetStorage();
 		auto prefixStorage = storage->GetPrefixStorage();
-		if (pfx != NULL && ((pfx & prefixStorage->GetCurrentPfxcdt()) != pfx))
+		if (pfx != NULL && ((pfx & prefixStorage->GetCurrentMandatoryPrefix()) != pfx))
 		{
 			return false;
 		}

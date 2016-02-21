@@ -76,6 +76,8 @@ namespace Disassembler
 		static void Handle_H_X(AsmStateFactory::ParamType* param, int index);
 		static void Handle_H_Y(AsmStateFactory::ParamType* param, int index);
 
+		static void Handle_SPC_XL_RXL(AsmStateFactory::ParamType * param, int index,const OperandType* selectTable);
+
 		static void Handle_SPC_AL_R8L(AsmStateFactory::ParamType* param, int index);
 		static void Handle_SPC_CL_R9L(AsmStateFactory::ParamType* param, int index);
 		static void Handle_SPC_DL_R10L(AsmStateFactory::ParamType* param, int index);
@@ -85,6 +87,9 @@ namespace Disassembler
 		static void Handle_SPC_DH_R14L(AsmStateFactory::ParamType* param, int index);
 		static void Handle_SPC_BH_R15L(AsmStateFactory::ParamType* param, int index);
 		static void Handle_SPC_AL_rAX(AsmStateFactory::ParamType* param, int index);
+		
+		static void Handle_SPC_rXX_rX(AsmStateFactory::ParamType * param, int index, const OperandType* selectTable);
+		
 		static void Handle_SPC_rAX_r8(AsmStateFactory::ParamType* param, int index);
 		static void Handle_SPC_rCX_r9(AsmStateFactory::ParamType* param, int index);
 		static void Handle_SPC_rDX_r10(AsmStateFactory::ParamType* param, int index);
@@ -114,8 +119,8 @@ namespace Disassembler
 		static void Handle_SPC_Ux_Mw(AsmStateFactory::ParamType* param, int index);
 
 		// change标识合并到reg
-		static void Handle_SEG(AsmStateFactory::ParamType* param, int index, const RegOrOperand& seg);
-		static void Handle_REG(AsmStateFactory::ParamType* param, int index, const RegOrOperand& reg, bool isChange);
+		static void Handle_SEG(AsmStateFactory::ParamType* param, int index, OperandType seg);
+		static void Handle_REG(AsmStateFactory::ParamType* param, int index, OperandType reg, bool isChange);
 		static const HandleFunction HandleFunctions[];
 	};
 

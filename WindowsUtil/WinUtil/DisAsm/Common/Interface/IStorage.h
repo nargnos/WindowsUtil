@@ -10,6 +10,7 @@ namespace Disassembler
 		/// 将读取位置移动到下一个字节
 		/// </summary>
 		virtual void NextByte() PURE;
+		virtual void Seek(int offset) PURE;
 		virtual void Clear() PURE;
 		virtual bool IsSuccess() PURE;
 	};

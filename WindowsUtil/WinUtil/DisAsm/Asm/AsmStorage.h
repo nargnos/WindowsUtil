@@ -59,9 +59,9 @@ namespace Disassembler
 			return operandCount;
 		}
 		SizeAttribute GetOperandSizeAttribute() { return operandSizeAttribute; }
-		SizeAttribute SetOperandSizeAttribute(SizeAttribute size) { operandSizeAttribute = size; }
+		void SetOperandSizeAttribute(SizeAttribute size) { operandSizeAttribute = size; }
 		SizeAttribute GetAddressSizeAttribute() { return addressSizeAttribute; }
-		SizeAttribute SetAddressSizeAttribute(SizeAttribute size) { addressSizeAttribute = size; }
+		void SetAddressSizeAttribute(SizeAttribute size) { addressSizeAttribute = size; }
 		
 		
 		
@@ -165,15 +165,24 @@ namespace Disassembler
 		{
 			instName = NULL;
 			nameExt = Ext_None;
+
 		}
 		virtual bool IsEmpty() const override
 		{
 			return nameExt == Ext_None && instName == NULL;
 		}
+		void SetNameExt(NameExt val)
+		{
+			nameExt = val;
+		}
+		NameExt GetNameExt() const
+		{
+			return nameExt;
+		}
 	private:
 		// 会把指令名指针存储在这里
 		LPCSTR instName;
-		// 根据长度属性选择的名字后缀字符（好像可以删掉）
+		// 根据长度属性选择的名字后缀字符
 		NameExt nameExt;
 	};
 
@@ -294,7 +303,7 @@ namespace Disassembler
 		}
 
 		// 取得当前前缀判断条件（非已有前缀,只有66、f2、f3标识）
-		unsigned char GetCurrentPfxcdt() const
+		unsigned char GetCurrentMandatoryPrefix() const
 		{
 			return (hasPfx[G3_operand_size] ? C_66 : 0) |
 				(hasPfx[G1_repne_xacquire] ? C_F2 : 0) |

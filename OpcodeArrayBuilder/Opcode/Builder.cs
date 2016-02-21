@@ -126,7 +126,7 @@ namespace OpcodeArrayBuilder.Opcode
                               Grp = item,
                               Name = names.Find((val) => val.Name.SequenceEqual(item.Name)),
                               Pfxcdt = item.Pfx == null ? string.Empty : string.Join("_", item.Pfx),
-                              OpId = item.Operand == null ? 0 : param[item.Operand.Count - 1].FindIndex((p) => item.Operand.SequenceEqual(p.Params)) + 1
+                              OpId = item.Operand == null ? 0 : param[item.Operand.Count - 1].FindIndex((p) => item.Operand.SequenceEqual(p.Params))
                           };
 
 
@@ -410,7 +410,7 @@ namespace OpcodeArrayBuilder.Opcode
 
         private static Inst CreateInst(List<NameIndex> names, List<Param>[] param, OpcodeData instInfo)
         {
-            var paramID = instInfo.Operand == null ? 0 : param[instInfo.Operand.Count - 1].FindIndex((p) => instInfo.Operand.SequenceEqual(p.Params)) + 1;
+            var paramID = instInfo.Operand == null ? 0 : param[instInfo.Operand.Count - 1].FindIndex((p) => instInfo.Operand.SequenceEqual(p.Params));
             var tmpName = names.Find((val) => val.Name.SequenceEqual(instInfo.Name));
             Debug.Assert(paramID <= byte.MaxValue);
             var tmpInst = new Inst(

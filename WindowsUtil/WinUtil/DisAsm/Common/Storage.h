@@ -13,6 +13,7 @@ namespace Disassembler
 		virtual void NextByte() override;
 		virtual bool IsSuccess() override;
 		void SetSuccess();
+		virtual void Seek(int offset) override;
 	private:
 		const unsigned char* beginPos;
 		const unsigned char* currentPos;
