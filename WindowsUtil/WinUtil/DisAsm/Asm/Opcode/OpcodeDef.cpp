@@ -21,5 +21,20 @@ const char Registers[16][6][6] =
 	{ "r14l",		"r14w",		"r14d",		"r14",		"error",	"xmm14" },
 	{ "r15l",		"r15w",		"r15d",		"r15",		"error",	"xmm15" },
 };
-
+const SizeAttribute EffectiveMode64[2][2][2][2] =
+{
+	{
+		{ { Bit32,Bit64 },{ Bit32,Bit32 } },
+		{ { Bit16,Bit64 },{ Bit16,Bit32 } },
+	},
+	{
+		{ { Bit64,Bit64 },{ Bit64,Bit32 } },
+		{ { Bit64,Bit64 },{ Bit64,Bit32 } },
+	}
+};
+const SizeAttribute EffectiveMode32[2][2][2] =
+{
+	{ { Bit32,Bit32 },{ Bit32,Bit16 } },
+	{ { Bit16,Bit32 },{ Bit16,Bit16 } },
+};
 // TODO: È±cr¡¢dr

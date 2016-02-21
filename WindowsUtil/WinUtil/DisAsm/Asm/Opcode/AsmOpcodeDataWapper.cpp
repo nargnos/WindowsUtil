@@ -135,4 +135,16 @@ namespace Disassembler
 		return Registers[index][0] + 3;
 	}
 
+	const SizeAttribute* AsmOpcodeDataWapper::FindSizeAttribute(bool is32, bool hasRexW, bool hasOPfx, bool hasAPfx) const
+	{
+		if (is32)
+		{
+			return EffectiveMode32[hasOPfx][hasAPfx];
+		}
+		else
+		{
+			return EffectiveMode64[hasRexW][hasOPfx][hasAPfx];
+		}
+	}
+
 }  // namespace Disassembler

@@ -11,6 +11,7 @@ namespace Disassembler
 	template<>
 	struct Disassembler_Trait<AsmDisassembler>
 	{
+		
 		typedef AsmStateFactory TStateFactory;
 		typedef AsmOpcodeDataWapper TOpcodeDataWapper;
 		typedef AsmStorage TStorage;

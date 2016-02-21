@@ -15,10 +15,20 @@ namespace Disassembler
 		static int Next(AsmStateFactory::ParamType* param);
 	private:
 		static void ReadOperand(AsmStateFactory::ParamType* param, int index, const RegOrOperandGroup& pair);
+		static const int MaxConvertTableSize = 3;
+#define BIT_SIZE(type) (sizeof(type)*8)
 
+		// 在下面的一些用到操作数大小属性的函数中，使用查表转换最后设置的大小
+		// Bit16为下标0，所以得到值时需要-1
+		// 转换表长度必须为3，否则程序错误
+		static void SetOperandInfo(AsmStateFactory::ParamType* param, int index, const unsigned char* convertTable, OperandValueType type);
+		// 直接设置大小，不需要转换
+		static void SetOperandInfo(AsmStateFactory::ParamType* param, int index, unsigned char val, OperandValueType type);
+		static unsigned char defaultSizeConvert[];
+		// 下面的函数设置完大小后记得设置解析后的参数类型
 		typedef void(*HandleFunction)(AsmStateFactory::ParamType*, int);
 		static void Handle_NULL(AsmStateFactory::ParamType* param, int index);
-
+		static unsigned char l_a_SizeConvert[];
 		static void Handle_L_a(AsmStateFactory::ParamType* param, int index);
 		static void Handle_L_b(AsmStateFactory::ParamType* param, int index);
 		static void Handle_L_c(AsmStateFactory::ParamType* param, int index);
@@ -37,7 +47,9 @@ namespace Disassembler
 		static void Handle_L_v(AsmStateFactory::ParamType* param, int index);
 		static void Handle_L_w(AsmStateFactory::ParamType* param, int index);
 		static void Handle_L_x(AsmStateFactory::ParamType* param, int index);
+		static unsigned char l_y_SizeConvert[];
 		static void Handle_L_y(AsmStateFactory::ParamType* param, int index);
+		static unsigned char l_z_SizeConvert[];
 		static void Handle_L_z(AsmStateFactory::ParamType* param, int index);
 		static void Handle_H_1(AsmStateFactory::ParamType* param, int index);
 		static void Handle_H_A(AsmStateFactory::ParamType* param, int index);

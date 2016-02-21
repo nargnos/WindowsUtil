@@ -27,7 +27,7 @@ namespace UnitTest1
 				0x00,0x00
 			};
 
-			Disassembler::AsmDisassembler disasm(true);
+			Disassembler::AsmDisassembler disasm(Bit32);
 			disasm.Parse(code);
 		}
 		TEST_METHOD(GetReg_Test)

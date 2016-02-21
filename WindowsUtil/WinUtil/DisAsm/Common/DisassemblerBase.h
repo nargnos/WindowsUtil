@@ -13,8 +13,10 @@ namespace Disassembler
 		protected IStateUsed<TTrait>
 	{
 	public:
-		typedef TTrait Trait;
-
+		typedef TTrait TTrait;
+		typedef typename TTrait::TOpcodeDataWapper TOpcodeDataWapper;
+		typedef typename TTrait::TStorage TStorage;
+		typedef typename TTrait::TStateFactory TStateFactory;
 		DisassemblerBase()
 		{
 			auto isChild = std::is_base_of<IDisassembler, TChild>::value;
@@ -27,27 +29,27 @@ namespace Disassembler
 		virtual unsigned int Parse(void * pos) override
 		{
 			this->GetStorage()->SetInitialPosition(pos);
-			Trait::TStateFactory::NextStateFunction getNextStateID = NULL;
-			auto stateUsed = dynamic_cast<Trait::TStateUsed*>(this);
-			auto endID = Trait::TStateFactory::GetEndStateID();
+			TStateFactory::NextStateFunction getNextStateID = NULL;
+			auto stateUsed = dynamic_cast<TTrait::TStateUsed*>(this);
+			auto endID = TStateFactory::GetEndStateID();
 
-			for (auto i = Trait::TStateFactory::GetBeginStateID(); i != endID; i = getNextStateID(stateUsed))
+			for (auto i = TStateFactory::GetBeginStateID(); i != endID; i = getNextStateID(stateUsed))
 			{
-				getNextStateID = Trait::TStateFactory::GetStateFunction(i);
+				getNextStateID = TStateFactory::GetStateFunction(i);
 				assert(getNextStateID);
 			}
 			// TODO: 判断解析是否成功，并输出读取长度
 			return 0;
 		}
 	protected:
-		typename TTrait::TOpcodeDataWapper opcodeDataWapper;
-		typename TTrait::TStorage storage;
+		TOpcodeDataWapper opcodeDataWapper;
+		TStorage storage;
 
-		virtual typename TTrait::TOpcodeDataWapper* GetOpcodeDataWapper() override
+		virtual TOpcodeDataWapper* GetOpcodeDataWapper() override
 		{
 			return &opcodeDataWapper;
 		}
-		virtual typename TTrait::TStorage* GetStorage() override
+		virtual TStorage* GetStorage() override
 		{
 			return &storage;
 		}

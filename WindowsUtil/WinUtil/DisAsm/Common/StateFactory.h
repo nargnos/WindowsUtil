@@ -9,6 +9,7 @@ namespace Disassembler
 	template<typename T, typename TTrait = Disassembler_Trait<T>>
 	struct StateFactory
 	{
+		typedef T TDisassembler;
 		typedef typename TTrait::TStateUsed ParamType;
 		typedef int (*NextStateFunction)(ParamType*);
 		

@@ -105,9 +105,9 @@ namespace Disassembler
 		switch (ss)
 		{
 		case S_i64:
-			return storage->IsX32();
+			return storage->Is32();
 		case S_o64:
-			return !storage->IsX32();
+			return !storage->Is32();
 		default:
 			return true;
 		}

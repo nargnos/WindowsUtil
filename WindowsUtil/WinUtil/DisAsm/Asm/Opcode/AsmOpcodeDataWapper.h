@@ -86,7 +86,7 @@ namespace Disassembler
 		/// </summary>
 		/// <param name="index">通过GetOperandGroup取得</param>
 		const RegOrOperandGroup& GetOperands(int index) const;
-		
+
 		/// <summary>
 		/// 取指令名称
 		/// </summary>
@@ -97,12 +97,18 @@ namespace Disassembler
 		/// 取寄存器名称
 		/// </summary>
 		const char* GetRegisterName(OperandType reg) const;
-		
+
 		/// <summary>
 		/// 取段寄存器名称
 		/// </summary>
 		const char* GetSegName(OperandType seg) const;
 
+		// [REX.W Prefix] 32位下不用
+		// [Operand Prefix Is Present]
+		// [Address Prefix Is Present]
+		// [Effective Operand Size/Effective Address Size]
+		// 因为操作数或地址大小属性有时候是一起用的，所以返回指针，用EffectiveSizeIndex偏移取各自的值
+		const SizeAttribute* FindSizeAttribute(bool is32, bool hasRexW, bool hasOPfx, bool hasAPfx) const;
 	private:
 		unique_ptr<OpcodeData[]> table0F38;
 		unique_ptr<OpcodeData[]> table0F3A;

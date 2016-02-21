@@ -1,6 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include <Windows.h>
-#pragma region ²Ù×÷Êı´æ´¢½á¹¹
+// æŠŠæ–‡æ¡£ä¸­çš„ä¸€äº›ä»‹ç»æ–‡å­—ä½œä¸ºæ³¨é‡Š
+// è¿™æ ·å¯ä»¥å‡å°‘æŸ¥æ–‡æ¡£æ¬¡æ•°ï¼Œæ‰€ä»¥è¿™é‡Œä¼šæœ‰å¾ˆå¤šè‹±æ–‡çš„éå¿…è¦æ³¨é‡Šï¼Œæ‡’å¾—ç¿»è¯‘äº†
+#pragma region æ“ä½œæ•°å­˜å‚¨ç»“æ„
 #pragma pack(push, 1)
 typedef struct
 {
@@ -28,6 +30,52 @@ typedef struct
 	RegOrOperand H;
 	RegOrOperand L;
 }RegOrOperandGroup, *PRegOrOperandGroup;
+struct RexPrefix
+{
+	unsigned char : 4;  // 0100
+	unsigned char W : 1;  // 0 = Operand size determined by CS.D / 1 = 64 Bit Operand Size
+	unsigned char R : 1;  // Extension of the ModR/M reg field
+	unsigned char X : 1;  // Extension of the SIB index field
+	unsigned char B : 1;  // Extension of the ModR/M r/m field, SIB base field, or Opcode reg field
+
+};
+// æ–‡æ¡£ä½ç½® V3-C3-3.4.5  P.2049
+// å…¶å®ä¸ç”¨è¿™ä¸ªç»“æ„ï¼Œæ–‡æ¡£æ¬è¿‡æ¥å†™æˆç»“æ„ä¾¿äºæŸ¥çœ‹
+// struct SegmentDescriptors
+// {
+// 	unsigned int Base31_24: 8;
+// 	// G (granularity) flag
+// 	unsigned int G : 1;
+// 	
+// 	// åœ¨16ä½çš„ä¸€äº›æœºå™¨è¿™ä¸ªFlagå§‹ç»ˆä¸º0ï¼Œç°åœ¨åªç¼–32ä½å’Œ64ä½çš„ï¼Œå¿½ç•¥è¿™ç§æƒ…å†µ
+// 	// D/B (default operation size/default stack pointer size and/or upper bound) flag
+// 	// This flag should always be set to 1 for 32 - bit code and data segments and to 0 for 16 - bit code and data segments.
+// 	// If the flag is set,32 - bit addresses and 32 - bit or 8 - bit operands are assumed;
+// 	// if it is clear, 16 - bit addresses and 16 - bit or 8 - bit operands are assumed.
+// 	// The instruction prefix 66H can be used to select an operand size other than the default, and the
+// 	// prefix 67H can be used select an address size other than the default.
+// 	unsigned int D : 1;
+// 	// L (64-bit code segment) flag
+// 	// In IA - 32e mode, bit 21 of the second doubleword of the segment descriptor indicates whether a
+// 	// code segment contains native 64 - bit code.A value of 1 indicates instructions in this code segment
+// 	// are executed in 64 - bit mode.A value of 0 indicates the instructions in this code segment are
+// 	// executed in compatibility mode.If L - bit is set, then D - bit must be cleared.When not in IA - 32e mode
+// 	// or for non - code segments, bit 21 is reserved and should always be set to 0.
+// 	unsigned int L : 1;
+// 	// Available and reserved bits
+// 	unsigned int AVL : 1;
+// 	// Segment limit field
+// 	unsigned int SegLimit : 4;
+// 	// P (segment-present) flag
+// 	unsigned int P : 1;
+// 	// DPL (descriptor privilege level) field
+// 	unsigned int DPL : 2;
+// 	// S (descriptor type) flag
+// 	unsigned int S : 1;
+// 	// Type field
+// 	unsigned int Type : 4;
+// 	unsigned int Base23_16:8;
+// };
 #pragma pack(pop)
 #pragma endregion
 
@@ -41,159 +89,171 @@ enum RegisterLength :unsigned char
 	Len_128_XMM
 };
 
-// ¸ú¶Î±êÊ¶¹²ÓÃÒ»¸ö±í½ÚÔ¼Ò»ÏÂ¿Õ¼ä
-extern const char Registers[16][6][6];
-
 #define _REG(hex, type) (unsigned char)((1<<7)|(((type)&0x7)<<4)|((hex)&0x0f))
-
-// ¼Ä´æÆ÷¶¨Òå£¬¶ÔÓ¦Öµ¿ÉÒÔÔÚ×Ö·û´®±íÀïÕÒµ½
-// °ÑÎÄµµ·­ÒëÁËÒ»ÏÂ×ö²Î¿¼£¬¿ÉÄÜ²»×¼
+// è¡¨ç¤ºè§£æåå¾—åˆ°çš„å‚æ•°ç±»å‹ï¼Œè¿™äº›æè¿°ä¸å…·å¤‡å¤§å°ç†Ÿæ‚‰ï¼Œç›¸å…³çš„å¤§å°æˆ–å€¼ç”±å…¶å®ƒå˜é‡å­˜å‚¨
+enum OperandValueType :unsigned char
+{
+	OVT_RegOrOperandGroupID,  // è¡¨ç¤ºæ•°æ®æœªè§£æï¼Œè¿™æ—¶å€™å­˜å‚¨çš„æ•°æ®ç”¨ä½œOperandTypeç»„åˆçš„ID
+	OVT_NotSet,
+	OVT_Integer,
+	OVT_Float,
+	OVT_FloatScalar,
+	OVT_Double,
+	OVT_DoubleScalar,
+	OVT_Pointer,
+	OVT_Offset,
+	OVT_PseudoDescriptor,
+	OVT_REG,
+	OVT_MMX
+};
+// å¯„å­˜å™¨å®šä¹‰ï¼Œå¯¹åº”å€¼å¯ä»¥åœ¨å­—ç¬¦ä¸²è¡¨é‡Œæ‰¾åˆ°
+// æŠŠæ–‡æ¡£ç¿»è¯‘äº†ä¸€ä¸‹åšå‚è€ƒï¼Œå¯èƒ½ä¸å‡†
 enum OperandType :unsigned char
 {
 	OT_NULL = 0,
 
-	// OperandTypes ²Ù×÷ÊıÀàĞÍ
+	// OperandTypes æ“ä½œæ•°ç±»å‹
 
-	// Á½¸öWORD»òÁ½¸öDWORDÄÚ´æ²Ù×÷Êı£¬È¡¾öÓÚ²Ù×÷Êı´óĞ¡ÊôĞÔ£¨Ö»ÓÃÔÚBOUNDÖ¸ÁîÖĞ£©
-	L_a,  // Ö»ÓĞMa×éºÏ
+	// ä¸¤ä¸ªWORDæˆ–ä¸¤ä¸ªDWORDå†…å­˜æ“ä½œæ•°ï¼Œå–å†³äºæ“ä½œæ•°å¤§å°å±æ€§ï¼ˆåªç”¨åœ¨BOUNDæŒ‡ä»¤ä¸­ï¼‰
+	L_a,  // åªæœ‰Maç»„åˆ
 
-	// BYTE£¬²»¹Ü²Ù×÷Êı´óĞ¡ÊôĞÔ
+	// BYTEï¼Œä¸ç®¡æ“ä½œæ•°å¤§å°å±æ€§
 	L_b,
 
-	// BYTE»òWORD£¬È¡¾öÓÚ²Ù×÷Êı´óĞ¡ÊôĞÔ
-	L_c,  // Ã»ÓĞÊ¹ÓÃ
+	// BYTEæˆ–WORDï¼Œå–å†³äºæ“ä½œæ•°å¤§å°å±æ€§
+	L_c,  // æ²¡æœ‰ä½¿ç”¨
 
-	// DWORD£¬ÎŞÊÓ´óĞ¡ÊôĞÔ
-	L_d,  // Ö»×éºÏÁËÓĞRMµÄÑ°Ö··½Ê½
+	// DWORDï¼Œæ— è§†å¤§å°å±æ€§
+	L_d,  // åªç»„åˆäº†æœ‰RMçš„å¯»å€æ–¹å¼
 
-	// 2*QWORD£¬ÎŞÊÓÊôĞÔ
+	// 2*QWORDï¼Œæ— è§†å±æ€§
 	L_dq,
 
-	// 32Î»£¬48Î»£¬»ò80Î»µÄÖ¸Õë£¬È¡¾öÓÚ²Ù×÷Êı´óĞ¡ÊôĞÔ¡£
+	// 32ä½ï¼Œ48ä½ï¼Œæˆ–80ä½çš„æŒ‡é’ˆï¼Œå–å†³äºæ“ä½œæ•°å¤§å°å±æ€§ã€‚
 	L_p,
 
-	// 128Î»»ò256Î»½ôËõË«¾«¶È¸¡µãÊı¡£
+	// 128ä½æˆ–256ä½ç´§ç¼©åŒç²¾åº¦æµ®ç‚¹æ•°ã€‚
 	L_pd,
 
-	// QWORD MMX¼Ä´æÆ÷£¨Èçmm0£©
-	L_pi,  // Ö»×éºÏÁËÓĞRMµÄÑ°Ö··½Ê½
+	// QWORD MMXå¯„å­˜å™¨ï¼ˆå¦‚mm0ï¼‰
+	L_pi,  // åªç»„åˆäº†æœ‰RMçš„å¯»å€æ–¹å¼
 
-	// 128Î»»ò256Î»½ôËõµ¥¾«¶È¸¡µãÊı¡£
+	// 128ä½æˆ–256ä½ç´§ç¼©å•ç²¾åº¦æµ®ç‚¹æ•°ã€‚
 	L_ps,
 
-	// QWORD£¬²»¹ÜÊôĞÔ
+	// QWORDï¼Œä¸ç®¡å±æ€§
 	L_q,
 
-	// 4*QWORD£¨256Î»£©£¬ÎŞÊÓÊôĞÔ
+	// 4*QWORDï¼ˆ256ä½ï¼‰ï¼Œæ— è§†å±æ€§
 	L_qq,
 
-	// 6×Ö½Ú»ò10×Ö½ÚµÄÎ±ÃèÊö·û
+	// 6å­—èŠ‚æˆ–10å­—èŠ‚çš„ä¼ªæè¿°ç¬¦
 	L_s,
 
-	// 128Î»Ë«¾«¶È¸¡µãÊıµÄ±êÁ¿ÔªËØ
+	// 128ä½åŒç²¾åº¦æµ®ç‚¹æ•°çš„æ ‡é‡å…ƒç´ 
 	L_sd,
 
-	// 128Î»µ¥¾«¶È¸¡µãÊıµÄ±êÁ¿ÔªËØ
+	// 128ä½å•ç²¾åº¦æµ®ç‚¹æ•°çš„æ ‡é‡å…ƒç´ 
 	L_ss,
 
-	// DWORDÕûÊı¼Ä´æÆ÷£¨Èçeax£©
-	L_si,  // Ã»ÓĞÊ¹ÓÃ£¬ÎªÊ²Ã´£¿
+	// DWORDæ•´æ•°å¯„å­˜å™¨ï¼ˆå¦‚eaxï¼‰
+	L_si,  // æ²¡æœ‰ä½¿ç”¨ï¼Œä¸ºä»€ä¹ˆï¼Ÿ
 
-	// WORD¡¢DWORD¡¢QWORD£¨64Î»£©£¬È¡¾öÊôĞÔ
+	// WORDã€DWORDã€QWORDï¼ˆ64ä½ï¼‰ï¼Œå–å†³å±æ€§
 	L_v,
 
-	// WORD£¬ÎŞÊÓÊôĞÔ
+	// WORDï¼Œæ— è§†å±æ€§
 	L_w,
 
-	// »ùÓÚdq»òqqµÄ²Ù×÷Êı´óĞ¡ÊôĞÔ
+	// åŸºäºdqæˆ–qqçš„æ“ä½œæ•°å¤§å°å±æ€§
 	L_x,
 
-	// DWORD»òQWORD£¬È¡¾öÓÚÊôĞÔ
+	// DWORDæˆ–QWORD (in 64-bit mode)ï¼Œå–å†³äºå±æ€§
 	L_y,
 
-	// 16Î»´óĞ¡Ê±ÎªWORD£¬32Î»»ò64Î»´óĞ¡Ê±ÎªDWORD
+	// 16ä½å¤§å°æ—¶ä¸ºWORDï¼Œ32ä½æˆ–64ä½å¤§å°æ—¶ä¸ºDWORD
 	L_z,
 
-	// AddressingMethods Ñ°Ö··½Ê½
-	H_1,  // ²»ÖªµÀÊÇÊ²Ã´
+	// AddressingMethods å¯»å€æ–¹å¼
+	H_1,  // ä¸çŸ¥é“æ˜¯ä»€ä¹ˆ
 
-	// Ö±½ÓÑ°Ö·£º¸ÃÖ¸ÁîÃ»ÓĞModR/M×Ö½Ú£»²Ù×÷ÊıµÄµØÖ·±»±àÂëÔÚÖ¸ÁîÖĞ¡£
-	// Ã»ÓĞ»ùÖ·¼Ä´æÆ÷¡¢±äÖ·¼Ä´æÆ÷£¬Ò²Ã»ÓĞ±ÈÀıÒòÊı¿ÉÒÔÓ¦ÓÃ¡£
-	H_A,  // Ö»×éºÏÁËp
+	// ç›´æ¥å¯»å€ï¼šè¯¥æŒ‡ä»¤æ²¡æœ‰ModR/Må­—èŠ‚ï¼›æ“ä½œæ•°çš„åœ°å€è¢«ç¼–ç åœ¨æŒ‡ä»¤ä¸­ã€‚
+	// æ²¡æœ‰åŸºå€å¯„å­˜å™¨ã€å˜å€å¯„å­˜å™¨ï¼Œä¹Ÿæ²¡æœ‰æ¯”ä¾‹å› æ•°å¯ä»¥åº”ç”¨ã€‚
+	H_A,  // åªç»„åˆäº†p
 
-	// ÓÃVEXÇ°×ºµÄVEX.vvvv×Ö¶Î±íÊ¾Ò»¸öÍ¨ÓÃ¼Ä´æÆ÷
-	H_B,  // Ö»×éºÏÁËy
+	// ç”¨VEXå‰ç¼€çš„VEX.vvvvå­—æ®µè¡¨ç¤ºä¸€ä¸ªé€šç”¨å¯„å­˜å™¨
+	H_B,  // åªç»„åˆäº†y
 
-	// ÓÃModR/M×Ö½ÚµÄregÓò±íÊ¾¿ØÖÆ¼Ä´æÆ÷
-	H_C,  // Ö»×éºÏÁËd
+	// ç”¨ModR/Må­—èŠ‚çš„regåŸŸè¡¨ç¤ºæ§åˆ¶å¯„å­˜å™¨
+	H_C,  // åªç»„åˆäº†d
 
-	// ÓÃModR/M×Ö½ÚµÄregÓò±íÊ¾µ÷ÊÔ¼Ä´æÆ÷
-	H_D,  // Ö»×éºÏÁËd
+	// ç”¨ModR/Må­—èŠ‚çš„regåŸŸè¡¨ç¤ºè°ƒè¯•å¯„å­˜å™¨
+	H_D,  // åªç»„åˆäº†d
 
-	// Ò»¸öModR/M×Ö½Ú¸úÔÚOpcodeÖ®ºó²¢Ö¸¶¨²Ù×÷Êı¡£Õâ¸ö²Ù×÷Êı¿ÉÒÔÊÇÍ¨ÓÃ¼Ä´æÆ÷»òÄÚ´æµØÖ·¡£
-	// Èç¹ûËüÊÇÄÚ´æµØÖ·£¬¸ÃµØÖ·ÓÃ¶Î¼Ä´æÆ÷ºÍÒÔÏÂÈÎºÎÖµ£º»ùÖ·¼Ä´æÆ÷¡¢±äÖ·¼Ä´æÆ÷¡¢±ÈÀıÒòÊıºÍÎ»ÒÆÏà¼ÓÀ´¼ÆËã
+	// ä¸€ä¸ªModR/Må­—èŠ‚è·Ÿåœ¨Opcodeä¹‹åå¹¶æŒ‡å®šæ“ä½œæ•°ã€‚è¿™ä¸ªæ“ä½œæ•°å¯ä»¥æ˜¯é€šç”¨å¯„å­˜å™¨æˆ–å†…å­˜åœ°å€ã€‚
+	// å¦‚æœå®ƒæ˜¯å†…å­˜åœ°å€ï¼Œè¯¥åœ°å€ç”¨æ®µå¯„å­˜å™¨å’Œä»¥ä¸‹ä»»ä½•å€¼ï¼šåŸºå€å¯„å­˜å™¨ã€å˜å€å¯„å­˜å™¨ã€æ¯”ä¾‹å› æ•°å’Œä½ç§»ç›¸åŠ æ¥è®¡ç®—
 	H_E,
 
-	// EFLAGS/RFLAGS ¼Ä´æÆ÷
-	H_F,  // Ö»×éºÏÁËv
+	// EFLAGS/RFLAGS å¯„å­˜å™¨
+	H_F,  // åªç»„åˆäº†v
 
-	// ÓÃModR/M×Ö½ÚµÄregÓò±íÊ¾Í¨ÓÃ¼Ä´æÆ÷
+	// ç”¨ModR/Må­—èŠ‚çš„regåŸŸè¡¨ç¤ºé€šç”¨å¯„å­˜å™¨
 	H_G,
 
-	// ÓÃVEXÇ°×ºµÄVEX.vvvv×Ö¶ÎÑ¡ÔñÒ»¸ö128Î»µÄXMM¼Ä´æÆ÷»ò256Î»µÄYMM¼Ä´æÆ÷£¬È¡¾öÓÚ²Ù×÷ÊıÀàĞÍ¡£
-	// ¶ÔÓÚ¾É°æSSE±àÂëÕâ¸ö²Ù×÷²¢²»´æÔÚ
+	// ç”¨VEXå‰ç¼€çš„VEX.vvvvå­—æ®µé€‰æ‹©ä¸€ä¸ª128ä½çš„XMMå¯„å­˜å™¨æˆ–256ä½çš„YMMå¯„å­˜å™¨ï¼Œå–å†³äºæ“ä½œæ•°ç±»å‹ã€‚
+	// å¯¹äºæ—§ç‰ˆSSEç¼–ç è¿™ä¸ªæ“ä½œå¹¶ä¸å­˜åœ¨
 	H_H,
 
-	// Á¢¼´Êı
+	// ç«‹å³æ•°
 	H_I,
 
-	// ¸ÃÖ¸Áî°üº¬Ò»¸öÏà¶ÔÖ¸ÁîÖ¸Õë¼Ä´æÆ÷µÄÆ«ÒÆ
+	// è¯¥æŒ‡ä»¤åŒ…å«ä¸€ä¸ªç›¸å¯¹æŒ‡ä»¤æŒ‡é’ˆå¯„å­˜å™¨çš„åç§»
 	H_J,
 
-	// 8Î»Á¢¼´ÊıµÄ¸ß4Î»ÓÃ×÷±íÊ¾128Î»µÄXMM¼Ä´æÆ÷»ò256Î»µÄYMM¼Ä´æÆ÷£¬È¡¾öÓÚ²Ù×÷ÊıÀàĞÍ£¨ÔÚ32Î»Ä£Ê½ÏÂºöÂÔMSB£©
-	H_L,  // Ö»×éºÏÁËx
+	// 8ä½ç«‹å³æ•°çš„é«˜4ä½ç”¨ä½œè¡¨ç¤º128ä½çš„XMMå¯„å­˜å™¨æˆ–256ä½çš„YMMå¯„å­˜å™¨ï¼Œå–å†³äºæ“ä½œæ•°ç±»å‹ï¼ˆåœ¨32ä½æ¨¡å¼ä¸‹å¿½ç•¥MSBï¼‰
+	H_L,  // åªç»„åˆäº†x
 
-	// ModR/M×Ö½Ú¿ÉÄÜÖ»ÒıÓÃÄÚ´æ(ÀıÈç, BOUND, LES, LDS, LSS, LFS, LGS,CMPXCHG8B)
+	// ModR/Må­—èŠ‚å¯èƒ½åªå¼•ç”¨å†…å­˜(ä¾‹å¦‚, BOUND, LES, LDS, LSS, LFS, LGS,CMPXCHG8B)
 	H_M,
 
-	// ModR/M×Ö½ÚµÄR/MÓò±íÊ¾Ò»¸ö½ôËõ4×ÖMMX¼Ä´æÆ÷
-	H_N,  // Ö»×éºÏÁËq
+	// ModR/Må­—èŠ‚çš„R/MåŸŸè¡¨ç¤ºä¸€ä¸ªç´§ç¼©4å­—MMXå¯„å­˜å™¨
+	H_N,  // åªç»„åˆäº†q
 
-	// ¸ÃÖ¸ÁîÃ»ÓĞModR/M×Ö½Ú¡£²Ù×÷ÊıµÄÆ«ÒÆ±»±àÂëÎª×Ö»òË«×Ö(È¡¾öÓÚµØÖ·´óĞ¡ÊôĞÔ)¡£
-	// Ã»ÓĞ»ùÖ·¼Ä´æÆ÷¡¢±äÖ·¼Ä´æÆ÷»ò±ÈÀıÒòÊı¿ÉÒÔÓ¦ÓÃ¡£
+	// è¯¥æŒ‡ä»¤æ²¡æœ‰ModR/Må­—èŠ‚ã€‚æ“ä½œæ•°çš„åç§»è¢«ç¼–ç ä¸ºå­—æˆ–åŒå­—(å–å†³äºåœ°å€å¤§å°å±æ€§)ã€‚
+	// æ²¡æœ‰åŸºå€å¯„å­˜å™¨ã€å˜å€å¯„å­˜å™¨æˆ–æ¯”ä¾‹å› æ•°å¯ä»¥åº”ç”¨ã€‚
 	H_O,
 
-	// ModR/M×Ö½ÚµÄregÓò±íÊ¾Ò»¸ö½ôËõ4×ÖMMX¼Ä´æÆ÷
+	// ModR/Må­—èŠ‚çš„regåŸŸè¡¨ç¤ºä¸€ä¸ªç´§ç¼©4å­—MMXå¯„å­˜å™¨
 	H_P,
 
-	// Ò»¸öModR/M×Ö½Ú¸úÔÚOpcodeÖ®ºó²¢Ö¸¶¨²Ù×÷Êı¡£Õâ¸ö²Ù×÷Êı¿ÉÒÔÊÇMMX¼Ä´æÆ÷»òÄÚ´æµØÖ·¡£
-	// Èç¹ûÊÇÄÚ´æµØÖ·£¬¸ÃµØÖ·ÓÃ¶Î¼Ä´æÆ÷ºÍÒÔÏÂÈÎºÎÖµ£º»ùÖ·¼Ä´æÆ÷¡¢±äÖ·¼Ä´æÆ÷¡¢±ÈÀıÒòÊıºÍÎ»ÒÆÏà¼ÓÀ´¼ÆËã
+	// ä¸€ä¸ªModR/Må­—èŠ‚è·Ÿåœ¨Opcodeä¹‹åå¹¶æŒ‡å®šæ“ä½œæ•°ã€‚è¿™ä¸ªæ“ä½œæ•°å¯ä»¥æ˜¯MMXå¯„å­˜å™¨æˆ–å†…å­˜åœ°å€ã€‚
+	// å¦‚æœæ˜¯å†…å­˜åœ°å€ï¼Œè¯¥åœ°å€ç”¨æ®µå¯„å­˜å™¨å’Œä»¥ä¸‹ä»»ä½•å€¼ï¼šåŸºå€å¯„å­˜å™¨ã€å˜å€å¯„å­˜å™¨ã€æ¯”ä¾‹å› æ•°å’Œä½ç§»ç›¸åŠ æ¥è®¡ç®—
 	H_Q,
 
-	// ModR/M×Ö½Ú¿ÉÄÜÖ»ÒıÓÃÍ¨ÓÃ¼Ä´æÆ÷
+	// ModR/Må­—èŠ‚å¯èƒ½åªå¼•ç”¨é€šç”¨å¯„å­˜å™¨
 	H_R,
 
-	// ModR/M×Ö½ÚµÄregÓò±íÊ¾Ò»¸ö¶Î¼Ä´æÆ÷
-	H_S,  // Ö»×éºÏÁËw
+	// ModR/Må­—èŠ‚çš„regåŸŸè¡¨ç¤ºä¸€ä¸ªæ®µå¯„å­˜å™¨
+	H_S,  // åªç»„åˆäº†w
 
-	// ModR/M×Ö½ÚµÄR/MÓò±íÊ¾128Î»µÄXMM¼Ä´æÆ÷»ò256Î»µÄYMM¼Ä´æÆ÷£¬È¡¾öÓÚ²Ù×÷ÊıÀàĞÍ
+	// ModR/Må­—èŠ‚çš„R/MåŸŸè¡¨ç¤º128ä½çš„XMMå¯„å­˜å™¨æˆ–256ä½çš„YMMå¯„å­˜å™¨ï¼Œå–å†³äºæ“ä½œæ•°ç±»å‹
 	H_U,
 
-	// ModR/M×Ö½ÚµÄregÓò±íÊ¾128Î»µÄXMM¼Ä´æÆ÷»ò256Î»µÄYMM¼Ä´æÆ÷£¬È¡¾öÓÚ²Ù×÷ÊıÀàĞÍ
+	// ModR/Må­—èŠ‚çš„regåŸŸè¡¨ç¤º128ä½çš„XMMå¯„å­˜å™¨æˆ–256ä½çš„YMMå¯„å­˜å™¨ï¼Œå–å†³äºæ“ä½œæ•°ç±»å‹
 	H_V,
 
-	// Ò»¸öModR/M×Ö½Ú¸úÔÚOpcodeÖ®ºó²¢Ö¸¶¨²Ù×÷Êı¡£²Ù×÷Êı¿ÉÄÜÎªÒ»¸ö128Î»µÄXMM¼Ä´æÆ÷»ò256Î»µÄYMM¼Ä´æÆ÷£¨È¡¾öÓÚ²Ù×÷ÊıÀàĞÍ£©»òÄÚ´æµØÖ·¡£
-	// Èç¹ûÊÇÄÚ´æµØÖ·£¬¸ÃµØÖ·ÓÃ¶Î¼Ä´æÆ÷ºÍÒÔÏÂÈÎºÎÖµ£º»ùÖ·¼Ä´æÆ÷¡¢±äÖ·¼Ä´æÆ÷¡¢±ÈÀıÒòÊıºÍÎ»ÒÆÏà¼ÓÀ´¼ÆËã
+	// ä¸€ä¸ªModR/Må­—èŠ‚è·Ÿåœ¨Opcodeä¹‹åå¹¶æŒ‡å®šæ“ä½œæ•°ã€‚æ“ä½œæ•°å¯èƒ½ä¸ºä¸€ä¸ª128ä½çš„XMMå¯„å­˜å™¨æˆ–256ä½çš„YMMå¯„å­˜å™¨ï¼ˆå–å†³äºæ“ä½œæ•°ç±»å‹ï¼‰æˆ–å†…å­˜åœ°å€ã€‚
+	// å¦‚æœæ˜¯å†…å­˜åœ°å€ï¼Œè¯¥åœ°å€ç”¨æ®µå¯„å­˜å™¨å’Œä»¥ä¸‹ä»»ä½•å€¼ï¼šåŸºå€å¯„å­˜å™¨ã€å˜å€å¯„å­˜å™¨ã€æ¯”ä¾‹å› æ•°å’Œä½ç§»ç›¸åŠ æ¥è®¡ç®—
 	H_W,
 
-	// ÄÚ´æÑ°Ö·ÎªDS:rSI¼Ä´æÆ÷¶Ô
+	// å†…å­˜å¯»å€ä¸ºDS:rSIå¯„å­˜å™¨å¯¹
 	H_X,
-	// ÄÚ´æÑ°Ö·ÎªES:rDI¼Ä´æÆ÷¶Ô
+	// å†…å­˜å¯»å€ä¸ºES:rDIå¯„å­˜å™¨å¯¹
 	H_Y,
 
-	// ÌØÊâ£¬¼Ä´æÆ÷Óë²Ù×÷Êı´óĞ¡ÊôĞÔÏà¹Ø
-	// ±ÈÈçeAXÔÚ16£¨AX£©»ò32Î»£¨EAX£©³öÏÖ£¬rAX¿ÉÄÜÎªAX£¨16£©¡¢EAX£¨32£©¡¢RAX£¨64£©
-	// µ±REX.B±»ÓÃÓÚ¸Ä±äopcodeµÄregÓòÊ±£¬Ê¹ÓÃ /xxx ±íÊ¾Æä¿ÉÄÜĞÔ
+	// ç‰¹æ®Šï¼Œå¯„å­˜å™¨ä¸æ“ä½œæ•°å¤§å°å±æ€§ç›¸å…³
+	// æ¯”å¦‚eAXåœ¨16ï¼ˆAXï¼‰æˆ–32ä½ï¼ˆEAXï¼‰å‡ºç°ï¼ŒrAXå¯èƒ½ä¸ºAXï¼ˆ16ï¼‰ã€EAXï¼ˆ32ï¼‰ã€RAXï¼ˆ64ï¼‰
+	// å½“REX.Bè¢«ç”¨äºæ”¹å˜opcodeçš„regåŸŸæ—¶ï¼Œä½¿ç”¨ /xxx è¡¨ç¤ºå…¶å¯èƒ½æ€§
 	SPC_AL_R8L,
 	SPC_CL_R9L,
 	SPC_DL_R10L,
@@ -233,18 +293,18 @@ enum OperandType :unsigned char
 	SPC_Ux_Mq,
 	SPC_Ux_Mw,
 
-	// ±íÊ¾¼Ä´æÆ÷²ÎÊı(×Ö·û´®)»áËæ×Å³¤¶ÈÏŞ¶¨¸Ä±ä
-	// Õâ¸öÊÇÅäºÏºóÃæREGÓÃµÄ±êÊ¶
+	// è¡¨ç¤ºå¯„å­˜å™¨å‚æ•°(å­—ç¬¦ä¸²)ä¼šéšç€é•¿åº¦é™å®šæ”¹å˜
+	// è¿™ä¸ªæ˜¯é…åˆåé¢REGç”¨çš„æ ‡è¯†
 	CHANGE_REG,
 
-	// SPL,BPL,SIL,DIL£¨Len_8³¤¶È£¬ĞèÒªREXÇ°×º£¬»áÌæ»»µôah¡¢ch¡¢dh¡¢bh£©
-	// Ê¹ÓÃ³¤¶È¸³Öµ²»´ú±íÊÇÕâ¸ö³¤¶È,·ÅÔÚÄÇÀï½ÚÊ¡¿Õ¼ä
-	// ×¢Òâ´óĞ¡µÄ×ª»»ĞèÒª¿¼ÂÇµ½ÕâÀï
+	// SPL,BPL,SIL,DILï¼ˆLen_8é•¿åº¦ï¼Œéœ€è¦REXå‰ç¼€ï¼Œä¼šæ›¿æ¢æ‰ahã€chã€dhã€bhï¼‰
+	// ä½¿ç”¨é•¿åº¦èµ‹å€¼ä¸ä»£è¡¨æ˜¯è¿™ä¸ªé•¿åº¦,æ”¾åœ¨é‚£é‡ŒèŠ‚çœç©ºé—´
+	// æ³¨æ„å¤§å°çš„è½¬æ¢éœ€è¦è€ƒè™‘åˆ°è¿™é‡Œ
 	REG_SPL = _REG(8, Len_64_MM),
 	REG_BPL = _REG(9, Len_64_MM),
 	REG_SIL = _REG(10, Len_64_MM),
 	REG_DIL = _REG(11, Len_64_MM),
-	// ´ı¶¨
+	// å¾…å®š
 	REG_X12 = _REG(12, Len_64_MM),
 	REG_X13 = _REG(13, Len_64_MM),
 	REG_X14 = _REG(14, Len_64_MM),
@@ -340,10 +400,10 @@ enum OperandType :unsigned char
 	REG_R15D = _REG(15, Len_32),
 	REG_R15 = _REG(15, Len_64),
 	REG_XMM15 = _REG(15, Len_128_XMM),
-	// µ½223
+	// åˆ°223
 	REG_END = REG_XMM15,
 	// Segs
-	// ´ÓSEG_XX°´Ë³ĞòµİÔö,ĞèÒª×öÒ»Ğ©´¦Àí²ÅÄÜÈ¡µ½×Ö·û´®
+	// ä»SEG_XXæŒ‰é¡ºåºé€’å¢,éœ€è¦åšä¸€äº›å¤„ç†æ‰èƒ½å–åˆ°å­—ç¬¦ä¸²
 	SEG_XX = 250,
 	SEG_CS = SEG_XX,
 	SEG_DS = SEG_XX + 1,
@@ -356,8 +416,8 @@ enum OperandType :unsigned char
 enum OpcodeType :unsigned char
 {
 	OT_None,
-	OT_Inst,  //  ÆÕÍ¨Ö¸Áî
-	OT_Inst_Change,  //  ¸ù¾İ³¤¶ÈĞŞ¸ÄÖ¸ÁîÃûµÄÖ¸Áî
+	OT_Inst,  // æ™®é€šæŒ‡ä»¤
+	OT_Inst_Change,  // æ ¹æ®é•¿åº¦ä¿®æ”¹æŒ‡ä»¤åçš„æŒ‡ä»¤
 	OT_Prefix,
 
 	OT_Grp,
@@ -382,9 +442,9 @@ enum PrefixGroup :unsigned char
 	// and operand size / opcode information(VEX.L).See chapter 4 for details.
 	// Opcode tables A2 - A6 include both instructions with a VEX prefix and instructions without a VEX prefix.
 	// Many entries are only made once, but represent both the VEX and non - VEX forms of the instruction.
-	// If the VEX prefix is present all the operands are valid and the mnemonic is usually prefixed with a ¡°v¡±.
-	// If the VEX prefix is not present the VEX.vvvv operand is not available and the prefix ¡°v¡± is dropped from the mnemonic.
-	// A few instructions exist only in VEX form and these are marked with a superscript ¡°v¡±.
+	// If the VEX prefix is present all the operands are valid and the mnemonic is usually prefixed with a â€œvâ€.
+	// If the VEX prefix is not present the VEX.vvvv operand is not available and the prefix â€œvâ€ is dropped from the mnemonic.
+	// A few instructions exist only in VEX form and these are marked with a superscript â€œvâ€.
 	// Operand size of VEX prefix instructions can be determined by the operand type code. 
 	// 128 - bit vectors are indicated by 'dq', 256 - bit vectors are indicated by 'qq', 
 	// and instructions with operands supporting either 128 or 256 - bit,
@@ -395,6 +455,18 @@ enum PrefixGroup :unsigned char
 };
 enum Prefix :unsigned char
 {
+	// Some combinations of REX prefix fields are invalid. In such cases, the prefix is ignored. Some addi-
+	// tional information follows:
+	// Setting REX.W can be used to determine the operand size but does not solely determine operand width. Like
+	// the 66H size prefix, 64-bit operand size override has no effect on byte-specific operations.
+	// For non-byte operations: if a 66H prefix is used with prefix (REX.W = 1), 66H is ignored.
+	// If a 66H override is used with REX and REX.W = 0, the operand size is 16 bits.
+	// REX.R modifies the ModR/M reg field when that field encodes a GPR, SSE, control or debug register. REX.R is
+	// ignored when ModR/M specifies other registers or defines an extended opcode.
+	// REX.X bit modifies the SIB index field.
+	// REX.B either modifies the base in the ModR/M r/m field or SIB base field; or it modifies the opcode reg field
+	// used for accessing GPRs.
+	// 489é¡µæœ‰ä¸€ä¸ªè¡¨
 	Rex = 0x40,
 	Rex_B = 0x41,
 	Rex_X = 0x42,
@@ -411,20 +483,55 @@ enum Prefix :unsigned char
 	Rex_WRB = 0x4d,
 	Rex_WRX = 0x4e,
 	Rex_WRXB = 0x4f,
+	// 491é¡µæœ‰ç›¸å…³å†…å®¹
 	Vex_2Byte = 0xC4,
 	Vex_1Byte = 0xC5,
+
+	// 81é¡µæœ‰ç›¸å…³å†…å®¹
+	// The address - size override prefix(67H) allows programs to switch between 16 - and 32 - bit addressing.Either size
+	// can be the default; the prefix selects the non - default size.Using this prefix and / or other undefined opcodes when
+	// operands for the instruction do not reside in memory is reserved; such use may cause unpredictable behavior.
+
+	// The address - size attribute selects the sizes of addresses used to address memory : 16 bits or 32 bits.When the 16 -
+	// bit address - size attribute is in force, segment offsets and displacements are 16 bits.This restriction limits the size
+	// of a segment to 64 KBytes.When the 32 - bit address - size attribute is in force, segment offsets and displacements
+	// are 32 bits, allowing up to 4 GBytes to be addressed.
 	G4_address_size = 0x67,
+	// LOCK prefix is encoded using F0H.
 	G1_lock = 0xf0,
+	// The operand - size attribute selects the size of operands.When the 16 - bit operand - size attribute is in force, oper -
+	// ands can generally be either 8 bits or 16 bits, and when the 32 - bit operand - size attribute is in force, operands can
+	// generally be 8 bits or 32 bits.
+	// The operand - size override prefix allows a program to switch between 16 - and 32 - bit operand sizes.Either size can
+	// be the default; use of the prefix selects the non - default size.
+	// Some SSE2 / SSE3 / SSSE3 / SSE4 instructions and instructions using a three - byte sequence of primary opcode bytes
+	// may use 66H as a mandatory prefix to express distinct functionality.
+	// Other use of the 66H prefix is reserved; such use may cause unpredictable behavior.
 	G3_operand_size = 0x66,
+	// REPNE / REPNZ prefix is encoded using F2H.Repeat - Not - Zero prefix applies only to string and
+	// input / output instructions. (F2H is also used as a mandatory prefix for some instructions.)
+	// Bound prefix is encoded using F2H if the following conditions are true:
+	// CPUID.(EAX = 07H, ECX = 0) : EBX.MPX[bit 14] is set.
+	// BNDCFGU.EN and / or IA32_BNDCFGS.EN is set.
+	// When the F2 prefix precedes a near CALL, a near RET, a near JMP, or a near Jcc instruction(see Chapter
+	// 16, â€œIntelÂ® MPX, â€ of the IntelÂ® 64 and IA - 32 Architectures Software Developerâ€™s Manual, Volume 1).
+
+	// The operand - size attribute selects the size of operands.When the 16 - bit operand - size attribute is in force, oper -
+	// ands can generally be either 8 bits or 16 bits, and when the 32 - bit operand - size attribute is in force, operands can
+	// generally be 8 bits or 32 bits.
 	G1_repne_xacquire = 0xf2,
+	// REP or REPE / REPZ is encoded using F3H.The repeat prefix applies only to string and input / output
+	// instructions.F3H is also used as a mandatory prefix for POPCNT, LZCNT and ADOX instructions.
 	G1_reprepe_xrelease = 0xf3,
-	G2_seg_cs = 0x2e,
-	G2_seg_ds = 0x3e,
+	// use with any branch instruction is reserved
+	G2_seg_cs = 0x2e,  // Branch not taken (used only with Jcc instructions)
+	G2_seg_ds = 0x3e,  // Branch taken (used only with Jcc instructions)
 	G2_seg_es = 0x26,
 	G2_seg_fs = 0x64,
 	G2_seg_gs = 0x65,
 	G2_seg_ss = 0x36,
 };
+
 enum OpcodeGroup :unsigned char
 {
 	Grp_1 = 1,  // _80x83
@@ -449,7 +556,7 @@ enum OpcodeGroup :unsigned char
 };
 
 
-// Ö¸Áî´æÔÚÌõ¼ş
+// æŒ‡ä»¤å­˜åœ¨æ¡ä»¶
 enum PrefixCondition :unsigned char
 {
 	C_None,
@@ -481,22 +588,22 @@ enum Mod76Condition :unsigned char
 enum Superscript :unsigned char
 {
 	// S_None,
-	// S_1A ,  // ModRM3-5ÎªÀ©Õ¹²Ù×÷Âë,×éÌØÓĞÉÏ±ê
-	S_1B = 1,  // Ê¹ÓÃ0F0B²Ù×÷Âë£¨UD2Ö¸Áî£©»ò0FB9H²Ù×÷ÂëÊ±£¬¿ÌÒâÉú³ÉÎŞĞ§µÄ²Ù×÷ÂëÒì³££¨#UD£©¡£
-	S_1C,  // ÓĞĞ©Ö¸ÁîÊ¹ÓÃÏàÍ¬µÄÁ½¸ö×Ö½ÚÂë¡£Èç¹û¸ÃÖ¸ÁîÓĞ±ä»¯£¬»òÕß²Ù×÷Âë±íÊ¾²»Í¬µÄÖ¸Áî£¬¸ÃMODR/ M×Ö½Ú½«ÓÃÓÚÇø·Ö¸ÃÖ¸Áî¡£
+	// S_1A ,  // ModRM3-5ä¸ºæ‰©å±•æ“ä½œç ,ç»„ç‰¹æœ‰ä¸Šæ ‡
+	S_1B = 1,  // ä½¿ç”¨0F0Bæ“ä½œç ï¼ˆUD2æŒ‡ä»¤ï¼‰æˆ–0FB9Hæ“ä½œç æ—¶ï¼Œåˆ»æ„ç”Ÿæˆæ— æ•ˆçš„æ“ä½œç å¼‚å¸¸ï¼ˆ#UDï¼‰ã€‚
+	S_1C,  // æœ‰äº›æŒ‡ä»¤ä½¿ç”¨ç›¸åŒçš„ä¸¤ä¸ªå­—èŠ‚ç ã€‚å¦‚æœè¯¥æŒ‡ä»¤æœ‰å˜åŒ–ï¼Œæˆ–è€…æ“ä½œç è¡¨ç¤ºä¸åŒçš„æŒ‡ä»¤ï¼Œè¯¥MODR/ Må­—èŠ‚å°†ç”¨äºåŒºåˆ†è¯¥æŒ‡ä»¤ã€‚
 
-	// Ìõ¼ş
-	S_i64,  // ÔÚ64Î»·Ç·¨»òÎ´±àÂë£¬40-4fÔÚ64Î»ÖĞ×öREXÇ°×º£¬Ê¹ÓÃFE/FF/Grp4 5´úÌæinc/dec
-	S_o64,  // ½ö64Î»¿ÉÓÃ
+	// æ¡ä»¶
+	S_i64,  // åœ¨64ä½éæ³•æˆ–æœªç¼–ç ï¼Œ40-4fåœ¨64ä½ä¸­åšREXå‰ç¼€ï¼Œä½¿ç”¨FE/FF/Grp4 5ä»£æ›¿inc/dec
+	S_o64,  // ä»…64ä½å¯ç”¨
 
-	S_d64,  // ÔÚ64Î»ÖĞ²Ù×÷ÊıÄ¬ÈÏ64Î»£¬²»ÄÜ±àÂë32Î»Êı¾İ
-	S_f64,  // 64Î»Ê±²Ù×÷ÊıÇ¿ÖÆ64Î»£¬²Ù×÷Êı³ß´çÇ°×ºÔÚ64Î»ÏÂÎŞĞ§
+	S_d64,  // åœ¨64ä½ä¸­æ“ä½œæ•°é»˜è®¤64ä½ï¼Œä¸èƒ½ç¼–ç 32ä½æ•°æ®
+	S_f64,  // 64ä½æ—¶æ“ä½œæ•°å¼ºåˆ¶64ä½ï¼Œæ“ä½œæ•°å°ºå¯¸å‰ç¼€åœ¨64ä½ä¸‹æ— æ•ˆ
 
-	S_v,  // Ö»´æÔÚvexĞÎÊ½¡£Ã»ÓĞ¾ÉµÄSSEÖ¸ÁîĞÎÊ½¡£¶ÔÓÚÕûÊıGPRÖ¸ÁîËü±íÊ¾VEXÇ°×º
-	S_v1,  // µ±²»ÄÜ´ÓÊı¾İ´óĞ¡ÍÆ¶ÏÊ±£¬Ö»´æÔÚVEX128ºÍSSEĞÎÊ½£¨Ã»ÓĞVEX256£©
+	S_v,  // åªå­˜åœ¨vexå½¢å¼ã€‚æ²¡æœ‰ä¼ ç»Ÿçš„SSEæŒ‡ä»¤å½¢å¼ã€‚å¯¹äºæ•´æ•°GPRæŒ‡ä»¤å®ƒè¡¨ç¤ºVEXå‰ç¼€
+	S_v1,  // å½“ä¸èƒ½ä»æ•°æ®å¤§å°æ¨æ–­æ—¶ï¼Œåªå­˜åœ¨VEX128å’ŒSSEå½¢å¼ï¼ˆæ²¡æœ‰VEX256ï¼‰
 };
 
-// Ãû×Öºó×º
+// åå­—åç¼€
 enum NameExt :unsigned char
 {
 	Ext_None = 0,
@@ -505,23 +612,70 @@ enum NameExt :unsigned char
 	Ext_D = Ext_W << 1,
 	Ext_Q = Ext_D << 1
 };
+enum SizeAttribute :unsigned char
+{
+	BitNotSet,
+	Bit16,
+	Bit32,
+	Bit64
+};
+enum EffectiveSizeIndex :unsigned char
+{
+	EffectiveOperand,
+	EffectiveAddress,
+};
+
+// If the flag is set,32 - bit addresses and 32 - bit or 8 - bit operands are assumed;
+// if it is clear, 16 - bit addresses and 16 - bit or 8 - bit operands are assumed.
+
+// D Flag in Code Segment Descriptor	0  0  0  0  1  1  1  1
+// Operand - Size Prefix 66H			N  N  Y  Y  N  N  Y  Y
+// Address - Size Prefix 67H			N  Y  N  Y  N  Y  N  Y
+// Effective Operand Size				16 16 32 32 32 32 16 16
+// Effective Address Size				16 32 16 32 32 16 32 16
+// ä¸‹é¢å¿½ç•¥æ‰DFlagä¸º0çš„æƒ…å†µ
+// [Operand Prefix Is Present]
+// [Address Prefix Is Present]
+// [Effective Operand Size/Effective Address Size]
+extern const SizeAttribute EffectiveMode32[2][2][2];
+
+// In the case of SSE / SSE2 / SSE3 / SSSE3 SIMD instructions : the 66H, F2H, and F3H prefixes are mandatory for
+// opcode extensions.In such a case, there is no interaction between a valid REX.W prefix and a 66H opcode exten -
+// sion prefix.
+
+// L Flag in Code Segment Descriptor	1  1  1  1  1  1  1  1
+
+// REX.W Prefix							0  0  0  0  1  1  1  1
+// Operand - Size Prefix 66H			N  N  Y  Y  N  N  Y  Y
+// Address - Size Prefix 67H			N  Y  N  Y  N  Y  N  Y
+// Effective Operand Size				32 32 16 16 64 64 64 64
+// Effective Address Size				64 32 64 32 64 32 64 32
+
+// [REX.W Prefix]
+// [Operand Prefix Is Present]
+// [Address Prefix Is Present]
+// [Effective Operand Size/Effective Address Size]
+extern const SizeAttribute EffectiveMode64[2][2][2][2];
+
+// è·Ÿæ®µæ ‡è¯†å…±ç”¨ä¸€ä¸ªè¡¨èŠ‚çº¦ä¸€ä¸‹ç©ºé—´
+extern const char Registers[16][6][6];
 
 #pragma pack(push, 1)
-// 1b\2b ±íÖĞÔªËØ½á¹¹,Count±íÊ¾¿ÉÑ¡ÔñµÄÖ¸ÁîÊı£¬0±íÊ¾Ö¸Áî²»´æÔÚ
+// 1b\2b è¡¨ä¸­å…ƒç´ ç»“æ„,Countè¡¨ç¤ºå¯é€‰æ‹©çš„æŒ‡ä»¤æ•°ï¼Œ0è¡¨ç¤ºæŒ‡ä»¤ä¸å­˜åœ¨
 struct OpcodeData
 {
 	unsigned short Hex_InstIndex : 12;
 	unsigned short Count : 4;
 };
-// 3b ±íÖĞÔªËØ½á¹¹
+// 3b è¡¨ä¸­å…ƒç´ ç»“æ„
 struct ZipOpcodeData
 {
 	unsigned short Hex_InstIndex : 12;
 	unsigned short Count : 4;
-	unsigned char Index;  // OpcodeDataÏÂ±ê
+	unsigned char Index;  // OpcodeDataä¸‹æ ‡
 };
 
-// hexºÍinstµÄ¹ØÏµ±íÔªËØ
+// hexå’Œinstçš„å…³ç³»è¡¨å…ƒç´ 
 struct Hex_Inst
 {
 	unsigned short Type : 6;
@@ -529,33 +683,33 @@ struct Hex_Inst
 
 };
 
-// ×¢ÒâÕâÀïInstDataºÍInstChangeDataµÄ²ÎÊıË³ĞòºÍÀàĞÍ´óĞ¡±ØĞëÏàÍ¬£¬
-// ÔÚ²»ĞèÒªÊ¹ÓÃÖ¸ÁîÃûµÄ³¡ºÏ¿ÉÒÔ°ÑËüÃÇµ±×÷Í¬Ò»ÀàĞÍ
+// æ³¨æ„è¿™é‡ŒInstDataå’ŒInstChangeDataçš„å‚æ•°é¡ºåºå’Œç±»å‹å¤§å°å¿…é¡»ç›¸åŒï¼Œ
+// åœ¨ä¸éœ€è¦ä½¿ç”¨æŒ‡ä»¤åçš„åœºåˆå¯ä»¥æŠŠå®ƒä»¬å½“ä½œåŒä¸€ç±»å‹
 struct InstData
 {
-	unsigned char Pfxcdt : 4;  // Ç°×ºÌõ¼şPrefixCondition
+	unsigned char Pfxcdt : 4;  // å‰ç¼€æ¡ä»¶PrefixCondition
 	unsigned char Ss : 4;  // Superscript
 	unsigned char ParamID;
 	unsigned short ParamCount : 3;
 	unsigned short NameCount : 3;
 	unsigned short NameID : 10;
-	// unsigned char Ext:4; // Inst_Change ÀàĞÍÌØÓĞNameExt
+	// unsigned char Ext:4; // Inst_Change ç±»å‹ç‰¹æœ‰NameExt
 };
 struct InstChangeData
 {
-	unsigned char Pfxcdt : 4;  // Ç°×ºÌõ¼şPrefixCondition
+	unsigned char Pfxcdt : 4;  // å‰ç¼€æ¡ä»¶PrefixCondition
 	unsigned char Ss : 4;  // Superscript
 	unsigned char ParamID;
 	unsigned short ParamCount : 3;
 	unsigned short NameCount : 3;
 	unsigned short NameID : 10;
-	unsigned char Ext : 4;   // Inst_Change ÀàĞÍÌØÓĞNameExt
+	unsigned char Ext : 4;   // Inst_Change ç±»å‹ç‰¹æœ‰NameExt
 };
 struct PrefixInstData
 {
 	unsigned short Ss : 4;  // Superscript
 	unsigned short PfxGrp : 3;
-	unsigned short NameID : 9;  // prefix Ãû×Ö¿¿Ç°ËùÒÔ9Î»×ã¹»
+	unsigned short NameID : 9;  // prefix åå­—é å‰æ‰€ä»¥9ä½è¶³å¤Ÿ
 };
 
 struct GrpInstData

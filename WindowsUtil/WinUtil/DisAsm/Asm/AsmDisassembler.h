@@ -13,9 +13,10 @@ namespace Disassembler
 		public DisassemblerBase<AsmDisassembler>
 	{
 	public:
+		// 只处理32位或64位的机器码
 		AsmDisassembler(bool is32)
 		{
-			storage.SetX32(is32);
+			storage.SetSizeMode(is32);
 		}
 
 		~AsmDisassembler()
@@ -25,6 +26,6 @@ namespace Disassembler
 	
 		
 		virtual unique_ptr<IInstruction> GetResult() const override;
-
+		
 	};
 }  // namespace Disassembler

@@ -26,6 +26,7 @@ namespace Disassembler
 		// ss和pfx都为指令数据
 		static bool VerifyCondition(AsmStateFactory::ParamType* param, Superscript ss, PrefixCondition pfx);
 		static int OpcodeTypeToStateID(OpcodeType opType);
+		
 	};
 
 }  // namespace Disassembler

@@ -9,7 +9,7 @@ namespace Disassembler
 		auto storage = param->GetStorage();
 		auto opcodeDataStorage = storage->GetOpcodeDataStorage();
 		//assert(opcodeDataStorage.GetType() == OT_Prefix);
-		auto pfxHex = *storage->GetCurrentPosition();
+		auto pfxHex = storage->GetCurrentPosition();
 		// 存储读取到的前缀
 		auto pfxInst = opcodeDataStorage->GetData<PrefixInstData>();
 		if (!storage->GetPrefixStorage()->Push(pfxHex, pfxInst))

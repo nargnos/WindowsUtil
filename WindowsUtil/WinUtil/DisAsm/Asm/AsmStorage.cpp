@@ -5,16 +5,9 @@ namespace Disassembler
 {
 	AsmStorage::AsmStorage()
 	{
-		isX32 = false;
+		is32Bit = true;
 	}
-	void AsmStorage::SetX32(bool is32)
-	{
-		isX32 = is32;
-	}
-	bool AsmStorage::IsX32() const
-	{
-		return isX32;
-	}
+	
 	OperandGroupStorage * AsmStorage::GetOperandGroupStorage() { return &operandGrpStorage; }
 	OpcodeDataStorage * AsmStorage::GetOpcodeDataStorage() { return &opcodeDataStorage; }
 	NameStorage * AsmStorage::GetNameStorage() { return &nameStorage; }
