@@ -3,6 +3,7 @@
 #include "..\..\Common\StateFactory.h"
 namespace Disassembler
 {
+	
 	class AsmStateFactory:public StateFactory<AsmDisassembler>
 	{
 	public:
@@ -20,11 +21,11 @@ namespace Disassembler
 			State_End,
 			_Enum_States_End
 		};
-
 		static NextStateFunction GetStateFunction(unsigned char stateId);
 
-		static int GetBeginStateID();
-		static int GetEndStateID();
+		static constexpr unsigned char BeginStateID = State_Init;
+		static constexpr unsigned char EndStateID = State_End;
+
 	private:
 		static NextStateFunction stateFunctions[];
 	};

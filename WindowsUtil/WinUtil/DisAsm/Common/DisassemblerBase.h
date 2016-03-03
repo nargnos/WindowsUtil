@@ -19,8 +19,8 @@ namespace Disassembler
 		typedef typename TTrait::TStateFactory TStateFactory;
 		DisassemblerBase()
 		{
-			auto isChild = std::is_base_of<IDisassembler, TChild>::value;
-			assert(isChild);
+			_STATIC_ASSERT((std::is_base_of<IDisassembler, TChild>::value));
+			
 		}
 
 		~DisassemblerBase()
@@ -32,9 +32,8 @@ namespace Disassembler
 			storage->SetInitialPosition(pos);
 			TStateFactory::NextStateFunction getNextStateID = NULL;
 			auto stateUsed = dynamic_cast<TTrait::TStateUsed*>(this);
-			auto endID = TStateFactory::GetEndStateID();
 
-			for (auto i = TStateFactory::GetBeginStateID(); i != endID; i = getNextStateID(stateUsed))
+			for (auto i = TStateFactory::BeginStateID; i != TStateFactory::EndStateID; i = getNextStateID(stateUsed))
 			{
 				getNextStateID = TStateFactory::GetStateFunction(i);
 				assert(getNextStateID);

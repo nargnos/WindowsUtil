@@ -6,6 +6,8 @@ namespace Disassembler
 	{
 
 	};
+
+
 	/*template<bool isEndState = false>
 	struct State :public IState
 	{

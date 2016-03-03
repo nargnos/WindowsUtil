@@ -11,6 +11,7 @@
 #include "PrefixState.h"
 namespace Disassembler
 {
+
 	AsmStateFactory::NextStateFunction AsmStateFactory::stateFunctions[]=
 	{
 		AsmState<State_Init>::Next,
@@ -22,18 +23,13 @@ namespace Disassembler
 		AsmState<State_Byte>::Next,
 		AsmState<State_PreEnd>::Next,
 	};
+	// FIX: 此处需要传入变量循环调用，找有什么方法可以把那个数组去掉而又不用switch
+	// 状态Next直接返回函数的话NextStateFunction无法声明
 	AsmStateFactory::NextStateFunction AsmStateFactory::GetStateFunction(unsigned char stateId)
 	{
 		assert(stateId < (sizeof(stateFunctions) / sizeof(NextStateFunction)));
 		return stateFunctions[stateId];
 	}
-	int AsmStateFactory::GetBeginStateID()
-	{
-		return State_Init;
-	}
-	int AsmStateFactory::GetEndStateID()
-	{
-		return State_End;
-	}
+
 }  // namespace Disassembler
 
