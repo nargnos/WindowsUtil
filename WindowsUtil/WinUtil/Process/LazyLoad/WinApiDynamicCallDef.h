@@ -32,6 +32,7 @@ namespace Process
 		template<typename T>
 		class WinApiDynamicCall;
 		// 只适用于_stdcall的函数
+		// FIX: 这里需要改，不要产生过多副本
 		template<typename Ret, typename... T>
 		class WinApiDynamicCall<Ret WINAPI(T...)>
 		{
