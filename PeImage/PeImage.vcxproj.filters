@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{104371ae-f60d-42a4-86e0-08ff0fe4bae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage">
+      <UniqueIdentifier>{adda1957-7810-4b7b-9231-6d64033ddeca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DosHeader">
+      <UniqueIdentifier>{b8fdf261-b813-4cd2-abe7-19cfec2c38a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory">
+      <UniqueIdentifier>{8a8a7253-32d6-4ff6-92a7-71f0cca5a93c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\NtHeader">
+      <UniqueIdentifier>{636a62ed-1149-42cc-be8a-9fdbee0b6893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\ExportDirectory">
+      <UniqueIdentifier>{7ca7bd89-52bf-44f7-90b7-1e1b5273f265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\Sections">
+      <UniqueIdentifier>{67fa17ff-1cb5-42a6-92d5-48cf825be085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\ArchitectureDirectory">
+      <UniqueIdentifier>{876f59f6-adf1-4932-9f2e-7434b8a234a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\BoundImportDirectory">
+      <UniqueIdentifier>{ae227b6d-ed51-4ab6-9cd2-338bccbafdc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\ComDescriptorDirectory">
+      <UniqueIdentifier>{11562311-278d-42c8-9949-46ebe53bc485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\DebugDirectory">
+      <UniqueIdentifier>{9a789de9-fe99-46bf-a483-8cae4169043b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\ExceptionDirectory">
+      <UniqueIdentifier>{6fa90253-5476-437d-ad74-f76c7130b15d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\GlobalptrDirectory">
+      <UniqueIdentifier>{575cc6f3-22fc-455d-bcf5-1d7979ba808f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\IatDirectory">
+      <UniqueIdentifier>{1849aaf9-bc72-4470-875b-3e817cf9349c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\LoadConfigDirectory">
+      <UniqueIdentifier>{e0314c4e-8df7-4b7d-a0f2-2707c2c7f27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\SecurityDirectory">
+      <UniqueIdentifier>{f8720bbd-6b78-4029-803a-3a7325474746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\TlsDirectory">
+      <UniqueIdentifier>{ebcca538-4974-48fe-8c98-42b860fcbdbf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImage.h">
+      <Filter>PeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="DosHeader.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImageFwd.h">
+      <Filter>PeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="DataDirectoryEntryType.h">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeader.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeaderType.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DosStub.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionHeaders.h">
+      <Filter>PeImage\Sections</Filter>
+    </ClInclude>
+    <ClInclude Include="DataDirectoryEntries.h">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectoryBase.h">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSize.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPtr.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportDirectory.h">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchitectureDirectory.h">
+      <Filter>PeImage\DataDirectory\ArchitectureDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundImportDirectory.h">
+      <Filter>PeImage\DataDirectory\BoundImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ComDescriptorDirectory.h">
+      <Filter>PeImage\DataDirectory\ComDescriptorDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ExceptionDirectory.h">
+      <Filter>PeImage\DataDirectory\ExceptionDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDirectory.h">
+      <Filter>PeImage\DataDirectory\DebugDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalptrDirectory.h">
+      <Filter>PeImage\DataDirectory\GlobalptrDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="IatDirectory.h">
+      <Filter>PeImage\DataDirectory\IatDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadConfigDirectory.h">
+      <Filter>PeImage\DataDirectory\LoadConfigDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="SecurityDirectory.h">
+      <Filter>PeImage\DataDirectory\SecurityDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="TlsDirectory.h">
+      <Filter>PeImage\DataDirectory\TlsDirectory</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="PeImage.cpp">
+      <Filter>PeImage</Filter>
+    </ClCompile>
+    <ClCompile Include="DosHeader.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeader.cpp">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="DosStub.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionHeaders.cpp">
+      <Filter>PeImage\Sections</Filter>
+    </ClCompile>
+    <ClCompile Include="DataDirectoryEntries.cpp">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportDirectory.cpp">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchitectureDirectory.cpp">
+      <Filter>PeImage\DataDirectory\ArchitectureDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundImportDirectory.cpp">
+      <Filter>PeImage\DataDirectory\BoundImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ComDescriptorDirectory.cpp">
+      <Filter>PeImage\DataDirectory\ComDescriptorDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDirectory.cpp">
+      <Filter>PeImage\DataDirectory\DebugDirectory</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
