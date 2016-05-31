@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class SecurityDirectory :
-		public DirectoryBase<DataDirectoryEntryType::Security>
+		public Detail::DirectoryBase<DataDirectoryEntryType::Security>
 	{
 	public:
 		SecurityDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :

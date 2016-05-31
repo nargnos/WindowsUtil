@@ -8,8 +8,8 @@
 // FIX: 因为需要每个值都能输出Offset，如果用PtrToStructure取数据会得不到指针，为每个成员添加计算偏移量的代码需要写很多（而且没规律），如果一个个取又跟现在用的差不多了
 // 所以暂时先用笨方法取指针，等想到更好的再替换
 
-#include <PE\PeImage.h>
-#define NAMESPACE Wapper
+#include <PeImage\PeDecoder.h>
+#define NAMESPACE Wrapper
 namespace NAMESPACE {
 
 	using namespace System;
@@ -24,22 +24,14 @@ namespace NAMESPACE {
 
 
 }
-public enum class WinSize
-{
-	Byte = 1,
-	Word = 2,
-	Dword = 4,
-	Qword = 8
-};
 
-extern System::String^ GetValueSizeStr(int size);
 
-#include "Converters.h"
-#include "StructOffset.h"
-#include "UITypeEditor.h"
-#include "UnmanagedMemory.h"
-#include "UnmanagedArray.h"
-#include "UnmanagedValue.h"
-#include "PE\PeStructWapper.h"
-#include "UnmanagedEnum.h"
+//#include "Converters.h"
+//#include "StructOffset.h"
+//#include "UITypeEditor.h"
+//#include "UnmanagedMemory.h"
+//#include "UnmanagedArray.h"
+//#include "UnmanagedValue.h"
+//#include "PeStructWrapper.h"
+//#include "UnmanagedEnum.h"
 

@@ -1,30 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{104371ae-f60d-42a4-86e0-08ff0fe4bae4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PeImage">
       <UniqueIdentifier>{adda1957-7810-4b7b-9231-6d64033ddeca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PeImage\DosHeader">
-      <UniqueIdentifier>{b8fdf261-b813-4cd2-abe7-19cfec2c38a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PeImage\DataDirectory">
-      <UniqueIdentifier>{8a8a7253-32d6-4ff6-92a7-71f0cca5a93c}</UniqueIdentifier>
+    <Filter Include="PeImage\Sections">
+      <UniqueIdentifier>{67fa17ff-1cb5-42a6-92d5-48cf825be085}</UniqueIdentifier>
     </Filter>
     <Filter Include="PeImage\NtHeader">
       <UniqueIdentifier>{636a62ed-1149-42cc-be8a-9fdbee0b6893}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PeImage\Common">
+      <UniqueIdentifier>{104371ae-f60d-42a4-86e0-08ff0fe4bae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory">
+      <UniqueIdentifier>{8a8a7253-32d6-4ff6-92a7-71f0cca5a93c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="PeImage\DataDirectory\ExportDirectory">
       <UniqueIdentifier>{7ca7bd89-52bf-44f7-90b7-1e1b5273f265}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PeImage\Sections">
-      <UniqueIdentifier>{67fa17ff-1cb5-42a6-92d5-48cf825be085}</UniqueIdentifier>
     </Filter>
     <Filter Include="PeImage\DataDirectory\ArchitectureDirectory">
       <UniqueIdentifier>{876f59f6-adf1-4932-9f2e-7434b8a234a7}</UniqueIdentifier>
@@ -56,61 +49,30 @@
     <Filter Include="PeImage\DataDirectory\TlsDirectory">
       <UniqueIdentifier>{ebcca538-4974-48fe-8c98-42b860fcbdbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PeImage\DataDirectory\RelocDirectory">
+      <UniqueIdentifier>{b775352f-0780-498a-b1d8-f80f6350b815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\ImportDirectory">
+      <UniqueIdentifier>{964e0603-f423-47e9-a6da-90f8caae078f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\ResourceDirectory">
+      <UniqueIdentifier>{8f2c2c6a-7263-43fd-a20c-df89b02854b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DataDirectory\DelayImportDirectory">
+      <UniqueIdentifier>{32f3f443-9cc3-4b02-9c43-aa2ce3c6b8a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PeImage\DosHeader">
+      <UniqueIdentifier>{b8fdf261-b813-4cd2-abe7-19cfec2c38a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Common.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="PeImage.h">
-      <Filter>PeImage</Filter>
-    </ClInclude>
-    <ClInclude Include="DosHeader.h">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="PeImageFwd.h">
-      <Filter>PeImage</Filter>
-    </ClInclude>
-    <ClInclude Include="DataDirectoryEntryType.h">
-      <Filter>PeImage\DataDirectory</Filter>
-    </ClInclude>
-    <ClInclude Include="NtHeader.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="NtHeaderType.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="DosStub.h">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="SectionHeaders.h">
-      <Filter>PeImage\Sections</Filter>
-    </ClInclude>
-    <ClInclude Include="DataDirectoryEntries.h">
-      <Filter>PeImage\DataDirectory</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectoryBase.h">
-      <Filter>PeImage\DataDirectory</Filter>
-    </ClInclude>
-    <ClInclude Include="DataSize.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="DataPtr.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="ExportDirectory.h">
-      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
-    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
     <ClInclude Include="ArchitectureDirectory.h">
       <Filter>PeImage\DataDirectory\ArchitectureDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseRelocation.h">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
     </ClInclude>
     <ClInclude Include="BoundImportDirectory.h">
       <Filter>PeImage\DataDirectory\BoundImportDirectory</Filter>
@@ -118,11 +80,53 @@
     <ClInclude Include="ComDescriptorDirectory.h">
       <Filter>PeImage\DataDirectory\ComDescriptorDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="ExceptionDirectory.h">
-      <Filter>PeImage\DataDirectory\ExceptionDirectory</Filter>
+    <ClInclude Include="Common.h">
+      <Filter>PeImage\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DataDirectoryEntries.h">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DataDirectoryEntryType.h">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPtr.h">
+      <Filter>PeImage\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSize.h">
+      <Filter>PeImage\Common</Filter>
     </ClInclude>
     <ClInclude Include="DebugDirectory.h">
       <Filter>PeImage\DataDirectory\DebugDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DelayImportDescriptor.h">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DelayImportDirectory.h">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectoryBase.h">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DosHeader.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DosStub.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ExceptionDirectory.h">
+      <Filter>PeImage\DataDirectory\ExceptionDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportDirectory.h">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportDirectoryIterator.h">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="GetOriginal.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="GetRelocPtr.h">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
     </ClInclude>
     <ClInclude Include="GlobalptrDirectory.h">
       <Filter>PeImage\DataDirectory\GlobalptrDirectory</Filter>
@@ -130,8 +134,65 @@
     <ClInclude Include="IatDirectory.h">
       <Filter>PeImage\DataDirectory\IatDirectory</Filter>
     </ClInclude>
+    <ClInclude Include="ImageType.h">
+      <Filter>PeImage\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportDescriptor.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportDirectory.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportDirectoryIterator.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportThunk.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
     <ClInclude Include="LoadConfigDirectory.h">
       <Filter>PeImage\DataDirectory\LoadConfigDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeader.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeaderType.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="PeDecoder.h">
+      <Filter>PeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImage.h">
+      <Filter>PeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImageFwd.h">
+      <Filter>PeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="PeRef.h">
+      <Filter>PeImage\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="RelocDirectory.h">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="RelocDirectoryIterator.h">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDirectory.h">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceDirectoryNode.h">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceEntry.h">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceEntryIterator.h">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceUtil.h">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionHeaders.h">
+      <Filter>PeImage\Sections</Filter>
     </ClInclude>
     <ClInclude Include="SecurityDirectory.h">
       <Filter>PeImage\DataDirectory\SecurityDirectory</Filter>
@@ -139,34 +200,23 @@
     <ClInclude Include="TlsDirectory.h">
       <Filter>PeImage\DataDirectory\TlsDirectory</Filter>
     </ClInclude>
+    <ClInclude Include="TypeOffset.h">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeOffsetIterator.h">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportIteratorNode.h">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="PeImage.cpp">
-      <Filter>PeImage</Filter>
-    </ClCompile>
-    <ClCompile Include="DosHeader.cpp">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClCompile>
-    <ClCompile Include="NtHeader.cpp">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClCompile>
-    <ClCompile Include="DosStub.cpp">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClCompile>
-    <ClCompile Include="SectionHeaders.cpp">
-      <Filter>PeImage\Sections</Filter>
-    </ClCompile>
-    <ClCompile Include="DataDirectoryEntries.cpp">
-      <Filter>PeImage\DataDirectory</Filter>
-    </ClCompile>
-    <ClCompile Include="ExportDirectory.cpp">
-      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
-    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArchitectureDirectory.cpp">
       <Filter>PeImage\DataDirectory\ArchitectureDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseRelocation.cpp">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
     </ClCompile>
     <ClCompile Include="BoundImportDirectory.cpp">
       <Filter>PeImage\DataDirectory\BoundImportDirectory</Filter>
@@ -174,8 +224,83 @@
     <ClCompile Include="ComDescriptorDirectory.cpp">
       <Filter>PeImage\DataDirectory\ComDescriptorDirectory</Filter>
     </ClCompile>
+    <ClCompile Include="DataDirectoryEntries.cpp">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClCompile>
     <ClCompile Include="DebugDirectory.cpp">
       <Filter>PeImage\DataDirectory\DebugDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="DelayImportDescriptor.cpp">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="DelayImportDirectory.cpp">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="DosHeader.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="DosStub.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportDirectory.cpp">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportDirectoryIterator.cpp">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="GetRelocPtr.cpp">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportDescriptor.cpp">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportDirectory.cpp">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportDirectoryIterator.cpp">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeader.cpp">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="PeImage.cpp">
+      <Filter>PeImage</Filter>
+    </ClCompile>
+    <ClCompile Include="PeRef.cpp">
+      <Filter>PeImage\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="RelocDirectory.cpp">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="RelocDirectoryIterator.cpp">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceDirectory.cpp">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceDirectoryNode.cpp">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceEntry.cpp">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceEntryIterator.cpp">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceUtil.cpp">
+      <Filter>PeImage\DataDirectory\ResourceDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionHeaders.cpp">
+      <Filter>PeImage\Sections</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeOffset.cpp">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeOffsetIterator.cpp">
+      <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportIteratorNode.cpp">
+      <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

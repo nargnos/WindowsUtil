@@ -17,6 +17,7 @@ namespace PeDecoder
 
 		PIMAGE_NT_HEADERS32 GetRawPtr32() const;
 		PIMAGE_NT_HEADERS64 GetRawPtr64() const;
+		// 只要是pe，这个结构不需验证ntHeader
 		const unique_ptr<DataDirectoryEntries>& GetDataDirectoryEntries();
 	protected:
 		void* ntHeader_;

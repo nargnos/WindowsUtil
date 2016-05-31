@@ -75,11 +75,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\WindowsUtil\WinUtil;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\WindowsUtil\WinUtil;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -92,12 +90,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ExceptionHandling>Async</ExceptionHandling>
       <BrowseInformation>true</BrowseInformation>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(OutDir)WindowsUtil.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
@@ -108,11 +108,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(OutDir)WindowsUtil.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,9 +122,11 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,9 +134,11 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -144,39 +150,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Converters.h" />
-    <ClInclude Include="PE\Export\ExportWapper.h" />
-    <ClInclude Include="FlagsEditorUI.h" />
-    <ClInclude Include="PE\Import\ImportWapper.h" />
-    <ClInclude Include="PE\NtHeader\OptionalHeaderWapper.h" />
-    <ClInclude Include="PE\NtHeader\FileHeaderWapper.h" />
-    <ClInclude Include="PE\NtHeader\NtHeaderWapper.h" />
-    <ClInclude Include="PE\PeStructWapper.h" />
-    <ClInclude Include="PE\Section\SectionWapper.h" />
-    <ClInclude Include="StructOffset.h" />
-    <ClInclude Include="UITypeEditor.h" />
-    <ClInclude Include="UnmanagedEnum.h" />
-    <ClInclude Include="UnmanagedValue.h" />
-    <ClInclude Include="PE\DosHeader\DosHeaderWapper.h" />
-    <ClInclude Include="PE\PeImage.h" />
+    <ClInclude Include="ImportWapper.h" />
+    <ClInclude Include="SectionWapper.h" />
+    <ClInclude Include="PeImage.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UnmanagedArray.h" />
-    <ClInclude Include="UnmanagedMemory.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Converters.cpp" />
-    <ClCompile Include="PE\Export\ExportWapper.cpp" />
-    <ClCompile Include="PE\Import\ImportWapper.cpp" />
-    <ClCompile Include="PE\NtHeader\FileHeaderWapper.cpp" />
-    <ClCompile Include="PE\NtHeader\OptionalHeaderWapper.cpp" />
-    <ClCompile Include="PE\NtHeader\NtHeaderWapper.cpp" />
-    <ClCompile Include="PE\Section\SectionWapper.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="PE\DosHeader\DosHeaderWapper.cpp" />
-    <ClCompile Include="PE\PeImage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FlagsEditorUI.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PeImage\PeImage.vcxproj">
+      <Project>{dfc84587-5400-4bce-902b-2e469f15caac}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

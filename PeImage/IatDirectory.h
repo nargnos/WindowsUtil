@@ -4,7 +4,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class IatDirectory :
-		public DirectoryBase<DataDirectoryEntryType::Iat>
+		public Detail::DirectoryBase<DataDirectoryEntryType::Iat>
 	{
 	public:
 		IatDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :

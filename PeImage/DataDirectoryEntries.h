@@ -7,8 +7,8 @@ namespace PeDecoder
 {
 	// 注意这里的GetSize不一定反映真实大小
 	class DataDirectoryEntries :
-		public DataSize<PDWORD>,
-		public DataPtr<PIMAGE_DATA_DIRECTORY>
+		public Detail::DataSize<PDWORD>,
+		public Detail::DataPtr<PIMAGE_DATA_DIRECTORY>
 	{
 	public:
 		typedef TDataPtr iterator;

@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="EnvironmentBlock">
+      <UniqueIdentifier>{4e884a69-9331-4db7-a022-d7975d4d31b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{28d2178b-f4f1-4071-a9f5-4dc5b6b651f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Overwrite">
+      <UniqueIdentifier>{dfbbb80a-70d2-4d9f-aec2-d0396868291e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LazyLoad">
+      <UniqueIdentifier>{34d88cb8-1f46-4b46-a270-d3ea1315a429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LazyLoad\Detail">
+      <UniqueIdentifier>{2a059208-3a34-43ad-be58-f4687c821119}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentBlock.h">
+      <Filter>EnvironmentBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="FindLoadedModuleHandle.h">
+      <Filter>EnvironmentBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="LdrDataTable.h">
+      <Filter>EnvironmentBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="LdrDataTableEntryIterator.h">
+      <Filter>EnvironmentBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="LdrDataTableModuleList.h">
+      <Filter>EnvironmentBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GetProcAddress.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="NtDll.h">
+      <Filter>LazyLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadLibrary.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="Kernel32.h">
+      <Filter>LazyLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultLazyLoadDecryptStrPolicy.h">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultGetDllModulePolicy.h">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadDllBase.h">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCallBase.h">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="NtDllGetDllModulePolicy.h">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicCall.h">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="User32.h">
+      <Filter>LazyLoad</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentBlock.cpp">
+      <Filter>EnvironmentBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="FindLoadedModuleHandle.cpp">
+      <Filter>EnvironmentBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="LdrDataTable.cpp">
+      <Filter>EnvironmentBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="LdrDataTableEntryIterator.cpp">
+      <Filter>EnvironmentBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="GetProcAddress.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="NtDll.cpp">
+      <Filter>LazyLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadLibrary.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultGetDllModulePolicy.cpp">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultLazyLoadDecryptStrPolicy.cpp">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadDllBase.cpp">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="NtDllGetDllModulePolicy.cpp">
+      <Filter>LazyLoad\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="Kernel32.cpp">
+      <Filter>LazyLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="User32.cpp">
+      <Filter>LazyLoad</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

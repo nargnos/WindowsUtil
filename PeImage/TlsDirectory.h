@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class TlsDirectory :
-		public DirectoryBase<DataDirectoryEntryType::Tls>
+		public Detail::DirectoryBase<DataDirectoryEntryType::Tls>
 	{
 	public:
 		TlsDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :

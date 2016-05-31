@@ -83,9 +83,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WinUtilNet\WinUtilNet.vcxproj">
-      <Project>{80d4f4ba-bc91-4e01-babc-9e1c1cb2e199}</Project>
-      <Name>PeDecoderWapper</Name>
+    <ProjectReference Include="..\PeImageClr\PeImageClr.vcxproj">
+      <Project>{ce814b78-25e3-4c58-b4ab-c0cdf46c5427}</Project>
+      <Name>PeImageClr</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

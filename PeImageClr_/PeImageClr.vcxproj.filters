@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{12d8ea28-e661-444d-8db2-8971aa3c2f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe">
+      <UniqueIdentifier>{c83f54eb-22f9-4945-a9c7-285748e8ea5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Converter">
+      <UniqueIdentifier>{61239be2-a3ee-45f8-8f48-13831e8803ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Unmanaged">
+      <UniqueIdentifier>{403a8c06-d110-4e88-a0fd-ad8ebbb512e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{25bb601b-1bdf-4145-a784-2d4d83708148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\Struct">
+      <UniqueIdentifier>{22e33ec1-a919-4a3d-9fef-6daab6c6c908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\DosHeader">
+      <UniqueIdentifier>{3033b738-82bb-4648-a114-58fa27f1a3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\Export">
+      <UniqueIdentifier>{24ed53e1-06c4-4112-87f9-55f737a8734e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\NtHeader">
+      <UniqueIdentifier>{9660e9ec-4458-4434-8a59-84bc05ef1710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\NtHeader\FileHeader">
+      <UniqueIdentifier>{f33bc75b-16df-4f76-9500-2fd0e0a2a50d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\NtHeader\OptionalHeader">
+      <UniqueIdentifier>{fe3aa098-8132-4f0c-b43d-e2523b96d423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pe\Import">
+      <UniqueIdentifier>{992fde5f-f1dc-4263-ac7b-a4c52b7a4d93}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IPropertiesFilter.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IDescription.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImage.h">
+      <Filter>Pe</Filter>
+    </ClInclude>
+    <ClInclude Include="IElementName.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowPropertiesConverter.h">
+      <Filter>Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="ValueConverter.h">
+      <Filter>Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="ValueArrayConverter.h">
+      <Filter>Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumHexConverter.h">
+      <Filter>Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="PeStructArrayConverter.h">
+      <Filter>Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedArraySort.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedArray.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedByteArray.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedMemory.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="FlagsEditorUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UITypeEditor.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedEnumSort.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedEnum.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedValueSort.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedValue.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedDateTimeValue.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="UnmanagedString.h">
+      <Filter>Unmanaged</Filter>
+    </ClInclude>
+    <ClInclude Include="PeStructDescription.h">
+      <Filter>Pe\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="PeStructWrapper.h">
+      <Filter>Pe\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="StructOffset.h">
+      <Filter>Pe\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="WinSize.h">
+      <Filter>Pe\Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="DosHeaderWrapper.h">
+      <Filter>Pe\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportNameWrapper.h">
+      <Filter>Pe\Export</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportNameArrayWrapper.h">
+      <Filter>Pe\Export</Filter>
+    </ClInclude>
+    <ClInclude Include="IWrapperArray.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportFuncWrapper.h">
+      <Filter>Pe\Export</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportFuncArrayWrapper.h">
+      <Filter>Pe\Export</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportWrapper.h">
+      <Filter>Pe\Export</Filter>
+    </ClInclude>
+    <ClInclude Include="MachineType.h">
+      <Filter>Pe\NtHeader\FileHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacteristicsType.h">
+      <Filter>Pe\NtHeader\FileHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHeaderWrapper.h">
+      <Filter>Pe\NtHeader\FileHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeaderWrapper.h">
+      <Filter>Pe\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="IOptionalHeaderWrapper.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionalHeaderSort.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionalMagic.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="SubsystemValues.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DllCharacteristicsEntries.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DataDirectoryWrapper.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DataDirectoriesWrapper.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionalHeaderWrapper32.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionalHeaderWrapper64.h">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PeImage.cpp">
+      <Filter>Pe</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowPropertiesConverter.cpp">
+      <Filter>Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="ValueConverter.cpp">
+      <Filter>Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="ValueArrayConverter.cpp">
+      <Filter>Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="EnumHexConverter.cpp">
+      <Filter>Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="PeStructArrayConverter.cpp">
+      <Filter>Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="UnmanagedMemory.cpp">
+      <Filter>Unmanaged</Filter>
+    </ClCompile>
+    <ClCompile Include="UnmanagedArraySort.cpp">
+      <Filter>Unmanaged</Filter>
+    </ClCompile>
+    <ClCompile Include="UnmanagedEnumSort.cpp">
+      <Filter>Unmanaged</Filter>
+    </ClCompile>
+    <ClCompile Include="UnmanagedValueSort.cpp">
+      <Filter>Unmanaged</Filter>
+    </ClCompile>
+    <ClCompile Include="UnmanagedString.cpp">
+      <Filter>Unmanaged</Filter>
+    </ClCompile>
+    <ClCompile Include="PeStructDescription.cpp">
+      <Filter>Pe\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="StructOffset.cpp">
+      <Filter>Pe\Struct</Filter>
+    </ClCompile>
+    <ClCompile Include="DosHeaderWrapper.cpp">
+      <Filter>Pe\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportNameWrapper.cpp">
+      <Filter>Pe\Export</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportNameArrayWrapper.cpp">
+      <Filter>Pe\Export</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportFuncArrayWrapper.cpp">
+      <Filter>Pe\Export</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportFuncWrapper.cpp">
+      <Filter>Pe\Export</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHeaderWrapper.cpp">
+      <Filter>Pe\NtHeader\FileHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeaderWrapper.cpp">
+      <Filter>Pe\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionalHeaderSort.cpp">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="DataDirectoryWrapper.cpp">
+      <Filter>Pe\NtHeader\OptionalHeader</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FlagsEditorUI.resx">
+      <Filter>UI</Filter>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

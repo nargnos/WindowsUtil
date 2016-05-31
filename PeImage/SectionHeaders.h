@@ -5,8 +5,8 @@
 namespace PeDecoder
 {
 	class SectionHeaders:
-		public DataPtr<PIMAGE_SECTION_HEADER>,
-		public DataSize<PWORD>
+		public Detail::DataPtr<PIMAGE_SECTION_HEADER>,
+		public Detail::DataSize<PWORD>
 	{
 	public:
 		typedef TDataPtr iterator;

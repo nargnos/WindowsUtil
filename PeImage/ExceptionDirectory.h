@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class ExceptionDirectory :
-		public DirectoryBase<DataDirectoryEntryType::Exception>
+		public Detail::DirectoryBase<DataDirectoryEntryType::Exception>
 	{
 	public:
 		ExceptionDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :

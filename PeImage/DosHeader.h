@@ -5,7 +5,7 @@
 namespace PeDecoder
 {
 	class DosHeader:
-		public DataPtr<PIMAGE_DOS_HEADER>
+		public Detail::DataPtr<PIMAGE_DOS_HEADER>
 	{
 	public:
 		explicit DosHeader(TDataPtr ptr);

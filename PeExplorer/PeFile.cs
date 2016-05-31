@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using Microsoft.Win32.SafeHandles;
-using Wapper.PeDecoderWapper;
+using PeImageClr;
+using System.Drawing;
+
 namespace PeExplorer
 {
     public class PeFile
@@ -39,10 +41,10 @@ namespace PeExplorer
         {
             get
             {
-                if (pe == null)
-                {
-                    pe = new PeImage();
-                }
+                //if (pe == null)
+                //{
+                //    pe = new PeImage();
+                //}
                 return pe;
             }
         }
@@ -50,16 +52,16 @@ namespace PeExplorer
         {
             get
             {
-                return PE.IsAttached;
+                return true;// PE.IsAttached;
             }
         }
         public void Close()
         {
-            if (PE.IsAttached)
-            {
-                PE.Dettach();
-                OnEventNotify(Closed);
-            }
+            //if (PE.IsAttached)
+            //{
+            //    PE.Dettach();
+            //    OnEventNotify(Closed);
+            //}
             if (smmv != null)
             {
                 smmv.ReleasePointer();
@@ -107,7 +109,8 @@ namespace PeExplorer
                 {
                     throw new FileLoadException("无法载入文件");
                 }
-                result = PE.Attach(pointer, false);
+               pe=new PeImage(pointer, false);
+                result = true;
             }
             
             if (result)

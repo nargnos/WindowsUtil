@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class LoadConfigDirectory :
-		public DirectoryBase<DataDirectoryEntryType::LoadConfig>
+		public Detail::DirectoryBase<DataDirectoryEntryType::LoadConfig>
 	{
 	public:
 		LoadConfigDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :

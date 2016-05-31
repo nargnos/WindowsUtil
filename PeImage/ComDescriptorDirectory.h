@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class ComDescriptorDirectory :
-		public DirectoryBase<DataDirectoryEntryType::ComDescriptor>
+		public Detail::DirectoryBase<DataDirectoryEntryType::ComDescriptor>
 	{
 	public:
 		ComDescriptorDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr);

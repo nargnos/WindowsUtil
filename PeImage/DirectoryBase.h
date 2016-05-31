@@ -3,24 +3,29 @@
 #include "DataDirectoryEntryType.h"
 #include "DataPtr.h"
 #include "DataSize.h"
-
+#include "PeRef.h"
 namespace PeDecoder
 {
-	template<DataDirectoryEntryType id,
-		typename TDirectoryPtr = typename DataDirectoryEntryTypeTrait<id>::Type>
-		class DirectoryBase :
-		public DataSize<PDWORD>,
-		public DataPtr<TDirectoryPtr>
+	namespace Detail
 	{
-	public:
-		DirectoryBase(PeImage& pe, TDirectoryPtr ptr, TSizePtr sizePtr) :
-			DataPtr(ptr),
-			DataSize(sizePtr),
-			pe_(pe)
+		template<DataDirectoryEntryType id,
+			typename TDirectoryPtr = typename DataDirectoryEntryTypeTrait<id>::Type>
+			class DirectoryBase :
+			public DataSize<PDWORD>,
+			public DataPtr<TDirectoryPtr>,
+			public PeRef
 		{
-		}
-		~DirectoryBase() = default;
-	protected:
-		PeImage& pe_;
-	};
+		public:
+			DirectoryBase(PeImage& pe, TDirectoryPtr ptr, TSizePtr sizePtr) :
+				DataPtr(ptr),
+				DataSize(sizePtr),
+				PeRef(pe)
+			{
+			}
+			~DirectoryBase() = default;
+		protected:
+		};
+	}  // namespace Detail
+
+
 }  // namespace PeDecoder

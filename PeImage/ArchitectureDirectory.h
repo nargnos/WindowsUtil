@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class ArchitectureDirectory :
-		public DirectoryBase<DataDirectoryEntryType::Architecture>
+		public Detail::DirectoryBase<DataDirectoryEntryType::Architecture>
 	{
 	public:
 		ArchitectureDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr);

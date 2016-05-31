@@ -18,87 +18,18 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PE\DosHeader\DosHeaderWapper.h">
+    <ClInclude Include="SectionWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UnmanagedArray.h">
+    <ClInclude Include="ImportWapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UnmanagedValue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\NtHeader\NtHeaderWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\PeImage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\NtHeader\FileHeaderWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Converters.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UITypeEditor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\NtHeader\OptionalHeaderWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FlagsEditorUI.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UnmanagedEnum.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="StructOffset.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\Section\SectionWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UnmanagedMemory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\PeStructWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\Export\ExportWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\Import\ImportWapper.h">
+    <ClInclude Include="PeImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PE\DosHeader\DosHeaderWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\PeImage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\NtHeader\NtHeaderWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Converters.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\NtHeader\FileHeaderWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\NtHeader\OptionalHeaderWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\Section\SectionWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\Export\ExportWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\Import\ImportWapper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,7 +5,7 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class GlobalptrDirectory :
-		public DirectoryBase<DataDirectoryEntryType::Globalptr>
+		public Detail::DirectoryBase<DataDirectoryEntryType::Globalptr>
 	{
 	public:
 		GlobalptrDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :

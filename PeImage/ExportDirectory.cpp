@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ExportDirectory.h"
 #include "PeImage.h"
-
+#include "ExportDirectoryIterator.h"
 namespace PeDecoder
 {
 	ExportDirectory::ExportDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
@@ -35,99 +35,17 @@ namespace PeDecoder
 		return numberOfNames_;
 	}
 
-	ExportDirectory::iterator ExportDirectory::begin() const
+	ExportDirectoryIterator ExportDirectory::begin()
 	{
-		return ExportDirectory::iterator(*this, 0);
+		return ExportDirectoryIterator(*this, 0);
 	}
 
-	ExportDirectory::iterator ExportDirectory::end() const
+	ExportDirectoryIterator ExportDirectory::end()
 	{
-		return ExportDirectory::iterator(*this, *GetNumberOfNamesPtr());
+		return ExportDirectoryIterator(*this, *GetNumberOfNamesPtr());
 	}
 
 
-	ExportDirectory::iterator::iterator(const ExportDirectory & directory, DWORD index) :
-		node_(directory, index)
-	{
+	
 
-	}
-
-	bool ExportDirectory::iterator::equal(const ExportDirectory::iterator & val) const
-	{
-		return GetStore().Equal(val.GetStore());
-	}
-	void ExportDirectory::iterator::increment()
-	{
-		GetStore().Increment();
-	}
-	void ExportDirectory::iterator::decrement()
-	{
-		GetStore().Decrement();
-	}
-	void ExportDirectory::iterator::advance(int n)
-	{
-		GetStore().Advance(n);
-	}
-	ExportDirectory::iterator::difference_type ExportDirectory::iterator::distance_to(const iterator & val)
-	{
-		return GetStore().DistanceTo(val.GetStore());
-	}
-	ExportDirectory::iterator::reference ExportDirectory::iterator::dereference()
-	{
-		return GetStore();
-	}
-	ExportIteratorNode & ExportDirectory::iterator::GetStore()
-	{
-		return node_;
-	}
-	const ExportIteratorNode & ExportDirectory::iterator::GetStore() const
-	{
-		return node_;
-	}
-	ExportIteratorNode::ExportIteratorNode(const ExportDirectory & directory, DWORD index) :
-		directory_(directory),
-		index_(index)
-	{
-
-	}
-	PDWORD ExportIteratorNode::FuncRva() const
-	{
-		return &directory_.GetFunctionsPtr()[*NameOrdinals()];
-	}
-	PDWORD ExportIteratorNode::NameRva() const
-	{
-		return &directory_.GetNamesPtr()[index_];
-	}
-	PWORD ExportIteratorNode::NameOrdinals() const
-	{
-		return &directory_.GetNameOrdinalsPtr()[index_];
-	}
-	bool ExportIteratorNode::Equal(const ExportIteratorNode & val) const
-	{
-		return &val.directory_ == &directory_ && val.index_ == index_;
-	}
-	void ExportIteratorNode::Increment()
-	{
-		++index_;
-		assert(InRange());
-	}
-	void ExportIteratorNode::Decrement()
-	{
-		--index_;
-		assert(InRange());
-	}
-	void ExportIteratorNode::Advance(int n)
-	{
-		index_ += n;
-		assert(InRange());
-	}
-	int ExportIteratorNode::DistanceTo(const ExportIteratorNode & val)
-	{
-		assert(Equal(val));
-		return val.index_ - index_;
-	}
-	bool ExportIteratorNode::InRange() const
-	{
-		return index_ >= 0 && index_ <= *directory_.GetNumberOfNamesPtr();
-	}
 }  // namespace PeDecoder

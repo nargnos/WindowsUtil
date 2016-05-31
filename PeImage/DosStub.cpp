@@ -11,19 +11,19 @@ namespace PeDecoder
 	{
 		assert(ptr);
 	}
-	DWORD DosStub::GetSize()
+	DWORD DosStub::GetSize() const
 	{
 		return size_;
 	}
 
 	DosStub::iterator DosStub::begin() const
 	{
-		return dosStub_;
+		return GetPtr();
 	}
 
 	DosStub::iterator DosStub::end() const
 	{
-		return dosStub_ + size_;
+		return GetPtr() + GetSize();
 	}
 
 }  // namespace PeDecoder
