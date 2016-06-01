@@ -11,7 +11,7 @@ namespace PeDecoder
 	{
 		return GetStore().ptr_ == val.GetStore().ptr_&&
 			GetStore().baseReloc_ == val.GetStore().baseReloc_&&
-			&GetStore().pe_ == &val.GetStore().pe_;
+			GetStore().pe_ == val.GetStore().pe_;
 	}
 	void TypeOffsetIterator::increment()
 	{

@@ -77,7 +77,7 @@ namespace PeImageLibTest
 		{
 			auto& importDir = pe_.GetImportDirectory();
 			auto type = importDir->GetPe().GetImageType();
-
+			
 			ostringstream out;
 			for each (auto& var in *importDir)
 			{

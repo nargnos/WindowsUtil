@@ -10,7 +10,7 @@ namespace PeDecoder
 
 	bool RelocDirectoryIterator::equal(const RelocDirectoryIterator & val) const
 	{
-		return &val.GetStore().relocDirectory_ == &GetStore().relocDirectory_ &&
+		return val.GetStore().relocDirectory_ == GetStore().relocDirectory_ &&
 			GetStore().ptr_ == val.GetStore().ptr_;
 	}
 
@@ -28,8 +28,8 @@ namespace PeDecoder
 
 	bool RelocDirectoryIterator::InRange() const
 	{
-		auto beginPtr = GetStore().relocDirectory_.GetPtr();
-		auto endPtr = beginPtr + GetStore().relocDirectory_.GetSize() / sizeof(IMAGE_BASE_RELOCATION);
+		auto beginPtr = GetStore().relocDirectory_->GetPtr();
+		auto endPtr = beginPtr + GetStore().relocDirectory_->GetSize() / sizeof(IMAGE_BASE_RELOCATION);
 		return GetStore().ptr_ >= beginPtr && GetStore().ptr_ < endPtr;
 	}
 

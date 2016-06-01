@@ -7,7 +7,7 @@ namespace PeDecoder
 {
 
 	TypeOffset::TypeOffset(PeImage & pe, PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr) :
-		pe_(pe),
+		pe_(&pe),
 		baseReloc_(baseReloc),
 		ptr_(ptr)
 	{

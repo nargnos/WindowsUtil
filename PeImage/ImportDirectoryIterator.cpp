@@ -9,7 +9,7 @@ namespace PeDecoder
 	}
 	bool ImportDirectoryIterator::equal(const ImportDirectoryIterator & val) const
 	{
-		return &val.GetStore().importDirectory_ == &GetStore().importDirectory_ &&
+		return val.GetStore().importDirectory_ == GetStore().importDirectory_ &&
 			val.GetStore().dataPtr_ == GetStore().dataPtr_;
 	}
 	void ImportDirectoryIterator::increment()

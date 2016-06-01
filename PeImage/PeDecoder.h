@@ -38,5 +38,5 @@
 #include "ResourceEntryIterator.h"
 #include "ResourceEntry.h"
 #include "ResourceDirectoryNode.h"
-
-
+#include "ImportDirectoryIterator.h"
+#include "DelayImportDirectoryIterator.h"

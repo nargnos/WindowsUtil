@@ -25,7 +25,7 @@ namespace PeDecoder
 
 		static void RelocDir64(PVOID oldBase, PVOID currentBase, DWORD relocRva);
 
-		PeImage& pe_;
+		PeImage* pe_;
 		PIMAGE_BASE_RELOCATION baseReloc_;
 		PWORD ptr_;
 	};

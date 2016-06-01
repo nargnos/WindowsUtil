@@ -13,7 +13,7 @@ namespace PeDecoder
 		PIMAGE_BASE_RELOCATION GetPtr() const;
 		DWORD GetCount() const;
 	protected:
-		RelocDirectory& relocDirectory_;
+		RelocDirectory* relocDirectory_;
 		PIMAGE_BASE_RELOCATION ptr_;
 	};
 

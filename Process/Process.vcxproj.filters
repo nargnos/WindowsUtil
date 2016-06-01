@@ -30,9 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -90,6 +87,30 @@
     <ClInclude Include="User32.h">
       <Filter>LazyLoad</Filter>
     </ClInclude>
+    <ClInclude Include="OpenProcess.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="SetThreadContext.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualProtect.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadProcessMemory.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="WriteProcessMemory.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualAlloc.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualQuery.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualFree.h">
+      <Filter>Overwrite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -133,6 +154,30 @@
     </ClCompile>
     <ClCompile Include="User32.cpp">
       <Filter>LazyLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenProcess.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="SetThreadContext.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualProtect.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadProcessMemory.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteProcessMemory.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualAlloc.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualQuery.cpp">
+      <Filter>Overwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualFree.cpp">
+      <Filter>Overwrite</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

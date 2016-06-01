@@ -23,6 +23,10 @@ namespace Process
 				return nullptr;
 			}
 			auto& exportDir = pe.GetExportDirectory();
+			if (!exportDir)
+			{
+				return nullptr;
+			}
 			auto end = exportDir->end();
 
 			auto result = _STD find_if(exportDir->begin(), end, [&comp]
@@ -47,6 +51,10 @@ namespace Process
 				return nullptr;
 			}
 			auto& exportDir = pe.GetExportDirectory();
+			if (!exportDir)
+			{
+				return nullptr;
+			}
 			auto end = exportDir->end();
 
 			auto result = _STD lower_bound(exportDir->begin(), end, lpProcName, [&comp]
@@ -61,5 +69,6 @@ namespace Process
 			}
 			return result->FuncPtr();
 		}
+
 	}  // namespace Overwrite
 }  // namespace Process

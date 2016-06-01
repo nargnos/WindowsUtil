@@ -35,11 +35,12 @@ namespace PeDecoder
 	template<typename>
 	class ImportThunkIterator;
 	template<typename>
-	class ImportThunkIteratorBase;
+	class ImportThunkIteratorNode;
 	class RelocDirectoryIterator;
 	class TypeOffsetIterator;
 	class TypeOffset;
 	class ResourceEntry;
 	class ResourceEntryIterator;
 	class ResourceDirectoryNode;
+	class DelayImportDirectoryIterator;
 }  // namespace PeDecoder

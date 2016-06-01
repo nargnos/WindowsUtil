@@ -2,6 +2,7 @@
 #include "PeImageFwd.h"
 namespace PeDecoder
 {
+	// 根据pe类型选择PIMAGE_THUNK_DATA32 PIMAGE_THUNK_DATA64类型的thunk
 	class ImportDescriptor
 	{
 	public:
@@ -17,7 +18,7 @@ namespace PeDecoder
 
 	protected:
 		PIMAGE_IMPORT_DESCRIPTOR dataPtr_;
-		ImportDirectory& importDirectory_;
+		ImportDirectory* importDirectory_;
 	};
 
 

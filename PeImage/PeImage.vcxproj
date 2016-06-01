@@ -154,6 +154,7 @@
     <ClInclude Include="DebugDirectory.h" />
     <ClInclude Include="DelayImportDescriptor.h" />
     <ClInclude Include="DelayImportDirectory.h" />
+    <ClInclude Include="DelayImportDirectoryIterator.h" />
     <ClInclude Include="DirectoryBase.h" />
     <ClInclude Include="DosHeader.h" />
     <ClInclude Include="DosStub.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="DebugDirectory.cpp" />
     <ClCompile Include="DelayImportDescriptor.cpp" />
     <ClCompile Include="DelayImportDirectory.cpp" />
+    <ClCompile Include="DelayImportDirectoryIterator.cpp" />
     <ClCompile Include="DosHeader.cpp" />
     <ClCompile Include="DosStub.cpp" />
     <ClCompile Include="ExportDirectory.cpp" />

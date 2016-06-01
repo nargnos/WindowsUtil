@@ -14,6 +14,7 @@ namespace PeExplorer
         [STAThread]
         static void Main()
         {
+            // UNDONE: 旧代码改了，相应的clr版本会换其它方式修改，所以这里的代码作废
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());

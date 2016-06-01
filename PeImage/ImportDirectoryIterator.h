@@ -5,6 +5,7 @@
 namespace PeDecoder
 {
 	// ImportDescriptor iterator
+	// 节点类型为ImportDescriptor
 	class ImportDirectoryIterator :
 		public iterator_facade<
 		ImportDirectoryIterator,
@@ -24,4 +25,6 @@ namespace PeDecoder
 		const ImportDescriptor& GetStore() const;
 		ImportDescriptor store_;
 	};
+
+
 }  // namespace PeDecoder

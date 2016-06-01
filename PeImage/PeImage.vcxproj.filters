@@ -209,6 +209,9 @@
     <ClInclude Include="ExportIteratorNode.h">
       <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
     </ClInclude>
+    <ClInclude Include="DelayImportDirectoryIterator.h">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -301,6 +304,9 @@
     </ClCompile>
     <ClCompile Include="ExportIteratorNode.cpp">
       <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="DelayImportDirectoryIterator.cpp">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
