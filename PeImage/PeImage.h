@@ -42,7 +42,7 @@ namespace PeDecoder
 		DWORD OffsetToRva(DWORD fileOffset);
 		PVOID RvaToDataPtr(DWORD rva);
 		PVOID RvaToDataPtr(ULONGLONG rva);
-		static void* GetNtHeader(const PIMAGE_DOS_HEADER dosHeader);
+		static void* GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader);
 	protected:
 		PeImage(const PeImage&) = delete;
 		PeImage& operator=(const PeImage&) = delete;

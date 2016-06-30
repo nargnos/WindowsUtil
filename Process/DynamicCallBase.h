@@ -12,7 +12,7 @@ namespace Process
 			template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename TFuncUnpack>
 			struct GetFunctionType;
 
-			// 定义去压栈特性标识的类, 用到stl里的一些未发布的东西，可能将来会失效
+			// 定义去压栈特性标识的类, 用到vs stl里的一些未发布的东西，可能将来会失效
 #define GET_FUNCTION_TYPE(CALL_OPT, X1, X2) \
 template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename TRet, typename... TArgs> \
 	struct GetFunctionType<TFunc, TLoadDll, TDecryptStrPolicy, TRet CALL_OPT (TArgs...)> \
@@ -23,7 +23,7 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 			_NON_MEMBER_CALL(GET_FUNCTION_TYPE, , );
 #undef GET_FUNCTION_TYPE
 
-			
+
 			template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename TRet, typename... TArgs>
 			class DynamicCallBase<TFunc, TLoadDll, TDecryptStrPolicy, TRet, TArgs...>
 			{
@@ -40,7 +40,8 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 
 				TRet operator()(TArgs... args) const
 				{
-					Load();
+					auto loaded = Load();
+					assert(loaded);
 					return GetFunction()(_STD forward<TArgs>(args)...);
 				}
 				bool Load() const
@@ -55,7 +56,7 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 						_STD lock_guard<_STD mutex> lock(mtx_);
 						if (!func_)
 						{
-							auto funcName=TDecryptStrPolicy::Decrypt(funcName_);
+							auto funcName = TDecryptStrPolicy::Decrypt(funcName_);
 							func_ = reinterpret_cast<TFunc*>(
 								Process::Overwrite::GetProcAddress(dll,
 									TDecryptStrPolicy::GetStr(funcName))

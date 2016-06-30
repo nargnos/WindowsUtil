@@ -70,15 +70,5 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 		}
 		return result;
 	}
-	return NULL;
-	//auto result = reinterpret_cast<PVOID*>(PE::GetDelayLoadAddressTableAddress(&pe, dllName, procName));
-	//if (result)
-	//{
-	//	if (oldFuncAddr)
-	//	{
-	//		*oldFuncAddr = (PVOID)*result;
-	//	}
-	//	*result = hookFunc;
-	//}
 	return nullptr;
 }

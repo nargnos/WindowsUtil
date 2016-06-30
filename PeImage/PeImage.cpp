@@ -44,15 +44,16 @@ namespace PeDecoder
 		assert(ptr);
 		isPe_ = false;
 		imageType_ = ImageType::UnKnown;
-
+		auto dosHeaderPtr = reinterpret_cast<PIMAGE_DOS_HEADER>(base_);
 		// 验证dosheader
-		dosHeader_ = make_unique<DosHeader>(reinterpret_cast<PIMAGE_DOS_HEADER>(base_));
+		dosHeader_ = make_unique<DosHeader>(dosHeaderPtr);
 		if (!dosHeader_->IsValid())
 		{
 			return;
 		}
 		// 验证ntheader
-		ntHeader_ = make_unique<NtHeader>(GetNtHeader(dosHeader_->GetPtr()));
+		
+		ntHeader_ = make_unique<NtHeader>(GetNtHeaderPtr(dosHeaderPtr));
 		if (!ntHeader_->IsValid())
 		{
 			return;
@@ -324,7 +325,7 @@ namespace PeDecoder
 	{
 		return base_ + (isMapped_ ? rva : RvaToOffset(rva));
 	}
-	void * PeImage::GetNtHeader(const PIMAGE_DOS_HEADER dosHeader)
+	void * PeImage::GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader)
 	{
 		return reinterpret_cast<unsigned char*>(dosHeader) + dosHeader->e_lfanew;
 	}
