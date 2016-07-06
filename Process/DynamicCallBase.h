@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "SpinLock.h"
 namespace Process
 {
 	namespace LazyLoad
@@ -23,7 +24,7 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 			_NON_MEMBER_CALL(GET_FUNCTION_TYPE, , );
 #undef GET_FUNCTION_TYPE
 
-
+			// FIX: 为了线程同步一个函数耗费太多空间
 			template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename TRet, typename... TArgs>
 			class DynamicCallBase<TFunc, TLoadDll, TDecryptStrPolicy, TRet, TArgs...>
 			{
@@ -53,7 +54,7 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 						{
 							return false;
 						}
-						_STD lock_guard<_STD mutex> lock(mtx_);
+						_STD lock_guard<SpinLock> lock(lock_);
 						if (!func_)
 						{
 							auto funcName = TDecryptStrPolicy::Decrypt(funcName_);
@@ -76,10 +77,10 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 					return func_;
 				}
 
-				mutable _STD function<TFunc> func_;
-				mutable _STD mutex mtx_;
 				TLoadDll& dll_;
 				EncryptStr funcName_;
+				mutable _STD function<TFunc> func_;
+				mutable SpinLock lock_;
 			};
 		}  // namespace Detail
 	}  // namespace LazyLoad

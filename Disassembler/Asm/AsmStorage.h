@@ -133,11 +133,11 @@ namespace Disassembler
 		virtual void Clear() override
 		{
 			tmpInstType = OT_None;
-			tmpInstData = NULL;
+			tmpInstData = nullptr;
 		}
 		virtual bool IsEmpty() const override
 		{
-			return tmpInstType == OT_None && tmpInstData == NULL;
+			return tmpInstType == OT_None && tmpInstData == nullptr;
 		}
 	private:
 		// 以下是状态中需要传递的临时变量（只用来存OpcodeData里的东西）
@@ -163,13 +163,13 @@ namespace Disassembler
 
 		virtual void Clear() override
 		{
-			instName = NULL;
+			instName = nullptr;
 			nameExt = Ext_None;
 
 		}
 		virtual bool IsEmpty() const override
 		{
-			return nameExt == Ext_None && instName == NULL;
+			return nameExt == Ext_None && instName == nullptr;
 		}
 		void SetNameExt(NameExt val)
 		{
@@ -240,7 +240,7 @@ namespace Disassembler
 		{
 			isEmpty = true;
 			pfxQueue.swap(_STD queue<unique_ptr<PrefixInstData_Hex_Pair>>());
-			rex = NULL;
+			rex = nullptr;
 			memset(hasGrp, false, sizeof(hasGrp));
 			memset(hasPfx, false, sizeof(hasPfx));
 		}

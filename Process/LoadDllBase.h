@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "DefaultLazyLoadDecryptStrPolicy.h"
+#include "SpinLock.h"
 namespace Process
 {
 	namespace LazyLoad
@@ -26,7 +27,7 @@ namespace Process
 				{
 					if (dllModule_ == NULL)
 					{
-						_STD lock_guard<_STD mutex> lock(mtx_);
+						_STD lock_guard<SpinLock> lock(lock_);
 						if (dllModule_ == NULL)
 						{
 							auto dllName = GetDllName();
@@ -45,9 +46,9 @@ namespace Process
 				}
 				LoadDllBase(const LoadDllBase&) = delete;
 				LoadDllBase& operator=(const LoadDllBase&) = delete;
-				_STD mutex mtx_;
-				EncryptStr dllName_;
 				HMODULE dllModule_;
+				EncryptStr dllName_;
+				SpinLock lock_;
 			};
 		}  // namespace Detail
 

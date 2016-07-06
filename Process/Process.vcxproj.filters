@@ -28,6 +28,15 @@
     <Filter Include="LazyLoad\Detail">
       <UniqueIdentifier>{2a059208-3a34-43ad-be58-f4687c821119}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{9ae33e09-18dd-4f0f-8a1d-d460f71010c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\ThreadPool">
+      <UniqueIdentifier>{b51bf518-2151-4d23-b346-f98d560cb2ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\ThreadPool\Detail">
+      <UniqueIdentifier>{da0a521d-3761-4e3f-9a8a-07ba40a005d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -111,6 +120,42 @@
     <ClInclude Include="VirtualFree.h">
       <Filter>Overwrite</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadEx.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Fiber.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="IteratorAdaptors.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinLock.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPoolApi.h">
+      <Filter>Other\ThreadPool\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="CallbackBase.h">
+      <Filter>Other\ThreadPool\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Other\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="CallbackInstance.h">
+      <Filter>Other\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPoolWork.h">
+      <Filter>Other\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPoolWait.h">
+      <Filter>Other\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPoolSimpleCallback.h">
+      <Filter>Other\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPoolTimer.h">
+      <Filter>Other\ThreadPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -179,5 +224,43 @@
     <ClCompile Include="VirtualFree.cpp">
       <Filter>Overwrite</Filter>
     </ClCompile>
+    <ClCompile Include="SpinLock.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Fiber.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadEx.cpp">
+      <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="CallbackBase.cpp">
+      <Filter>Other\ThreadPool\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>Other\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="CallbackInstance.cpp">
+      <Filter>Other\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPoolWork.cpp">
+      <Filter>Other\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPoolWait.cpp">
+      <Filter>Other\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPoolSimpleCallback.cpp">
+      <Filter>Other\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPoolTimer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="不是很有意义的类们">
+      <Filter>Other</Filter>
+    </Text>
+    <Text Include="io的部分有空再弄">
+      <Filter>Other\ThreadPool</Filter>
+    </Text>
   </ItemGroup>
 </Project>

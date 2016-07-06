@@ -69,7 +69,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CodeAnalysisRuleSet>D:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CodeAnalysisRuleSet>D:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -78,6 +85,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -91,6 +99,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,13 +140,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CallbackBase.h" />
+    <ClInclude Include="CallbackInstance.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="DefaultGetDllModulePolicy.h" />
     <ClInclude Include="DefaultLazyLoadDecryptStrPolicy.h" />
     <ClInclude Include="DynamicCall.h" />
     <ClInclude Include="EnvironmentBlock.h" />
+    <ClInclude Include="Fiber.h" />
     <ClInclude Include="FindLoadedModuleHandle.h" />
     <ClInclude Include="GetProcAddress.h" />
+    <ClInclude Include="IteratorAdaptors.h" />
     <ClInclude Include="Kernel32.h" />
     <ClInclude Include="LdrDataTable.h" />
     <ClInclude Include="LdrDataTableEntryIterator.h" />
@@ -150,19 +163,30 @@
     <ClInclude Include="OpenProcess.h" />
     <ClInclude Include="ReadProcessMemory.h" />
     <ClInclude Include="SetThreadContext.h" />
+    <ClInclude Include="ThreadPoolSimpleCallback.h" />
+    <ClInclude Include="SpinLock.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThreadEx.h" />
+    <ClInclude Include="ThreadPool.h" />
+    <ClInclude Include="ThreadPoolApi.h" />
+    <ClInclude Include="ThreadPoolTimer.h" />
     <ClInclude Include="User32.h" />
     <ClInclude Include="VirtualAlloc.h" />
     <ClInclude Include="VirtualFree.h" />
     <ClInclude Include="VirtualProtect.h" />
     <ClInclude Include="VirtualQuery.h" />
+    <ClInclude Include="ThreadPoolWait.h" />
+    <ClInclude Include="ThreadPoolWork.h" />
     <ClInclude Include="WriteProcessMemory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CallbackBase.cpp" />
+    <ClCompile Include="CallbackInstance.cpp" />
     <ClCompile Include="DefaultGetDllModulePolicy.cpp" />
     <ClCompile Include="DefaultLazyLoadDecryptStrPolicy.cpp" />
     <ClCompile Include="EnvironmentBlock.cpp" />
+    <ClCompile Include="Fiber.cpp" />
     <ClCompile Include="FindLoadedModuleHandle.cpp" />
     <ClCompile Include="GetProcAddress.cpp" />
     <ClCompile Include="Kernel32.cpp" />
@@ -175,23 +199,34 @@
     <ClCompile Include="OpenProcess.cpp" />
     <ClCompile Include="ReadProcessMemory.cpp" />
     <ClCompile Include="SetThreadContext.cpp" />
+    <ClCompile Include="ThreadPoolSimpleCallback.cpp" />
+    <ClCompile Include="SpinLock.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ThreadEx.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
+    <ClCompile Include="ThreadPoolTimer.cpp" />
     <ClCompile Include="User32.cpp" />
     <ClCompile Include="VirtualAlloc.cpp" />
     <ClCompile Include="VirtualFree.cpp" />
     <ClCompile Include="VirtualProtect.cpp" />
     <ClCompile Include="VirtualQuery.cpp" />
+    <ClCompile Include="ThreadPoolWait.cpp" />
+    <ClCompile Include="ThreadPoolWork.cpp" />
     <ClCompile Include="WriteProcessMemory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PeImage\PeImage.vcxproj">
       <Project>{dfc84587-5400-4bce-902b-2e469f15caac}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="io的部分有空再弄" />
+    <Text Include="不是很有意义的类们" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

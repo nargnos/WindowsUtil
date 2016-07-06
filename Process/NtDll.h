@@ -4,6 +4,7 @@
 #include "NtDllGetDllModulePolicy.h"
 #include "DynamicCall.h"
 #include "EnvironmentBlock.h"
+#include "SpinLock.h"
 namespace Process
 {
 	namespace LazyLoad
@@ -20,11 +21,12 @@ namespace Process
 		public:
 			class LoadNtDll;
 			static const LoadNtDll& Instance();
-
 		private:
 			NtDll() = delete;
 			~NtDll() = delete;
-			static LoadNtDll instance_;
+			static void Init();
+			static _STD unique_ptr<LoadNtDll> instance_;
+			static SpinLock lock_;
 		};
 
 		class NtDll::LoadNtDll :

@@ -39,7 +39,7 @@ namespace Process
 			auto& ldrLoadDll = Process::LazyLoad::NtDll::Instance().LdrLoadDll;
 			if (!ldrLoadDll.Load())
 			{
-				return NULL;
+				return nullptr;
 			}
 
 			ULONG dllCharacteristics = 0;
@@ -52,7 +52,7 @@ namespace Process
 			_RtlInitUnicodeString(&dllName, (PCWSTR)lpLibFileName);
 			if (!NT_SUCCESS(ldrLoadDll(NULL, &dllCharacteristics, &dllName, reinterpret_cast<PVOID*>(&hInst))))
 			{
-				return NULL;
+				return nullptr;
 			}
 			return hInst;
 		}

@@ -3,6 +3,7 @@
 #include "LoadDllBase.h"
 #include "DefaultGetDllModulePolicy.h"
 #include "DynamicCall.h"
+#include "SpinLock.h"
 namespace Process
 {
 	namespace LazyLoad
@@ -15,11 +16,13 @@ namespace Process
 		{
 		public:
 			class LoadKernel32;
-			static const LoadKernel32& Instance();
+			static const LoadKernel32& Instance();			
 		private:
 			Kernel32() = delete;
 			~Kernel32() = delete;
-			static LoadKernel32 instance_;
+			static void Init();
+			static _STD unique_ptr<LoadKernel32> instance_;
+			static SpinLock lock_;
 		};
 
 		class Kernel32::LoadKernel32 :

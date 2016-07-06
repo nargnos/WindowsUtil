@@ -3,7 +3,7 @@ namespace Disassembler
 {
 	StorageBase::StorageBase()
 	{
-		currentPos = beginPos = NULL;
+		currentPos = beginPos = nullptr;
 	}
 	StorageBase::StorageBase(const StorageBase & val)
 	{
@@ -12,7 +12,7 @@ namespace Disassembler
 	}
 	void StorageBase::SetInitialPosition(const void* pos)
 	{
-		currentPos = NULL;
+		currentPos = nullptr;
 		isSuccess = false;
 		beginPos = reinterpret_cast<const unsigned char*>(pos);
 	}

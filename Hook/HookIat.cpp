@@ -13,7 +13,7 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 {
 	if (dllName == nullptr || procName == nullptr || hookFunc == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	if (module == NULL)
 	{
@@ -22,13 +22,13 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 	PeDecoder::PeImage pe(module, true);
 	if (!pe.IsPe())
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	auto& imp = pe.GetImportDirectory();
 	if (!imp)
 	{
-		return NULL;
+		return nullptr;
 	}
 	auto endImp = imp->end();
 	auto dllImp = _STD find_if(imp->begin(), endImp, [dllName](PeDecoder::ImportDescriptor& node)
@@ -37,7 +37,7 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 	});
 	if (dllImp == endImp)
 	{
-		return NULL;
+		return nullptr;
 	}
 	PVOID writeAddress = nullptr;
 	PVOID result = nullptr;
@@ -52,7 +52,7 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 		thunk.begin(), thunkEnd, procName);
 	if (func == thunkEnd)
 	{
-		return NULL;
+		return nullptr;
 	}
 	result = func->GetFuncAddress();
 	writeAddress = func->GetAddressThunk();
@@ -64,7 +64,7 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 		thunk.begin(), thunkEnd, procName);
 	if (func == thunkEnd)
 	{
-		return NULL;
+		return nullptr;
 	}
 	result = func->GetFuncAddress();
 	writeAddress = func->GetAddressThunk();
@@ -80,7 +80,7 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 		}
 		return result;
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool Hook::UnHookIat(PVOID unhookAddress, PVOID oldFunctionAddress)

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LdrDataTableEntryIterator.h"
-
 namespace Process
 {
 	namespace EnvironmentBlock

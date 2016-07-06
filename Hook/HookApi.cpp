@@ -109,13 +109,13 @@ namespace Hook
 		// 设置备份地址访问性
 		if (!Process::Overwrite::VirtualProtect(result, backupLen + BACKUPLEN, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		// 设置api函数访问性
 		if (!Process::Overwrite::VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
-			return NULL;
+			return nullptr;
 		}
 		// 设置跳转->Hook
 		_EmitFF25Jmp(api, hook);
@@ -129,7 +129,7 @@ namespace Hook
 			// 设置失败，恢复函数
 			memcpy(api, result, backupLen);
 			delete[] result;
-			return NULL;
+			return nullptr;
 		}
 		return result;
 	}
@@ -156,7 +156,7 @@ namespace Hook
 				if (tmpLen++ >= BACKUPLEN)
 				{
 					// 读取失败，可能取指令长度部分有BUG或其它原因
-					return NULL;
+					return nullptr;
 				}
 			}
 		}
@@ -193,13 +193,13 @@ namespace Hook
 		// 设置备份地址访问性
 		if (!Process::Overwrite::VirtualProtect(result, backupLen + BACKUPLEN, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		// 设置api函数访问性
 		if (!Process::Overwrite::VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
-			return NULL;
+			return nullptr;
 		}
 		// hook e9
 		_EmitE9Jmp(api, hook);
@@ -223,7 +223,7 @@ namespace Hook
 			// 设置失败，恢复函数
 			memcpy(api, result, backupLen);
 			delete[] result;
-			return NULL;
+			return nullptr;
 		}
 		return result;
 	}
@@ -232,7 +232,7 @@ namespace Hook
 	{
 		if (((PBYTE)api)[0] == 0xe9 || IsFF25Jmp(api))
 		{
-			return NULL;
+			return nullptr;
 		}
 		LONGLONG distance = (PBYTE)hook - (PBYTE)api;
 		distance = distance > 0 ? distance : -distance;

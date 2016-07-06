@@ -1,6 +1,7 @@
 #pragma once
 #include "EnvironmentBlock.h"
 #include "LdrDataTableModuleList.h"
+#include "IteratorAdaptors.h"
 namespace Process
 {
 	namespace EnvironmentBlock

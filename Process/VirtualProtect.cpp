@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "VirtualProtect.h"
 #include "NtDll.h"
-bool WINAPI Process::Overwrite::VirtualProtect(LPVOID lpAddress, SIZE_T dwSize, DWORD flNewProtect, PDWORD lpflOldProtect)
+bool WINAPI Process::Overwrite::VirtualProtect(_In_ LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD flNewProtect, _Out_ PDWORD lpflOldProtect)
 {
 	return Process::Overwrite::VirtualProtectEx(NtCurrentProcess(), lpAddress, dwSize, flNewProtect, lpflOldProtect);
 }

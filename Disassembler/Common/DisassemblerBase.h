@@ -30,7 +30,7 @@ namespace Disassembler
 		{
 			auto storage = GetStorage();
 			storage->SetInitialPosition(pos);
-			TStateFactory::NextStateFunction getNextStateID = NULL;
+			TStateFactory::NextStateFunction getNextStateID = nullptr;
 			auto stateUsed = dynamic_cast<TTrait::TStateUsed*>(this);
 
 			for (auto i = TStateFactory::BeginStateID; i != TStateFactory::EndStateID; i = getNextStateID(stateUsed))

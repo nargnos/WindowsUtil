@@ -12,7 +12,7 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 {
 	if (dllName == nullptr || procName == nullptr || hookFunc == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	if (module == NULL)
 	{
@@ -21,7 +21,7 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	PeDecoder::PeImage pe(module, true);
 	if (!pe.IsPe())
 	{
-		return NULL;
+		return nullptr;
 	}
 	auto& delay = pe.GetDelayImportDirectory();
 	auto dlEnd = delay->end();
@@ -32,7 +32,7 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	});
 	if (dll == dlEnd)
 	{
-		return NULL;
+		return nullptr;
 	}
 	auto type = pe.GetImageType();
 	PVOID writeAddress;
@@ -44,7 +44,7 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 		thunk.begin(), thunkEnd, procName);
 	if (func == thunkEnd)
 	{
-		return NULL;
+		return nullptr;
 	}
 	writeAddress = func->GetAddressThunk();
 	result = func->GetFuncAddress();
@@ -55,7 +55,7 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 		thunk.begin(), thunkEnd, procName);
 	if (func == thunkEnd)
 	{
-		return NULL;
+		return nullptr;
 	}
 	writeAddress = func->GetAddressThunk();
 	result = func->GetFuncAddress();

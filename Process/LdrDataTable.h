@@ -1,11 +1,11 @@
 #pragma once
 #include "EnvironmentBlock.h"
 #include "LdrDataTableModuleList.h"
-#include "LdrDataTableEntryIterator.h"
 namespace Process
 {
 	namespace EnvironmentBlock
 	{
+		class LdrDataTableEntryIterator;
 		// ldr双链表迭代器，可以用3种方式遍历
 		class LdrDataTable
 		{

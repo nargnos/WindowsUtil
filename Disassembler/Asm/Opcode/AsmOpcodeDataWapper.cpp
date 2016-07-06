@@ -48,7 +48,7 @@ namespace Disassembler
 			assert(false);
 			break;
 		}
-		return NULL;
+		return nullptr;
 	}
 
 

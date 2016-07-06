@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Kernel32.h"
 
-Process::LazyLoad::Kernel32::LoadKernel32 Process::LazyLoad::Kernel32::instance_;
+_STD unique_ptr<Process::LazyLoad::Kernel32::LoadKernel32> Process::LazyLoad::Kernel32::instance_;
+SpinLock Process::LazyLoad::Kernel32::lock_;
 Process::LazyLoad::Kernel32::LoadKernel32::LoadKernel32() :
 	LoadDllBase(L"kernel32.dll"),
 	GetSystemInfo(*this, "GetSystemInfo"),
@@ -30,5 +31,18 @@ Process::LazyLoad::Kernel32::LoadKernel32::LoadKernel32() :
 
 const Process::LazyLoad::Kernel32::LoadKernel32 & Process::LazyLoad::Kernel32::Instance()
 {
-	return instance_;
+	Init();
+	return *instance_;
+}
+
+void Process::LazyLoad::Kernel32::Init()
+{
+	if (!instance_)
+	{
+		_STD lock_guard<SpinLock> lock(lock_);
+		if (!instance_)
+		{
+			instance_ = _STD unique_ptr<LoadKernel32>(new LoadKernel32());
+		}
+	}
 }

@@ -17,7 +17,7 @@ namespace Disassembler
 
 	OpcodeType AsmState<AsmStateFactory::State_Byte>::ReadInst(AsmStateFactory::ParamType * param, OpcodeType table)
 	{
-		const OpcodeData* opcodeData = NULL;
+		const OpcodeData* opcodeData = nullptr;
 		auto storage = param->GetStorage();
 		auto index = *storage->GetCurrentPosition();
 		auto wapper = param->GetOpcodeDataWapper();
@@ -51,7 +51,7 @@ namespace Disassembler
 		case OT_Inst:
 		case OT_Inst_Change:
 		{
-			const InstData* tmpInst = NULL;
+			const InstData* tmpInst = nullptr;
 			if (instType == OT_Inst_Change)
 			{
 				// 两个结构体类型只有最后一个成员变量的区别，此时不使用所以当作同一类型

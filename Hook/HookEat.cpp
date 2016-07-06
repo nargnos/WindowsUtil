@@ -10,17 +10,17 @@ PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWOR
 {
 	if (module == nullptr || procName == nullptr || hookFunc == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	PeDecoder::PeImage dll(module, true);
 	if (!dll.IsPe())
 	{
-		return NULL;
+		return nullptr;
 	}
 	auto& exp = dll.GetExportDirectory();
 	if (!exp)
 	{
-		return NULL;
+		return nullptr;
 	}
 	auto end = exp->end();
 	auto proc = _STD lower_bound(exp->begin(), end, procName, []
@@ -30,7 +30,7 @@ PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWOR
 	});
 	if (end == proc || strcmp(proc->NamePtr(), procName) != 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 	PVOID result = proc->FuncPtr();
 	PDWORD rvaPtr = proc->FuncRva();
@@ -52,7 +52,7 @@ PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWOR
 	else
 	{
 		// NOTICE: 因为导出表存储rva，如果超界就不能设置了
-		return NULL;
+		return nullptr;
 	}
 #endif // WIN32
 

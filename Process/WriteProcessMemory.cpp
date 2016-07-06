@@ -2,9 +2,9 @@
 #include "WriteProcessMemory.h"
 #include "NtDll.h"
 using Process::LazyLoad::NtDll;
-bool WINAPI Process::Overwrite::WriteProcessMemory(HANDLE hProcess, LPVOID lpBaseAddress, LPCVOID lpBuffer, SIZE_T nSize, SIZE_T * lpNumberOfBytesWritten)
+bool WINAPI Process::Overwrite::WriteProcessMemory(_In_ HANDLE hProcess, _In_ LPVOID lpBaseAddress, _In_reads_bytes_(nSize) LPCVOID lpBuffer, _In_ SIZE_T nSize, _Out_opt_ SIZE_T * lpNumberOfBytesWritten)
 {
-
+	if (lpNumberOfBytesWritten) *lpNumberOfBytesWritten = 0;
 	auto& ntdll = NtDll::Instance();
 	// 便于跟踪分成3个
 	if (!ntdll.NtProtectVirtualMemory.Load() ||

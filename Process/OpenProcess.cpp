@@ -4,13 +4,13 @@
 #include "NtDll.h"
 using Process::EnvironmentBlock::CLIENT_ID;
 using Process::LazyLoad::NtDll;
-HANDLE WINAPI Process::Overwrite::OpenProcess(DWORD dwDesiredAccess, BOOL bInheritHandle, DWORD dwProcessId)
+HANDLE WINAPI Process::Overwrite::OpenProcess(_In_ DWORD dwDesiredAccess, _In_ BOOL bInheritHandle, _In_ DWORD dwProcessId)
 {
 	auto& ntOpenProcess = NtDll::Instance().NtOpenProcess;
 
 	if (!ntOpenProcess.Load())
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	OBJECT_ATTRIBUTES objectAttributes;
@@ -29,5 +29,5 @@ HANDLE WINAPI Process::Overwrite::OpenProcess(DWORD dwDesiredAccess, BOOL bInher
 		&objectAttributes,
 		&clientId);
 
-	return NT_SUCCESS(status) ? processHandle : NULL;
+	return NT_SUCCESS(status) ? processHandle : nullptr;
 }

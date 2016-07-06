@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FindLoadedModuleHandle.h"
-
+#include "LdrDataTableEntryIterator.h"
+#include "IteratorAdaptors.h"
 
 namespace Process
 {
