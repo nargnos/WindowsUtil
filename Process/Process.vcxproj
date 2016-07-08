@@ -143,13 +143,16 @@
     <ClInclude Include="CallbackBase.h" />
     <ClInclude Include="CallbackInstance.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="CoroutineIterator.h" />
     <ClInclude Include="DefaultGetDllModulePolicy.h" />
     <ClInclude Include="DefaultLazyLoadDecryptStrPolicy.h" />
     <ClInclude Include="DynamicCall.h" />
     <ClInclude Include="EnvironmentBlock.h" />
     <ClInclude Include="Fiber.h" />
+    <ClInclude Include="FiberBase.h" />
     <ClInclude Include="FindLoadedModuleHandle.h" />
     <ClInclude Include="GetProcAddress.h" />
+    <ClInclude Include="Coroutine.h" />
     <ClInclude Include="IteratorAdaptors.h" />
     <ClInclude Include="Kernel32.h" />
     <ClInclude Include="LdrDataTable.h" />
@@ -171,6 +174,7 @@
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="ThreadPoolApi.h" />
     <ClInclude Include="ThreadPoolTimer.h" />
+    <ClInclude Include="UnpackTupleInvoke.h" />
     <ClInclude Include="User32.h" />
     <ClInclude Include="VirtualAlloc.h" />
     <ClInclude Include="VirtualFree.h" />
@@ -187,6 +191,7 @@
     <ClCompile Include="DefaultLazyLoadDecryptStrPolicy.cpp" />
     <ClCompile Include="EnvironmentBlock.cpp" />
     <ClCompile Include="Fiber.cpp" />
+    <ClCompile Include="FiberBase.cpp" />
     <ClCompile Include="FindLoadedModuleHandle.cpp" />
     <ClCompile Include="GetProcAddress.cpp" />
     <ClCompile Include="Kernel32.cpp" />

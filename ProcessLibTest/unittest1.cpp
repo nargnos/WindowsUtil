@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include <vector>
+#include <algorithm>
+#include <random>
 #include <condition_variable>
 #include <Process\FindLoadedModuleHandle.h>
 #include <Process\GetProcAddress.h>
@@ -13,6 +15,7 @@
 #include <Process\ThreadPoolWork.h>
 #include <Process\ThreadPoolWait.h>
 #include <Process\ThreadPoolTimer.h>
+#include <Process\Coroutine.h>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ProcessLibTest
@@ -144,84 +147,89 @@ namespace ProcessLibTest
 			using namespace Process::Fiber;
 			using namespace std;
 
-			char chr[] = "A";
-			thread t([&chr]()
+			auto pf = Process::Fiber::ConvertThreadToFiber(NULL);
+
+			// 测试普通传参
+			auto test1 = MakeFiber([pf](const char* val)
 			{
-				auto pf = ConvertThreadToFiber(NULL);
-				
-				{ // 测试局部变量析构
-					Fiber f1([&chr, pf]() mutable
-					{
-						Logger::WriteMessage(chr);
-						++chr[0];
-						// 纤程里弄个纤程
-						Fiber f2([&chr, f1Ptr = Process::Fiber::GetCurrentFiber()]() mutable
-						{
-							Logger::WriteMessage(chr);
-							++chr[0];
-							SwitchToFiber(f1Ptr);
-						});
-						f2.Switch();
-						SwitchToFiber(pf);
-					});
-					f1.Switch();
-				}
-				Logger::WriteMessage(chr);
-			});
-			t.join();
-			Assert::AreEqual(chr, "C");
+				Logger::WriteMessage("Begin Test");
+				SwitchToFiber(pf);
+				Logger::WriteMessage(val);
+				SwitchToFiber(pf);
+			}, "Succeed");
+			auto ptr = test1.NativeHandle();
+			test1.Switch();
+			// 测试移动构造
+			auto move1(_STD move(test1));
 
-			int num = 0;
-			std::vector<unique_ptr<Fiber>> fibers;
+			move1.Switch();
 
-			auto pf = ConvertThreadToFiber(NULL);
-			auto tmpPf = pf;
-			for (size_t i = 0; i < 100; i++)
+			// 测试引用传参
+			bool test = false;
+			auto test2 = MakeFiber([pf](bool& val)
 			{
+				Logger::WriteMessage("value = false");
+				SwitchToFiber(pf);
+				val = true;
+				Logger::WriteMessage("value = true");
+				SwitchToFiber(pf);
+			}, _STD ref(test));
 
-				fibers.emplace_back(new Fiber([&num, tmpPf]()
-				{
-					++num;
-					SwitchToFiber(tmpPf);
-				}));
-				tmpPf = fibers.back()->GetAddress();
-			}
-			fibers.back()->Switch();
-			Assert::IsTrue(num == 100);
+			test2.Switch();
+			Assert::IsTrue(!test);
+			// 测试移动构造
+			auto move2(_STD move(test2));
+			move2.Switch();
+			Assert::IsTrue(test);
 
-			bool isDone = false;
-			Fiber yield([&num, pf, &isDone]()
+			// 测试传多参(顺便测的是解包tuple是否正确)
+			int intVal = 123;
+			short shortVal = 456;
+
+			const void* val0 = &intVal;
+			void* val1 = &shortVal;
+			const int& val2 = intVal;
+			short& val3 = shortVal;
+			char val4 = 'X';
+			shared_ptr<string> val5 = make_shared<string>("Str");
+			tuple<int> val6 = make_tuple(789);
+			unique_ptr<int> val9;
+			auto test3 = MakeFiber([pf](
+				const void* arg0,
+				void* arg1,
+				const int& arg2,
+				short& arg3,
+				char arg4,
+				shared_ptr<string> arg5,
+				tuple<int> arg6,
+				const int& arg7,
+				int&& arg8,
+				unique_ptr<int>&& arg9
+				)
 			{
-				for (; num > 0; num--)
-				{
-					SwitchToFiber(pf);
-				}
-				isDone = true;
+				SwitchToFiber(pf);
+			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
+			test3.Switch();
+
+
+			// 无参测试
+			auto test4 = MakeFiber([pf]()
+			{
+				Logger::WriteMessage("无参测试");
 				SwitchToFiber(pf);
 			});
-
-			size_t i = num;
-			while (!isDone)
-			{
-				yield.Switch();
-				Assert::IsTrue(i-- == num);
-			}
-			Logger::WriteMessage("Exit");
-
+			test4.Switch();
+			Logger::WriteMessage("End");
 		}
 		TEST_METHOD(TestThreadPool)
 		{
 			using namespace Process::Thread;
 			// 直接提交函数
-			ThreadPool::Submit([](CallbackInstance& instance)
-			{
-				Logger::WriteMessage("Submit");
-			});
 
 			bool isSubmitCallbackSucceed = false;
 			std::condition_variable cv1;
 
-			ThreadPool::SubmitCallback([&isSubmitCallbackSucceed, &cv1](CallbackInstance& instance)
+			ThreadPool::Submit([&isSubmitCallbackSucceed, &cv1](CallbackInstance& instance)
 			{
 				Logger::WriteMessage("SubmitCallback");
 				instance.MayRunLong();
@@ -351,6 +359,118 @@ namespace ProcessLibTest
 			});
 
 			Assert::IsTrue(it == std::end(outputStr));
+		}
+
+		TEST_METHOD(TestCoroutine)
+		{
+			using namespace Process::Fiber;
+			// 生成测试数据
+			_STD random_device seed;
+			_STD default_random_engine ng(seed());
+
+			_STD vector<int> vec;
+			auto inst = _STD back_inserter(vec);
+			_STD generate_n(inst, 10, ng);
+			// 结束生成
+
+
+			// 普通测试
+			auto c = MakeCoroutine<int>([&vec](_STD vector<int>& v)
+			{
+				Assert::IsTrue(&vec == &v);
+				for (auto val : v)
+				{
+					YieldReturn(val);
+				}
+			}, _STD ref(vec));
+
+			int i = 0;
+
+			for (auto val : c)
+			{
+				Assert::IsTrue(val == vec[i++]);
+			}
+
+			// 测试不return
+			auto c2 = MakeCoroutine<int>([]()
+			{});
+
+			Assert::IsTrue(c2.begin() == c2.end());
+
+			// 测试迭代器适配
+			auto fi = MakeCoroutine<int>([](int num)
+			{
+				int preLast = 1;
+				YieldReturn(preLast);
+				int last = 1;
+				YieldReturn(last);
+				int result;
+				for (size_t i = 2; i < num; i++)
+				{
+					result = preLast + last;
+					YieldReturn(result);
+					preLast = last;
+					last = result;
+				}
+			}, 10);
+
+
+			_STD ostringstream out;
+			_STD ostream_iterator<int> outIt(out, " ");
+
+			_STD copy(_STD begin(fi), _STD end(fi), outIt);
+			Logger::WriteMessage(out.str().c_str());
+
+			// 第二次使用，输出应该为同样内容
+			out.swap(_STD ostringstream());
+			_STD copy(_STD begin(fi), _STD end(fi), outIt);
+			Logger::WriteMessage(out.str().c_str());
+
+			// 测试重置参数
+			fi.RetsetParams(20);
+			out.swap(_STD ostringstream());
+			// 用另一种输出方式
+			for (auto val : fi)
+			{
+				out << val << " ";
+			}
+			Logger::WriteMessage(out.str().c_str());
+
+			// 直接生成adapter测试
+			char* outputStr[]{ "Coroutine","测试","成功" };
+			// 可以合并到下面的语句里去，但是太乱，分开来写
+			auto lambda = [](char** begin, char** end)
+			{
+				_STD for_each(begin, end, [](char* str)
+				{
+					YieldReturn(_STD string(str));
+				});
+			};
+
+			for (auto& str : MakeCoroutine<_STD string>(lambda, _STD begin(outputStr), _STD end(outputStr)))
+			{
+				Logger::WriteMessage(str.c_str());
+			}
+
+			// 传递临时变量引用
+			int num = 0;
+			auto refTest = MakeCoroutine<_STD reference_wrapper<volatile int>>([](int& v)
+			{
+				volatile int result = 123;
+				YieldReturn(_STD ref(result));
+				Assert::IsTrue(result == 456);
+				v = 123456;
+			}, _STD ref(num));
+			auto bgn = refTest.begin();
+			auto val = *bgn;
+			Assert::IsTrue(val == 123);
+			val.get() = 456;
+			++bgn;
+			Assert::IsTrue(num == 123456);
+
+			
+
+			Logger::WriteMessage("Exit");
 		}
 	};
 	_STD pair<bool, CONTEXT> UnitTest1::OldContext;

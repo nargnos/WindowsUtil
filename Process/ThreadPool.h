@@ -15,10 +15,8 @@ namespace Process
 				assert(obj.GetFunc());
 				return obj.Submit(GetEnviron());
 			}
-			static bool Submit(_STD function<void(CallbackInstance&)>&& obj)
-			{
-				return SubmitCallback(_STD move(obj));
-			}
+
+			static bool Submit(_STD function<void(CallbackInstance&)>&& func);
 
 			template<typename T>
 			static bool Register(T& obj)
@@ -26,7 +24,7 @@ namespace Process
 				assert(obj.GetFunc());
 				return obj.Register(GetEnviron());
 			}
-			static bool SubmitCallback(_STD function<void(CallbackInstance&)>&& func);
+			
 
 			static void SetEnviron(PTP_CALLBACK_ENVIRON env);
 			static PTP_CALLBACK_ENVIRON GetEnviron();

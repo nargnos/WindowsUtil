@@ -19,9 +19,6 @@
     <Filter Include="Common">
       <UniqueIdentifier>{28d2178b-f4f1-4071-a9f5-4dc5b6b651f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Overwrite">
-      <UniqueIdentifier>{dfbbb80a-70d2-4d9f-aec2-d0396868291e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LazyLoad">
       <UniqueIdentifier>{34d88cb8-1f46-4b46-a270-d3ea1315a429}</UniqueIdentifier>
     </Filter>
@@ -31,11 +28,32 @@
     <Filter Include="Other">
       <UniqueIdentifier>{9ae33e09-18dd-4f0f-8a1d-d460f71010c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Other\ThreadPool">
+    <Filter Include="Other\WinApiWrapper">
+      <UniqueIdentifier>{d3a58363-39d7-47bc-b58b-35f1703e15f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\ThreadPool">
       <UniqueIdentifier>{b51bf518-2151-4d23-b346-f98d560cb2ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Other\ThreadPool\Detail">
+    <Filter Include="Other\WinApiWrapper\ThreadPool\Detail">
       <UniqueIdentifier>{da0a521d-3761-4e3f-9a8a-07ba40a005d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\Fiber">
+      <UniqueIdentifier>{ebb33c33-4d4a-4822-a234-953ee87c9f7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\Thread">
+      <UniqueIdentifier>{f68fb160-0554-4ca7-b9c5-3c3db7967d45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\Fiber\Coroutine">
+      <UniqueIdentifier>{b086ec55-66b2-4a24-8615-c74591a93151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OverwriteWinApi">
+      <UniqueIdentifier>{dfbbb80a-70d2-4d9f-aec2-d0396868291e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\Fiber\Detail">
+      <UniqueIdentifier>{fb77b2e4-859e-43a9-a4df-4cf75f17db36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\Fiber\Coroutine\Detail">
+      <UniqueIdentifier>{e4deae0d-1c9a-4ec5-9277-f8eb887229ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,13 +82,13 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="GetProcAddress.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="NtDll.h">
       <Filter>LazyLoad</Filter>
     </ClInclude>
     <ClInclude Include="LoadLibrary.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="Kernel32.h">
       <Filter>LazyLoad</Filter>
@@ -97,34 +115,28 @@
       <Filter>LazyLoad</Filter>
     </ClInclude>
     <ClInclude Include="OpenProcess.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="SetThreadContext.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="VirtualProtect.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="ReadProcessMemory.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="WriteProcessMemory.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="VirtualAlloc.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="VirtualQuery.h">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="VirtualFree.h">
-      <Filter>Overwrite</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadEx.h">
-      <Filter>Other</Filter>
-    </ClInclude>
-    <ClInclude Include="Fiber.h">
-      <Filter>Other</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClInclude>
     <ClInclude Include="IteratorAdaptors.h">
       <Filter>Common</Filter>
@@ -133,28 +145,46 @@
       <Filter>Other</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPoolApi.h">
-      <Filter>Other\ThreadPool\Detail</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool\Detail</Filter>
     </ClInclude>
     <ClInclude Include="CallbackBase.h">
-      <Filter>Other\ThreadPool\Detail</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool\Detail</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPool.h">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClInclude>
     <ClInclude Include="CallbackInstance.h">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPoolWork.h">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPoolWait.h">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPoolSimpleCallback.h">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPoolTimer.h">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
+    </ClInclude>
+    <ClInclude Include="Fiber.h">
+      <Filter>Other\WinApiWrapper\Fiber</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadEx.h">
+      <Filter>Other\WinApiWrapper\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="UnpackTupleInvoke.h">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="FiberBase.h">
+      <Filter>Other\WinApiWrapper\Fiber\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Coroutine.h">
+      <Filter>Other\WinApiWrapper\Fiber\Coroutine</Filter>
+    </ClInclude>
+    <ClInclude Include="CoroutineIterator.h">
+      <Filter>Other\WinApiWrapper\Fiber\Coroutine\Detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,13 +204,13 @@
       <Filter>EnvironmentBlock</Filter>
     </ClCompile>
     <ClCompile Include="GetProcAddress.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="NtDll.cpp">
       <Filter>LazyLoad</Filter>
     </ClCompile>
     <ClCompile Include="LoadLibrary.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="DefaultGetDllModulePolicy.cpp">
       <Filter>LazyLoad\Detail</Filter>
@@ -201,57 +231,60 @@
       <Filter>LazyLoad</Filter>
     </ClCompile>
     <ClCompile Include="OpenProcess.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="SetThreadContext.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="VirtualProtect.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="ReadProcessMemory.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="WriteProcessMemory.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="VirtualAlloc.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="VirtualQuery.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="VirtualFree.cpp">
-      <Filter>Overwrite</Filter>
+      <Filter>OverwriteWinApi</Filter>
     </ClCompile>
     <ClCompile Include="SpinLock.cpp">
       <Filter>Other</Filter>
     </ClCompile>
-    <ClCompile Include="Fiber.cpp">
-      <Filter>Other</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadEx.cpp">
-      <Filter>Other</Filter>
-    </ClCompile>
     <ClCompile Include="CallbackBase.cpp">
-      <Filter>Other\ThreadPool\Detail</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool\Detail</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClCompile>
     <ClCompile Include="CallbackInstance.cpp">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPoolWork.cpp">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPoolWait.cpp">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPoolSimpleCallback.cpp">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPoolTimer.cpp">
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
+    </ClCompile>
+    <ClCompile Include="Fiber.cpp">
+      <Filter>Other\WinApiWrapper\Fiber</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadEx.cpp">
+      <Filter>Other\WinApiWrapper\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="FiberBase.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -260,7 +293,7 @@
       <Filter>Other</Filter>
     </Text>
     <Text Include="io的部分有空再弄">
-      <Filter>Other\ThreadPool</Filter>
+      <Filter>Other\WinApiWrapper\ThreadPool</Filter>
     </Text>
   </ItemGroup>
 </Project>

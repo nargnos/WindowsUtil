@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ThreadPool.h"
 #include "ThreadPoolApi.h"
-bool Process::Thread::ThreadPool::SubmitCallback(_STD function<void(CallbackInstance&)>&& func)
+bool Process::Thread::ThreadPool::Submit(_STD function<void(CallbackInstance&)>&& func)
 {
 	auto funcPtr = new _STD function<void(CallbackInstance&)>(_STD move(func));
 	assert(funcPtr);

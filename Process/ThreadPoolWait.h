@@ -7,11 +7,11 @@ namespace Process
 	namespace Thread
 	{
 		// msdn只写了两个
-		enum class WaitResult:TP_WAIT_RESULT
+		enum class WaitResult :TP_WAIT_RESULT
 		{
 			WaitObject0 = WAIT_OBJECT_0,
 			WaitTimeout = WAIT_TIMEOUT,
-			WaitAbandoned0=WAIT_ABANDONED_0
+			WaitAbandoned0 = WAIT_ABANDONED_0
 		};
 		class ThreadPoolWait :
 			public Detail::CallbackBase<_STD function<void(CallbackInstance&, ThreadPoolWait&, WaitResult)>>

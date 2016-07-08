@@ -9,3 +9,5 @@
 #include <list>
 #include <cassert>
 #include <atomic>
+#include <functional>
+#include <iterator>
