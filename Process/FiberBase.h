@@ -12,6 +12,7 @@ namespace Process
 		using ::CreateFiber;
 		using ::DeleteFiber;
 		using ::IsThreadAFiber;
+		using ::GetFiberData;
 		template<typename T>
 		inline T* GetFiberData()
 		{
@@ -26,7 +27,7 @@ namespace Process
 
 			struct FiberDeletor
 			{
-				void operator()(void* fiber);				
+				void operator()(void* fiber);
 			};
 
 			template<typename TChild, typename TStorage>
@@ -52,7 +53,8 @@ namespace Process
 				};
 
 				FiberBase()
-				{ }
+				{
+				}
 
 				// 注意创建过程中不能出现异常
 				// 传入的参数为TStorage的构造参数

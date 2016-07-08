@@ -285,7 +285,7 @@
       <Filter>Other\WinApiWrapper\Thread</Filter>
     </ClCompile>
     <ClCompile Include="FiberBase.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Other\WinApiWrapper\Fiber\Detail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

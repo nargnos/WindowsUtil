@@ -12,10 +12,14 @@ namespace Process
 		// 返回引用要用reference_wrapper
 		// 多线程情况未测试，可能有bug
 
+
+		// 注意这个函数不要在协程外使用, 否则得到的结果是不确定的
 		template<typename TRet>
 		_STD enable_if_t<Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet& ret)
 		{
+			
 			auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
+			assert(data);
 			data->ContextPtr->Ret = &ret;
 
 			Detail::_SwitchToLastFiber(data);
@@ -25,6 +29,7 @@ namespace Process
 		_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet& ret)
 		{
 			auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
+			assert(data);
 			data->ContextPtr->Ret = ret;
 
 			Detail::_SwitchToLastFiber(data);
