@@ -19,7 +19,20 @@ namespace Process
 			return static_cast<T*>(::GetFiberData());
 		}
 		// 这是看winnt得出的结论
-		void SetFiberData(void* ptr);
+		void SetCurrentFiberData(void* ptr);
+		void SetFiberData(PVOID fiber, void* ptr);
+
+		// 这个可能不对，有一些成员的值不对，应该有一部分是teb的内容
+		const PNT_TIB GetCurrentFiberContext();
+
+		template<typename T>
+		inline T* GetFiberData(PVOID fiber)
+		{
+			assert(fiber != nullptr);
+			return static_cast<T*>(*(PVOID *)fiber);
+		}
+
+
 
 
 		namespace Detail
@@ -115,13 +128,11 @@ namespace Process
 					auto storage = _STD move(storageParam->Storage);
 					delete storageParam;
 
-					Process::Fiber::SetFiberData(nullptr);
-
-					// 再次切回就运行函数(此时可能会恢复fiber成thread，所以设置fiberdata不能修改顺序)
-					Process::Fiber::SwitchToFiber(creatorFiber);
-
 					// 重新设置fiberdata
-					Process::Fiber::SetFiberData(storage.get());
+					Process::Fiber::SetCurrentFiberData(storage.get());
+
+					// 再次切回就运行函数(此时可能会恢复fiber成thread)
+					Process::Fiber::SwitchToFiber(creatorFiber);					
 
 					// 子类必须设置友元
 					TChild::Callback(storage);

@@ -149,20 +149,34 @@ namespace ProcessLibTest
 
 			auto pf = Process::Fiber::ConvertThreadToFiber(NULL);
 
+			PNT_TIB fiberCtx;
+
+
 			// 测试普通传参
-			auto test1 = MakeFiber([pf](const char* val)
+			auto test1 = MakeFiber([pf,&fiberCtx](const char* val)
 			{
+				// 取上下文（试验）
+				auto data = GetFiberData();
+				// 实验看一下切换时会改什么 -> 这里存的都是指针，这个结构什么都没改
+				// TODO: 找出用什么存储Xip
+				fiberCtx = GetCurrentFiberContext();
+				assert(data == fiberCtx->FiberData);
+
 				Logger::WriteMessage("Begin Test");
 				SwitchToFiber(pf);
+
 				Logger::WriteMessage(val);
 				SwitchToFiber(pf);
 			}, "Succeed");
 			auto ptr = test1.NativeHandle();
 			test1.Switch();
+
 			// 测试移动构造
 			auto move1(_STD move(test1));
 
 			move1.Switch();
+
+
 
 			// 测试引用传参
 			bool test = false;
@@ -207,6 +221,7 @@ namespace ProcessLibTest
 				unique_ptr<int>&& arg9
 				)
 			{
+				
 				SwitchToFiber(pf);
 			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
 			test3.Switch();

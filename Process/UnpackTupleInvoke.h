@@ -11,7 +11,7 @@ namespace Tuple
 			using TForwordType = _STD remove_reference_t<TElementType>;
 
 			template<typename... TArgs>
-			inline constexpr static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)->
+			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)->
 				decltype(UnpackTupleInvoke<TTuple, index - 1, TFunc>::Invoke(
 					t,
 					func,
@@ -31,7 +31,7 @@ namespace Tuple
 		struct UnpackTupleInvoke<TTuple, -1, TFunc>
 		{
 			template<typename... TArgs>
-			inline constexpr static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)->decltype(func(_STD forward<TArgs>(arg)...))
+			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)->decltype(func(_STD forward<TArgs>(arg)...))
 			{
 				return func(_STD forward<TArgs>(arg)...);
 			}

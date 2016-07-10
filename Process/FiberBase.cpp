@@ -1,10 +1,21 @@
 #include "stdafx.h"
 #include "FiberBase.h"
 
-void Process::Fiber::SetFiberData(void * ptr)
+void Process::Fiber::SetCurrentFiberData(void * ptr)
 {
-	auto data = (PVOID *)::GetCurrentFiber();
+	SetFiberData(::GetCurrentFiber(), ptr);
+
+}
+
+void Process::Fiber::SetFiberData(PVOID fiber, void * ptr)
+{
+	auto data = (PVOID *)fiber;
 	*data = ptr;
+}
+
+const PNT_TIB Process::Fiber::GetCurrentFiberContext()
+{
+	return CONTAINING_RECORD(::GetCurrentFiber(), NT_TIB, FiberData);
 }
 
 void Process::Fiber::Detail::FiberDeletor::operator()(void* fiber)
