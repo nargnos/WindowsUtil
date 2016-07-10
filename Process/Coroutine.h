@@ -58,7 +58,7 @@ namespace Process
 			}
 			iterator end()
 			{
-				return iterator::EndTag();
+				return iterator();
 			}
 
 			void RetsetParams(TArgs... args)

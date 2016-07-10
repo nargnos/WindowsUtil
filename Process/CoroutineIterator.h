@@ -132,10 +132,7 @@ namespace Process
 				{
 					return Dereference<TRet>();
 				}
-				static CoroutineIterator<TRet, TFunc, TArgs...> EndTag()
-				{
-					return CoroutineIterator();
-				}
+
 				void operator++()
 				{
 					Do();
@@ -150,10 +147,12 @@ namespace Process
 
 				bool IsDone()
 				{
+					assert(context_);
 					return context_->IsDone;
 				}
 				bool operator==(CoroutineIterator& tag)
 				{
+					assert(context_);
 					return context_->IsDone;
 				}
 				bool operator!=(CoroutineIterator& tag)
@@ -164,6 +163,7 @@ namespace Process
 			protected:
 				void Do()
 				{
+					assert(context_);
 					assert(!context_->IsDone);
 
 					if (!Process::Fiber::IsThreadAFiber())

@@ -84,6 +84,10 @@ namespace Process
 					else
 					{
 						currentThreadFiber = Process::Fiber::ConvertThreadToFiber(NULL);
+						if (currentThreadFiber == nullptr)
+						{
+							return;
+						}
 					}
 					assert(currentThreadFiber != nullptr);
 
@@ -95,7 +99,10 @@ namespace Process
 
 					// 默认stacksize
 					fiber_ = FiberPtr(Process::Fiber::CreateFiber(0, Run, param), FiberDeletor());
-					assert(fiber_);
+					if (!fiber_)
+					{
+						return;
+					}
 
 					// 先到回调里把TStorageParam给delete了，防止不使用时造成泄露
 					Switch();
@@ -132,7 +139,7 @@ namespace Process
 					Process::Fiber::SetCurrentFiberData(storage.get());
 
 					// 再次切回就运行函数(此时可能会恢复fiber成thread)
-					Process::Fiber::SwitchToFiber(creatorFiber);					
+					Process::Fiber::SwitchToFiber(creatorFiber);
 
 					// 子类必须设置友元
 					TChild::Callback(storage);

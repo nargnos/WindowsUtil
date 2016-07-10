@@ -153,7 +153,7 @@ namespace ProcessLibTest
 
 
 			// 测试普通传参
-			auto test1 = MakeFiber([pf,&fiberCtx](const char* val)
+			auto test1 = MakeFiber([pf, &fiberCtx](const char* val)
 			{
 				// 取上下文（试验）
 				auto data = GetFiberData();
@@ -221,7 +221,7 @@ namespace ProcessLibTest
 				unique_ptr<int>&& arg9
 				)
 			{
-				
+
 				SwitchToFiber(pf);
 			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
 			test3.Switch();
@@ -436,10 +436,6 @@ namespace ProcessLibTest
 			_STD copy(_STD begin(fi), _STD end(fi), outIt);
 			Logger::WriteMessage(out.str().c_str());
 
-			// 第二次使用，输出应该为同样内容
-			out.swap(_STD ostringstream());
-			_STD copy(_STD begin(fi), _STD end(fi), outIt);
-			Logger::WriteMessage(out.str().c_str());
 
 			// 测试重置参数
 			fi.RetsetParams(20);
@@ -483,7 +479,16 @@ namespace ProcessLibTest
 			++bgn;
 			Assert::IsTrue(num == 123456);
 
+
+			// 嵌套测试
+			auto qtest = MakeCoroutine<_STD string>([&fi, &out, &outIt]()
+			{
+				out.swap(_STD ostringstream());
+				_STD copy(_STD begin(fi), _STD end(fi), outIt);
+				YieldReturn(out.str());
+			});
 			
+			Logger::WriteMessage((*qtest.begin()).c_str());
 
 			Logger::WriteMessage("Exit");
 		}
