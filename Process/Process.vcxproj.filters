@@ -55,6 +55,12 @@
     <Filter Include="Other\WinApiWrapper\Fiber\Coroutine\Detail">
       <UniqueIdentifier>{e4deae0d-1c9a-4ec5-9277-f8eb887229ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other\WinApiWrapper\InterProcess">
+      <UniqueIdentifier>{88a3d136-52ce-4412-bd79-6a2412884076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other\WinApiWrapper\InterProcess\Pipe">
+      <UniqueIdentifier>{1852e25d-e7fe-4dea-9975-5f34f831f3b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -185,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="CoroutineIterator.h">
       <Filter>Other\WinApiWrapper\Fiber\Coroutine\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.h">
+      <Filter>Other\WinApiWrapper\InterProcess\Pipe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

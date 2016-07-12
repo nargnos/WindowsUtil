@@ -11,3 +11,4 @@
 #include <atomic>
 #include <functional>
 #include <iterator>
+#include <future>

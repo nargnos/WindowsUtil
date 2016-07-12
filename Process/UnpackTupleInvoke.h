@@ -11,12 +11,7 @@ namespace Tuple
 			using TForwordType = _STD remove_reference_t<TElementType>;
 
 			template<typename... TArgs>
-			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)->
-				decltype(UnpackTupleInvoke<TTuple, index - 1, TFunc>::Invoke(
-					t,
-					func,
-					_STD forward<TForwordType>(_STD get<index>(t)),
-					_STD forward<TArgs>(arg)...))
+			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)
 			{
 
 				return UnpackTupleInvoke<TTuple, index - 1, TFunc>::Invoke(
@@ -31,7 +26,7 @@ namespace Tuple
 		struct UnpackTupleInvoke<TTuple, -1, TFunc>
 		{
 			template<typename... TArgs>
-			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)->decltype(func(_STD forward<TArgs>(arg)...))
+			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)
 			{
 				return func(_STD forward<TArgs>(arg)...);
 			}
@@ -41,8 +36,7 @@ namespace Tuple
 	// 把tuple中的内容解包成参数给函数调用
 	// 简单测试了一下，可能会有BUG
 	template<typename TFunc, typename TTuple>
-	inline constexpr auto Invoke(TFunc&& func, TTuple& t)->
-		decltype(Detail::UnpackTupleInvoke<TTuple, _STD tuple_size<TTuple>::value - 1, TFunc>::Invoke(t, func))
+	inline auto Invoke(TFunc&& func, TTuple& t)
 	{
 		return Detail::UnpackTupleInvoke<TTuple, _STD tuple_size<TTuple>::value - 1, TFunc>::Invoke(t, func);
 	}

@@ -22,7 +22,6 @@ namespace Process
 
 			protected:
 				PTP_CALLBACK_INSTANCE instance_;
-				_STD once_flag flag_;
 			};
 	}  // namespace Thread
 }  // namespace Process

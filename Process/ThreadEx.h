@@ -83,7 +83,7 @@ namespace Process
 			}
 			bool SetPriority(ThreadPriority priority)
 			{
-				return SetThreadPriority(Handle(), static_cast<int>(priority));
+				return SetThreadPriority(Handle(), static_cast<int>(priority)) != 0;
 			}
 			DWORD_PTR SetAffinityMask(DWORD_PTR mask)
 			{
@@ -94,17 +94,17 @@ namespace Process
 			{
 				_STD pair<bool, CONTEXT> result{ false,{ 0 } };
 				result.second.ContextFlags = static_cast<DWORD>(flag);
-				result.first = GetThreadContext(Handle(), &result.second);
+				result.first = GetThreadContext(Handle(), &result.second) != 0;
 				return result;
 			}
 			bool SetContext(CONTEXT& context)
 			{
-				return SetThreadContext(Handle(), &context);
+				return SetThreadContext(Handle(), &context) != 0;
 			}
 
 			DWORD SetIdealProcessor(DWORD idealProcessor)
 			{
-				return SetThreadIdealProcessor(Handle(),idealProcessor);
+				return SetThreadIdealProcessor(Handle(), idealProcessor);
 			}
 		protected:
 			HANDLE Handle()

@@ -5,7 +5,8 @@ namespace Process
 {
 	namespace Thread
 	{
-
+		// FIX: 用到的API都是新的，需要弄一个旧的版本
+		// 不过这个没有什么意义，直接用ppl就好了
 		class ThreadPool
 		{
 		public:

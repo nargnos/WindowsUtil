@@ -13,7 +13,7 @@ Process::Thread::ThreadPriority Process::Thread::this_thread::GetPriority()
 
 bool Process::Thread::this_thread::SetPriority(ThreadPriority priority)
 {
-	return SetThreadPriority(GetCurrentThread(), static_cast<int>(priority));
+	return SetThreadPriority(GetCurrentThread(), static_cast<int>(priority)) != 0;
 }
 
 DWORD_PTR Process::Thread::this_thread::SetAffinityMask(DWORD_PTR mask)
@@ -25,12 +25,12 @@ std::pair<bool, CONTEXT> Process::Thread::this_thread::GetContext(ContextFlag fl
 {
 	_STD pair<bool, CONTEXT> result{ false,{ 0 } };
 	result.second.ContextFlags = static_cast<DWORD>(flag);
-	result.first = GetThreadContext(GetCurrentThread(), &result.second);
+	result.first = GetThreadContext(GetCurrentThread(), &result.second) != 0;
 
 	return result;
 }
 
 bool Process::Thread::this_thread::SetContext(CONTEXT & context)
 {
-	return SetThreadContext(GetCurrentThread(), &context);
+	return SetThreadContext(GetCurrentThread(), &context) != 0;
 }

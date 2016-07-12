@@ -8,7 +8,6 @@ namespace Process
 	{
 		namespace Detail
 		{
-			// 内部使用mutex会引入其它dll，有空再重写mutex部分
 			template<typename TGetDllModulePolicy, typename TDecryptStrPolicy = DefaultLazyLoadDecryptStrPolicyW>
 			class LoadDllBase
 			{

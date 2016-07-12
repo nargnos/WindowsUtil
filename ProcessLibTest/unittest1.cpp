@@ -16,6 +16,7 @@
 #include <Process\ThreadPoolWait.h>
 #include <Process\ThreadPoolTimer.h>
 #include <Process\Coroutine.h>
+#include <Process\Pipe.h>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ProcessLibTest
@@ -60,8 +61,18 @@ namespace ProcessLibTest
 			auto& ldrLoadDll = NtDll::Instance().LdrLoadDll;
 			ldrLoadDll.Load();
 			// funtion没有取指针的函数验证不了只能下断点了
-			auto trueValue = GetProcAddress(GetModuleHandleA("ntdll.dll"), "LdrLoadDll");
-
+			auto ntdll = GetModuleHandleA("ntdll.dll");
+			if (ntdll == NULL)
+			{
+				Assert::Fail();
+				return;
+			}
+			auto trueValue = GetProcAddress(ntdll, "LdrLoadDll");
+			if (trueValue == NULL)
+			{
+				Assert::Fail();
+				return;
+			}
 			auto& mbox = User32::Instance().MessageBoxA;
 			mbox(0, "Hello World!", "Goodbye World!", MB_OK);
 		}
@@ -306,12 +317,14 @@ namespace ProcessLibTest
 			// 测试ThreadPoolWait
 			// TODO: 之后这类同步的东西也要做一个封装
 			auto e = CreateEvent(NULL, true, false, NULL);
-			bool isWaitSucceed = false;
-			std::condition_variable cv3;
 			if (e == NULL)
 			{
 				Assert::Fail(L"create event fail");
+				return;
 			}
+			bool isWaitSucceed = false;
+			std::condition_variable cv3;
+
 			ThreadPoolWait wait(e, NULL, [&isWaitSucceed, &cv3](CallbackInstance&, ThreadPoolWait&, WaitResult)
 			{
 				Logger::WriteMessage("ThreadPoolWait");
@@ -413,7 +426,7 @@ namespace ProcessLibTest
 			Assert::IsTrue(c2.begin() == c2.end());
 
 			// 测试迭代器适配
-			auto fi = MakeCoroutine<int>([](int num)
+			auto fi = MakeCoroutine<int>([](auto num)
 			{
 				int preLast = 1;
 				YieldReturn(preLast);
@@ -427,7 +440,7 @@ namespace ProcessLibTest
 					preLast = last;
 					last = result;
 				}
-			}, 10);
+			}, (size_t)10);
 
 
 			_STD ostringstream out;
@@ -487,10 +500,70 @@ namespace ProcessLibTest
 				_STD copy(_STD begin(fi), _STD end(fi), outIt);
 				YieldReturn(out.str());
 			});
-			
+
 			Logger::WriteMessage((*qtest.begin()).c_str());
 
 			Logger::WriteMessage("Exit");
+		}
+
+
+		TEST_METHOD(TestPipe)
+		{
+			using namespace Process::InterProcess;
+
+			auto pipeName = L"\\\\.\\pipe\\echo";
+			NamePipeServer<true> server(pipeName);
+
+			Assert::IsTrue(server.IsOpen());
+
+			Assert::IsTrue(server.WaitForConnection().get());
+
+			_STD string d("Hello World");
+			auto ret = server.Write(d.c_str(), d.length(), [&d](ULONG ioResult, ULONG_PTR bytes)
+			{
+				if (ioResult == S_OK)
+				{
+					Assert::IsTrue(ioResult == 0 && bytes == d.length());
+				}
+			});
+			Assert::IsTrue(ret);
+
+			char buffer[100]{ 0 };
+			// 另一种调用方式
+			auto wait = server.Read(buffer, sizeof(buffer));
+			Assert::IsTrue(wait.Result);
+			auto result = wait.AsyncResult.get();
+			Assert::IsTrue(result.IoResult == S_OK && result.NumberOfBytesTransferred == d.length());
+			Assert::AreEqual(d.c_str(), buffer);
+
+
+			server.Dispose();
+
+			NamePipeServer<false> server2(pipeName);
+
+			Assert::IsTrue(server2.IsOpen());
+
+			Assert::IsTrue(server2.WaitForConnection());
+
+			_STD fill(_STD begin(buffer), _STD end(buffer), 0);
+			std::string random("1234567890");
+			auto randomLen = random.length();
+			_STD random_shuffle(_STD begin(random), _STD end(random));
+
+			auto writes = server2.Write(random.c_str(), randomLen);
+
+			Assert::IsTrue(writes.Result);
+			Assert::IsTrue(writes.NumberOfBytesTransferred == randomLen);
+
+			auto reads = server2.Read(buffer, writes.NumberOfBytesTransferred);
+			Assert::IsTrue(reads.Result);
+			Assert::IsTrue(reads.NumberOfBytesTransferred == randomLen);
+
+			Assert::AreEqual(random.c_str(), buffer);
+			// TODO: client没做，不好测试,剩下的测试等写了client再说
+			//char* msgs[]{ "Write Message","Hello World",random };
+
+
 		}
 	};
 	_STD pair<bool, CONTEXT> UnitTest1::OldContext;

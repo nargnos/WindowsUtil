@@ -76,7 +76,7 @@ namespace Process
 				{
 					assert(!fiber_);
 					PVOID currentThreadFiber = nullptr;
-					bool isThreadAFiber = Process::Fiber::IsThreadAFiber();
+					bool isThreadAFiber = Process::Fiber::IsThreadAFiber() != 0;
 					if (isThreadAFiber)
 					{
 						currentThreadFiber = Process::Fiber::GetCurrentFiber();
@@ -145,6 +145,7 @@ namespace Process
 					TChild::Callback(storage);
 					// 运行结束了未跳回
 					assert(false);
+					__assume(false);
 				}
 
 				FiberPtr fiber_;
