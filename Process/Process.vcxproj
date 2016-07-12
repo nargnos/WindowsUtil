@@ -171,6 +171,7 @@
     <ClInclude Include="LoadDllBase.h" />
     <ClInclude Include="DynamicCallBase.h" />
     <ClInclude Include="LoadLibrary.h" />
+    <ClInclude Include="NamePipeBase.h" />
     <ClInclude Include="NtDll.h" />
     <ClInclude Include="NtDllGetDllModulePolicy.h" />
     <ClInclude Include="OpenProcess.h" />

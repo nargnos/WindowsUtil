@@ -61,6 +61,9 @@
     <Filter Include="Other\WinApiWrapper\InterProcess\Pipe">
       <UniqueIdentifier>{1852e25d-e7fe-4dea-9975-5f34f831f3b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other\WinApiWrapper\InterProcess\Pipe\Detail">
+      <UniqueIdentifier>{d95a53cb-49c6-4320-b1d2-e5f559e1e3d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -194,6 +197,9 @@
     </ClInclude>
     <ClInclude Include="Pipe.h">
       <Filter>Other\WinApiWrapper\InterProcess\Pipe</Filter>
+    </ClInclude>
+    <ClInclude Include="NamePipeBase.h">
+      <Filter>Other\WinApiWrapper\InterProcess\Pipe\Detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

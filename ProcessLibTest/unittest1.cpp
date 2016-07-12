@@ -17,6 +17,7 @@
 #include <Process\ThreadPoolTimer.h>
 #include <Process\Coroutine.h>
 #include <Process\Pipe.h>
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ProcessLibTest
@@ -512,58 +513,82 @@ namespace ProcessLibTest
 			using namespace Process::InterProcess;
 
 			auto pipeName = L"\\\\.\\pipe\\echo";
-			NamePipeServer<true> server(pipeName);
+			NamePipeServer<false> server(pipeName);
 
 			Assert::IsTrue(server.IsOpen());
 
-			Assert::IsTrue(server.WaitForConnection().get());
-
-			_STD string d("Hello World");
-			auto ret = server.Write(d.c_str(), d.length(), [&d](ULONG ioResult, ULONG_PTR bytes)
+			_STD thread t([&]()
 			{
-				if (ioResult == S_OK)
+				bool isStop = false;
+				while (!isStop)
 				{
-					Assert::IsTrue(ioResult == 0 && bytes == d.length());
+					char buffer[128]{ 0 };
+					if (server.WaitForConnection())
+					{
+						while (!isStop)
+						{
+							auto reads = server.Read(buffer, sizeof(buffer));
+							if (!reads.Result)
+							{
+								break;
+							}
+							if (strcmp(buffer, "Exit") == 0)
+							{
+								isStop = true;
+								break;
+							}
+							auto writes = server.Write(buffer, reads.NumberOfBytesTransferred);
+							if (!writes.Result)
+							{
+								break;
+							}
+							Assert::IsTrue(writes.NumberOfBytesTransferred == reads.NumberOfBytesTransferred);
+						}
+					}
 				}
 			});
-			Assert::IsTrue(ret);
-
-			char buffer[100]{ 0 };
-			// 另一种调用方式
-			auto wait = server.Read(buffer, sizeof(buffer));
-			Assert::IsTrue(wait.Result);
-			auto result = wait.AsyncResult.get();
-			Assert::IsTrue(result.IoResult == S_OK && result.NumberOfBytesTransferred == d.length());
-			Assert::AreEqual(d.c_str(), buffer);
 
 
-			server.Dispose();
 
-			NamePipeServer<false> server2(pipeName);
-
-			Assert::IsTrue(server2.IsOpen());
-
-			Assert::IsTrue(server2.WaitForConnection());
-
-			_STD fill(_STD begin(buffer), _STD end(buffer), 0);
 			std::string random("1234567890");
 			auto randomLen = random.length();
 			_STD random_shuffle(_STD begin(random), _STD end(random));
 
-			auto writes = server2.Write(random.c_str(), randomLen);
+			NamePipeClient<true> client(pipeName);
 
+			WaitNamedPipe(pipeName, NMPWAIT_WAIT_FOREVER);
+			if (!client.Connect())
+			{
+				Assert::Fail();
+				return;
+			}
+
+			char buffer[100]{ 0 };
+			auto writes = client.Write(random.c_str(), random.length() + 1);
 			Assert::IsTrue(writes.Result);
-			Assert::IsTrue(writes.NumberOfBytesTransferred == randomLen);
 
-			auto reads = server2.Read(buffer, writes.NumberOfBytesTransferred);
+			auto result = writes.AsyncResult.get();
+			if (result.IoResult != S_OK)
+			{
+				Assert::Fail();
+				return;
+			}
+			auto reads = client.Read(buffer, result.NumberOfBytesTransferred);
 			Assert::IsTrue(reads.Result);
-			Assert::IsTrue(reads.NumberOfBytesTransferred == randomLen);
 
-			Assert::AreEqual(random.c_str(), buffer);
-			// TODO: client没做，不好测试,剩下的测试等写了client再说
-			//char* msgs[]{ "Write Message","Hello World",random };
+			result = reads.AsyncResult.get();
+			if (result.IoResult != S_OK)
+			{
+				Assert::Fail();
+				return;
+			}
 
-
+			Assert::AreEqual(buffer, random.c_str());
+			std::string exit("Exit");
+			auto ret = client.Write(exit.c_str(), exit.length() + 1);
+			ret.AsyncResult.get();
+			server.Dispose();
+			t.join();
 		}
 	};
 	_STD pair<bool, CONTEXT> UnitTest1::OldContext;
