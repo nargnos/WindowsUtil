@@ -63,7 +63,7 @@ namespace Process
 				return comp(node.NamePtr(), val) < 0;
 			});
 
-			if (result == end || comp(result->NamePtr(), lpProcName) != 0)
+			if (result == end || comp(result->NamePtr(), lpProcName) != FALSE)
 			{
 				return nullptr;
 			}

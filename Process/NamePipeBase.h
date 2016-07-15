@@ -4,7 +4,7 @@ namespace Process
 {
 	namespace InterProcess
 	{
-		
+
 		namespace Detail
 		{
 			using ::CallNamedPipe;
@@ -83,7 +83,7 @@ namespace Process
 				~NamePipeBase()
 				{
 					if (io_ != nullptr)
-					{						
+					{
 						CancelThreadpoolIo(io_);
 						CloseThreadpoolIo(io_);
 						io_ = nullptr;
@@ -159,7 +159,8 @@ namespace Process
 						_InitIo<IsAsync>();
 					}
 				}
-				static _STD enable_if_t<IsAsync>
+				template<bool async>
+				static _STD enable_if_t<async>
 					WINAPI IoCallback(
 						_Inout_     PTP_CALLBACK_INSTANCE instance,
 						_Inout_opt_ PVOID                 context,
@@ -181,23 +182,23 @@ namespace Process
 				template<bool async>
 				_STD enable_if_t<async> _InitIo()
 				{
-					io_ = Detail::CreateThreadpoolIo(NativeHandle(), IoCallback, NULL, NULL);
+					io_ = Detail::CreateThreadpoolIo(NativeHandle(), IoCallback<async>, NULL, NULL);
 				}
 				template<bool async>
 				_STD enable_if_t<!async> _InitIo()
 				{
 				}
 
-				template<bool async, _STD enable_if_t<!async, bool> = async>
-				ResultType _Write(const char* buffer, size_t bufferSize)
+				template<bool async>
+				_STD enable_if_t<!async, ResultType> _Write(const char* buffer, size_t bufferSize)
 				{
 					ResultType result{ false, 0 };
-					result.Result = Detail::WriteFile(NativeHandle(), buffer, bufferSize, &result.NumberOfBytesTransferred, NULL) != 0;
+					result.Result = Detail::WriteFile(NativeHandle(), buffer, bufferSize, &result.NumberOfBytesTransferred, NULL) != FALSE;
 
 					return result;
 				}
-				template<bool async, _STD enable_if_t<async, bool> = async>
-				bool _Write(const char* buffer, size_t bufferSize, Detail::Callback&& cb)
+				template<bool async>
+				_STD enable_if_t<async, bool> _Write(const char* buffer, size_t bufferSize, Detail::Callback&& cb)
 				{
 					auto param = new Detail::CallbackOverlapped();
 					param->Func = _STD move(cb);
@@ -207,8 +208,8 @@ namespace Process
 
 					return ret || GetLastError() == ERROR_IO_PENDING;
 				}
-				template<bool async, _STD enable_if_t<async, bool> = async>
-				ResultType _Write(const char* buffer, size_t bufferSize)
+				template<bool async>
+				_STD enable_if_t<async, ResultType> _Write(const char* buffer, size_t bufferSize)
 				{
 					auto p = _STD make_shared<_STD promise<typename ResultType::_IoResult>>();
 					ResultType result{ false, _STD move(p->get_future()) };
@@ -218,22 +219,22 @@ namespace Process
 					{
 						typename ResultType::_IoResult result{ ioResult, numberOfBytesTransferred };
 						pms->set_value(result);
-					}) != 0;
+					}) != FALSE;
 
 					return result;
 				}
 
 
-				template<bool async, _STD enable_if_t<!async, bool> = async>
-				ResultType _Read(char* buffer, size_t bufferSize)
+				template<bool async>
+				_STD enable_if_t<!async, ResultType> _Read(char* buffer, size_t bufferSize)
 				{
 					ResultType result{ false, 0 };
-					result.Result = Detail::ReadFile(NativeHandle(), buffer, bufferSize, &result.NumberOfBytesTransferred, NULL) != 0;
+					result.Result = Detail::ReadFile(NativeHandle(), buffer, bufferSize, &result.NumberOfBytesTransferred, NULL) != FALSE;
 
 					return result;
 				}
-				template<bool async, _STD enable_if_t<async, bool> = async>
-				bool _Read(char* buffer, size_t bufferSize, Detail::Callback&& cb)
+				template<bool async>
+				_STD enable_if_t<async, bool> _Read(char* buffer, size_t bufferSize, Detail::Callback&& cb)
 				{
 
 					auto param = new Detail::CallbackOverlapped();
@@ -243,8 +244,8 @@ namespace Process
 					auto ret = Detail::ReadFile(NativeHandle(), buffer, bufferSize, NULL, param);
 					return ret || GetLastError() == ERROR_IO_PENDING;
 				}
-				template<bool async, _STD enable_if_t<async, bool> = async>
-				ResultType _Read(char* buffer, size_t bufferSize)
+				template<bool async>
+				_STD enable_if_t<async, ResultType> _Read(char* buffer, size_t bufferSize)
 				{
 					auto p = _STD make_shared<_STD promise<typename ResultType::_IoResult>>();
 					ResultType result{ false, _STD move(p->get_future()) };
@@ -254,7 +255,7 @@ namespace Process
 					{
 						typename ResultType::_IoResult result{ ioResult, numberOfBytesTransferred };
 						pms->set_value(result);
-					}) != 0;
+					}) != FALSE;
 
 					return result;
 				}

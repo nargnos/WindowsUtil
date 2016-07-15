@@ -89,7 +89,7 @@ namespace Process
 			auto _WaitForConnection()
 			{
 				assert(IsOpen());
-				auto result = Detail::ConnectNamedPipe(NativeHandle(), NULL) != 0;
+				auto result = Detail::ConnectNamedPipe(NativeHandle(), NULL) != FALSE;
 				if (result)
 				{
 					state_ = Detail::PipeState::Connected;
@@ -130,7 +130,7 @@ namespace Process
 					}
 				};
 				Detail::StartThreadpoolIo(io_);
-				return Detail::ConnectNamedPipe(NativeHandle(), param) != 0;
+				return Detail::ConnectNamedPipe(NativeHandle(), param) != FALSE;
 			}
 		};
 

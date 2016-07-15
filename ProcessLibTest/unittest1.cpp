@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 #include <vector>
 #include <algorithm>
+#include <numeric>
 #include <random>
 #include <condition_variable>
 #include <Process\FindLoadedModuleHandle.h>
@@ -251,25 +252,61 @@ namespace ProcessLibTest
 		TEST_METHOD(TestThreadPool)
 		{
 			using namespace Process::Thread;
-			// 直接提交函数
+			using namespace std;
+			// 拆分任务分别计算
 
-			bool isSubmitCallbackSucceed = false;
-			std::condition_variable cv1;
+			std::condition_variable cv;
+			typedef _STD vector<int> Vector;
+			Vector vec(654321);
+			_STD atomic<bool> inited = false;
 
-			ThreadPool::Submit([&isSubmitCallbackSucceed, &cv1](CallbackInstance& instance)
+			ThreadPool::SubmitCallback([&](CallbackInstance&)
 			{
-				Logger::WriteMessage("SubmitCallback");
-				instance.MayRunLong();
-				isSubmitCallbackSucceed = true;
-				cv1.notify_all();
+				_STD iota(begin(vec), end(vec), 1);
+				inited.store(true, memory_order_release);
+				cv.notify_all();
 			});
+
+
+			vector<future<long long>> futures;
+			size_t vecLen = vec.size();
+			size_t dataPerThread = vec.size() / thread::hardware_concurrency();
+			// 每个线程分16次处理完，每次处理数据对64取整
+			size_t step = (dataPerThread / 16) & (-64);
+			auto begin = vec.begin();
+			auto end = vec.end();
+
 			std::mutex mtx;
 			std::unique_lock<std::mutex> lock(mtx);
-			cv1.wait_for(lock, std::chrono::seconds(1), [&isSubmitCallbackSucceed]()
+			cv.wait(lock, [&inited]()
 			{
-				return isSubmitCallbackSucceed;
+				return inited.load(memory_order_acquire);
 			});
-			Assert::IsTrue(isSubmitCallbackSucceed);
+			while (begin < end)
+			{
+				auto dst = _STD distance(begin, end);
+				auto tmpstep = dst > step ? step : dst;
+				auto tmpend = begin + tmpstep;
+				_STD packaged_task<long long(CallbackInstance&)> task([begin_ = begin, end_ = tmpend](CallbackInstance& instance) mutable
+				{
+					return accumulate<Vector::iterator, long long>(begin_, end_, 0);
+				});
+				begin = tmpend;
+				futures.emplace_back(task.get_future());
+				auto sumitResult = ThreadPool::SubmitCallback(move(task));
+				Assert::IsTrue(sumitResult);
+			}
+			auto result = accumulate<vector<future<long long>>::iterator, long long>(futures.begin(), futures.end(), 0, [](long long ret, future<long long>& val)
+			{
+				return ret + val.get();
+			});
+
+			Assert::IsTrue(futures.size() == 1 + (vec.size() - 1) / step);
+
+			long long trueResult = (*vec.begin() + *vec.rbegin()) * (double)vec.size() / 2;
+
+			Assert::IsTrue(trueResult == result);
+
 		}
 		TEST_METHOD(TestThreadPoolSimpleCallback)
 		{

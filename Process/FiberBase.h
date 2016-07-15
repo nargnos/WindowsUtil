@@ -76,7 +76,7 @@ namespace Process
 				{
 					assert(!fiber_);
 					PVOID currentThreadFiber = nullptr;
-					bool isThreadAFiber = Process::Fiber::IsThreadAFiber() != 0;
+					bool isThreadAFiber = Process::Fiber::IsThreadAFiber() != FALSE;
 					if (isThreadAFiber)
 					{
 						currentThreadFiber = Process::Fiber::GetCurrentFiber();

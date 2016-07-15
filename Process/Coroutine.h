@@ -9,7 +9,7 @@ namespace Process
 	{
 		// 协程，用法有点类似c#的
 		// 注意一旦开始迭代，线程就会被转为纤程，感觉没什么影响，就不转回了
-		// 返回引用要用reference_wrapper
+		// 返回引用要用reference_wrapper和ref
 		// 多线程情况未测试，可能有bug
 
 
