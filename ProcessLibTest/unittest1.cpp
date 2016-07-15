@@ -440,13 +440,13 @@ namespace ProcessLibTest
 			// 结束生成
 
 
-			// 普通测试
-			auto c = MakeCoroutine<int>([&vec](_STD vector<int>& v)
+			// 测试返回指针
+			auto c = MakeCoroutine<int*>([&vec](_STD vector<int>& v)
 			{
 				Assert::IsTrue(&vec == &v);
 				for (auto val : v)
 				{
-					YieldReturn(val);
+					YieldReturn(&val);
 				}
 			}, _STD ref(vec));
 
@@ -454,7 +454,7 @@ namespace ProcessLibTest
 
 			for (auto val : c)
 			{
-				Assert::IsTrue(val == vec[i++]);
+				Assert::IsTrue(*val == vec[i++]);
 			}
 
 			// 测试不return
@@ -463,7 +463,7 @@ namespace ProcessLibTest
 
 			Assert::IsTrue(c2.begin() == c2.end());
 
-			// 测试迭代器适配
+			// 测试迭代器适配和返回值
 			auto fi = MakeCoroutine<int>([](auto num)
 			{
 				int preLast = 1;
@@ -491,11 +491,19 @@ namespace ProcessLibTest
 			// 测试重置参数
 			fi.RetsetParams(20);
 			out.swap(_STD ostringstream());
-			// 用另一种输出方式
-			for (auto val : fi)
+			// 用另一种输出方式，测试返回引用
+			// 向协程输入内容
+			auto output = MakeCoroutine<int&>([&out]()
 			{
-				out << val << " ";
-			}
+				int input = 0;
+				do
+				{
+					YieldReturn<int&>(input);
+					out << input << " ";
+				} while (true);
+			});
+
+			_STD copy(_STD begin(fi), _STD end(fi), _STD begin(output));
 			Logger::WriteMessage(out.str().c_str());
 
 			// 直接生成adapter测试
@@ -532,6 +540,8 @@ namespace ProcessLibTest
 
 
 			// 嵌套测试
+			// 重设一下参数
+			fi.RetsetParams(30);
 			auto qtest = MakeCoroutine<_STD string>([&fi, &out, &outIt]()
 			{
 				out.swap(_STD ostringstream());

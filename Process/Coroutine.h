@@ -9,11 +9,12 @@ namespace Process
 	{
 		// 协程，用法有点类似c#的
 		// 注意一旦开始迭代，线程就会被转为纤程，感觉没什么影响，就不转回了
-		// 返回引用要用reference_wrapper和ref
+		// 返回引用在yield return时要明确说明
 		// 多线程情况未测试，可能有bug
 
 
 		// 注意这个函数不要在协程外使用, 否则得到的结果是不确定的
+		// 不要return不同类型的东西，否则也是不确定的
 		template<typename TRet>
 		_STD enable_if_t<Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet& ret)
 		{
@@ -26,7 +27,7 @@ namespace Process
 		}
 
 		template<typename TRet>
-		_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet& ret)
+		_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet&& ret)
 		{
 			auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
 			assert(data);
@@ -34,6 +35,8 @@ namespace Process
 
 			Detail::_SwitchToLastFiber(data);
 		}
+
+		
 
 
 		// 注意如果在纤程里修改了用传入参数的值，第二次迭代的时候会用新的值

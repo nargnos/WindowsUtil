@@ -7,20 +7,22 @@ namespace Process
 	{
 		namespace Detail
 		{
-			// 如果返回类型无默认构造、无拷贝赋值、类型大于指针大小，就使用指针返回
+			// 如果返回类型无默认构造、无拷贝赋值、类型大于指针大小，是引用，非指针，就使用指针返回(会在取值时返回引用)
 			template<typename T>
 			struct IsPointerReturnType
 			{
-				static constexpr int value = !_STD is_default_constructible<T>::value ||
+				static constexpr bool value = !_STD is_default_constructible<T>::value ||
 					!_STD is_copy_assignable<T>::value ||
-					sizeof(T) > sizeof(void*);
+					sizeof(T) > sizeof(void*) ||
+					!_STD is_pointer<T>::value ||
+					_STD is_reference<T>::value;
 			};
 
 			template<typename T>
 			using CoroutineResultStorageType = _STD conditional_t<IsPointerReturnType<T>::value,
-				T*, T>;
+				_STD decay_t<T>*, T>;
 			template<typename T>
-			using CoroutineResultType = _STD conditional_t<_STD is_pointer<CoroutineResultStorageType<T>>::value, const T&, T>;
+			using CoroutineResultType = _STD conditional_t<_STD is_pointer<CoroutineResultStorageType<T>>::value, T&, T>;
 
 
 			// 回调外可访问部分
@@ -33,7 +35,7 @@ namespace Process
 					IsDone(false),
 					Ret(TRetStorage())
 				{
-					
+
 				}
 				bool IsDone;
 				volatile PVOID LastFiber;
@@ -109,7 +111,11 @@ namespace Process
 				public Detail::FiberBase<
 				CoroutineIterator<TRet, TFunc, TArgs...>,
 				Detail::CoroutineStorage<TRet, TFunc, TArgs...>>,
-				public _STD iterator<_STD forward_iterator_tag, TRet>
+				public _STD iterator<_STD forward_iterator_tag,
+				TRet,
+				ptrdiff_t,
+				_STD decay_t<TRet>*,
+				_STD conditional_t<_STD is_reference<TRet>::value, TRet, TRet&>>
 			{
 			public:
 				static_assert(!_STD is_void<TRet>::value, "TRet != void");
@@ -174,20 +180,20 @@ namespace Process
 					Switch();
 				}
 				//
-				
+
 				template<typename T>
-				CoroutineResultType<T> Dereference(_STD enable_if_t<Detail::IsPointerReturnType<TRet>::value>* =nullptr) const
+				CoroutineResultType<T> Dereference(_STD enable_if_t<Detail::IsPointerReturnType<TRet>::value>* = nullptr) const
 				{
 					assert(!context_->IsDone);
 					return *context_->Ret;
 				}
 				template<typename T>
-				CoroutineResultType<T> Dereference(_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value>* =nullptr) const
+				CoroutineResultType<T> Dereference(_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value>* = nullptr) const
 				{
 					assert(!context_->IsDone);
 					return context_->Ret;
 				}
-				
+
 
 				void SetLastFiber()
 				{
