@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "VirtualFree.h"
 #include "NtDll.h"
-using Process::LazyLoad::NtDll;
+using namespace Process::LazyLoad;
 bool WINAPI Process::Overwrite::VirtualFreeEx(_In_ HANDLE hProcess, _Pre_notnull_ _When_(dwFreeType == MEM_DECOMMIT, _Post_invalid_) _When_(dwFreeType == MEM_RELEASE, _Post_ptr_invalid_) LPVOID lpAddress, _In_ SIZE_T dwSize, _In_ DWORD dwFreeType)
 {
 	auto& ntFreeVirtualMemory = NtDll::Instance().NtFreeVirtualMemory;

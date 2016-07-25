@@ -47,7 +47,7 @@ namespace PeDecoder
 		PeImage(const PeImage&) = delete;
 		PeImage& operator=(const PeImage&) = delete;
 
-
+		// FIX: 很多结构都是会反复使用到的，需要保留解析结构，但是这样搞占位太大了
 		unique_ptr<ArchitectureDirectory> architectureDirectory_;
 		unique_ptr<BoundImportDirectory> boundImportDirectory_;
 		unique_ptr<ComDescriptorDirectory> comDescriptorDirectory_;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "WriteProcessMemory.h"
 #include "NtDll.h"
-using Process::LazyLoad::NtDll;
+using namespace Process::LazyLoad;
 bool WINAPI Process::Overwrite::WriteProcessMemory(_In_ HANDLE hProcess, _In_ LPVOID lpBaseAddress, _In_reads_bytes_(nSize) LPCVOID lpBuffer, _In_ SIZE_T nSize, _Out_opt_ SIZE_T * lpNumberOfBytesWritten)
 {
 	if (lpNumberOfBytesWritten) *lpNumberOfBytesWritten = 0;

@@ -9,34 +9,51 @@ namespace Process
 	{
 		// 协程，用法有点类似c#的
 		// 注意一旦开始迭代，线程就会被转为纤程，感觉没什么影响，就不转回了
-		// 返回引用在yield return时要明确说明
+		// 返回调用第一个参数（是函数指针）返回
 		// 多线程情况未测试，可能有bug
+		// FIX: 在运行到一半时销毁fiber不会使在函数中创建的临时对象析构，fiber类也有这个问题（windows的锅），如何解决
+		// 如果能控制context，在销毁fiber时先修改eip跳到最后的return应该可以
 
 
-		// 注意这个函数不要在协程外使用, 否则得到的结果是不确定的
-		// 不要return不同类型的东西，否则也是不确定的
-		template<typename TRet>
-		_STD enable_if_t<Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet& ret)
+		namespace Detail
 		{
-			
-			auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
-			assert(data);
-			data->ContextPtr->Ret = &ret;
 
-			Detail::_SwitchToLastFiber(data);
-		}
+			template<typename TRet>
+			_STD enable_if_t<IsSavePointer<TRet>::value>
+				YieldReturn(CoroutineParamType<TRet> ret)
+			{
 
-		template<typename TRet>
-		_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value> YieldReturn(TRet&& ret)
-		{
-			auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
-			assert(data);
-			data->ContextPtr->Ret = ret;
+				auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
+				assert(data);
+				assert(data->ContextPtr);
 
-			Detail::_SwitchToLastFiber(data);
-		}
+				data->ContextPtr->Ret = const_cast<CoroutineStorageType<TRet>>(&ret);
 
-		
+				Detail::_SwitchToLastFiber(data);
+			}
+
+			template<typename TRet>
+			_STD enable_if_t<!IsSavePointer<TRet>::value>
+				YieldReturn(CoroutineParamType<TRet> ret)
+			{
+				auto data = Process::Fiber::GetFiberData<Detail::CoroutineStorageHead<TRet>>();
+				assert(data);
+				assert(data->ContextPtr);
+				data->ContextPtr->Ret = ret;
+
+				Detail::_SwitchToLastFiber(data);
+			}
+			template<typename TRet>
+			auto GetYieldReturnFunc()
+			{
+				return YieldReturn<TRet>;
+			}
+		}  // namespace Detail
+
+
+
+
+
 
 
 		// 注意如果在纤程里修改了用传入参数的值，第二次迭代的时候会用新的值
@@ -44,12 +61,13 @@ namespace Process
 		class Coroutine
 		{
 		public:
-			typedef Detail::CoroutineIterator<TRet, TFunc, TArgs...> iterator;
+
+			using ReturnFunc = decltype(Detail::GetYieldReturnFunc<TRet>());
+			typedef Detail::CoroutineIterator<TRet, TFunc, ReturnFunc, TArgs...> iterator;
 			Coroutine(TFunc&& func, TArgs... args) :
-				func_(
-					_STD make_shared<Detail::CoroutineFuncStorage<TFunc, TArgs...>>(
-						_STD move(func),
-						_STD make_tuple(_STD forward<TArgs>(args)...)))
+				func_(_STD make_shared<Detail::CoroutineFuncStorage<TFunc, ReturnFunc, TArgs...>>(
+					_STD move(func),
+					_STD make_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...)))
 			{
 			}
 
@@ -67,10 +85,10 @@ namespace Process
 			void RetsetParams(TArgs... args)
 			{
 				_STD get<static_cast<int>(Detail::_CoroutineFuncStorageIndex::_Args)>(*func_) =
-					_STD make_tuple<TArgs...>(_STD forward<TArgs>(args)...);
+					_STD make_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...);
 			}
 		protected:
-			Detail::CoroutineFuncStoragePtr<TFunc, TArgs...> func_;
+			Detail::CoroutineFuncStoragePtr<TFunc, ReturnFunc, TArgs...> func_;
 		};
 
 		template<typename TRet, typename TFunc, typename... TArgs>

@@ -6,6 +6,7 @@ namespace Process
 {
 	namespace Fiber
 	{
+		// 运行结束时需要return一个fiber指针来切换并跳出函数，如果在运行到一半时析构fiber，不能保证函数中创建的临时对象被析构
 		template<typename TFunc, typename... TArgs>
 		class Fiber :
 			public Detail::FiberBase<
@@ -13,18 +14,14 @@ namespace Process
 			_STD tuple<TFunc, _STD tuple<TArgs...>>>
 		{
 		public:
-			friend Base;
+			friend TFiberBase;
 			Fiber(TFunc&& func, TArgs... args) :
-				Base(_STD move(func), _STD make_tuple(_STD forward<TArgs>(args)...))
+				TFiberBase(_STD move(func), _STD make_tuple(_STD forward<TArgs>(args)...))
 			{
 			}
 
 			~Fiber() = default;
-
-			void Switch()
-			{
-				FiberBase::Switch();
-			}
+			using FiberBase::Switch;
 			
 		protected:
 			enum class _FiberTupleIndex:int
@@ -32,13 +29,13 @@ namespace Process
 				_Func,
 				_Args
 			};
-			static void WINAPI Callback(const TStoragePtr& storage)
+			static void* WINAPI Callback(const TStoragePtr& storage)
 			{
 				assert(storage);
 
 				auto& func = _STD get<static_cast<int>(_FiberTupleIndex::_Func)>(*storage);
 
-				Tuple::Invoke(func, _STD get<static_cast<int>(_FiberTupleIndex::_Args)>(*storage));				
+				return Tuple::Invoke(func, _STD get<static_cast<int>(_FiberTupleIndex::_Args)>(*storage));				
 			}
 		};
 

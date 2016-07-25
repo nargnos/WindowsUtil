@@ -54,14 +54,17 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 						{
 							return false;
 						}
-						_STD lock_guard<SpinLock> lock(lock_);
+
 						if (!func_)
 						{
-							auto funcName = TDecryptStrPolicy::Decrypt(funcName_);
-							func_ = reinterpret_cast<TFunc*>(
-								Process::Overwrite::GetProcAddress(dll,
-									TDecryptStrPolicy::GetStr(funcName))
-								);
+							_STD call_once(flag_, [this, &dll]()
+							{
+								auto funcName = TDecryptStrPolicy::Decrypt(funcName_);
+								func_ = reinterpret_cast<TFunc*>(
+									Process::Overwrite::GetProcAddress(dll,
+										TDecryptStrPolicy::GetStr(funcName))
+									);
+							});
 
 							return func_ ? true : false;
 						}
@@ -80,7 +83,7 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 				TLoadDll& dll_;
 				EncryptStr funcName_;
 				mutable _STD function<TFunc> func_;
-				mutable SpinLock lock_;
+				mutable _STD once_flag flag_;
 			};
 		}  // namespace Detail
 	}  // namespace LazyLoad

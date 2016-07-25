@@ -3,7 +3,7 @@
 #include "EnvironmentBlock.h"
 #include "NtDll.h"
 using Process::EnvironmentBlock::CLIENT_ID;
-using Process::LazyLoad::NtDll;
+using namespace Process::LazyLoad;
 HANDLE WINAPI Process::Overwrite::OpenProcess(_In_ DWORD dwDesiredAccess, _In_ BOOL bInheritHandle, _In_ DWORD dwProcessId)
 {
 	auto& ntOpenProcess = NtDll::Instance().NtOpenProcess;

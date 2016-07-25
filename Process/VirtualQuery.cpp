@@ -2,7 +2,7 @@
 #include "VirtualQuery.h"
 #include "NtDll.h"
 #include "EnvironmentBlock.h"
-using Process::LazyLoad::NtDll;
+using namespace Process::LazyLoad;
 SIZE_T WINAPI Process::Overwrite::VirtualQuery(_In_opt_ LPCVOID lpAddress, _Out_writes_bytes_to_(dwLength, return) PMEMORY_BASIC_INFORMATION lpBuffer, _In_ SIZE_T dwLength)
 {
 	return Process::Overwrite::VirtualQueryEx(NtCurrentProcess(), lpAddress, lpBuffer, dwLength);

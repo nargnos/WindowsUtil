@@ -24,7 +24,22 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace ProcessLibTest
 {
 	using namespace Process::EnvironmentBlock;
+	class DtorTestObj
+	{
+	public:
+		DtorTestObj()
+		{
+			Logger::WriteMessage("---ctor");
+		}
 
+		~DtorTestObj()
+		{
+			Logger::WriteMessage("---dtor");
+
+		}
+
+	private:
+	};
 	TEST_CLASS(UnitTest1)
 	{
 	public:
@@ -58,8 +73,7 @@ namespace ProcessLibTest
 		}
 		TEST_METHOD(TestLazyload)
 		{
-			using Process::LazyLoad::NtDll;
-			using Process::LazyLoad::User32;
+			using namespace Process::LazyLoad;
 			auto& ldrLoadDll = NtDll::Instance().LdrLoadDll;
 			ldrLoadDll.Load();
 			// funtion没有取指针的函数验证不了只能下断点了
@@ -75,6 +89,7 @@ namespace ProcessLibTest
 				Assert::Fail();
 				return;
 			}
+
 			auto& mbox = User32::Instance().MessageBoxA;
 			mbox(0, "Hello World!", "Goodbye World!", MB_OK);
 		}
@@ -164,31 +179,36 @@ namespace ProcessLibTest
 
 			PNT_TIB fiberCtx;
 
-
-			// 测试普通传参
-			auto test1 = MakeFiber([pf, &fiberCtx](const char* val)
 			{
-				// 取上下文（试验）
-				auto data = GetFiberData();
-				// 实验看一下切换时会改什么 -> 这里存的都是指针，这个结构什么都没改
-				// TODO: 找出用什么存储Xip
-				fiberCtx = GetCurrentFiberContext();
-				assert(data == fiberCtx->FiberData);
+				// 测试普通传参
+				auto test1 = MakeFiber([pf, &fiberCtx](const char* val)
+				{
+					DtorTestObj obj;
+					// 取上下文（试验）
+					auto data = GetFiberData();
+					// 实验看一下切换时会改什么 -> 这里存的都是指针，这个结构什么都没改
+					// TODO: 找出用什么存储Xip
+					fiberCtx = GetCurrentFiberContext();
+					assert(data == fiberCtx->FiberData);
 
-				Logger::WriteMessage("Begin Test");
-				SwitchToFiber(pf);
+					Logger::WriteMessage("Begin Test");
+					SwitchToFiber(pf);
 
-				Logger::WriteMessage(val);
-				SwitchToFiber(pf);
-			}, "Succeed");
-			auto ptr = test1.NativeHandle();
-			test1.Switch();
+					Logger::WriteMessage(val);
+					return pf;
+				}, "Succeed");
+				if (!test1)
+				{
+					Assert::Fail();
+				}
 
-			// 测试移动构造
-			auto move1(_STD move(test1));
+				test1.Switch();
 
-			move1.Switch();
+				// 测试移动构造
+				auto move1(_STD move(test1));
 
+				move1.Switch();
+			}
 
 
 			// 测试引用传参
@@ -199,8 +219,13 @@ namespace ProcessLibTest
 				SwitchToFiber(pf);
 				val = true;
 				Logger::WriteMessage("value = true");
-				SwitchToFiber(pf);
+				return pf;
 			}, _STD ref(test));
+
+			if (!test2)
+			{
+				Assert::Fail();
+			}
 
 			test2.Switch();
 			Assert::IsTrue(!test);
@@ -234,19 +259,32 @@ namespace ProcessLibTest
 				unique_ptr<int>&& arg9
 				)
 			{
-
-				SwitchToFiber(pf);
+				return pf;
 			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
 			test3.Switch();
 
+			if (!test3)
+			{
+				Assert::Fail();
+			}
 
 			// 无参测试
 			auto test4 = MakeFiber([pf]()
 			{
+				DtorTestObj obj;
 				Logger::WriteMessage("无参测试");
-				SwitchToFiber(pf);
+				return pf;
 			});
+			if (!test4)
+			{
+				Assert::Fail();
+			}
+
 			test4.Switch();
+
+
+
+
 			Logger::WriteMessage("End");
 		}
 		TEST_METHOD(TestThreadPool)
@@ -441,12 +479,12 @@ namespace ProcessLibTest
 
 
 			// 测试返回指针
-			auto c = MakeCoroutine<int*>([&vec](_STD vector<int>& v)
+			auto c = MakeCoroutine<int*>([&vec](auto yield, _STD vector<int>& v)
 			{
 				Assert::IsTrue(&vec == &v);
 				for (auto val : v)
 				{
-					YieldReturn(&val);
+					yield(&val);
 				}
 			}, _STD ref(vec));
 
@@ -458,23 +496,26 @@ namespace ProcessLibTest
 			}
 
 			// 测试不return
-			auto c2 = MakeCoroutine<int>([]()
-			{});
+			auto c2 = MakeCoroutine<int>([](auto yield)
+			{
+				DtorTestObj obj;
+			});
 
 			Assert::IsTrue(c2.begin() == c2.end());
 
 			// 测试迭代器适配和返回值
-			auto fi = MakeCoroutine<int>([](auto num)
+			auto fi = MakeCoroutine<int>([](auto yield, auto num)
 			{
+				DtorTestObj obj;
 				int preLast = 1;
-				YieldReturn(preLast);
+				yield(preLast);
 				int last = 1;
-				YieldReturn(last);
+				yield(last);
 				int result;
 				for (size_t i = 2; i < num; i++)
 				{
 					result = preLast + last;
-					YieldReturn(result);
+					yield(result);
 					preLast = last;
 					last = result;
 				}
@@ -493,12 +534,12 @@ namespace ProcessLibTest
 			out.swap(_STD ostringstream());
 			// 用另一种输出方式，测试返回引用
 			// 向协程输入内容
-			auto output = MakeCoroutine<int&>([&out]()
+			auto output = MakeCoroutine<int&>([&out](auto yield)
 			{
 				int input = 0;
 				do
 				{
-					YieldReturn<int&>(input);
+					yield(input);
 					out << input << " ";
 				} while (true);
 			});
@@ -509,11 +550,11 @@ namespace ProcessLibTest
 			// 直接生成adapter测试
 			char* outputStr[]{ "Coroutine","测试","成功" };
 			// 可以合并到下面的语句里去，但是太乱，分开来写
-			auto lambda = [](char** begin, char** end)
+			auto lambda = [](auto yield, char** begin, char** end)
 			{
-				_STD for_each(begin, end, [](char* str)
+				_STD for_each(begin, end, [&yield](char* str)
 				{
-					YieldReturn(_STD string(str));
+					yield(_STD string(str));
 				});
 			};
 
@@ -521,13 +562,13 @@ namespace ProcessLibTest
 			{
 				Logger::WriteMessage(str.c_str());
 			}
-
+			
 			// 传递临时变量引用
 			int num = 0;
-			auto refTest = MakeCoroutine<_STD reference_wrapper<volatile int>>([](int& v)
+			auto refTest = MakeCoroutine<_STD reference_wrapper<volatile int>>([](auto yield, int& v)
 			{
 				volatile int result = 123;
-				YieldReturn(_STD ref(result));
+				yield(_STD ref(result));
 				Assert::IsTrue(result == 456);
 				v = 123456;
 			}, _STD ref(num));
@@ -542,15 +583,145 @@ namespace ProcessLibTest
 			// 嵌套测试
 			// 重设一下参数
 			fi.RetsetParams(30);
-			auto qtest = MakeCoroutine<_STD string>([&fi, &out, &outIt]()
+			auto qtest = MakeCoroutine<_STD string>([&fi, &out, &outIt](auto yield)
 			{
 				out.swap(_STD ostringstream());
 				_STD copy(_STD begin(fi), _STD end(fi), outIt);
-				YieldReturn(out.str());
+				yield(out.str());
 			});
 
 			Logger::WriteMessage((*qtest.begin()).c_str());
 
+
+			// 多类型测试
+			// bool
+			auto type1 = MakeCoroutine<bool>([](auto yield)
+			{
+				yield(true);
+				auto ret = true;
+				yield(ret);
+			});
+			for (auto val : type1)
+			{
+				Assert::IsTrue(val);
+			}
+
+			auto type1Ref = MakeCoroutine<bool&>([](auto yield)
+			{
+				// yield(true);
+				auto ret = true;
+				yield(ret);
+				Assert::IsTrue(!ret);
+				ret = !ret;
+				yield(ret);
+			});
+			for (auto& val : type1Ref)
+			{
+				Assert::IsTrue(val);
+				val = !val;
+			}
+			auto type1Ptr = MakeCoroutine<bool*>([](auto yield)
+			{
+				// yield(true);
+				auto ret = true;
+				yield(&ret);
+				Assert::IsTrue(!ret);
+				ret = !ret;
+				yield(&ret);
+			});
+			for (auto val : type1Ptr)
+			{
+				if (val == nullptr)
+				{
+					Assert::Fail();
+					break;
+				}
+				Assert::IsTrue(val);
+				*val = !*val;
+			}
+
+			// long long
+			auto type2 = MakeCoroutine<long long>([](auto yield)
+			{
+				yield(123456);
+				auto ret = 123456;
+				yield(ret);
+			});
+
+			for (const auto& val : type2)
+			{
+				Assert::IsTrue(val == 123456);
+			}
+			for (auto val : type2)
+			{
+				Assert::IsTrue(val == 123456);
+			}
+
+			auto type2Ref = MakeCoroutine<long long&>([](auto yield)
+			{
+				long long ret = 123456;
+				yield(ret);
+				Assert::IsTrue(ret == 654321);
+				ret = 123456;
+				yield(ret);
+			});
+			for (auto& val : type2Ref)
+			{
+				Assert::IsTrue(val == 123456);
+				val = 654321;
+			}
+
+			auto type2cRef = MakeCoroutine<const long long&>([](auto yield)
+			{
+				long long ret = 123456;
+				yield(ret);
+				yield(123456);
+			});
+			for (const auto& val : type2cRef)
+			{
+				
+				Assert::IsTrue(val == 123456);
+			}
+
+			// string
+			auto type3 = MakeCoroutine<_STD string>([](auto yield)
+			{
+				yield(_STD string("Hello World"));
+				_STD string str = "Hello World";
+				yield(str);
+			});
+			for (auto& val : type3)
+			{
+				Assert::AreEqual(val.c_str(), "Hello World");
+			}
+
+			auto type3Ref = MakeCoroutine<_STD string&>([](auto yield)
+			{
+				_STD string str = "Hello World";
+				yield(str);
+				str.reserve();
+				yield(str);
+				
+			});
+			for (auto& val : type3Ref)
+			{
+				Assert::AreEqual(val.c_str(), "Hello World");
+				val.reserve();
+			}
+			// 未处理&&，当作&来用
+			auto type3Move = MakeCoroutine<_STD string&&>([](auto yield)
+			{
+				_STD string str = "Hello World";
+				yield(str);
+				str.reserve();
+				yield(str);
+
+			});
+			for (auto& val : type3Move)
+			{
+				Assert::AreEqual(val.c_str(), "Hello World");
+				val.reserve();
+			}
 			Logger::WriteMessage("Exit");
 		}
 

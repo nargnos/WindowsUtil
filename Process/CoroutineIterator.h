@@ -7,29 +7,64 @@ namespace Process
 	{
 		namespace Detail
 		{
-			// 如果返回类型无默认构造、无拷贝赋值、类型大于指针大小，是引用，非指针，就使用指针返回(会在取值时返回引用)
-			template<typename T>
-			struct IsPointerReturnType
+			// 类型->存储->返回
+			// 引用->ptr->引用 
+			// 指针或算术类型且大小小于指针->val->val
+			// 无默认构造或无复制赋值或大于指针的算术类型->ptr->const ref
+			// 其它->val->val
+			// 以上需要保持const标识
+			// TODO: 有必要处理&&吗？
+			enum _CoroutineType :char
 			{
-				static constexpr bool value = !_STD is_default_constructible<T>::value ||
-					!_STD is_copy_assignable<T>::value ||
-					sizeof(T) > sizeof(void*) ||
-					!_STD is_pointer<T>::value ||
-					_STD is_reference<T>::value;
+				_Ref,
+				_Value,
+				_ConstRef
+			};
+			template<typename T>
+			struct IsBigSize :
+				public _STD integral_constant<bool, (sizeof(T) > sizeof(void*)) >
+			{
+
+			};
+			template<typename T>
+			struct CoroutineTypeID :
+				public _STD integral_constant<_CoroutineType,
+				(_STD is_reference<T>::value ? _Ref :
+				((_STD is_fundamental<T>::value && !IsBigSize<T>::value) ? _Value :
+					((!_STD is_default_constructible<T>::value ||
+						!_STD is_nothrow_copy_assignable<T>::value ||
+						(_STD is_compound<T>::value && IsBigSize<T>::value)) ? _ConstRef : _Value)))>
+			{
+			};
+
+			// 表示类型被转换为指针存储（指针是值存储返回false）
+			template<typename T>
+			struct IsSavePointer :
+				public _STD integral_constant<bool,
+				CoroutineTypeID<T>::value == _Ref || CoroutineTypeID<T>::value == _ConstRef>
+			{
+
 			};
 
 			template<typename T>
-			using CoroutineResultStorageType = _STD conditional_t<IsPointerReturnType<T>::value,
-				_STD decay_t<T>*, T>;
-			template<typename T>
-			using CoroutineResultType = _STD conditional_t<_STD is_pointer<CoroutineResultStorageType<T>>::value, T&, T>;
+			using CoroutineStorageType = _STD remove_const_t<_STD conditional_t<
+				IsSavePointer<T>::value, _STD decay_t<T>*, T>>;
 
+			template<typename T>
+			using CoroutineResultType = _STD conditional_t<(CoroutineTypeID<T>::value == _Ref), T&,
+				_STD conditional_t<(CoroutineTypeID<T>::value == _Value), T,
+				_STD conditional_t<(CoroutineTypeID<T>::value == _ConstRef), const T&, T>>>;
+
+			template<typename T>
+			using CoroutineParamType = _STD remove_const_t<_STD conditional_t<(CoroutineTypeID<T>::value == _Ref), T&,
+				_STD conditional_t<(CoroutineTypeID<T>::value == _Value), T,
+				_STD conditional_t<(CoroutineTypeID<T>::value == _ConstRef), T&, T>>>>;
 
 			// 回调外可访问部分
 			template<typename TRet>
 			struct CoroutineContext
 			{
-				using TRetStorage = CoroutineResultStorageType<TRet>;
+				using TRetStorage = CoroutineStorageType<TRet>;
 				CoroutineContext() :
 					LastFiber(nullptr),
 					IsDone(false),
@@ -83,12 +118,19 @@ namespace Process
 				CoroutineFuncStoragePtr<TFunc, TArgs...> FuncTuplePtr;
 
 			};
+			template<typename TRet>
+			inline void* _GetLastFiber(CoroutineStorageHead<TRet>* data)
+			{
+				assert(data);
+				assert(data->ContextPtr);
+				assert(data->ContextPtr->LastFiber);
+				return data->ContextPtr->LastFiber;
+			}
 
 			template<typename TRet>
 			void _SwitchToLastFiber(CoroutineStorageHead<TRet>* data)
 			{
-				assert(data->ContextPtr->LastFiber != nullptr);
-				Process::Fiber::SwitchToFiber(data->ContextPtr->LastFiber);
+				Process::Fiber::SwitchToFiber(_GetLastFiber(data));
 			}
 			template<typename TRet>
 			struct _ContextInit
@@ -118,11 +160,12 @@ namespace Process
 				_STD conditional_t<_STD is_reference<TRet>::value, TRet, TRet&>>
 			{
 			public:
+
 				static_assert(!_STD is_void<TRet>::value, "TRet != void");
-				friend Base;
+				friend TFiberBase;
 
 				CoroutineIterator(Detail::CoroutineFuncStoragePtr<TFunc, TArgs...>& func) :
-					Base(context_, func)
+					TFiberBase(context_, func)
 				{
 
 				}
@@ -143,13 +186,6 @@ namespace Process
 				{
 					Do();
 				}
-
-				/*value_type operator++(int)
-				{
-					auto result = Dereference();
-					Do();
-					return result;
-				}*/
 
 				bool IsDone()
 				{
@@ -182,13 +218,15 @@ namespace Process
 				//
 
 				template<typename T>
-				CoroutineResultType<T> Dereference(_STD enable_if_t<Detail::IsPointerReturnType<TRet>::value>* = nullptr) const
+				_STD enable_if_t<IsSavePointer<T>::value, CoroutineResultType<T>>
+					Dereference() const
 				{
 					assert(!context_->IsDone);
 					return *context_->Ret;
 				}
 				template<typename T>
-				CoroutineResultType<T> Dereference(_STD enable_if_t<!Detail::IsPointerReturnType<TRet>::value>* = nullptr) const
+				_STD enable_if_t<!IsSavePointer<T>::value, CoroutineResultType<T>>
+					Dereference() const
 				{
 					assert(!context_->IsDone);
 					return context_->Ret;
@@ -200,7 +238,7 @@ namespace Process
 					context_->LastFiber = Process::Fiber::GetCurrentFiber();
 				}
 
-				static void WINAPI Callback(const TStoragePtr& storage)
+				static void* WINAPI Callback(const TStoragePtr& storage)
 				{
 					assert(storage != nullptr);
 					auto& ptr = *storage->FuncTuplePtr;
@@ -210,8 +248,7 @@ namespace Process
 
 					// 运行结束
 					storage->ContextPtr->IsDone = true;
-					_SwitchToLastFiber(storage.get());
-
+					return _GetLastFiber(storage.get());
 				}
 
 			};

@@ -37,33 +37,85 @@ namespace Process
 
 		namespace Detail
 		{
-
-			struct FiberDeletor
+			template<typename TParamStoragePtr>
+			class FiberObjectBase
 			{
-				void operator()(void* fiber);
+			public:
+				FiberObjectBase(TParamStoragePtr&& storage) :
+					paramStorage_(_STD move(storage))
+				{
+
+				}
+				virtual ~FiberObjectBase() = default;
+			protected:
+				TParamStoragePtr paramStorage_;
+			};
+
+			template<typename TParamStoragePtr>
+			class FiberObject :
+				public FiberObjectBase<TParamStoragePtr>
+			{
+			public:
+				// 默认stacksize, 不设置浮点支持(xp不支持)
+				FiberObject(LPFIBER_START_ROUTINE lpStartAddress,
+					TParamStoragePtr&& storage) :
+					fiber_(Process::Fiber::CreateFiber(0, lpStartAddress, &paramStorage_)),
+					FiberObjectBase<TParamStoragePtr>(_STD move(storage))
+				{
+				}
+
+				~FiberObject()
+				{
+					if (fiber_ != nullptr)
+					{
+						Process::Fiber::DeleteFiber(fiber_);
+						fiber_ = nullptr;
+					}
+				}
+				explicit operator bool() const
+				{
+					return fiber_ != nullptr;
+				}
+				const void* GetDataPtr() const
+				{
+					return GetFiberData<void*>(fiber_);
+				}
+				void Switch()
+				{
+					// 切换线程必须转换为fiber
+					assert(Process::Fiber::IsThreadAFiber());
+
+					assert(fiber_);
+					Process::Fiber::SwitchToFiber(fiber_);
+				}
+				void SetFiberData(void* dataPtr)
+				{
+					assert(fiber_);
+					Process::Fiber::SetFiberData(fiber_, dataPtr);
+				}
+			private:
+				FiberObject(const FiberObject&) = delete;
+				const FiberObject operator=(const FiberObject&) = delete;
+
+				void* fiber_;
+
 			};
 
 			template<typename TChild, typename TStorage>
 			class FiberBase
 			{
 			public:
+				typedef TStorage TStorage;
+				typedef FiberBase TFiberBase;
+				using TStoragePtr = _STD unique_ptr<TStorage>;
+				using FiberPtr = _STD shared_ptr<FiberObject<TStoragePtr>>;
+
 				virtual ~FiberBase() = default;
-				LPVOID NativeHandle()
+				explicit operator bool() const
 				{
-					return fiber_.get();
+					return fiber_ && *fiber_;
 				}
 			protected:
-				typedef TStorage TStorage;
-				typedef FiberBase Base;
-				using TStoragePtr = _STD unique_ptr<TStorage>;
-				using FiberPtr = _STD shared_ptr<void>;
-
-
-				struct TStorageParam
-				{
-					PVOID Creator;
-					TStoragePtr Storage;
-				};
 
 				FiberBase()
 				{
@@ -75,75 +127,38 @@ namespace Process
 				FiberBase(TArgs... args)
 				{
 					assert(!fiber_);
-					PVOID currentThreadFiber = nullptr;
-					bool isThreadAFiber = Process::Fiber::IsThreadAFiber() != FALSE;
-					if (isThreadAFiber)
-					{
-						currentThreadFiber = Process::Fiber::GetCurrentFiber();
-					}
-					else
-					{
-						currentThreadFiber = Process::Fiber::ConvertThreadToFiber(NULL);
-						if (currentThreadFiber == nullptr)
-						{
-							return;
-						}
-					}
-					assert(currentThreadFiber != nullptr);
 
 					TStoragePtr storage(new TStorage(_STD forward<TArgs>(args)...));
-					assert(storage);
 
-					// 附带Storage智能指针，让回调持有指针副本，外部不持有
-					auto param = new TStorageParam{ currentThreadFiber, _STD move(storage) };
-
-					// 默认stacksize
-					fiber_ = FiberPtr(Process::Fiber::CreateFiber(0, Run, param), FiberDeletor());
-					if (!fiber_)
+					if (!storage)
 					{
 						return;
 					}
-
-					// 先到回调里把TStorageParam给delete了，防止不使用时造成泄露
-					Switch();
-
-					if (!isThreadAFiber)
-					{
-						Process::Fiber::ConvertFiberToThread();
-					}
+					fiber_ = _STD make_shared<FiberObject<TStoragePtr>>(Run, _STD move(storage));
 				}
-
-
 
 
 				void Switch()
 				{
-					// 切换线程必须转换为fiber
-					assert(Process::Fiber::IsThreadAFiber());
-
 					assert(fiber_);
-					Process::Fiber::SwitchToFiber(fiber_.get());
+					fiber_->Switch();
 				}
 
 
 				static void WINAPI Run(LPVOID param)
 				{
 					assert(param != nullptr);
-					auto storageParam = static_cast<TStorageParam*>(param);
-					auto creatorFiber = storageParam->Creator;
-					// 回调持有Storage智能指针，
-					auto storage = _STD move(storageParam->Storage);
-					delete storageParam;
 
+					auto& storageParam = *static_cast<TStoragePtr*>(param);
 					// 重新设置fiberdata
-					Process::Fiber::SetCurrentFiberData(storage.get());
-
-					// 再次切回就运行函数(此时可能会恢复fiber成thread)
-					Process::Fiber::SwitchToFiber(creatorFiber);
+					Process::Fiber::SetCurrentFiberData(storageParam.get());
 
 					// 子类必须设置友元
-					TChild::Callback(storage);
-					// 运行结束了未跳回
+					void* returnFiber = TChild::Callback(storageParam);
+					assert(returnFiber);
+					Process::Fiber::SwitchToFiber(returnFiber);
+
+					// 运行结束了又跳回
 					assert(false);
 					__assume(false);
 				}

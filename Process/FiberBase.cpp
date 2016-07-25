@@ -18,11 +18,3 @@ const PNT_TIB Process::Fiber::GetCurrentFiberContext()
 	return CONTAINING_RECORD(::GetCurrentFiber(), NT_TIB, FiberData);
 }
 
-void Process::Fiber::Detail::FiberDeletor::operator()(void* fiber)
-{
-	if (fiber != nullptr)
-	{
-		Process::Fiber::DeleteFiber(fiber);
-		fiber = nullptr;
-	}
-}
