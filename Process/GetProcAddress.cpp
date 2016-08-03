@@ -13,7 +13,7 @@ namespace Process
 			});
 		}
 
-		void * GetProcAddress(HMODULE module, std::function<bool(LPCSTR)> comp)
+		void * GetProcAddress(HMODULE module, const std::function<bool(LPCSTR)>& comp)
 		{
 			assert(module != NULL);
 			assert(comp);
@@ -42,7 +42,7 @@ namespace Process
 			return result->FuncPtr();
 		}
 
-		void * GetProcAddress(HMODULE module, const void * lpProcName, std::function<int(LPCSTR, const void*)> comp)
+		void * GetProcAddress(HMODULE module, const void * lpProcName, const std::function<int(LPCSTR, const void*)>& comp)
 		{
 			assert(module != NULL);
 			PeDecoder::PeImage pe(module, true);

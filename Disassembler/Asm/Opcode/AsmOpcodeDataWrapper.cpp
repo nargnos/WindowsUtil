@@ -1,16 +1,16 @@
-#include "AsmOpcodeDataWapper.h"
+#include "AsmOpcodeDataWrapper.h"
 #include "OpcodeData.h"
 namespace Disassembler
 {
-	AsmOpcodeDataWapper::AsmOpcodeDataWapper()
+	AsmOpcodeDataWrapper::AsmOpcodeDataWrapper()
 	{
 	}
 
-	AsmOpcodeDataWapper::~AsmOpcodeDataWapper()
+	AsmOpcodeDataWrapper::~AsmOpcodeDataWrapper()
 	{
 	}
 
-	std::unique_ptr<OpcodeData[]> AsmOpcodeDataWapper::UnzipOpcodeData(const ZipOpcodeData zipArray[], int count)
+	std::unique_ptr<OpcodeData[]> AsmOpcodeDataWrapper::UnzipOpcodeData(const ZipOpcodeData zipArray[], int count)
 	{
 		auto result = _STD make_unique<OpcodeData[]>(0x100);
 
@@ -23,11 +23,11 @@ namespace Disassembler
 		}
 		return result;
 	}
-	bool AsmOpcodeDataWapper::IsSeg(unsigned char val) const
+	bool AsmOpcodeDataWrapper::IsSeg(unsigned char val) const
 	{
 		return val >= SEG_XX;
 	}
-	const unsigned char* AsmOpcodeDataWapper::GetOperandGroup(int opCount, int index) const
+	const unsigned char* AsmOpcodeDataWrapper::GetOperandGroup(int opCount, int index) const
 	{
 		assert(opCount > 0 && opCount <= 4);
 		switch (opCount)
@@ -52,7 +52,7 @@ namespace Disassembler
 	}
 
 
-	const OpcodeData& AsmOpcodeDataWapper::GetOpcodeData(OpcodeType tableType, int hex)
+	const OpcodeData& AsmOpcodeDataWrapper::GetOpcodeData(OpcodeType tableType, int hex)
 	{
 		assert(hex >= 0 && hex <= 0xff);
 		switch (tableType)
@@ -76,50 +76,50 @@ namespace Disassembler
 		}
 	}
 
-	const Hex_Inst& AsmOpcodeDataWapper::GetHex_Inst(int index) const
+	const Hex_Inst& AsmOpcodeDataWrapper::GetHex_Inst(int index) const
 	{
 		assert(index >= 0 && index < sizeof(HexInsts) / sizeof(Hex_Inst));
 		return HexInsts[index];
 	}
 
-	const GrpInstData& AsmOpcodeDataWapper::GetGrpInst(int index) const
+	const GrpInstData& AsmOpcodeDataWrapper::GetGrpInst(int index) const
 	{
 		assert(index >= 0 && index < sizeof(GrpInst) / sizeof(GrpInstData));
 		return GrpInst[index];
 	}
 
-	const PrefixInstData& AsmOpcodeDataWapper::GetPfxInst(int index) const
+	const PrefixInstData& AsmOpcodeDataWrapper::GetPfxInst(int index) const
 	{
 		assert(index >= 0 && index < sizeof(PfxInst) / sizeof(PrefixInstData));
 		return PfxInst[index];
 	}
 
-	const InstChangeData& AsmOpcodeDataWapper::GetInstChange(int index) const
+	const InstChangeData& AsmOpcodeDataWrapper::GetInstChange(int index) const
 	{
 		assert(index >= 0 && index < sizeof(InstChange) / sizeof(InstChangeData));
 		return InstChange[index];
 	}
 
-	const RegOrOperandGroup& AsmOpcodeDataWapper::GetOperands(int index) const
+	const RegOrOperandGroup& AsmOpcodeDataWrapper::GetOperands(int index) const
 	{
 		assert(index >= 0 && index < sizeof(Operands) / sizeof(RegOrOperandGroup));
 		return Operands[index];
 	}
 
-	const InstData& AsmOpcodeDataWapper::GetInst(int index) const
+	const InstData& AsmOpcodeDataWrapper::GetInst(int index) const
 	{
 		assert(index >= 0 && index < sizeof(Inst) / sizeof(InstData));
 		return Inst[index];
 	}
 
-	const LPCSTR& AsmOpcodeDataWapper::GetInstructionNames(int index) const
+	const LPCSTR& AsmOpcodeDataWrapper::GetInstructionNames(int index) const
 	{
 		assert(index >= 0 && index < sizeof(InstructionNames) / sizeof(LPCSTR));
 		return InstructionNames[index];
 	}
 
 
-	const char * AsmOpcodeDataWapper::GetRegisterName(OperandType reg) const
+	const char * AsmOpcodeDataWrapper::GetRegisterName(OperandType reg) const
 	{
 		auto tmpReg = reinterpret_cast<RegOrOperand*>(&reg);
 		assert(reg <= REG_END);
@@ -128,14 +128,14 @@ namespace Disassembler
 		return Registers[tmpReg->Reg.Hex][tmpReg->Reg.LenType];
 	}
 
-	const char* AsmOpcodeDataWapper::GetSegName(OperandType seg) const
+	const char* AsmOpcodeDataWrapper::GetSegName(OperandType seg) const
 	{
 		assert(IsSeg(seg));
 		auto index = (unsigned char)seg - SEG_XX;
 		return Registers[index][0] + 3;
 	}
 
-	const SizeAttribute* AsmOpcodeDataWapper::FindSizeAttribute(bool is32, bool hasRexW, bool hasOPfx, bool hasAPfx) const
+	const SizeAttribute* AsmOpcodeDataWrapper::FindSizeAttribute(bool is32, bool hasRexW, bool hasOPfx, bool hasAPfx) const
 	{
 		if (is32)
 		{

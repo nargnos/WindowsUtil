@@ -2,7 +2,7 @@
 #include "..\Common\Common.h"
 #include "AsmDisassembler_Trait.h"
 #include "State\AsmStateFactory.h"
-#include "Opcode\AsmOpcodeDataWapper.h"
+#include "Opcode\AsmOpcodeDataWrapper.h"
 #include "AsmStorage.h"
 #include "AsmDisassembler.h"
 #include "..\Common\DisassemblerBase.h"

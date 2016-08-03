@@ -4,29 +4,27 @@ namespace Tuple
 {
 	namespace Detail
 	{
-		template<typename TTuple, int index, typename TFunc>
+		template<int index>
 		struct UnpackTupleInvoke
 		{
-			using TElementType = _STD tuple_element_t<index, TTuple>;
-			using TForwordType = _STD remove_reference_t<TElementType>;
-
-			template<typename... TArgs>
-			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)
+			template<typename TFunc, typename TTuple, typename... TArgs>
+			inline static auto Invoke(TFunc&& func, TTuple&& t, TArgs&&... arg)
 			{
-
-				return UnpackTupleInvoke<TTuple, index - 1, TFunc>::Invoke(
-					t,
-					func,
-					_STD forward<TForwordType>(_STD get<index>(t)),
+				using TElement = _STD tuple_element_t<index, _STD decay_t<TTuple>>;
+				
+				return UnpackTupleInvoke<index - 1>::Invoke(
+					_STD forward<TFunc>(func),
+					_STD forward<TTuple>(t),
+					_STD forward<TElement>(_STD get<index>(_STD forward<TTuple>(t))),
 					_STD forward<TArgs>(arg)...);
 			}
 		};
 
-		template<typename TTuple, typename TFunc>
-		struct UnpackTupleInvoke<TTuple, -1, TFunc>
+		template<>
+		struct UnpackTupleInvoke<-1>
 		{
-			template<typename... TArgs>
-			inline static auto Invoke(TTuple& t, TFunc& func, TArgs... arg)
+			template<typename TFunc, typename TTuple, typename... TArgs>
+			inline static auto Invoke(TFunc&& func, TTuple&& t, TArgs&&... arg)
 			{
 				return func(_STD forward<TArgs>(arg)...);
 			}
@@ -34,10 +32,10 @@ namespace Tuple
 	}  // namespace Detail
 
 	// 把tuple中的内容解包成参数给函数调用
-	// 简单测试了一下，可能会有BUG
 	template<typename TFunc, typename TTuple>
-	inline auto Invoke(TFunc&& func, TTuple& t)
+	inline auto Invoke(TFunc&& func, TTuple&& t)
 	{
-		return Detail::UnpackTupleInvoke<TTuple, _STD tuple_size<TTuple>::value - 1, TFunc>::Invoke(t, func);
+		return Detail::UnpackTupleInvoke<_STD tuple_size<_STD decay_t<TTuple>>::value - 1>::Invoke(
+			_STD forward<TFunc>(func), _STD forward<TTuple>(t));
 	}
 }  // namespace Tuple

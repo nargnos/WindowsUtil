@@ -16,7 +16,7 @@ namespace Process
 		public:
 			friend TFiberBase;
 			Fiber(TFunc&& func, TArgs... args) :
-				TFiberBase(_STD move(func), _STD make_tuple(_STD forward<TArgs>(args)...))
+				TFiberBase(_STD move(func), _STD forward_as_tuple(_STD forward<TArgs>(args)...))
 			{
 			}
 

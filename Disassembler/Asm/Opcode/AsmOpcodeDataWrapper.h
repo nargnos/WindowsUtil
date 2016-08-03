@@ -6,12 +6,12 @@
 namespace Disassembler
 {
 	// OpcodeData包装
-	class AsmOpcodeDataWapper
+	class AsmOpcodeDataWrapper
 	{
 	public:
-		AsmOpcodeDataWapper();
+		AsmOpcodeDataWrapper();
 
-		~AsmOpcodeDataWapper();
+		~AsmOpcodeDataWrapper();
 		/// <summary>
 		/// 解压OpcodeData表
 		/// </summary>
@@ -112,7 +112,7 @@ namespace Disassembler
 	private:
 		unique_ptr<OpcodeData[]> table0F38;
 		unique_ptr<OpcodeData[]> table0F3A;
-		AsmOpcodeDataWapper(const AsmOpcodeDataWapper& obj) = delete;
+		AsmOpcodeDataWrapper(const AsmOpcodeDataWrapper& obj) = delete;
 	};
 
 }  // namespace Disassembler

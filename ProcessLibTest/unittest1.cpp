@@ -5,6 +5,8 @@
 #include <numeric>
 #include <random>
 #include <condition_variable>
+#include <string>
+#include <codecvt>
 #include <Process\FindLoadedModuleHandle.h>
 #include <Process\GetProcAddress.h>
 #include <Process\NtDll.h>
@@ -257,7 +259,7 @@ namespace ProcessLibTest
 				const int& arg7,
 				int&& arg8,
 				unique_ptr<int>&& arg9
-				)
+			)
 			{
 				return pf;
 			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
@@ -282,10 +284,54 @@ namespace ProcessLibTest
 
 			test4.Switch();
 
-
-
-
 			Logger::WriteMessage("End");
+		}
+		TEST_METHOD(TestUnpackTuple)
+		{
+			using Tuple::Invoke;
+			using namespace std;
+
+			bool val = false;
+
+			Invoke([](bool val1, const bool& val2, const bool& val3)
+			{
+				Assert::IsTrue(!val1 && !val2);
+			}, make_tuple(false, false, ref(val)));
+
+			Invoke([](bool& val1, auto val2, auto val3)
+			{
+				Assert::IsTrue(!val1 && !val2 && !val3);
+			}, make_tuple(ref(val), ref(val), val));
+
+			Invoke([](bool&& val1, auto&& val2)
+			{
+				Assert::IsTrue(!val1 && !val2);
+			}, forward_as_tuple(false, move(val)));
+
+			Invoke([&](auto val1, auto val2, auto val3)
+			{
+				Assert::IsTrue(!val1 && !val2 && !val3);
+			}, forward_as_tuple(false, ref(val), move(val)));
+
+
+			shared_ptr<bool> sptr = make_shared<bool>(true);
+			unique_ptr<bool> uptr = make_unique<bool>(true);
+			Invoke([](auto val1, auto val2)
+			{
+				Assert::IsTrue(*val1.get());
+				Assert::IsTrue(*val2.get());
+
+			}, forward_as_tuple(ref(sptr), ref(uptr)));
+
+			Invoke([](auto val1, auto val2)
+			{
+				Assert::IsTrue(*val1);
+				Assert::IsTrue(*val2);
+
+			}, forward_as_tuple(move(sptr), move(uptr)));
+			Assert::IsFalse((bool)sptr);
+			Assert::IsFalse((bool)uptr);
+
 		}
 		TEST_METHOD(TestThreadPool)
 		{
@@ -562,7 +608,7 @@ namespace ProcessLibTest
 			{
 				Logger::WriteMessage(str.c_str());
 			}
-			
+
 			// 传递临时变量引用
 			int num = 0;
 			auto refTest = MakeCoroutine<_STD reference_wrapper<volatile int>>([](auto yield, int& v)
@@ -636,7 +682,7 @@ namespace ProcessLibTest
 					Assert::Fail();
 					break;
 				}
-				Assert::IsTrue(val);
+				Assert::IsTrue(*val);
 				*val = !*val;
 			}
 
@@ -679,7 +725,7 @@ namespace ProcessLibTest
 			});
 			for (const auto& val : type2cRef)
 			{
-				
+
 				Assert::IsTrue(val == 123456);
 			}
 
@@ -701,7 +747,7 @@ namespace ProcessLibTest
 				yield(str);
 				str.reserve();
 				yield(str);
-				
+
 			});
 			for (auto& val : type3Ref)
 			{

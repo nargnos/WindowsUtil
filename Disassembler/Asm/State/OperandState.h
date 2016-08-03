@@ -3,7 +3,7 @@
 #include "AsmState.h"
 #include "AsmStateFactory.h"
 #include "..\Opcode\OpcodeDef.h"
-#include "..\Opcode\AsmOpcodeDataWapper.h"
+#include "..\Opcode\AsmOpcodeDataWrapper.h"
 #include "..\AsmStorage.h"
 namespace Disassembler
 {

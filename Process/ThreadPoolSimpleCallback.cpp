@@ -5,7 +5,7 @@ bool Process::Thread::ThreadPoolSimpleCallback::Submit(PTP_CALLBACK_ENVIRON env)
 {
 	assert(GetFunc());
 	Submitted();
-	return Detail::WinApi::TrySubmitThreadpoolCallback(Callback, this, env);
+	return Detail::WinApi::TrySubmitThreadpoolCallback(Callback, this, env) == TRUE;
 }
 
 void Process::Thread::ThreadPoolSimpleCallback::Callback(PTP_CALLBACK_INSTANCE instance, PVOID param)

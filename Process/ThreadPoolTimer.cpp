@@ -32,7 +32,7 @@ void Process::Thread::ThreadPoolTimer::WaitForCallbacks(bool cancelPendingCallba
 bool Process::Thread::ThreadPoolTimer::IsThreadpoolTimerSet()
 {
 	assert(timer_ != nullptr);
-	return Detail::WinApi::IsThreadpoolTimerSet(timer_);
+	return Detail::WinApi::IsThreadpoolTimerSet(timer_) == TRUE;
 }
 
 bool Process::Thread::ThreadPoolTimer::Register(PTP_CALLBACK_ENVIRON env)

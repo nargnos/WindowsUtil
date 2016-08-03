@@ -10,7 +10,7 @@ Process::Thread::CallbackInstance::CallbackInstance(PTP_CALLBACK_INSTANCE instan
 bool Process::Thread::CallbackInstance::MayRunLong()
 {
 	assert(instance_);
-	return  Detail::WinApi::CallbackMayRunLong(instance_);
+	return  Detail::WinApi::CallbackMayRunLong(instance_) == TRUE;
 }
 
 PTP_CALLBACK_INSTANCE Process::Thread::CallbackInstance::GetInstance()

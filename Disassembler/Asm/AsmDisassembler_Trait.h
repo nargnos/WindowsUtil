@@ -5,7 +5,7 @@ namespace Disassembler
 {
 	class AsmDisassembler;
 	class AsmStateFactory;
-	class AsmOpcodeDataWapper;
+	class AsmOpcodeDataWrapper;
 	class AsmStorage;
 	
 	template<>
@@ -13,7 +13,7 @@ namespace Disassembler
 	{
 		
 		typedef AsmStateFactory TStateFactory;
-		typedef AsmOpcodeDataWapper TOpcodeDataWapper;
+		typedef AsmOpcodeDataWrapper TOpcodeDataWapper;
 		typedef AsmStorage TStorage;
 		typedef IStateUsed<Disassembler_Trait<AsmDisassembler>> TStateUsed;
 	};

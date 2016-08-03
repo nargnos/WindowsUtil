@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Asm\Opcode\AsmOpcodeDataWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Asm\Opcode\OpcodeData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -66,11 +63,11 @@
     <ClCompile Include="Common\Storage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Asm\Opcode\AsmOpcodeDataWrapper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Asm\Opcode\AsmOpcodeDataWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Asm\Opcode\OpcodeData.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -162,6 +159,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Common\ToStringBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Asm\Opcode\AsmOpcodeDataWrapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

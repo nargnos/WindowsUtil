@@ -15,6 +15,6 @@ namespace PeDecoder
 
 	protected:
 		ExportDirectory* directory_;
-		int index_;
+		DWORD index_;
 	};
 }  // namespace PeDecoder

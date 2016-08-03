@@ -67,7 +67,7 @@ namespace Process
 			Coroutine(TFunc&& func, TArgs... args) :
 				func_(_STD make_shared<Detail::CoroutineFuncStorage<TFunc, ReturnFunc, TArgs...>>(
 					_STD move(func),
-					_STD make_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...)))
+					_STD forward_as_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...)))
 			{
 			}
 
@@ -85,7 +85,7 @@ namespace Process
 			void RetsetParams(TArgs... args)
 			{
 				_STD get<static_cast<int>(Detail::_CoroutineFuncStorageIndex::_Args)>(*func_) =
-					_STD make_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...);
+					_STD forward_as_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...);
 			}
 		protected:
 			Detail::CoroutineFuncStoragePtr<TFunc, ReturnFunc, TArgs...> func_;

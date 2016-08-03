@@ -22,7 +22,7 @@
     <ClCompile Include="Asm\AsmDisassembler.cpp" />
     <ClCompile Include="Asm\AsmInstruction.cpp" />
     <ClCompile Include="Asm\AsmStorage.cpp" />
-    <ClCompile Include="Asm\Opcode\AsmOpcodeDataWapper.cpp" />
+    <ClCompile Include="Asm\Opcode\AsmOpcodeDataWrapper.cpp" />
     <ClCompile Include="Asm\Opcode\OpcodeData.cpp" />
     <ClCompile Include="Asm\Opcode\OpcodeDef.cpp" />
     <ClCompile Include="Asm\State\AsmStateFactory.cpp" />
@@ -44,7 +44,7 @@
     <ClInclude Include="Asm\AsmInstruction.h" />
     <ClInclude Include="Asm\AsmStorage.h" />
     <ClInclude Include="Asm\AsmToString.h" />
-    <ClInclude Include="Asm\Opcode\AsmOpcodeDataWapper.h" />
+    <ClInclude Include="Asm\Opcode\AsmOpcodeDataWrapper.h" />
     <ClInclude Include="Asm\Opcode\OpcodeData.h" />
     <ClInclude Include="Asm\Opcode\OpcodeDef.h" />
     <ClInclude Include="Asm\State\AsmState.h" />
