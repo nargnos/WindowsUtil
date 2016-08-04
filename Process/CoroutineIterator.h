@@ -109,7 +109,8 @@ namespace Process
 			struct CoroutineStorage :
 				public CoroutineStorageHead<TRet>
 			{
-				CoroutineStorage(_STD shared_ptr<CoroutineContext<TRet>>& context, CoroutineFuncStoragePtr<TFunc, TArgs...>& func) :
+				CoroutineStorage(_STD shared_ptr<CoroutineContext<TRet>>& context,
+					CoroutineFuncStoragePtr<TFunc, TArgs...>& func) :
 					FuncTuplePtr(func),
 					CoroutineStorageHead<TRet>(context)
 				{

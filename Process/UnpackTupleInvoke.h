@@ -29,6 +29,8 @@ namespace Tuple
 				return func(_STD forward<TArgs>(arg)...);
 			}
 		};
+
+
 	}  // namespace Detail
 
 	// 把tuple中的内容解包成参数给函数调用
@@ -38,4 +40,6 @@ namespace Tuple
 		return Detail::UnpackTupleInvoke<_STD tuple_size<_STD decay_t<TTuple>>::value - 1>::Invoke(
 			_STD forward<TFunc>(func), _STD forward<TTuple>(t));
 	}
+
+	
 }  // namespace Tuple

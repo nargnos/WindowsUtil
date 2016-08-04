@@ -42,7 +42,7 @@ namespace ProcessLibTest
 
 	private:
 	};
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(ProcessLib)
 	{
 	public:
 
@@ -247,7 +247,7 @@ namespace ProcessLibTest
 			char val4 = 'X';
 			shared_ptr<string> val5 = make_shared<string>("Str");
 			tuple<int> val6 = make_tuple(789);
-			unique_ptr<int> val9;
+			unique_ptr<int> val9=make_unique<int>(123);
 			auto test3 = MakeFiber([pf](
 				const void* arg0,
 				void* arg1,
@@ -259,16 +259,24 @@ namespace ProcessLibTest
 				const int& arg7,
 				int&& arg8,
 				unique_ptr<int>&& arg9
-			)
+				)
 			{
+				SwitchToFiber(pf);
+				auto x = move(arg9);
 				return pf;
 			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
-			test3.Switch();
+			
 
 			if (!test3)
 			{
 				Assert::Fail();
 			}
+
+			test3.Switch();
+			Assert::IsTrue((bool)val9);
+			test3.Switch();
+			Assert::IsFalse((bool)val9);
+
 
 			// Œﬁ≤Œ≤‚ ‘
 			auto test4 = MakeFiber([pf]()
@@ -316,22 +324,29 @@ namespace ProcessLibTest
 
 			shared_ptr<bool> sptr = make_shared<bool>(true);
 			unique_ptr<bool> uptr = make_unique<bool>(true);
-			Invoke([](auto val1, auto val2)
+			Invoke([](auto& val1, auto& val2)
 			{
 				Assert::IsTrue(*val1.get());
 				Assert::IsTrue(*val2.get());
 
 			}, forward_as_tuple(ref(sptr), ref(uptr)));
 
-			Invoke([](auto val1, auto val2)
+			Invoke([](auto&& val1, auto&& val2)
 			{
-				Assert::IsTrue(*val1);
-				Assert::IsTrue(*val2);
+				auto val1Move = move(val1);
+				Assert::IsTrue(*val1Move);
+				auto val2Move = move(val2);
+				Assert::IsTrue(*val2Move);
 
 			}, forward_as_tuple(move(sptr), move(uptr)));
 			Assert::IsFalse((bool)sptr);
 			Assert::IsFalse((bool)uptr);
 
+			auto result = Invoke([](auto val)
+			{
+				return val;
+			}, tuple<bool>(false));
+			Assert::IsTrue(!result);
 		}
 		TEST_METHOD(TestThreadPool)
 		{
@@ -763,11 +778,19 @@ namespace ProcessLibTest
 				yield(str);
 
 			});
+
 			for (auto& val : type3Move)
 			{
 				Assert::AreEqual(val.c_str(), "Hello World");
 				val.reserve();
 			}
+
+			for (auto val : MakeCoroutine<int>([](auto yield)
+			{}))
+			{
+				Assert::Fail();
+			}
+
 			Logger::WriteMessage("Exit");
 		}
 
@@ -855,6 +878,6 @@ namespace ProcessLibTest
 			t.join();
 		}
 	};
-	_STD pair<bool, CONTEXT> UnitTest1::OldContext;
-	bool UnitTest1::IsContextTestSucceed = true;
+	_STD pair<bool, CONTEXT> ProcessLib::OldContext;
+	bool ProcessLib::IsContextTestSucceed = true;
 }

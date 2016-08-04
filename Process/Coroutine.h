@@ -44,57 +44,55 @@ namespace Process
 				Detail::_SwitchToLastFiber(data);
 			}
 			template<typename TRet>
-			auto GetYieldReturnFunc()
+			constexpr auto GetYieldReturnFunc()
 			{
 				return YieldReturn<TRet>;
 			}
+
+
+
+			// 注意如果在纤程里修改了用传入参数的值，第二次迭代的时候会用新的值
+			template<typename TRet, typename TFunc, typename... TArgs>
+			class Coroutine
+			{
+			public:
+
+				using ReturnFunc = decltype(Detail::GetYieldReturnFunc<TRet>());
+				typedef Detail::CoroutineIterator<TRet, TFunc&&, ReturnFunc, TArgs&&...> iterator;
+
+				Coroutine(TFunc&& func, TArgs&&... args) :
+					func_(_STD make_shared<Detail::CoroutineFuncStorage<TFunc&&, ReturnFunc, TArgs&&...>>(
+						_STD forward<TFunc>(func),
+						_STD forward_as_tuple<ReturnFunc, TArgs&&...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...)))
+				{
+				}
+
+				iterator begin()
+				{
+					iterator result(func_);
+					++result;
+					return result;
+				}
+				iterator end()
+				{
+					return iterator();
+				}
+
+				void RetsetParams(TArgs&&... args)
+				{
+					_STD get<static_cast<int>(Detail::_CoroutineFuncStorageIndex::_Args)>(*func_) =
+						_STD forward_as_tuple<ReturnFunc, TArgs&&...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...);
+				}
+			protected:
+				Detail::CoroutineFuncStoragePtr<TFunc&&, ReturnFunc, TArgs&&...> func_;
+			};
+
 		}  // namespace Detail
 
-
-
-
-
-
-
-		// 注意如果在纤程里修改了用传入参数的值，第二次迭代的时候会用新的值
 		template<typename TRet, typename TFunc, typename... TArgs>
-		class Coroutine
+		Detail::Coroutine<TRet, TFunc&&, TArgs&&...> MakeCoroutine(TFunc&& func, TArgs&&... args)
 		{
-		public:
-
-			using ReturnFunc = decltype(Detail::GetYieldReturnFunc<TRet>());
-			typedef Detail::CoroutineIterator<TRet, TFunc, ReturnFunc, TArgs...> iterator;
-			Coroutine(TFunc&& func, TArgs... args) :
-				func_(_STD make_shared<Detail::CoroutineFuncStorage<TFunc, ReturnFunc, TArgs...>>(
-					_STD move(func),
-					_STD forward_as_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...)))
-			{
-			}
-
-			iterator begin()
-			{
-				iterator result(func_);
-				++result;
-				return result;
-			}
-			iterator end()
-			{
-				return iterator();
-			}
-
-			void RetsetParams(TArgs... args)
-			{
-				_STD get<static_cast<int>(Detail::_CoroutineFuncStorageIndex::_Args)>(*func_) =
-					_STD forward_as_tuple<ReturnFunc, TArgs...>(Detail::GetYieldReturnFunc<TRet>(), _STD forward<TArgs>(args)...);
-			}
-		protected:
-			Detail::CoroutineFuncStoragePtr<TFunc, ReturnFunc, TArgs...> func_;
-		};
-
-		template<typename TRet, typename TFunc, typename... TArgs>
-		Coroutine<TRet, TFunc, TArgs...> MakeCoroutine(TFunc&& func, TArgs... args)
-		{
-			return Coroutine<TRet, TFunc, TArgs...>(_STD move(func), _STD forward<TArgs>(args)...);
+			return Detail::Coroutine<TRet, TFunc&&, TArgs&&...>(_STD forward<TFunc>(func), _STD forward<TArgs>(args)...);
 		}
 	}  // namespace Fiber
 }  // namespace Process

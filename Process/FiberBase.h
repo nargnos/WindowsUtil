@@ -124,7 +124,7 @@ namespace Process
 				// 注意创建过程中不能出现异常
 				// 传入的参数为TStorage的构造参数
 				template<typename... TArgs>
-				FiberBase(TArgs... args)
+				FiberBase(TArgs&&... args)
 				{
 					assert(!fiber_);
 
