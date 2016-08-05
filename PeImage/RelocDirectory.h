@@ -9,7 +9,7 @@ namespace PeDecoder
 	{
 	public:
 		typedef RelocDirectoryIterator iterator;
-		RelocDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr);
+		RelocDirectory(PeImage& pe);
 		~RelocDirectory() = default;
 		iterator begin();
 		iterator end();

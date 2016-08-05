@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GetProcAddress.h"
 #include <PeImage\PeDecoder.h>
+#include <PeImage\ExportDirectory.h>
 namespace Process
 {
 	namespace Overwrite
@@ -22,14 +23,15 @@ namespace Process
 			{
 				return nullptr;
 			}
-			auto& exportDir = pe.GetExportDirectory();
+			PeDecoder::ExportDirectory exportDir(pe);
+			
 			if (!exportDir)
 			{
 				return nullptr;
 			}
-			auto end = exportDir->end();
+			auto end = exportDir.end();
 
-			auto result = _STD find_if(exportDir->begin(), end, [&comp]
+			auto result = _STD find_if(exportDir.begin(), end, [&comp]
 			(PeDecoder::ExportIteratorNode& node)
 			{
 				return comp(node.NamePtr());
@@ -50,14 +52,14 @@ namespace Process
 			{
 				return nullptr;
 			}
-			auto& exportDir = pe.GetExportDirectory();
+			PeDecoder::ExportDirectory exportDir(pe);
 			if (!exportDir)
 			{
 				return nullptr;
 			}
-			auto end = exportDir->end();
+			auto end = exportDir.end();
 
-			auto result = _STD lower_bound(exportDir->begin(), end, lpProcName, [&comp]
+			auto result = _STD lower_bound(exportDir.begin(), end, lpProcName, [&comp]
 			(PeDecoder::ExportIteratorNode& node, const void* val)
 			{
 				return comp(node.NamePtr(), val) < 0;

@@ -8,8 +8,8 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Globalptr>
 	{
 	public:
-		GlobalptrDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :
-			DirectoryBase(pe, ptr, sizePtr)
+		GlobalptrDirectory(PeImage& pe) :
+			DirectoryBase(pe)
 		{
 		}
 		~GlobalptrDirectory() = default;

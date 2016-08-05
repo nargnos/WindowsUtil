@@ -3,8 +3,8 @@
 
 namespace PeDecoder
 {
-	DebugDirectory::DebugDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	DebugDirectory::DebugDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 	}
 }  // namespace PeDecoder

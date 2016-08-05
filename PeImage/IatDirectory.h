@@ -7,8 +7,8 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Iat>
 	{
 	public:
-		IatDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :
-			DirectoryBase(pe, ptr, sizePtr)
+		IatDirectory(PeImage& pe) :
+			DirectoryBase(pe)
 		{
 		}
 		~IatDirectory() = default;

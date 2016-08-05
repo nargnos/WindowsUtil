@@ -3,8 +3,8 @@
 
 namespace PeDecoder
 {
-	BoundImportDirectory::BoundImportDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	BoundImportDirectory::BoundImportDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 	}
 }  // namespace PeDecoder

@@ -16,6 +16,7 @@ namespace PeDecoder
 		~DataDirectoryEntries() = default;
 		bool IsValid() const;
 		// index‘ΩΩÁ∑µªÿnullptr
+		bool HasDirectory(DataDirectoryEntryType index);
 		TDataPtr GetDirectoryEntry(DataDirectoryEntryType index);
 		TDataPtr operator[](DataDirectoryEntryType index);
 		iterator begin() const;

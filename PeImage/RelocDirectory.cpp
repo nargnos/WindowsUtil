@@ -3,8 +3,8 @@
 #include "RelocDirectoryIterator.h"
 namespace PeDecoder
 {
-	RelocDirectory::RelocDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	RelocDirectory::RelocDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 	}
 	RelocDirectory::iterator RelocDirectory::begin()

@@ -82,6 +82,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
       <EnablePREfast>true</EnablePREfast>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -89,6 +90,9 @@
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\boost\stage\lib</AdditionalLibraryDirectories>
     </Lib>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -208,6 +212,7 @@
     <ClCompile Include="DelayImportDescriptor.cpp" />
     <ClCompile Include="DelayImportDirectory.cpp" />
     <ClCompile Include="DelayImportDirectoryIterator.cpp" />
+    <ClCompile Include="DirectoryBase.cpp" />
     <ClCompile Include="DosHeader.cpp" />
     <ClCompile Include="DosStub.cpp" />
     <ClCompile Include="ExportDirectory.cpp" />

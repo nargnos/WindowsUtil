@@ -1,31 +1,15 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include <vector>
-#include <algorithm>
-#include <numeric>
+
 #include <random>
-#include <condition_variable>
-#include <string>
-#include <codecvt>
-#include <Process\FindLoadedModuleHandle.h>
-#include <Process\GetProcAddress.h>
-#include <Process\NtDll.h>
-#include <Process\User32.h>
 #include <Process\ThreadEx.h>
 #include <Process\Fiber.h>
-#include <Process\ThreadPool.h>
-#include <Process\ThreadPoolSimpleCallback.h>
-#include <Process\ThreadPoolWork.h>
-#include <Process\ThreadPoolWait.h>
-#include <Process\ThreadPoolTimer.h>
 #include <Process\Coroutine.h>
 #include <Process\Pipe.h>
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ProcessLibTest
 {
-	using namespace Process::EnvironmentBlock;
 	class DtorTestObj
 	{
 	public:
@@ -42,58 +26,12 @@ namespace ProcessLibTest
 
 	private:
 	};
-	TEST_CLASS(ProcessLib)
+	TEST_CLASS(OtherTest)
 	{
 	public:
-
-		TEST_METHOD(TestLdrDataTable)
+		OtherTest()
 		{
-			auto dllName = L"user32.dll";
-			auto handle = FindLoadedModuleHandle(dllName);
-			auto handle2 = LoadLibrary(dllName);
-			Assert::IsTrue(handle == handle2);
-
-		}
-		TEST_METHOD(TestGetProcAddress)
-		{
-			auto dllName = L"user32.dll";
-			auto dllHandle = FindLoadedModuleHandle(dllName);
-			auto funcNameGrp = { "MessageBoxW" ,"NotExist" };
-			for each (auto var in funcNameGrp)
-			{
-				auto funcName = var;
-				auto funcHandle1 = Process::Overwrite::GetProcAddress(dllHandle, [funcName](LPCSTR val)
-				{
-					return strcmp(funcName, val) == 0;
-				});
-				auto funcHandle2 = Process::Overwrite::GetProcAddress(dllHandle, funcName);
-				auto trueValue = ::GetProcAddress(dllHandle, funcName);
-				Assert::IsTrue(trueValue == funcHandle1);
-				Assert::IsTrue(trueValue == funcHandle2);
-			}
-
-		}
-		TEST_METHOD(TestLazyload)
-		{
-			using namespace Process::LazyLoad;
-			auto& ldrLoadDll = NtDll::Instance().LdrLoadDll;
-			ldrLoadDll.Load();
-			// funtion没有取指针的函数验证不了只能下断点了
-			auto ntdll = GetModuleHandleA("ntdll.dll");
-			if (ntdll == NULL)
-			{
-				Assert::Fail();
-				return;
-			}
-			auto trueValue = GetProcAddress(ntdll, "LdrLoadDll");
-			if (trueValue == NULL)
-			{
-				Assert::Fail();
-				return;
-			}
-
-			auto& mbox = User32::Instance().MessageBoxA;
-			mbox(0, "Hello World!", "Goodbye World!", MB_OK);
+			Process::Fiber::ConvertThreadToFiber(NULL);
 		}
 		static _STD pair<bool, CONTEXT> OldContext;
 		static bool IsContextTestSucceed;
@@ -178,7 +116,10 @@ namespace ProcessLibTest
 			using namespace std;
 
 			auto pf = Process::Fiber::ConvertThreadToFiber(NULL);
-
+			if (pf == nullptr)
+			{
+				pf = Process::Fiber::GetCurrentFiber();
+			}
 			PNT_TIB fiberCtx;
 
 			{
@@ -247,7 +188,7 @@ namespace ProcessLibTest
 			char val4 = 'X';
 			shared_ptr<string> val5 = make_shared<string>("Str");
 			tuple<int> val6 = make_tuple(789);
-			unique_ptr<int> val9=make_unique<int>(123);
+			unique_ptr<int> val9 = make_unique<int>(123);
 			auto test3 = MakeFiber([pf](
 				const void* arg0,
 				void* arg1,
@@ -265,7 +206,7 @@ namespace ProcessLibTest
 				auto x = move(arg9);
 				return pf;
 			}, val0, val1, _STD ref(val2), _STD ref(val3), val4, val5, val6, 12345, 67890, _STD move(val9));
-			
+
 
 			if (!test3)
 			{
@@ -347,183 +288,6 @@ namespace ProcessLibTest
 				return val;
 			}, tuple<bool>(false));
 			Assert::IsTrue(!result);
-		}
-		TEST_METHOD(TestThreadPool)
-		{
-			using namespace Process::Thread;
-			using namespace std;
-			// 拆分任务分别计算
-
-			std::condition_variable cv;
-			typedef _STD vector<int> Vector;
-			Vector vec(654321);
-			_STD atomic<bool> inited = false;
-
-			ThreadPool::SubmitCallback([&](CallbackInstance&)
-			{
-				_STD iota(begin(vec), end(vec), 1);
-				inited.store(true, memory_order_release);
-				cv.notify_all();
-			});
-
-
-			vector<future<long long>> futures;
-			size_t vecLen = vec.size();
-			size_t dataPerThread = vec.size() / thread::hardware_concurrency();
-			// 每个线程分16次处理完，每次处理数据对64取整
-			size_t step = (dataPerThread / 16) & (-64);
-			auto begin = vec.begin();
-			auto end = vec.end();
-
-			std::mutex mtx;
-			std::unique_lock<std::mutex> lock(mtx);
-			cv.wait(lock, [&inited]()
-			{
-				return inited.load(memory_order_acquire);
-			});
-			while (begin < end)
-			{
-				auto dst = _STD distance(begin, end);
-				auto tmpstep = dst > step ? step : dst;
-				auto tmpend = begin + tmpstep;
-				_STD packaged_task<long long(CallbackInstance&)> task([begin_ = begin, end_ = tmpend](CallbackInstance& instance) mutable
-				{
-					return accumulate<Vector::iterator, long long>(begin_, end_, 0);
-				});
-				begin = tmpend;
-				futures.emplace_back(task.get_future());
-				auto sumitResult = ThreadPool::SubmitCallback(move(task));
-				Assert::IsTrue(sumitResult);
-			}
-			auto result = accumulate<vector<future<long long>>::iterator, long long>(futures.begin(), futures.end(), 0, [](long long ret, future<long long>& val)
-			{
-				return ret + val.get();
-			});
-
-			Assert::IsTrue(futures.size() == 1 + (vec.size() - 1) / step);
-
-			long long trueResult = (*vec.begin() + *vec.rbegin()) * (double)vec.size() / 2;
-
-			Assert::IsTrue(trueResult == result);
-
-		}
-		TEST_METHOD(TestThreadPoolSimpleCallback)
-		{
-			using namespace Process::Thread;
-			// 测试ThreadPoolSimpleCallback
-			bool isSimpleCallbackSucceed = false;
-			std::condition_variable cv2;
-			ThreadPoolSimpleCallback sc([&isSimpleCallbackSucceed, &cv2](CallbackInstance& inst)
-			{
-				Logger::WriteMessage("ThreadPoolSimpleCallback");
-				isSimpleCallbackSucceed = true;
-				cv2.notify_all();
-			});
-			ThreadPool::Submit(sc);
-
-			std::mutex mtx;
-			std::unique_lock<std::mutex> lock(mtx);
-			cv2.wait_for(lock, std::chrono::seconds(1), [&isSimpleCallbackSucceed]()
-			{
-				return isSimpleCallbackSucceed;
-			});
-
-			Assert::IsTrue(isSimpleCallbackSucceed);
-		}
-		TEST_METHOD(TestThreadPoolWork)
-		{
-			using namespace Process::Thread;
-			// 测试ThreadPoolWork
-			bool isWorkSucceed = false;
-			ThreadPoolWork work([&isWorkSucceed](CallbackInstance& instance, ThreadPoolWork& self)
-			{
-				Logger::WriteMessage("ThreadPoolWork");
-
-				isWorkSucceed = true;
-			});
-			ThreadPool::Submit(work);
-			// 测试等待
-			work.WaitForCallbacks();
-
-			Assert::IsTrue(isWorkSucceed);
-		}
-		TEST_METHOD(TestThreadPoolWait)
-		{
-			using namespace Process::Thread;
-
-			// 测试ThreadPoolWait
-			// TODO: 之后这类同步的东西也要做一个封装
-			auto e = CreateEvent(NULL, true, false, NULL);
-			if (e == NULL)
-			{
-				Assert::Fail(L"create event fail");
-				return;
-			}
-			bool isWaitSucceed = false;
-			std::condition_variable cv3;
-
-			ThreadPoolWait wait(e, NULL, [&isWaitSucceed, &cv3](CallbackInstance&, ThreadPoolWait&, WaitResult)
-			{
-				Logger::WriteMessage("ThreadPoolWait");
-				isWaitSucceed = true;
-				cv3.notify_all();
-			});
-			ThreadPool::Register(wait);
-
-
-			// 触发
-			SetEvent(e);
-			CloseHandle(e);
-
-			wait.WaitForCallbacks();
-
-			std::mutex mtx;
-			std::unique_lock<std::mutex> lock(mtx);
-			cv3.wait_for(lock, std::chrono::seconds(1), [&isWaitSucceed]()
-			{
-				return isWaitSucceed;
-			});
-
-			Assert::IsTrue(isWaitSucceed);
-
-		}
-		TEST_METHOD(TestThreadPoolTimer)
-		{
-			using namespace Process::Thread;
-			char outputStr[] = "ThreadPoolTimer";
-
-			ULARGE_INTEGER dueTime;
-			dueTime.QuadPart = (ULONGLONG)-1;// (1 * 10 * 1000 * 1000);
-
-			FILETIME time;
-			time.dwHighDateTime = dueTime.HighPart;
-			time.dwLowDateTime = dueTime.LowPart;
-			auto it = std::begin(outputStr);
-			std::condition_variable cv;
-			DWORD period = 100;
-			ThreadPoolTimer timer(&time, period, 0, [&it, end = std::end(outputStr), &cv](CallbackInstance&, ThreadPoolTimer& self)
-			{
-				auto& chr = *(it + 1);
-				auto bak = chr;
-				chr = 0;
-				Logger::WriteMessage(it);
-				chr = bak;
-				if (++it == end)
-				{
-					self.WaitForCallbacks(true);
-					cv.notify_all();
-				}
-			});
-
-			ThreadPool::Register(timer);
-			std::mutex mtx;
-			std::unique_lock<std::mutex> lock(mtx);
-			cv.wait_for(lock, std::chrono::milliseconds(period*(sizeof(outputStr) + 10)), [&it, end = std::end(outputStr)]()
-			{
-				return it == end;
-			});
-
-			Assert::IsTrue(it == std::end(outputStr));
 		}
 
 		TEST_METHOD(TestCoroutine)
@@ -878,6 +642,6 @@ namespace ProcessLibTest
 			t.join();
 		}
 	};
-	_STD pair<bool, CONTEXT> ProcessLib::OldContext;
-	bool ProcessLib::IsContextTestSucceed = true;
+	_STD pair<bool, CONTEXT> OtherTest::OldContext;
+	bool OtherTest::IsContextTestSucceed = true;
 }

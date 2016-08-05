@@ -11,6 +11,7 @@ using Process::EnvironmentBlock::PEB_Ex;
 
 PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hookFunc, OUT PVOID * unhookAddress)
 {
+	using namespace PeDecoder;
 	if (dllName == nullptr || procName == nullptr || hookFunc == nullptr)
 	{
 		return nullptr;
@@ -19,19 +20,16 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 	{
 		module = (HMODULE)NtCurrentPeb->ImageBaseAddress;
 	}
-	PeDecoder::PeImage pe(module, true);
-	if (!pe.IsPe())
+	PeImage pe(module, true);
+	if (!pe.IsPe() && !pe.HasDirectory(DataDirectoryEntryType::Import))
 	{
 		return nullptr;
 	}
 
-	auto& imp = pe.GetImportDirectory();
-	if (!imp)
-	{
-		return nullptr;
-	}
-	auto endImp = imp->end();
-	auto dllImp = _STD find_if(imp->begin(), endImp, [dllName](PeDecoder::ImportDescriptor& node)
+	ImportDirectory imp(pe);
+	assert(imp);
+	auto endImp = imp.end();
+	auto dllImp = _STD find_if(imp.begin(), endImp, [dllName](PeDecoder::ImportDescriptor& node)
 	{
 		return _stricmp(node.GetName(), dllName) == 0;
 	});

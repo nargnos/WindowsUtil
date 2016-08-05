@@ -3,8 +3,8 @@
 #include "ImportDirectoryIterator.h"
 namespace PeDecoder
 {
-	ImportDirectory::ImportDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	ImportDirectory::ImportDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 
 	}

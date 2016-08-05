@@ -9,8 +9,8 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Resource>
 	{
 	public:
-		ResourceDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr) :
-			DirectoryBase(pe, ptr, sizePtr)
+		ResourceDirectory(PeImage& pe) :
+			DirectoryBase(pe)
 		{
 			
 		}

@@ -14,6 +14,10 @@ namespace PeDecoder
 	{
 		return GetSize() <= IMAGE_NUMBEROF_DIRECTORY_ENTRIES;
 	}
+	bool DataDirectoryEntries::HasDirectory(DataDirectoryEntryType index)
+	{
+		return GetDirectoryEntry(index) != nullptr;
+	}
 	DataDirectoryEntries::TDataPtr DataDirectoryEntries::GetDirectoryEntry(DataDirectoryEntryType index)
 	{
 		assert(IsValid());

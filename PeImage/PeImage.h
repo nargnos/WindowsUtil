@@ -1,7 +1,7 @@
 #pragma once
 #include "PeImageFwd.h"
 #include "ImageType.h"
-
+#include "DataDirectoryEntryType.h"
 namespace PeDecoder
 {
 	class PeImage
@@ -19,24 +19,9 @@ namespace PeDecoder
 		const unique_ptr<DosHeader>& GetDosHeader();
 		const unique_ptr<NtHeader>& GetNtHeader();
 		const unique_ptr<SectionHeaders>& GetSections();
-		// 可存在结构，需要加判断
-		const unique_ptr<ArchitectureDirectory>& GetArchitectureDirectory();
-		const unique_ptr<BoundImportDirectory>& GetBoundImportDirectory();
-		const unique_ptr<ComDescriptorDirectory>& GetComDescriptorDirectory();
-		const unique_ptr<DebugDirectory>& GetDebugDirectory();
-		const unique_ptr<DelayImportDirectory>& GetDelayImportDirectory();
-		const unique_ptr<ExceptionDirectory>& GetExceptionDirectory();
-		const unique_ptr<ExportDirectory>& GetExportDirectory();
-		const unique_ptr<GlobalptrDirectory>& GetGlobalptrDirectory();
-		const unique_ptr<IatDirectory>& GetIatDirectory();
-		const unique_ptr<ImportDirectory>& GetImportDirectory();
-		const unique_ptr<LoadConfigDirectory>& GetLoadConfigDirectory();
-		const unique_ptr<RelocDirectory>& GetRelocDirectory();
-		const unique_ptr<ResourceDirectory>& GetResourceDirectory();
-		const unique_ptr<SecurityDirectory>& GetSecurityDirectory();
-		const unique_ptr<TlsDirectory>& GetTlsDirectory();
 
-
+		bool HasDirectory(DataDirectoryEntryType index);
+		PIMAGE_DATA_DIRECTORY GetDirectoryEntry(DataDirectoryEntryType index);
 		DWORD RvaToOffset(DWORD rva);
 		ULONGLONG RvaToOffset(ULONGLONG rva);
 		DWORD OffsetToRva(DWORD fileOffset);
@@ -47,25 +32,9 @@ namespace PeDecoder
 		PeImage(const PeImage&) = delete;
 		PeImage& operator=(const PeImage&) = delete;
 
-		// FIX: 很多结构都是会反复使用到的，需要保留解析结构，但是这样搞占位太大了
-		unique_ptr<ArchitectureDirectory> architectureDirectory_;
-		unique_ptr<BoundImportDirectory> boundImportDirectory_;
-		unique_ptr<ComDescriptorDirectory> comDescriptorDirectory_;
-		unique_ptr<DebugDirectory> debugDirectory_;
-		unique_ptr<DelayImportDirectory> delayImportDirectory_;
 		unique_ptr<DosHeader> dosHeader_;
-		unique_ptr<ExceptionDirectory> exceptionDirectory_;
-		unique_ptr<ExportDirectory> exportDirectory_;
-		unique_ptr<GlobalptrDirectory> globalptrDirectory_;
-		unique_ptr<IatDirectory> iatDirectory_;
-		unique_ptr<ImportDirectory> importDirectory_;
-		unique_ptr<LoadConfigDirectory> loadConfigDirectory_;
 		unique_ptr<NtHeader> ntHeader_;
-		unique_ptr<RelocDirectory> relocDirectory_;
-		unique_ptr<ResourceDirectory> resourceDirectory_;
 		unique_ptr<SectionHeaders> sectionHeaders_;
-		unique_ptr<SecurityDirectory> securityDirectory_;
-		unique_ptr<TlsDirectory> tlsDirectory_;
 
 		unsigned char* base_;
 		ImageType imageType_;

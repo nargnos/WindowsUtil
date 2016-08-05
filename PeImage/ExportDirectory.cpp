@@ -4,8 +4,8 @@
 #include "ExportDirectoryIterator.h"
 namespace PeDecoder
 {
-	ExportDirectory::ExportDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	ExportDirectory::ExportDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 		numberOfNames_ = &GetPtr()->NumberOfNames;
 		numberOfFunctions_ = &GetPtr()->NumberOfFunctions;

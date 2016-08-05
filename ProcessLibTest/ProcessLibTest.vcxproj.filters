@@ -26,7 +26,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="unittest1.cpp">
+    <ClCompile Include="ProcessLibTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPoolTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

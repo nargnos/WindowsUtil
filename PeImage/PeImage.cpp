@@ -4,39 +4,10 @@
 #include "NtHeader.h"
 #include "DosHeader.h"
 #include "SectionHeaders.h"
-#include "ExportDirectory.h"
-#include "ArchitectureDirectory.h"
-#include "BoundImportDirectory.h"
-#include "ComDescriptorDirectory.h"
-#include "DebugDirectory.h"
-#include "DelayImportDirectory.h"
-#include "ExceptionDirectory.h"
-#include "ExportDirectory.h"
-#include "GlobalptrDirectory.h"
-#include "IatDirectory.h"
-#include "ImportDirectory.h"
-#include "LoadConfigDirectory.h"
-#include "RelocDirectory.h"
-#include "ResourceDirectory.h"
-#include "SecurityDirectory.h"
-#include "TlsDirectory.h"
-
 #include "DataDirectoryEntries.h"
-#include "DosStub.h"
+
 namespace PeDecoder
 {
-	template<DataDirectoryEntryType index, typename TResultType>
-	void MakeDataDirectory(PeImage& pe, unique_ptr<TResultType>& output)
-	{
-		auto entry = pe.GetNtHeader()->GetDataDirectoryEntries()->GetDirectoryEntry(index);
-		if (entry->VirtualAddress != 0)
-		{
-			auto addr = entry->VirtualAddress;
-			auto ptr = reinterpret_cast<typename DataDirectoryEntryTypeTrait<index>::Type>(pe.RvaToDataPtr(addr));
-			output = make_unique<TResultType>(pe, ptr, &entry->Size);
-		}
-	}
-
 	PeImage::PeImage(void* ptr, bool isMapped) :
 		base_(reinterpret_cast<unsigned char*>(ptr)),
 		isMapped_(isMapped)
@@ -52,7 +23,7 @@ namespace PeDecoder
 			return;
 		}
 		// —È÷§ntheader
-		
+
 		ntHeader_ = make_unique<NtHeader>(GetNtHeaderPtr(dosHeaderPtr));
 		if (!ntHeader_->IsValid())
 		{
@@ -143,140 +114,14 @@ namespace PeDecoder
 		return sectionHeaders_;
 	}
 
-
-	const unique_ptr<ExportDirectory>& PeImage::GetExportDirectory()
+	bool PeImage::HasDirectory(DataDirectoryEntryType index)
 	{
-		if (!exportDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Export>(*this, exportDirectory_);
-		}
-		return exportDirectory_;
+		return GetNtHeader()->GetDataDirectoryEntries()->HasDirectory(index);
 	}
 
-	const unique_ptr<ArchitectureDirectory>& PeImage::GetArchitectureDirectory()
+	PIMAGE_DATA_DIRECTORY PeImage::GetDirectoryEntry(DataDirectoryEntryType index)
 	{
-		if (!architectureDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Architecture>(*this, architectureDirectory_);
-		}
-		return architectureDirectory_;
-	}
-
-	const unique_ptr<BoundImportDirectory>& PeImage::GetBoundImportDirectory()
-	{
-		if (!boundImportDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::BoundImport>(*this, boundImportDirectory_);
-		}
-		return boundImportDirectory_;
-	}
-
-	const unique_ptr<ComDescriptorDirectory>& PeImage::GetComDescriptorDirectory()
-	{
-		if (!comDescriptorDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::ComDescriptor>(*this, comDescriptorDirectory_);
-		}
-		return comDescriptorDirectory_;
-	}
-
-	const unique_ptr<DebugDirectory>& PeImage::GetDebugDirectory()
-	{
-		if (!debugDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Debug>(*this, debugDirectory_);
-		}
-		return debugDirectory_;
-	}
-
-	const unique_ptr<DelayImportDirectory>& PeImage::GetDelayImportDirectory()
-	{
-		if (!delayImportDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::DelayImport>(*this, delayImportDirectory_);
-		}
-		return delayImportDirectory_;
-	}
-
-	const unique_ptr<ExceptionDirectory>& PeImage::GetExceptionDirectory()
-	{
-		if (!exceptionDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Exception>(*this, exceptionDirectory_);
-		}
-		return exceptionDirectory_;
-	}
-
-	const unique_ptr<GlobalptrDirectory>& PeImage::GetGlobalptrDirectory()
-	{
-		if (!globalptrDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Globalptr>(*this, globalptrDirectory_);
-		}
-		return globalptrDirectory_;
-	}
-
-	const unique_ptr<IatDirectory>& PeImage::GetIatDirectory()
-	{
-		if (!iatDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Iat>(*this, iatDirectory_);
-		}
-		return iatDirectory_;
-	}
-
-	const unique_ptr<ImportDirectory>& PeImage::GetImportDirectory()
-	{
-		if (!importDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Import>(*this, importDirectory_);
-		}
-		return importDirectory_;
-	}
-
-	const unique_ptr<LoadConfigDirectory>& PeImage::GetLoadConfigDirectory()
-	{
-		if (!loadConfigDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::LoadConfig>(*this, loadConfigDirectory_);
-		}
-		return loadConfigDirectory_;
-	}
-
-	const unique_ptr<RelocDirectory>& PeImage::GetRelocDirectory()
-	{
-		if (!relocDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::BaseReloc>(*this, relocDirectory_);
-		}
-		return relocDirectory_;
-	}
-
-	const unique_ptr<ResourceDirectory>& PeImage::GetResourceDirectory()
-	{
-		if (!resourceDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Resource>(*this, resourceDirectory_);
-		}
-		return resourceDirectory_;
-	}
-
-	const unique_ptr<SecurityDirectory>& PeImage::GetSecurityDirectory()
-	{
-		if (!securityDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Security>(*this, securityDirectory_);
-		}
-		return securityDirectory_;
-	}
-
-	const unique_ptr<TlsDirectory>& PeImage::GetTlsDirectory()
-	{
-		if (!tlsDirectory_)
-		{
-			MakeDataDirectory<DataDirectoryEntryType::Tls>(*this, tlsDirectory_);
-		}
-		return tlsDirectory_;
+		return GetNtHeader()->GetDataDirectoryEntries()->GetDirectoryEntry(index);
 	}
 
 	DWORD PeImage::RvaToOffset(DWORD rva)

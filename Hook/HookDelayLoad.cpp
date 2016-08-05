@@ -10,6 +10,8 @@ using Process::EnvironmentBlock::PTEB_Ex;
 using Process::EnvironmentBlock::PEB_Ex;
 PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID hookFunc, OUT PVOID * unhookAddress)
 {
+	using namespace PeDecoder;
+
 	if (dllName == nullptr || procName == nullptr || hookFunc == nullptr)
 	{
 		return nullptr;
@@ -18,15 +20,16 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	{
 		module = (HMODULE)NtCurrentPeb->ImageBaseAddress;
 	}
-	PeDecoder::PeImage pe(module, true);
-	if (!pe.IsPe())
+	PeImage pe(module, true);
+	if (!pe.IsPe() || !pe.HasDirectory(DataDirectoryEntryType::DelayImport))
 	{
 		return nullptr;
 	}
-	auto& delay = pe.GetDelayImportDirectory();
-	auto dlEnd = delay->end();
+	DelayImportDirectory delay(pe);
+	assert(delay);
+	auto dlEnd = delay.end();
 	// ÕÒdll
-	auto dll = _STD find_if(delay->begin(), dlEnd, [dllName](PeDecoder::DelayImportDescriptor& node)
+	auto dll = _STD find_if(delay.begin(), dlEnd, [dllName](PeDecoder::DelayImportDescriptor& node)
 	{
 		return strcmp(node.GetName(), dllName) == 0;
 	});

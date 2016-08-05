@@ -308,5 +308,8 @@
     <ClCompile Include="DelayImportDirectoryIterator.cpp">
       <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
     </ClCompile>
+    <ClCompile Include="DirectoryBase.cpp">
+      <Filter>PeImage\DataDirectory</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

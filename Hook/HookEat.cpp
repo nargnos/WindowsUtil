@@ -8,22 +8,20 @@
 #include <Process\VirtualProtect.h>
 PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWORD* oldFuncRva)
 {
+	using namespace PeDecoder;
 	if (module == nullptr || procName == nullptr || hookFunc == nullptr)
 	{
 		return nullptr;
 	}
-	PeDecoder::PeImage dll(module, true);
-	if (!dll.IsPe())
+	PeImage dll(module, true);
+	if (!dll.IsPe() && !dll.HasDirectory(DataDirectoryEntryType::Export))
 	{
 		return nullptr;
 	}
-	auto& exp = dll.GetExportDirectory();
-	if (!exp)
-	{
-		return nullptr;
-	}
-	auto end = exp->end();
-	auto proc = _STD lower_bound(exp->begin(), end, procName, []
+	PeDecoder::ExportDirectory exp(dll);
+	assert(exp);
+	auto end = exp.end();
+	auto proc = _STD lower_bound(exp.begin(), end, procName, []
 	(PeDecoder::ExportIteratorNode& node, LPCSTR val)
 	{
 		return strcmp(node.NamePtr(), val) < 0;

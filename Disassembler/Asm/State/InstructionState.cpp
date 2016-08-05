@@ -1,6 +1,6 @@
 #include "InstructionState.h"
 #include "..\AsmStorage.h"
-#include "..\Opcode\AsmOpcodeDataWapper.h"
+#include "..\Opcode\AsmOpcodeDataWrapper.h"
 namespace Disassembler
 {
 	int AsmState<AsmStateFactory::State_Instruction>::Next(AsmStateFactory::ParamType * param)

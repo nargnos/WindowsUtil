@@ -20,7 +20,7 @@ namespace PeImageLibTest
 			Assert::IsTrue(pe_.IsPe());
 
 		}
-		TEST_METHOD(TestDosHeader)
+		TEST_METHOD(ReadDosHeader)
 		{
 			auto& dosHeader = pe_.GetDosHeader();
 			auto ptr = dosHeader->GetPtr();
@@ -31,7 +31,7 @@ namespace PeImageLibTest
 				size = dosStub->GetSize();
 			}
 		}
-		TEST_METHOD(TestNtHeader)
+		TEST_METHOD(ReadNtHeader)
 		{
 			auto& nt = pe_.GetNtHeader();
 			auto& de = nt->GetDataDirectoryEntries();
@@ -42,7 +42,7 @@ namespace PeImageLibTest
 			}
 			Logger::WriteMessage(out.str().c_str());
 		}
-		TEST_METHOD(TestSections)
+		TEST_METHOD(ReadSections)
 		{
 			auto& sections = pe_.GetSections();
 			ostringstream out;
@@ -53,15 +53,15 @@ namespace PeImageLibTest
 			Logger::WriteMessage(out.str().c_str());
 
 		}
-		TEST_METHOD(TestExportDirectory)
+		TEST_METHOD(ReadExportDirectory)
 		{
-			auto& exportDir = pe_.GetExportDirectory();
+			PeDecoder::ExportDirectory exportDir(pe_);
 
 			if (exportDir)
 			{
 				ostringstream out;
 				out << "Export:" << endl << "----------" << endl;
-				for each (auto& var in *exportDir)
+				for each (auto& var in exportDir)
 				{
 					auto name = (char*)pe_.RvaToDataPtr(*var.NameRva());
 					out << name << endl;
@@ -73,13 +73,18 @@ namespace PeImageLibTest
 				Logger::WriteMessage("Export Not Exist");
 			}
 		}
-		TEST_METHOD(TestImportDirectory)
+		TEST_METHOD(ReadImportDirectory)
 		{
-			auto& importDir = pe_.GetImportDirectory();
-			auto type = importDir->GetPe().GetImageType();
+			PeDecoder::ImportDirectory importDir(pe_);
+			if (!importDir)
+			{
+				Logger::WriteMessage("Export Not Exist");
+				return;
+			}
+			auto type = pe_.GetImageType();
 			
 			ostringstream out;
-			for each (auto& var in *importDir)
+			for each (auto& var in importDir)
 			{
 				out << endl << "# " << var.GetName() << endl;
 				out << "----------" << endl;
@@ -122,13 +127,13 @@ namespace PeImageLibTest
 			Logger::WriteMessage(out.str().c_str());
 		}
 
-		TEST_METHOD(TestRelocDirectory)
+		TEST_METHOD(ReadRelocDirectory)
 		{
-			auto& reloc = pe_.GetRelocDirectory();
+			PeDecoder::RelocDirectory reloc(pe_);
 			if (reloc)
 			{
 				ostringstream out;
-				for each (auto& var in *reloc)
+				for each (auto& var in reloc)
 				{
 					out << "Rva: " << (void*)var.GetPtr()->VirtualAddress << " Count: " << var.GetCount() << endl;
 					for each (auto& node in var)
@@ -140,12 +145,12 @@ namespace PeImageLibTest
 			}
 
 		}
-		TEST_METHOD(TestResourceDirectory)
+		TEST_METHOD(ReadResourceDirectory)			
 		{
-			auto& res = pe_.GetResourceDirectory();
+			PeDecoder::ResourceDirectory res(pe_);
 			if (res)
 			{
-				for each (auto& var in *res)
+				for each (auto& var in res)
 				{
 					if (var.NameIsString())
 					{

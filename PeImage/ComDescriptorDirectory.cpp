@@ -3,8 +3,8 @@
 
 namespace PeDecoder
 {
-	ComDescriptorDirectory::ComDescriptorDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	ComDescriptorDirectory::ComDescriptorDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 	}
 }  // namespace PeDecoder

@@ -8,7 +8,7 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Architecture>
 	{
 	public:
-		ArchitectureDirectory(PeImage& pe, TDataPtr ptr, TSizePtr sizePtr);
+		ArchitectureDirectory(PeImage& pe);
 		~ArchitectureDirectory();
 	};
 }  // namespace PeDecoder

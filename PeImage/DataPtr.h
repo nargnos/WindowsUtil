@@ -14,15 +14,19 @@ namespace PeDecoder
 			DataPtr(TDataPtr dataPtr) :
 				dataPtr_(dataPtr)
 			{
-				assert(dataPtr_);
+				
 			}
 
 			virtual ~DataPtr() = default;
 			TDataPtr GetPtr() const
 			{
+				assert(dataPtr_);
 				return dataPtr_;
 			}
-
+			explicit operator bool()
+			{
+				return dataPtr_ != nullptr;
+			}
 		protected:
 			TDataPtr dataPtr_;
 		};

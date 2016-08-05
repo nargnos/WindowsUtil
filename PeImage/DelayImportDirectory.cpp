@@ -3,8 +3,8 @@
 #include "DelayImportDirectoryIterator.h"
 namespace PeDecoder
 {
-	DelayImportDirectory::DelayImportDirectory(PeImage & pe, TDataPtr ptr, TSizePtr sizePtr) :
-		DirectoryBase(pe, ptr, sizePtr)
+	DelayImportDirectory::DelayImportDirectory(PeImage & pe) :
+		DirectoryBase(pe)
 	{
 	}
 	DelayImportDirectory::iterator DelayImportDirectory::begin()

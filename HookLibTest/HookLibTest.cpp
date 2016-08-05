@@ -130,8 +130,8 @@ void TestEatHook()
 
 int main()
 {
-	TestIatHook();
-	//TestEatHook();
+	// TestIatHook();
+	// TestEatHook();
 	// delayimport要修改编译选项，先不测了
 	return 0;
 }

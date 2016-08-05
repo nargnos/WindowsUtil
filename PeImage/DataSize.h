@@ -13,11 +13,12 @@ namespace PeDecoder
 			DataSize(TSizePtr sizePtr) :
 				sizePtr_(sizePtr)
 			{
-				assert(sizePtr);
+				
 			}
 			virtual ~DataSize() = default;
 			TSizePtr GetSizePtr() const
 			{
+				assert(sizePtr_);
 				return sizePtr_;
 			}
 			TSizeType GetSize() const
