@@ -8,18 +8,9 @@ namespace Process
 		{
 			namespace Detail
 			{
-				_STD unique_ptr<LoadNtDll> instance_;
-				_STD once_flag flag_;
-
 				const LoadNtDll& Instance()
 				{
-					if (!instance_)
-					{
-						_STD call_once(flag_, []()
-						{
-							instance_ = _STD unique_ptr<LoadNtDll>(new LoadNtDll());
-						});
-					}
+					static auto instance_ = _STD unique_ptr<LoadNtDll>(new LoadNtDll());
 					return *instance_;
 				}
 				LoadNtDll::LoadNtDll() :

@@ -10,9 +10,6 @@ namespace Process
 		{
 			namespace Detail
 			{
-				_STD unique_ptr<LoadKernel32> instance_;
-				_STD once_flag flag_;
-
 				LoadKernel32::LoadKernel32() :
 					LoadDllBase(L"kernel32.dll"),
 					GetSystemInfo(*this, "GetSystemInfo"),
@@ -41,14 +38,7 @@ namespace Process
 
 				const LoadKernel32 & Instance()
 				{
-					if (!instance_)
-					{
-						_STD call_once(flag_, []()
-						{
-							instance_ = _STD unique_ptr<LoadKernel32>(new LoadKernel32());
-						});
-					}
-
+					static auto instance_ = _STD unique_ptr<LoadKernel32>(new LoadKernel32());
 					return *instance_;
 				}
 
