@@ -64,6 +64,9 @@
     <Filter Include="PeImage\DosHeader">
       <UniqueIdentifier>{b8fdf261-b813-4cd2-abe7-19cfec2c38a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PeImage\Common\IteratorTemplate">
+      <UniqueIdentifier>{61507205-73dd-4e87-8462-e7c91094266c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -161,9 +164,6 @@
     <ClInclude Include="PeDecoder.h">
       <Filter>PeImage</Filter>
     </ClInclude>
-    <ClInclude Include="PeImage.h">
-      <Filter>PeImage</Filter>
-    </ClInclude>
     <ClInclude Include="PeImageFwd.h">
       <Filter>PeImage</Filter>
     </ClInclude>
@@ -211,6 +211,24 @@
     </ClInclude>
     <ClInclude Include="DelayImportDirectoryIterator.h">
       <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="PeImage.h">
+      <Filter>PeImage</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionIterator.h">
+      <Filter>PeImage\Sections</Filter>
+    </ClInclude>
+    <ClInclude Include="Section.h">
+      <Filter>PeImage\Sections</Filter>
+    </ClInclude>
+    <ClInclude Include="IteratorFriendAccess.h">
+      <Filter>PeImage\Common\IteratorTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryPolicy.h">
+      <Filter>PeImage\Common\IteratorTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="IteratorBase.h">
+      <Filter>PeImage\Common\IteratorTemplate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="DirectoryBase.cpp">
       <Filter>PeImage\DataDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionIterator.cpp">
+      <Filter>PeImage\Sections</Filter>
+    </ClCompile>
+    <ClCompile Include="Section.cpp">
+      <Filter>PeImage\Sections</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

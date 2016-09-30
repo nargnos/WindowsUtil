@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SectionHeaders.h"
+#include "PeImage.h"
+#include "NtHeader.h"
 
 namespace PeDecoder
 {
@@ -8,45 +10,73 @@ namespace PeDecoder
 		DataSize(sizePtr),
 		sectionAlignmentPtr_(sectionAlignmentPtr)
 	{
-		assert(ptr);
-		assert(sizePtr);
-		assert(sectionAlignmentPtr);
 	}
-	PDWORD SectionHeaders::GetSectionAlignment()
+	SectionHeaders::SectionHeaders(const PeImage & pe) :
+		SectionHeaders(nullptr, nullptr, nullptr)
 	{
+		if (pe.IsPe())
+		{
+			auto& ntHeader = pe.GetNtHeader();
+			switch (NtHeader::GetHeaderType(ntHeader->GetPtr32()))
+			{
+			case NtHeaderType::NtHeader32:
+			{
+				auto tmpHeader = ntHeader->GetPtr32();
+				SetPtr(IMAGE_FIRST_SECTION(tmpHeader));
+				SetSizePtr(&tmpHeader->FileHeader.NumberOfSections);
+				sectionAlignmentPtr_ = &tmpHeader->OptionalHeader.SectionAlignment;
+			}
+			break;
+			case NtHeaderType::NtHeader64:
+			{
+				auto tmpHeader = ntHeader->GetPtr64();
+				SetPtr(IMAGE_FIRST_SECTION(tmpHeader));
+				SetSizePtr(&tmpHeader->FileHeader.NumberOfSections);
+				sectionAlignmentPtr_ = &tmpHeader->OptionalHeader.SectionAlignment;
+			}
+			break;
+			default:
+				assert(false);
+				__assume(false);
+				break;
+			}
+		}
+	}
+	PDWORD SectionHeaders::GetSectionAlignment() const
+	{
+		assert(sectionAlignmentPtr_);
 		return sectionAlignmentPtr_;
 	}
-	SectionHeaders::TDataPtr SectionHeaders::RvaToSectionHeader(DWORD rva)
+	SectionHeaders::TDataPtr SectionHeaders::RvaToSectionHeader(DWORD rva) const
 	{
 		auto beginPtr = begin();
 		auto endPtr = end();
 
-		auto result = _STD find_if(beginPtr, endPtr, [this, rva](TDataType& val)
+		auto result = _STD find_if(beginPtr, endPtr, [this, rva, align = *GetSectionAlignment()](const iterator::value_type& val)
 		{
-			return (rva >= val.VirtualAddress) &&
-				(rva < val.VirtualAddress + ALIGN_UP(val.Misc.VirtualSize, *GetSectionAlignment()));
+			return val.RvaInRange(rva, align);
 		});
-		return result == endPtr ? nullptr : result;
+		return result == endPtr ? nullptr : &*result;
 	}
-	SectionHeaders::TDataPtr SectionHeaders::OffsetToSectionHeader(DWORD fileOffset)
+	SectionHeaders::TDataPtr SectionHeaders::OffsetToSectionHeader(DWORD fileOffset) const
 	{
 		auto beginPtr = begin();
 		auto endPtr = end();
 
-		auto result = _STD find_if(beginPtr, endPtr, [this, fileOffset](TDataType& val)
+		auto result = _STD find_if(beginPtr, endPtr, [this, fileOffset, align = *GetSectionAlignment()](const iterator::value_type& val)
 		{
-			return (fileOffset >= val.PointerToRawData) && (fileOffset < val.PointerToRawData + val.SizeOfRawData);
+			return val.OffsetInRange(fileOffset,align);
 		});
-		return result == endPtr ? nullptr : result;
+		return result == endPtr ? nullptr : &*result;
 	}
 
 	SectionHeaders::iterator SectionHeaders::begin() const
 	{
-		return GetPtr();
+		return{ GetPtr(),GetSize() };
 	}
 
 	SectionHeaders::iterator SectionHeaders::end() const
 	{
-		return GetPtr() + GetSize();
+		return{ GetPtr() + GetSize(),GetSize() };
 	}
 }  // namespace PeDecoder

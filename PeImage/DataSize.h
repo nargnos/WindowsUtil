@@ -13,7 +13,7 @@ namespace PeDecoder
 			DataSize(TSizePtr sizePtr) :
 				sizePtr_(sizePtr)
 			{
-				
+
 			}
 			virtual ~DataSize() = default;
 			TSizePtr GetSizePtr() const
@@ -26,6 +26,10 @@ namespace PeDecoder
 				return *GetSizePtr();
 			}
 		protected:
+			void SetSizePtr(TSizePtr ptr)
+			{
+				sizePtr_ = ptr;
+			}
 			// 需要保存大小来源指针
 			TSizePtr sizePtr_;
 		};

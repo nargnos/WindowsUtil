@@ -7,12 +7,12 @@ namespace PeDecoder
 	{
 
 	}
-	bool ImportDirectoryIterator::equal(const ImportDirectoryIterator & val) const
+	bool ImportDirectoryIterator::Equal(const ImportDirectoryIterator & val) const
 	{
 		return val.GetStore().importDirectory_ == GetStore().importDirectory_ &&
 			val.GetStore().dataPtr_ == GetStore().dataPtr_;
 	}
-	void ImportDirectoryIterator::increment()
+	void ImportDirectoryIterator::Increment()
 	{
 		++GetStore().dataPtr_;
 		if (GetStore().dataPtr_->FirstThunk == 0 || GetStore().dataPtr_->Name == 0)
@@ -21,7 +21,7 @@ namespace PeDecoder
 			GetStore().dataPtr_ = nullptr;
 		}
 	}
-	ImportDirectoryIterator::reference ImportDirectoryIterator::dereference() const
+	ImportDirectoryIterator::reference ImportDirectoryIterator::Dereference() const
 	{
 		return const_cast<reference>(GetStore());
 	}

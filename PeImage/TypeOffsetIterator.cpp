@@ -7,32 +7,32 @@ namespace PeDecoder
 		store_(pe, baseReloc, ptr)
 	{
 	}
-	bool TypeOffsetIterator::equal(const TypeOffsetIterator & val) const
+	bool TypeOffsetIterator::Equal(const TypeOffsetIterator & val) const
 	{
 		return GetStore().ptr_ == val.GetStore().ptr_&&
 			GetStore().baseReloc_ == val.GetStore().baseReloc_&&
 			GetStore().pe_ == val.GetStore().pe_;
 	}
-	void TypeOffsetIterator::increment()
+	void TypeOffsetIterator::Increment()
 	{
 		assert(InRange());
 		++GetStore().ptr_;
 	}
-	void TypeOffsetIterator::decrement()
+	void TypeOffsetIterator::Decrement()
 	{
 		assert(InRange());
 		--GetStore().ptr_;
 	}
-	void TypeOffsetIterator::advance(int n)
+	void TypeOffsetIterator::Advance(int n)
 	{
 		assert(InRange());
 		GetStore().ptr_ += n;
 	}
-	TypeOffsetIterator::difference_type TypeOffsetIterator::distance_to(const TypeOffsetIterator & val)
+	TypeOffsetIterator::difference_type TypeOffsetIterator::DistanceTo(const TypeOffsetIterator & val)
 	{
 		return val.GetStore().ptr_ - GetStore().ptr_;
 	}
-	TypeOffsetIterator::reference TypeOffsetIterator::dereference() const
+	TypeOffsetIterator::reference TypeOffsetIterator::Dereference() const
 	{
 		assert(InRange());
 		return const_cast<reference>(GetStore());

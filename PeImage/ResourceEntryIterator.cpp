@@ -8,32 +8,32 @@ namespace PeDecoder
 		store_(root, ptr)
 	{
 	}
-	bool ResourceEntryIterator::equal(const ResourceEntryIterator & val) const
+	bool ResourceEntryIterator::Equal(const ResourceEntryIterator & val) const
 	{
 		return val.GetStore().ptr_ == GetStore().ptr_ &&
 			val.GetStore().root_ == GetStore().root_;
 	}
-	void ResourceEntryIterator::increment()
+	void ResourceEntryIterator::Increment()
 	{
 		assert(InRange());
 		++GetStore().ptr_;
 	}
-	void ResourceEntryIterator::decrement()
+	void ResourceEntryIterator::Decrement()
 	{
 		assert(InRange());
 		--GetStore().ptr_;
 	}
-	void ResourceEntryIterator::advance(int n)
+	void ResourceEntryIterator::Advance(int n)
 	{
 		assert(InRange());
 		GetStore().ptr_ += n;
 	}
-	ResourceEntryIterator::difference_type ResourceEntryIterator::distance_to(const ResourceEntryIterator & val)
+	ResourceEntryIterator::difference_type ResourceEntryIterator::DistanceTo(const ResourceEntryIterator & val)
 	{
 		assert(InRange());
 		return val.GetStore().ptr_ - GetStore().ptr_;
 	}
-	ResourceEntryIterator::reference ResourceEntryIterator::dereference() const
+	ResourceEntryIterator::reference ResourceEntryIterator::Dereference() const
 	{
 		return const_cast<reference>(GetStore());
 	}

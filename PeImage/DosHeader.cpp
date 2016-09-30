@@ -1,25 +1,23 @@
 #include "stdafx.h"
 #include "DosHeader.h"
-#include "DosStub.h"
-#include "PeImage.h"
 namespace PeDecoder
 {
-	DosHeader::DosHeader(TDataPtr ptr) :
-		DataPtr(ptr)
+	bool DosHeader::Valid(const TDataPtr ptr)
 	{
 		assert(ptr);
+		return ptr->e_magic == IMAGE_DOS_SIGNATURE;
 	}
-	bool DosHeader::IsValid() const
+	void * DosHeader::GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader)
 	{
-		return GetPtr()->e_magic == IMAGE_DOS_SIGNATURE;
+		return reinterpret_cast<unsigned char*>(dosHeader) + dosHeader->e_lfanew;
 	}
 	const unique_ptr<DosStub>& DosHeader::GetDosStub()
 	{
-		assert(IsValid());
+		assert(Valid(GetPtr()));
 		if (!dosStub_)
 		{
 			// dosHeader和ntHeader之间的范围
-			auto ntPtr = reinterpret_cast<unsigned char*>(PeImage::GetNtHeaderPtr(GetPtr()));  // NtHeader位置
+			auto ntPtr = reinterpret_cast<unsigned char*>(GetNtHeaderPtr(GetPtr()));  // NtHeader位置
 			auto ptr = reinterpret_cast<unsigned char*>(GetPtr() + 1); // dosStub应该在的位置
 			auto size = ntPtr - ptr; // 实际大小，NtHeader跟DosHeader重叠时（被人为修改）没有DosStub
 			if (size > 0)

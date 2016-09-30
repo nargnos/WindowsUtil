@@ -24,12 +24,17 @@ namespace PeImageLibTest
 		{
 			auto& dosHeader = pe_.GetDosHeader();
 			auto ptr = dosHeader->GetPtr();
+			ostringstream out;
+			out << "e_lfanew:" << std::hex << ptr->e_lfanew << endl;
+
 			auto& dosStub = dosHeader->GetDosStub();
 			DWORD size = 0;
 			if (dosStub)
 			{
 				size = dosStub->GetSize();
 			}
+			out << std::dec << "stub size:" << size;
+			Logger::WriteMessage(out.str().c_str());
 		}
 		TEST_METHOD(ReadNtHeader)
 		{
@@ -38,7 +43,7 @@ namespace PeImageLibTest
 			ostringstream out;
 			for each (auto& var in *de)
 			{
-				out << "ADDR:" << var.VirtualAddress << " SIZE:" << var.Size << endl;
+				out << std::hex << "ADDR:" << var.VirtualAddress << " SIZE:" << var.Size << endl;
 			}
 			Logger::WriteMessage(out.str().c_str());
 		}
@@ -82,7 +87,7 @@ namespace PeImageLibTest
 				return;
 			}
 			auto type = pe_.GetImageType();
-			
+
 			ostringstream out;
 			for each (auto& var in importDir)
 			{
@@ -135,17 +140,20 @@ namespace PeImageLibTest
 				ostringstream out;
 				for each (auto& var in reloc)
 				{
-					out << "Rva: " << (void*)var.GetPtr()->VirtualAddress << " Count: " << var.GetCount() << endl;
+					out << "Rva: " << (void*)var.GetPtr()->VirtualAddress <<
+						" Size of Block:" << std::hex << var.GetPtr()->SizeOfBlock << "h" <<
+						" Count: " << std::dec << var.GetCount() << endl;
 					for each (auto& node in var)
 					{
 						out << (void*)node.CurrentRelocRva() << " : " << node.CurrentType() << endl;
 					}
 				}
 				Logger::WriteMessage(out.str().c_str());
+
 			}
 
 		}
-		TEST_METHOD(ReadResourceDirectory)			
+		TEST_METHOD(ReadResourceDirectory)
 		{
 			PeDecoder::ResourceDirectory res(pe_);
 			if (res)

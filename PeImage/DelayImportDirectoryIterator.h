@@ -2,22 +2,23 @@
 #include "PeImageFwd.h"
 #include "DelayImportDescriptor.h"
 #include "ImportThunk.h"
+#include "IteratorBase.h"
 namespace PeDecoder
 {
 	class DelayImportDirectoryIterator :
-		public iterator_facade<
+		public IteratorBase<
 		DelayImportDirectoryIterator,
-		DelayImportDescriptor,
-		forward_traversal_tag>
+		_STD forward_iterator_tag,
+		DelayImportDescriptor>
 	{
 	public:
-		friend class iterator_core_access;
+		friend IteratorFriendAccess;
 		DelayImportDirectoryIterator(DelayImportDirectory& delayImportDirectory, PImgDelayDescr ptr);
 
 	private:
-		bool equal(const DelayImportDirectoryIterator & val) const;
-		void increment();
-		reference dereference() const;
+		bool Equal(const DelayImportDirectoryIterator & val) const;
+		void Increment();
+		reference Dereference() const;
 		DelayImportDescriptor& GetStore();
 		const DelayImportDescriptor& GetStore() const;
 		DelayImportDescriptor store_;

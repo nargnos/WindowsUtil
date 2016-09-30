@@ -11,10 +11,10 @@ namespace PeDecoder
 			static_assert(_STD is_pointer<TDataPtr>::value, "TDataPtr is not a pointer");
 			typedef TDataPtr TDataPtr;
 			typedef _STD remove_pointer_t<TDataPtr> TDataType;
-			DataPtr(TDataPtr dataPtr) :
+			explicit DataPtr(TDataPtr dataPtr) :
 				dataPtr_(dataPtr)
 			{
-				
+
 			}
 
 			virtual ~DataPtr() = default;
@@ -28,6 +28,10 @@ namespace PeDecoder
 				return dataPtr_ != nullptr;
 			}
 		protected:
+			void SetPtr(TDataPtr ptr)
+			{
+				dataPtr_ = ptr;
+			}
 			TDataPtr dataPtr_;
 		};
 	}  // namespace Detail

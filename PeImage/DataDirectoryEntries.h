@@ -13,6 +13,7 @@ namespace PeDecoder
 	public:
 		typedef TDataPtr iterator;
 		DataDirectoryEntries(TDataPtr ptr, TSizePtr sizePtr);
+		DataDirectoryEntries(NtHeader& nt);
 		~DataDirectoryEntries() = default;
 		bool IsValid() const;
 		// index‘ΩΩÁ∑µªÿnullptr

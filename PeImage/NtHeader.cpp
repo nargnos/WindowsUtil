@@ -1,25 +1,25 @@
 #include "stdafx.h"
+#include <bitset>
 #include "NtHeader.h"
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
 
-	NtHeader::NtHeader(void* ntHeader) :
-		ntHeader_(ntHeader)
+	bool NtHeader::Valid(const void * ptr)
 	{
-		assert(ntHeader);
+		// 根据枚举值查表返回内容
+		static const _STD bitset<8> resultTable(0b11000000);
+
+		auto&& ntHeader = reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<void*>(ptr));
+		auto&& pos = static_cast<unsigned char>(GetHeaderType(ptr)) +
+			(static_cast<unsigned char>(ntHeader->Signature == IMAGE_NT_SIGNATURE) << 2);
+
+		return resultTable.test(pos);
 	}
 
-	bool NtHeader::IsValid() const
+	NtHeaderType NtHeader::GetHeaderType(const void* ptr)
 	{
-		auto type = GetHeaderType();
-		return GetRawPtr32()->Signature == IMAGE_NT_SIGNATURE &&
-			type != NtHeaderType::UnKnown &&
-			type != NtHeaderType::Rom;
-	}
-	NtHeaderType NtHeader::GetHeaderType() const
-	{
-		switch (GetRawPtr32()->OptionalHeader.Magic)
+		switch (reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<void*>(ptr))->OptionalHeader.Magic)
 		{
 		case IMAGE_NT_OPTIONAL_HDR64_MAGIC:
 			return NtHeaderType::NtHeader64;
@@ -28,55 +28,40 @@ namespace PeDecoder
 		case IMAGE_ROM_OPTIONAL_HDR_MAGIC:
 			return NtHeaderType::Rom;
 		default:
-			return NtHeaderType::UnKnown;
+			// UnKnown
+			break;
 		}
+		return NtHeaderType::UnKnown;
 	}
+
 	PIMAGE_FILE_HEADER NtHeader::GetFileHeader()
 	{
-		return &GetRawPtr32()->FileHeader;
+		return &GetPtr32()->FileHeader;
 	}
 	PIMAGE_OPTIONAL_HEADER64 NtHeader::GetOptionalHeader64()
 	{
-		return &GetRawPtr64()->OptionalHeader;
+		return &GetPtr64()->OptionalHeader;
 	}
 	PIMAGE_OPTIONAL_HEADER32 NtHeader::GetOptionalHeader32()
 	{
-		return &GetRawPtr32()->OptionalHeader;
+		return &GetPtr32()->OptionalHeader;
 	}
-	PIMAGE_NT_HEADERS32 NtHeader::GetRawPtr32() const
+	PIMAGE_NT_HEADERS32 NtHeader::GetPtr32() const
 	{
-		return reinterpret_cast<PIMAGE_NT_HEADERS32>(ntHeader_);
+		return reinterpret_cast<PIMAGE_NT_HEADERS32>(GetPtr());
 	}
-	PIMAGE_NT_HEADERS64 NtHeader::GetRawPtr64() const
+	PIMAGE_NT_HEADERS64 NtHeader::GetPtr64() const
 	{
-		return reinterpret_cast<PIMAGE_NT_HEADERS64>(ntHeader_);
+		return reinterpret_cast<PIMAGE_NT_HEADERS64>(GetPtr());
 	}
 	const unique_ptr<DataDirectoryEntries>& NtHeader::GetDataDirectoryEntries()
 	{
 		if (!dataDirectoryEntries_)
 		{
-			auto type = GetHeaderType();
-			switch (type)
+			_STD call_once(dataDirInit_, [&]()
 			{
-			case NtHeaderType::NtHeader32:
-			{
-				auto tmp = GetOptionalHeader32();
-				auto ptr = tmp->DataDirectory;
-				auto sizePtr = &tmp->NumberOfRvaAndSizes;
-				dataDirectoryEntries_ = make_unique<DataDirectoryEntries>(ptr, sizePtr);
-			}
-			break;
-			case NtHeaderType::NtHeader64:
-			{
-				auto tmp = GetOptionalHeader64();
-				auto ptr = tmp->DataDirectory;
-				auto sizePtr = &tmp->NumberOfRvaAndSizes;
-				dataDirectoryEntries_ = make_unique<DataDirectoryEntries>(ptr, sizePtr);
-			}
-			break;
-			default:
-				break;
-			}
+				dataDirectoryEntries_ = make_unique<DataDirectoryEntries>(*this);
+			});
 		}
 		return dataDirectoryEntries_;
 	}

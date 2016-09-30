@@ -13,6 +13,6 @@ namespace PeDecoder
 	}
 	RelocDirectory::iterator RelocDirectory::end()
 	{
-		return iterator(*this, GetPtr() + GetSize() / sizeof(IMAGE_BASE_RELOCATION));
+		return iterator(*this, reinterpret_cast<PIMAGE_BASE_RELOCATION>(reinterpret_cast<char*>(GetPtr()) + GetSize()));
 	}
 }  // namespace PeDecoder

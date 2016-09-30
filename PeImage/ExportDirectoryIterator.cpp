@@ -10,36 +10,36 @@ namespace PeDecoder
 
 	}
 
-	bool ExportDirectoryIterator::equal(const ExportDirectoryIterator & val) const
+	bool ExportDirectoryIterator::Equal(const ExportDirectoryIterator & val) const
 	{
 		return val.GetStore().directory_ == GetStore().directory_ && val.GetStore().index_ == GetStore().index_;
 	}
 
-	void ExportDirectoryIterator::increment()
+	void ExportDirectoryIterator::Increment()
 	{
 		assert(InRange());
 		++GetStore().index_;
 	}
 
-	void ExportDirectoryIterator::decrement()
+	void ExportDirectoryIterator::Decrement()
 	{
 		assert(InRange());
 		--GetStore().index_;
 	}
 
-	void ExportDirectoryIterator::advance(int n)
+	void ExportDirectoryIterator::Advance(int n)
 	{
 		assert(InRange());
 		GetStore().index_ += n;
 	}
 
-	ExportDirectoryIterator::difference_type ExportDirectoryIterator::distance_to(const ExportDirectoryIterator & val) const
+	ExportDirectoryIterator::difference_type ExportDirectoryIterator::DistanceTo(const ExportDirectoryIterator & val) const
 	{
 		assert(val.GetStore().directory_ == GetStore().directory_);
 		return val.GetStore().index_ - GetStore().index_;
 	}
 
-	ExportDirectoryIterator::reference ExportDirectoryIterator::dereference() const
+	ExportDirectoryIterator::reference ExportDirectoryIterator::Dereference() const
 	{
 		assert(InRange());
 		return const_cast<reference>(GetStore());

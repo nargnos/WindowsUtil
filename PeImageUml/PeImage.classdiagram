@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="46ce946f-79ae-4903-ba70-785f15dc33f3" name="PeImage" linkedPackageId="0134d591-9153-49a2-bc44-850c8cc792ac" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <ownedCommentsInternal>
+    <comment Id="5089bfff-5afb-4c83-bc78-5a0317ed77dd">
+      <elementDefinition Id="d2439723-6d90-4283-a9d8-9e37306a188a" />
+      <body>* 所有的Pe结构需要能取到数据和数据位置
+
+在结构不存在时如何避免使用异常？
+
+各个结构都是有顺序的，如何表示这种顺序
+
+rva转换还是不要放这里了
+
+有点想把所有原始结构封装成类，不过工作量有点大，而且会丢失偏移信息，每个类都需要能够返回自身代表结构的原始指针才行</body>
+      <annotatedElements>
+        <classMoniker Id="17b5790a-ded8-468a-b054-00ff5794b996" LastKnownName="PeImage" />
+      </annotatedElements>
+    </comment>
+    <comment Id="15204747-d08f-4680-87ac-681bd1c896e0">
+      <elementDefinition Id="ae48d3bd-f474-418f-8f1c-98b43819b853" />
+      <body>rva转换在此</body>
+      <annotatedElements>
+        <classMoniker Id="dd09af2d-3c7f-4bde-b608-1ddf37fcb164" LastKnownName="Section" />
+      </annotatedElements>
+    </comment>
+    <comment Id="9ad094b0-ce0a-44ad-9d53-22fec4ad93bc">
+      <elementDefinition Id="31b64a4e-e9f8-4de0-a0eb-efbcb473dd1a" />
+      <body>下面这些类型不一定存在，没必要使用接口，在使用上没有共性
+唯一共性就是判断存在性和取得数据地址</body>
+      <annotatedElements>
+        <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+      </annotatedElements>
+    </comment>
+    <comment Id="551ab0b5-b9c0-4c00-bf77-50585ee6c32f">
+      <elementDefinition Id="d7099320-1905-45bf-b738-0a0002a9a15a" />
+      <body>可能不存在
+应该不属于DosHeader的内容吧？</body>
+      <annotatedElements>
+        <classMoniker Id="d8b8a7c0-0a6c-46b4-8235-21ca591a2c30" LastKnownName="DosStub" />
+      </annotatedElements>
+    </comment>
+    <comment Id="81c42638-823d-48a4-9d75-b6543e389a11">
+      <elementDefinition Id="f37c298c-54cc-402b-8173-07af88b37b5a" />
+      <body>验证的函数可以改成静态的</body>
+      <annotatedElements>
+        <classMoniker Id="ebf545a7-1b13-493a-8383-29e0effb5df4" LastKnownName="DosHeader" />
+        <classMoniker Id="4bd34e07-b798-45bd-b5bb-f0d965bc6167" LastKnownName="NtHeader" />
+      </annotatedElements>
+    </comment>
+    <comment Id="1e9c2b57-d170-4cfa-822d-74fabc165725">
+      <elementDefinition Id="9701869e-b0f6-48cc-bfa1-6d7ddddb034c" />
+      <body>分32、64不同结构，结构长度不同，字段和字段类型些许不同
+
+如何统一
+
+如果不用到原始信息的话只会用到取directories位置</body>
+      <annotatedElements>
+        <classMoniker Id="4bd34e07-b798-45bd-b5bb-f0d965bc6167" LastKnownName="NtHeader" />
+      </annotatedElements>
+    </comment>
+    <comment Id="91f9388e-2108-4a48-aab8-e416041652be">
+      <elementDefinition Id="0ecb1e62-fe5b-4a68-9012-dfa58b6e3a12" />
+      <body>用到NtHeader的DataDirectories信息
+和
+Section的rva转换</body>
+      <annotatedElements>
+        <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+      </annotatedElements>
+    </comment>
+  </ownedCommentsInternal>
+  <profileInstances>
+    <packageHasProfileInstances Id="161c560b-60bf-46f8-b33c-14fcd2133975">
+      <profileInstance Id="09f1e6a3-2112-4ee4-8bf0-924cf9545dd4" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="f4987cdd-63a6-4646-a894-be3092a26690">
+      <profileInstance Id="7f2b599a-ed1e-4e5b-8a2c-d3fb23479e8a" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="17b5790a-ded8-468a-b054-00ff5794b996" name="PeImage" isAbstract="false" isLeaf="false" isActiveClass="true">
+        <elementDefinition Id="3014bdc8-0c74-4607-b9dd-83aeecdf1655" />
+        <ownedAttributesInternal>
+          <property Id="7b6a8f82-f094-437d-9357-2ece7104136b" name="IsMapped" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="44fec2cd-a362-4233-afd4-3eb97c4ad61c" />
+          </property>
+          <property Id="24102b3d-92b1-431d-ae28-ff45a82fa42f" name="ImageType" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="cf5824eb-f876-4f2a-a258-dd23903142c9" />
+          </property>
+          <property Id="0c840b78-075e-4c7f-8366-c54228f3c065" name="IsPe" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="1950463f-26fe-413c-8569-26f7490b244f" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="a25d6a42-3f79-4b4f-aad2-f0cd6548640b" name="GetDosHeader" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8ef87ea9-1672-44ec-9732-8d5b19b97e12" />
+          </operation>
+          <operation Id="afc5c68a-163e-4d0c-9c9d-789ce54fb12f" name="GetDosStub" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6ee4ce0b-3240-4d10-95f1-a0117cea2e7a" />
+          </operation>
+          <operation Id="59f9c86a-bbb8-40ed-93d1-b5679243a18d" name="GetNtHeader" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="eb575cc7-f158-4d3a-8c5f-a39b1def7f80" />
+          </operation>
+          <operation Id="c16dce8b-c0e8-421b-aaa0-5618b588920c" name="GetSection" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="ce51d086-9a91-4b81-9fd2-abcabfbed0fd" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="dd09af2d-3c7f-4bde-b608-1ddf37fcb164" name="Section" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="cb82f86b-c9a9-4cbc-90a7-dfa3d81d2de5" />
+        <suppliersInternal>
+          <dependency Id="4973d6eb-6571-4eeb-9a80-68e8e7a84278">
+            <classMoniker Id="4bd34e07-b798-45bd-b5bb-f0d965bc6167" LastKnownName="NtHeader" />
+            <elementDefinition Id="c17ce969-ead8-4ab8-8a18-5f299e2e0fdb" />
+          </dependency>
+        </suppliersInternal>
+        <targetEnds>
+          <association Id="7705dc88-bfe6-4b4b-a361-f8443bfdec07" isDerived="false" sourceEndRoleName="Section" targetEndRoleName="PeImage" isLeaf="false" isAbstract="false">
+            <classMoniker Id="17b5790a-ded8-468a-b054-00ff5794b996" LastKnownName="PeImage" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="5b33ed1d-23b7-4cb1-8a94-266f338a18c7" name="Section" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="Composite" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="9ba7413a-7e75-4847-a40c-c1e4ce63d998" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a7006fbb-46cf-406e-8d31-b913feed9f66" name="PeImage" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="true">
+                  <elementDefinition Id="cd907aea-6db9-4d4f-b731-37651e74035e" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="7f6d2ba0-0df1-40b2-bc60-60a744d80d6d" />
+          </association>
+        </targetEnds>
+        <ownedOperationsInternal>
+          <operation Id="d29ce902-773e-4568-a856-c60d34592410" name="OffsetToRva" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="18f15a36-5791-4f3b-82da-557c748202fb" />
+          </operation>
+          <operation Id="e1203947-a8fe-4e1b-9cb3-9fc3ac2a7da2" name="RvaToDataPtr" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="2e0b136d-2d27-49e5-af66-9c9e45c9d760" />
+          </operation>
+          <operation Id="1d3583f4-af8b-44b6-89e5-ce1d40d5bcf9" name="RvaToOffset" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="862a89e4-2291-49be-9603-f70418c3bba2" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="4bd34e07-b798-45bd-b5bb-f0d965bc6167" name="NtHeader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="4977fc63-d43b-448e-baf3-82e969b2cf27" />
+        <suppliersInternal>
+          <dependency Id="2124c40c-cee4-47b4-bdb1-6bdf2c5f4e8a">
+            <classMoniker Id="ebf545a7-1b13-493a-8383-29e0effb5df4" LastKnownName="DosHeader" />
+            <elementDefinition Id="3d8c7889-d25c-4272-9843-ad8aefffb6ec" />
+          </dependency>
+        </suppliersInternal>
+        <targetEnds>
+          <association Id="16005e3f-05c7-4de6-9e70-7b1d5049c2ef" isDerived="false" sourceEndRoleName="NtHeader" targetEndRoleName="PeImage" isLeaf="false" isAbstract="false">
+            <classMoniker Id="17b5790a-ded8-468a-b054-00ff5794b996" LastKnownName="PeImage" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ba3335fd-5463-4a6d-be5b-b7d8e4513a6f" name="NtHeader" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="Composite" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="963a2d34-05f9-4cf7-add9-921942c76918" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ac146107-6d22-45d6-851d-2c9244b425b8" name="PeImage" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="true">
+                  <elementDefinition Id="edef966f-cae1-4b6e-8aa4-1122096e3913" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="657be76d-3f2b-44f2-860b-28cecbc15bdc" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="ebf545a7-1b13-493a-8383-29e0effb5df4" name="DosHeader" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="4933bbbe-3699-47e7-a839-06fb910b9419" />
+        <targetEnds>
+          <association Id="1416cc33-ec58-47ad-b6e4-f6cc04441712" isDerived="false" sourceEndRoleName="DosHeader" targetEndRoleName="PeImage" isLeaf="false" isAbstract="false">
+            <classMoniker Id="17b5790a-ded8-468a-b054-00ff5794b996" LastKnownName="PeImage" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8a36b37b-3e9c-4609-b4a4-839a620dd108" name="DosHeader" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="Composite" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="45e66b70-8980-41a9-bf8d-306ad6fc4851" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="3ef71189-0b51-4a72-b8ce-19e25d95d310" name="PeImage" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="true">
+                  <elementDefinition Id="30ad7b33-cf3b-40c2-a2bd-5be544f8591a" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="4a05600d-edd3-4b25-ad81-ae1e19d4b8d8" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a680668d-70c6-4c65-868d-47656a21de21" name="ArchitectureDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="18d3989f-5cbe-48b0-841a-4258bb79a65d" />
+        <generalsInternal>
+          <generalization Id="c163198c-bf07-4bdc-a452-7b676fd9a0ce" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="bdd7b449-d93f-49c2-b8c0-6298318de3e0" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="18c80eb0-c781-4471-b5e7-b61c9b77fafb" name="BoundImportDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="27b4650d-8ad5-4ca2-b4fe-ed8f931ef776" />
+        <generalsInternal>
+          <generalization Id="f6e99228-fde9-4430-88a5-bc340fec0f0a" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="654168ad-0773-4f92-b1c6-edd519b8c5a0" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="830e59dc-a6a5-4f61-9c54-71dc9286192f" name="ComDescriptorDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3099abac-61a4-433c-91fb-268a164dc76a" />
+        <generalsInternal>
+          <generalization Id="86c3f62d-185d-408f-9bb0-43527800e994" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="e6d80e09-5238-4423-9cf3-7a7e27a7b998" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="7ad98095-0157-4ea6-b324-56b005f908db" name="DebugDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="8a26b993-c968-4c64-978c-cb6a6d572e0d" />
+        <generalsInternal>
+          <generalization Id="fda2c385-1df4-4a44-8e0d-94243a7a2e43" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="6d156b9d-122a-46fc-9b87-7df79d82a150" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="1468cb1e-80a4-45a5-a73d-4e41fd40384d" name="DelayImportDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="0036323e-11d0-436c-ba09-c38e13bb5e58" />
+        <generalsInternal>
+          <generalization Id="ed007788-b2bc-4001-a5ab-f2d18e852db6" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="6e84b026-3fa4-4932-9d7c-6abf56c72f31" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a88488a9-3891-460c-bc68-2bd621e59a32" name="ExceptionDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="b21e6275-7c72-4ccb-89c1-ecd056726335" />
+        <generalsInternal>
+          <generalization Id="11e00a5f-c0de-41ad-8e6a-3b9e228e81f0" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="339df752-807c-4661-9574-719478510767" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="54092552-88a4-454b-be64-05d60a9d0138" name="ExportDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="c98f089f-30c7-459a-a609-dfc85624b13b" />
+        <generalsInternal>
+          <generalization Id="a06d036f-5b49-4907-93fe-3d58c5421212" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="d3568ab7-b6cf-4c8b-930e-c932c54e8f17" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="bfb47ea0-d29c-49bd-95c3-fc132a743ead" name="GlobalptrDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="576a88cf-cdc7-4d88-819b-99fce6ebe2b8" />
+        <generalsInternal>
+          <generalization Id="fa7438c6-e06e-41c6-bd65-064154ece9ce" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="e49d72f4-22c0-4a36-a680-a82faf2ff522" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="cbfcb559-43f0-41ae-acf1-543ef6618689" name="IatDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="dc263e91-24d8-4a96-b99d-a9b5690ab115" />
+        <generalsInternal>
+          <generalization Id="e80d56b2-4f75-4780-8808-7405106ce526" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="bb1c0b4d-9e7a-4d3b-ade1-db9d175bc48a" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="b3025266-39f9-4bbd-a2a4-27a90f66495f" name="ImportDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3102cd48-26ff-4e4c-8bd5-8cd61fbb0f22" />
+        <generalsInternal>
+          <generalization Id="e1a11bd2-5717-41b7-87b9-706e2a874941" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="a88b5232-e00d-40a3-ac97-d0530ee34aea" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="26ef1d66-80c2-49f1-af33-a22f589f3e47" name="LoadConfigDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3873fe42-06d6-4e10-8f63-57be8a25e4e0" />
+        <generalsInternal>
+          <generalization Id="8c7be046-fb5e-4f50-a6fc-ee2d8ad4044b" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="51343f79-801d-48ec-b15c-0cb0eaf6cf19" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="5677db15-a4fa-45ae-862e-c4d90e833d7e" name="RelocDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="bf1ebaed-db58-4a9a-aace-b2f949d3faf5" />
+        <generalsInternal>
+          <generalization Id="95cc2f7e-f9ac-44ea-869d-27c7c79b4b26" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="29a64225-5490-4062-b67b-4d337e25c2cd" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d77a4604-1f0f-4530-95f7-0b3f88b70c0a" name="ResourceDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="44ad9919-549e-49c8-a986-2269da487e8d" />
+        <generalsInternal>
+          <generalization Id="50416518-6100-49ff-8720-32e3b4367e03" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="f4b66eb5-0559-4bcd-b9a4-2ddab0385f50" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="2d3e1941-49ce-49a5-a756-25b6ab6619e3" name="SecurityDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="a4bc9dad-519c-465a-bd63-a324cc072495" />
+        <generalsInternal>
+          <generalization Id="c6b4b931-9b7c-4bb5-8412-15f1afa6a7c6" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="517eb555-36bd-40ec-81a7-90f6dd589369" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="6d37690d-6689-4208-a7b9-194b4d13a5ef" name="TlsDirectory" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="5bac99db-2071-4934-b8e3-c68695ec1dfd" />
+        <generalsInternal>
+          <generalization Id="0ad8f42a-6995-4667-a0a9-f7b624d7721e" isSubstitutable="false">
+            <classMoniker Id="067c8fc3-3675-418d-be65-5b521eccdd5c" LastKnownName="DataDirectoryBase" />
+            <elementDefinition Id="14520958-d77a-4e40-8593-1d56b002b665" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="067c8fc3-3675-418d-be65-5b521eccdd5c" name="DataDirectoryBase" isAbstract="true" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="73ef8a6e-5648-4a85-96ab-b8bd03199220" />
+        <suppliersInternal>
+          <dependency Id="ea2da355-3ba4-4c24-ac38-b318d8be5226">
+            <classMoniker Id="4bd34e07-b798-45bd-b5bb-f0d965bc6167" LastKnownName="NtHeader" />
+            <elementDefinition Id="d0523f4f-de63-4075-9ca5-8477888c7cef" />
+          </dependency>
+          <dependency Id="174703c2-c171-41e7-8db8-a8868eabab70">
+            <classMoniker Id="dd09af2d-3c7f-4bde-b608-1ddf37fcb164" LastKnownName="Section" />
+            <elementDefinition Id="81aada9a-e3cd-455c-a7e5-b7497b042530" />
+          </dependency>
+          <dependency Id="3b8f6ca3-441e-4c71-8a2f-92863e5886e0">
+            <classMoniker Id="17b5790a-ded8-468a-b054-00ff5794b996" LastKnownName="PeImage" />
+            <elementDefinition Id="c860a270-2327-4364-aeba-694f174472d0" />
+          </dependency>
+        </suppliersInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="d8b8a7c0-0a6c-46b4-8235-21ca591a2c30" name="DosStub" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="7c5828a5-69e0-4364-bfc3-d5ee7412e6b9" />
+        <suppliersInternal>
+          <dependency Id="81e1e4bc-541a-49a6-91b9-d01faa0c913a">
+            <classMoniker Id="ebf545a7-1b13-493a-8383-29e0effb5df4" LastKnownName="DosHeader" />
+            <elementDefinition Id="9f57f4d3-22aa-4ad4-bea7-a1eea6ae8e48" />
+          </dependency>
+        </suppliersInternal>
+        <targetEnds>
+          <association Id="7b2cb559-b498-4870-b77e-9be8ad69fb23" isDerived="false" sourceEndRoleName="DosStub" targetEndRoleName="PeImage" isLeaf="false" isAbstract="false">
+            <classMoniker Id="17b5790a-ded8-468a-b054-00ff5794b996" LastKnownName="PeImage" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="e9ae5cf7-a547-40e0-889a-c1973faf0874" name="DosStub" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="Composite" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="6860b1dc-c682-46fb-b6a0-13eed5cce037" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="5717993a-bca9-4eb5-860e-e79197260c88" name="PeImage" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="true">
+                  <elementDefinition Id="3df2650d-f848-4da5-a7af-57af69fe829d" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="24899b6e-f09f-47a6-b102-ec1cf8ea898d" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="0134d591-9153-49a2-bc44-850c8cc792ac" name="PeImageUml">
+    <elementDefinition Id="c5bd37d6-acf1-4dab-81b7-8ea2fa82b1ec" />
+  </package>
+</logicalClassDesignerModel>

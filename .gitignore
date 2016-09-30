@@ -268,3 +268,4 @@ FakesAssemblies/
 *.opt
 
 .svn/
+WindowsUtil.VC.db

@@ -92,7 +92,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
       <EnablePREfast>true</EnablePREfast>
       <BrowseInformation>true</BrowseInformation>
     </ClCompile>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
       <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
@@ -126,7 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
       <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
@@ -144,7 +144,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\Boost;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
       <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
@@ -167,7 +167,6 @@
     <ClInclude Include="FindLoadedModuleHandle.h" />
     <ClInclude Include="GetProcAddress.h" />
     <ClInclude Include="Coroutine.h" />
-    <ClInclude Include="IteratorAdaptors.h" />
     <ClInclude Include="Kernel32.h" />
     <ClInclude Include="LdrDataTable.h" />
     <ClInclude Include="LdrDataTableEntryIterator.h" />

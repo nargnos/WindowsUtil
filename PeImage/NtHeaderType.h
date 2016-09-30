@@ -1,6 +1,7 @@
 #pragma once
 namespace PeDecoder
 {
+	// 不要修改这里的顺序
 	enum class NtHeaderType :
 		unsigned char
 	{

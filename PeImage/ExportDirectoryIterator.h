@@ -1,25 +1,26 @@
 #pragma once
 #include "PeImageFwd.h"
 #include "ExportIteratorNode.h"
+#include "IteratorBase.h"
 namespace PeDecoder
 {
 	class ExportDirectoryIterator :
-		public iterator_facade<
+		public IteratorBase<
 		ExportDirectoryIterator,
-		ExportIteratorNode,
-		random_access_traversal_tag>
+		_STD random_access_iterator_tag,
+		ExportIteratorNode>
 	{
 	public:
-		friend class iterator_core_access;
+		friend IteratorFriendAccess;
 		ExportDirectoryIterator(ExportDirectory& directory, DWORD index);
 	
 	protected:
-		bool equal(const ExportDirectoryIterator & val) const;
-		void increment();
-		void decrement();
-		void advance(int n);
-		difference_type distance_to(const ExportDirectoryIterator & val) const;
-		reference dereference() const;
+		bool Equal(const ExportDirectoryIterator & val) const;
+		void Increment();
+		void Decrement();
+		void Advance(int n);
+		difference_type DistanceTo(const ExportDirectoryIterator & val) const;
+		reference Dereference() const;
 
 		bool InRange() const;
 

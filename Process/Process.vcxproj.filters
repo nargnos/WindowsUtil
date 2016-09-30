@@ -147,9 +147,6 @@
     <ClInclude Include="VirtualFree.h">
       <Filter>OverwriteWinApi</Filter>
     </ClInclude>
-    <ClInclude Include="IteratorAdaptors.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="SpinLock.h">
       <Filter>Other</Filter>
     </ClInclude>

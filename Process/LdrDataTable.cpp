@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "LdrDataTable.h"
-#include "IteratorAdaptors.h"
 #include "LdrDataTableEntryIterator.h"
 
 namespace Process

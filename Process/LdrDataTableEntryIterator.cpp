@@ -4,20 +4,20 @@ namespace Process
 {
 	namespace EnvironmentBlock
 	{
-		LdrDataTableEntryIterator::LdrDataTableEntryIterator(PLIST_ENTRY node, std::function<PLDR_DATA_TABLE_ENTRY_Ex(PLIST_ENTRY)> dereference) :
+		LdrDataTableEntryIterator::LdrDataTableEntryIterator(PLIST_ENTRY node, std::function<PLDR_DATA_TABLE_ENTRY_Ex(PLIST_ENTRY)> Dereference) :
 			node_(node),
-			dereference_(dereference)
+			dereference_(Dereference)
 		{
 		}
-		bool LdrDataTableEntryIterator::equal(const LdrDataTableEntryIterator & val) const
+		bool LdrDataTableEntryIterator::Equal(const LdrDataTableEntryIterator & val) const
 		{
 			return node_ == val.node_;
 		}
-		void LdrDataTableEntryIterator::increment()
+		void LdrDataTableEntryIterator::Increment()
 		{
 			node_=node_->Blink;
 		}
-		LdrDataTableEntryIterator::reference LdrDataTableEntryIterator::dereference() const
+		LdrDataTableEntryIterator::reference LdrDataTableEntryIterator::Dereference() const
 		{
 			return *dereference_(node_);
 		}

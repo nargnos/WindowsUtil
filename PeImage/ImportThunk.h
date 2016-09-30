@@ -1,6 +1,7 @@
 #pragma once
 #include "DataPtr.h"
 #include "GetOriginal.h"
+#include "IteratorBase.h"
 namespace PeDecoder
 {
 	template<typename TThunkType>
@@ -68,25 +69,25 @@ namespace PeDecoder
 	// ¿‡–Õ”–PIMAGE_THUNK_DATA32 PIMAGE_THUNK_DATA64
 	template<typename TThunkType>
 	class ImportThunkIterator :
-		public iterator_facade<
+		public IteratorBase<
 		ImportThunkIterator<TThunkType>,
-		ImportThunkIteratorNode<TThunkType>,
-		forward_traversal_tag>
+		_STD forward_iterator_tag,
+		ImportThunkIteratorNode<TThunkType>>
 	{
 	public:
-		friend class iterator_core_access;
+		friend IteratorFriendAccess;
 
 		ImportThunkIterator(PeImage& pe, TThunkType thunk, TThunkType originalThunk) :
 			store_(pe, thunk, originalThunk)
 		{
 		}
 	protected:
-		bool equal(const ImportThunkIterator & val) const
+		bool Equal(const ImportThunkIterator & val) const
 		{
 			return GetStore().originalThunk_ == val.GetStore().originalThunk_ &&
 				GetStore().thunk_ == val.GetStore().thunk_;
 		}
-		void increment()
+		void Increment()
 		{
 			++GetStore().originalThunk_;
 			++GetStore().thunk_;
@@ -99,7 +100,7 @@ namespace PeDecoder
 		}
 
 
-		ImportThunkIteratorNode<TThunkType>& dereference() const
+		ImportThunkIteratorNode<TThunkType>& Dereference() const
 		{
 			return const_cast<ImportThunkIteratorNode<TThunkType>&>(GetStore());
 		}

@@ -8,19 +8,19 @@ namespace PeDecoder
 	{
 	}
 
-	bool RelocDirectoryIterator::equal(const RelocDirectoryIterator & val) const
+	bool RelocDirectoryIterator::Equal(const RelocDirectoryIterator & val) const
 	{
 		return val.GetStore().relocDirectory_ == GetStore().relocDirectory_ &&
 			GetStore().ptr_ == val.GetStore().ptr_;
 	}
 
-	void RelocDirectoryIterator::increment()
+	void RelocDirectoryIterator::Increment()
 	{
 		assert(InRange());
 		GetStore().ptr_ = PIMAGE_BASE_RELOCATION((unsigned char*)GetStore().ptr_ + GetStore().ptr_->SizeOfBlock);
 	}
 
-	RelocDirectoryIterator::reference RelocDirectoryIterator::dereference() const
+	RelocDirectoryIterator::reference RelocDirectoryIterator::Dereference() const
 	{
 		assert(InRange());
 		return const_cast<reference>(GetStore());
@@ -29,7 +29,7 @@ namespace PeDecoder
 	bool RelocDirectoryIterator::InRange() const
 	{
 		auto beginPtr = GetStore().relocDirectory_->GetPtr();
-		auto endPtr = beginPtr + GetStore().relocDirectory_->GetSize() / sizeof(IMAGE_BASE_RELOCATION);
+		auto endPtr = reinterpret_cast<PIMAGE_BASE_RELOCATION>(reinterpret_cast<char*>(beginPtr) + GetStore().relocDirectory_->GetSize());
 		return GetStore().ptr_ >= beginPtr && GetStore().ptr_ < endPtr;
 	}
 

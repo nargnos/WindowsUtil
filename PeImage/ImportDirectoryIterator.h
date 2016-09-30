@@ -2,24 +2,25 @@
 #include "PeImageFwd.h"
 #include "ImportDescriptor.h"
 #include "ImportThunk.h"
+#include "IteratorBase.h"
 namespace PeDecoder
 {
 	// ImportDescriptor iterator
 	// 节点类型为ImportDescriptor
 	class ImportDirectoryIterator :
-		public iterator_facade<
+		public IteratorBase<
 		ImportDirectoryIterator,
-		ImportDescriptor,
-		forward_traversal_tag>
+		_STD forward_iterator_tag,
+		ImportDescriptor>
 	{
 	public:
-		friend class iterator_core_access;
+		friend IteratorFriendAccess;
 		ImportDirectoryIterator(ImportDirectory& importDirectory, PIMAGE_IMPORT_DESCRIPTOR ptr);
 
 	protected:
-		bool equal(const ImportDirectoryIterator & val) const;
-		void increment();
-		reference dereference() const;
+		bool Equal(const ImportDirectoryIterator & val) const;
+		void Increment();
+		reference Dereference() const;
 
 		ImportDescriptor& GetStore();
 		const ImportDescriptor& GetStore() const;

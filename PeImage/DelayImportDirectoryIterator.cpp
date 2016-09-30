@@ -7,12 +7,12 @@ namespace PeDecoder
 		store_(delayImportDirectory, ptr)
 	{
 	}
-	 bool DelayImportDirectoryIterator::equal(const DelayImportDirectoryIterator & val) const
+	 bool DelayImportDirectoryIterator::Equal(const DelayImportDirectoryIterator & val) const
 	{
 		return val.GetStore().delayImportDirectory_ == GetStore().delayImportDirectory_ && 
 			GetStore().dataPtr_ == val.GetStore().dataPtr_;
 	}
-	 void DelayImportDirectoryIterator::increment()
+	 void DelayImportDirectoryIterator::Increment()
 	{
 		++GetStore().dataPtr_;
 		if (GetStore().dataPtr_->grAttrs == 0)
@@ -20,7 +20,7 @@ namespace PeDecoder
 			GetStore().dataPtr_ = nullptr;
 		}
 	}
-	DelayImportDirectoryIterator::reference DelayImportDirectoryIterator::dereference() const
+	DelayImportDirectoryIterator::reference DelayImportDirectoryIterator::Dereference() const
 	{
 		return const_cast<reference>(GetStore());
 	}

@@ -1,22 +1,24 @@
 #pragma once
 #include "DataPtr.h"
 #include "DataSize.h"
-
+#include "SectionIterator.h"
 namespace PeDecoder
 {
-	class SectionHeaders:
+	class PeImage;
+
+	class SectionHeaders :
 		public Detail::DataPtr<PIMAGE_SECTION_HEADER>,
 		public Detail::DataSize<PWORD>
 	{
 	public:
-		typedef TDataPtr iterator;
+		typedef Detail::SectionIterator iterator;
 		SectionHeaders(TDataPtr ptr, TSizePtr sizePtr, PDWORD sectionAlignmentPtr);
-
+		explicit SectionHeaders(const PeImage& pe);
 		~SectionHeaders() = default;
-		PDWORD GetSectionAlignment();
+		PDWORD GetSectionAlignment() const;
 
-		TDataPtr RvaToSectionHeader(DWORD rva);
-		TDataPtr OffsetToSectionHeader(DWORD fileOffset);
+		TDataPtr RvaToSectionHeader(DWORD rva) const;
+		TDataPtr OffsetToSectionHeader(DWORD fileOffset) const;
 
 		// 为了兼容c++算法，首字母不大写了
 		iterator begin() const;
@@ -27,5 +29,5 @@ namespace PeDecoder
 		// 必须保存来源，以提供修改
 		PDWORD sectionAlignmentPtr_;
 	};
-	
+
 }  // namespace PeDecoder

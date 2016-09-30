@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsUtilTest", "UnitTest1\UnitTest1.vcxproj", "{2D17935F-28E6-4581-9E22-B997320033E6}"
 EndProject
@@ -31,6 +31,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HookLibTest", "HookLibTest\HookLibTest.vcxproj", "{24FB7919-CD78-4571-A4FB-2447E54FCC04}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Disassembler", "Disassembler\Disassembler.vcxproj", "{0767B1B7-78AF-46A0-A4EE-3773353C039E}"
+EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "PeImageUml", "PeImageUml\PeImageUml.modelproj", "{0DBA13F2-ACF0-414F-B752-B01AC779964D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +158,18 @@ Global
 		{0767B1B7-78AF-46A0-A4EE-3773353C039E}.Release|Win32.Build.0 = Release|Win32
 		{0767B1B7-78AF-46A0-A4EE-3773353C039E}.Release|x64.ActiveCfg = Release|x64
 		{0767B1B7-78AF-46A0-A4EE-3773353C039E}.Release|x64.Build.0 = Release|x64
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Debug|Win32.Build.0 = Debug|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Debug|x64.Build.0 = Debug|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Release|Win32.Build.0 = Release|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DBA13F2-ACF0-414F-B752-B01AC779964D}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

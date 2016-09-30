@@ -1,18 +1,19 @@
 #pragma once
 #include "PeImageFwd.h"
 #include "BaseRelocation.h"
+#include "IteratorBase.h"
 namespace PeDecoder
 {
 	class RelocDirectoryIterator :
-		public iterator_facade<RelocDirectoryIterator, BaseRelocation, forward_traversal_tag>
+		public IteratorBase<RelocDirectoryIterator,_STD forward_iterator_tag, BaseRelocation>
 	{
 	public:
-		friend class iterator_core_access;
+		friend IteratorFriendAccess;
 		RelocDirectoryIterator(RelocDirectory& relocDirectory, PIMAGE_BASE_RELOCATION ptr);
 	protected:
-		bool equal(const RelocDirectoryIterator & val) const;
-		void increment();
-		reference dereference() const;
+		bool Equal(const RelocDirectoryIterator & val) const;
+		void Increment();
+		reference Dereference() const;
 		bool InRange() const;
 
 		const BaseRelocation& GetStore() const;
