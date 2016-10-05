@@ -1,20 +1,15 @@
 #pragma once
-#include "PeImageFwd.h"
+#include <Windows.h>
 #include "DataPtr.h"
-#include "DosStub.h"
 namespace PeDecoder
 {
-	class DosHeader :
+	class DosHeader:
 		public Detail::DataPtr<PIMAGE_DOS_HEADER>
 	{
 	public:
 		using DataPtr::DataPtr;
-		~DosHeader() = default;
-		static bool Valid(const TDataPtr ptr);
-		static void* GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader);
-		const unique_ptr<DosStub>& GetDosStub();
+		static bool Valid(const PIMAGE_DOS_HEADER ptr);
 
-	protected:
-		unique_ptr<DosStub> dosStub_;
+		bool Valid() const;
 	};
 }  // namespace PeDecoder

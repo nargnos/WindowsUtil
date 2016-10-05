@@ -8,8 +8,8 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::ComDescriptor>
 	{
 	public:
-		ComDescriptorDirectory(PeImage& pe);
-		~ComDescriptorDirectory() = default;
+		
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder
 

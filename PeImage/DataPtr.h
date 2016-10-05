@@ -4,7 +4,8 @@ namespace PeDecoder
 {
 	namespace Detail
 	{
-		template<typename TDataPtr>
+
+		template<typename TDataPtr, typename TPtrProxy = TDataPtr>
 		class DataPtr
 		{
 		public:
@@ -18,12 +19,16 @@ namespace PeDecoder
 			}
 
 			virtual ~DataPtr() = default;
-			TDataPtr GetPtr() const
+			TPtrProxy GetPtr() const
 			{
 				assert(dataPtr_);
-				return dataPtr_;
+				return TPtrProxy(dataPtr_);
 			}
 			explicit operator bool()
+			{
+				return IsExist();
+			}
+			bool IsExist() const
 			{
 				return dataPtr_ != nullptr;
 			}

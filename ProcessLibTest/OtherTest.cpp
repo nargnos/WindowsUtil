@@ -68,12 +68,12 @@ namespace ProcessLibTest
 				for (size_t i = 0; i < 10; i++)
 				{
 					Logger::WriteMessage("-->");
-					std::this_thread::sleep_for(std::chrono::milliseconds(500));
+					std::this_thread::sleep_for(std::chrono::milliseconds(50));
 				}
 			});
 
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 			t.Resume();
 
 			//测试设置优先级

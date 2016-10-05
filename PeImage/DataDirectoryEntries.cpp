@@ -5,10 +5,10 @@
 
 namespace PeDecoder
 {
-	_STD tuple<DataDirectoryEntries::TDataPtr, DataDirectoryEntries::TSizePtr> GetDataDirectoryPtrAndSize(NtHeader & nt)
+	_STD tuple<DataDirectoryEntries::TDataPtr, DataDirectoryEntries::TSizePtr> GetDataDirectoryPtrAndSize(const NtHeader & nt)
 	{
 		_STD tuple<DataDirectoryEntries::TDataPtr, DataDirectoryEntries::TSizePtr> result;
-		switch (NtHeader::GetHeaderType(nt.GetPtr32()))
+		switch (nt.GetHeaderType())
 		{
 		case NtHeaderType::NtHeader32:
 		{
@@ -34,7 +34,7 @@ namespace PeDecoder
 		assert(ptr);
 		assert(sizePtr);
 	}
-	DataDirectoryEntries::DataDirectoryEntries(NtHeader & nt) :
+	DataDirectoryEntries::DataDirectoryEntries(const NtHeader & nt) :
 		DataPtr(nullptr),
 		DataSize(nullptr)
 	{

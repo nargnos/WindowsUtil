@@ -10,9 +10,7 @@ namespace PeDecoder
 	public:
 		typedef ImportDirectoryIterator iterator;
 		// 这里的size表示整个结构包括thunk和name的大小
-		ImportDirectory(PeImage& pe);
-
-		~ImportDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 		iterator begin();
 		iterator end();
 	};

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "ExportDirectory.h"
-#include "PeImage.h"
+#include "IPeImage.h"
 #include "ExportDirectoryIterator.h"
 namespace PeDecoder
 {
-	ExportDirectory::ExportDirectory(PeImage & pe) :
+	ExportDirectory::ExportDirectory(IPeImage & pe) :
 		DirectoryBase(pe)
 	{
 		numberOfNames_ = &GetPtr()->NumberOfNames;

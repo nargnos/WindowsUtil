@@ -117,41 +117,15 @@ Section的rva转换</body>
         isAbstract="false"
         isLeaf="false"
         isActiveClass="true">
-        <ownedAttributesInternal>
-          <property
-            Id="44fec2cd-a362-4233-afd4-3eb97c4ad61c"
-            name="IsMapped"
-            isLeaf="false"
-            isStatic="false"
-            isReadOnly="false"
-            isUnique="false"
-            isDerived="false"
-            isDerivedUnion="false"
-            aggregation="None"
-            isComposite="false" />
-          <property
-            Id="cf5824eb-f876-4f2a-a258-dd23903142c9"
-            name="ImageType"
-            isLeaf="false"
-            isStatic="false"
-            isReadOnly="false"
-            isUnique="false"
-            isDerived="false"
-            isDerivedUnion="false"
-            aggregation="None"
-            isComposite="false" />
-          <property
-            Id="1950463f-26fe-413c-8569-26f7490b244f"
-            name="IsPe"
-            isLeaf="false"
-            isStatic="false"
-            isReadOnly="false"
-            isUnique="false"
-            isDerived="false"
-            isDerivedUnion="false"
-            aggregation="None"
-            isComposite="false" />
-        </ownedAttributesInternal>
+        <suppliersInternal>
+          <interfaceRealization
+            Id="4a673630-2e4c-4360-8186-9b09cf41aac2">
+            <interfaceMoniker
+              Id="a8583d68-219d-4446-b163-cd24b9089e09"
+              LastKnownName="IPeInfo"
+              LastKnownLocation="PeImageUml.uml" />
+          </interfaceRealization>
+        </suppliersInternal>
         <ownedOperationsInternal>
           <operation
             Id="8ef87ea9-1672-44ec-9732-8d5b19b97e12"
@@ -185,6 +159,30 @@ Section的rva转换</body>
             isAbstract="false"
             concurrency="Sequential"
             isQuery="false" />
+          <operation
+            Id="2645e752-2960-4331-8b09-2f5b830988dc"
+            name="IsPe"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="3f7c6a87-f76f-4d0b-a91b-261e921b28e2"
+            name="IsMapped"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="a0fb67cc-ac3b-4b23-8165-6b6ed649a271"
+            name="GetImageType"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
         </ownedOperationsInternal>
       </class>
     </packageHasNamedElement>
@@ -201,6 +199,13 @@ Section的rva转换</body>
             <classMoniker
               Id="4977fc63-d43b-448e-baf3-82e969b2cf27"
               LastKnownName="NtHeader"
+              LastKnownLocation="PeImageUml.uml" />
+          </dependency>
+          <dependency
+            Id="7cfe4870-5797-4af4-ad40-54d90208566b">
+            <interfaceMoniker
+              Id="a8583d68-219d-4446-b163-cd24b9089e09"
+              LastKnownName="IPeInfo"
               LastKnownLocation="PeImageUml.uml" />
           </dependency>
         </suppliersInternal>
@@ -914,6 +919,72 @@ Section的rva转换</body>
           </association>
         </targetEnds>
       </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="a8583d68-219d-4446-b163-cd24b9089e09"
+        name="IPeInfo"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedOperations>
+          <operation
+            Id="40c6a24b-d45f-46f8-ba07-b72a75a851d9"
+            name="GetDosHeader"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="d685dd48-7032-4d2f-a19d-53dc879e61eb"
+            name="GetDosStub"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="e2efa8fd-27a6-4bf3-8e5b-541365682f09"
+            name="GetNtHeader"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="83d5d045-3f18-423e-b808-35d826e202d6"
+            name="GetSection"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="d2825382-b87f-4711-8e36-fa740f3de7ce"
+            name="IsPe"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="0df3861f-9537-4669-b576-75a824408930"
+            name="IsMapped"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="46fe424e-737b-45bf-9391-d980df41c4bd"
+            name="GetImageType"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperations>
+      </Interface>
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

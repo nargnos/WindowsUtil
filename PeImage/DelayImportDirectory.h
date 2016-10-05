@@ -10,7 +10,7 @@ namespace PeDecoder
 	{
 	public:
 		typedef DelayImportDirectoryIterator iterator;
-		DelayImportDirectory(PeImage& pe);
+		using DirectoryBase::DirectoryBase;
 		iterator begin();
 		iterator end();
 	};

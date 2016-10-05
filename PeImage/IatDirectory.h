@@ -7,11 +7,7 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Iat>
 	{
 	public:
-		IatDirectory(PeImage& pe) :
-			DirectoryBase(pe)
-		{
-		}
-		~IatDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder
 

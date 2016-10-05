@@ -7,7 +7,7 @@ namespace PeDecoder
 	{
 	public:
 		friend class TypeOffsetIterator;
-		TypeOffset(PeImage& pe, PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr);
+		TypeOffset(PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr);
 		PWORD GetPtr() const;
 		WORD CurrentType();
 
@@ -25,7 +25,6 @@ namespace PeDecoder
 
 		static void RelocDir64(PVOID oldBase, PVOID currentBase, DWORD relocRva);
 
-		PeImage* pe_;
 		PIMAGE_BASE_RELOCATION baseReloc_;
 		PWORD ptr_;
 	};

@@ -3,10 +3,6 @@
 #include "DelayImportDirectoryIterator.h"
 namespace PeDecoder
 {
-	DelayImportDirectory::DelayImportDirectory(PeImage & pe) :
-		DirectoryBase(pe)
-	{
-	}
 	DelayImportDirectory::iterator DelayImportDirectory::begin()
 	{
 		return iterator(*this, GetPtr());

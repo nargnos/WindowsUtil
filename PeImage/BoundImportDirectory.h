@@ -7,8 +7,8 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::BoundImport>
 	{
 	public:
-		BoundImportDirectory(PeImage& pe);
-		~BoundImportDirectory() = default;
+		
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder
 

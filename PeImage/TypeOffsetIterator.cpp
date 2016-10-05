@@ -3,15 +3,14 @@
 
 namespace PeDecoder
 {
-	TypeOffsetIterator::TypeOffsetIterator(PeImage & pe, PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr) :
-		store_(pe, baseReloc, ptr)
+	TypeOffsetIterator::TypeOffsetIterator(IPeImage & pe, PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr) :
+		store_(baseReloc, ptr)
 	{
 	}
 	bool TypeOffsetIterator::Equal(const TypeOffsetIterator & val) const
 	{
 		return GetStore().ptr_ == val.GetStore().ptr_&&
-			GetStore().baseReloc_ == val.GetStore().baseReloc_&&
-			GetStore().pe_ == val.GetStore().pe_;
+			GetStore().baseReloc_ == val.GetStore().baseReloc_;
 	}
 	void TypeOffsetIterator::Increment()
 	{

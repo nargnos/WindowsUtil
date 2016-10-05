@@ -8,7 +8,6 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Debug>
 	{
 	public:
-		DebugDirectory(PeImage& pe);
-		~DebugDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

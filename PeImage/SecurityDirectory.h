@@ -8,10 +8,6 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Security>
 	{
 	public:
-		SecurityDirectory(PeImage& pe) :
-			DirectoryBase(pe)
-		{
-		}
-		~SecurityDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

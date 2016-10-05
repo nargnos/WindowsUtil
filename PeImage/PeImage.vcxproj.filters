@@ -67,6 +67,9 @@
     <Filter Include="PeImage\Common\IteratorTemplate">
       <UniqueIdentifier>{61507205-73dd-4e87-8462-e7c91094266c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PeImage\Common\Interface">
+      <UniqueIdentifier>{378aebb0-bce4-4d1a-9a29-3fbd8224ea1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -110,12 +113,6 @@
     <ClInclude Include="DirectoryBase.h">
       <Filter>PeImage\DataDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="DosHeader.h">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="DosStub.h">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClInclude>
     <ClInclude Include="ExceptionDirectory.h">
       <Filter>PeImage\DataDirectory\ExceptionDirectory</Filter>
     </ClInclude>
@@ -155,9 +152,6 @@
     <ClInclude Include="LoadConfigDirectory.h">
       <Filter>PeImage\DataDirectory\LoadConfigDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="NtHeader.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
     <ClInclude Include="NtHeaderType.h">
       <Filter>PeImage\NtHeader</Filter>
     </ClInclude>
@@ -166,9 +160,6 @@
     </ClInclude>
     <ClInclude Include="PeImageFwd.h">
       <Filter>PeImage</Filter>
-    </ClInclude>
-    <ClInclude Include="PeRef.h">
-      <Filter>PeImage\Common</Filter>
     </ClInclude>
     <ClInclude Include="RelocDirectory.h">
       <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
@@ -230,6 +221,24 @@
     <ClInclude Include="IteratorBase.h">
       <Filter>PeImage\Common\IteratorTemplate</Filter>
     </ClInclude>
+    <ClInclude Include="IRvaConverter.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IDirectoryManager.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IPeImage.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DosHeader.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeader.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="DosStub.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -257,12 +266,6 @@
     <ClCompile Include="DelayImportDirectory.cpp">
       <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
     </ClCompile>
-    <ClCompile Include="DosHeader.cpp">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClCompile>
-    <ClCompile Include="DosStub.cpp">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClCompile>
     <ClCompile Include="ExportDirectory.cpp">
       <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
     </ClCompile>
@@ -281,14 +284,8 @@
     <ClCompile Include="ImportDirectoryIterator.cpp">
       <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
     </ClCompile>
-    <ClCompile Include="NtHeader.cpp">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClCompile>
     <ClCompile Include="PeImage.cpp">
       <Filter>PeImage</Filter>
-    </ClCompile>
-    <ClCompile Include="PeRef.cpp">
-      <Filter>PeImage\Common</Filter>
     </ClCompile>
     <ClCompile Include="RelocDirectory.cpp">
       <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
@@ -334,6 +331,18 @@
     </ClCompile>
     <ClCompile Include="Section.cpp">
       <Filter>PeImage\Sections</Filter>
+    </ClCompile>
+    <ClCompile Include="IPeImage.cpp">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="DosHeader.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeader.cpp">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="DosStub.cpp">
+      <Filter>PeImage\DosHeader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

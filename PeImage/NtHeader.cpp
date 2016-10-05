@@ -4,7 +4,19 @@
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
-
+	NtHeader::NtHeader(const PIMAGE_DOS_HEADER dosHeader) :
+		DataPtr(GetNtHeaderPtr(dosHeader))
+	{
+	}
+	NtHeader::NtHeader(const PIMAGE_NT_HEADERS32 ntPtr32) :
+		DataPtr(ntPtr32)
+	{
+		
+	}
+	NtHeader::NtHeader(const PIMAGE_NT_HEADERS64 ntPtr64) :
+		DataPtr(ntPtr64)
+	{
+	}
 	bool NtHeader::Valid(const void * ptr)
 	{
 		// 根据枚举值查表返回内容
@@ -16,8 +28,7 @@ namespace PeDecoder
 
 		return resultTable.test(pos);
 	}
-
-	NtHeaderType NtHeader::GetHeaderType(const void* ptr)
+	NtHeaderType NtHeader::GetHeaderType(const void * ptr)
 	{
 		switch (reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<void*>(ptr))->OptionalHeader.Magic)
 		{
@@ -33,16 +44,19 @@ namespace PeDecoder
 		}
 		return NtHeaderType::UnKnown;
 	}
-
-	PIMAGE_FILE_HEADER NtHeader::GetFileHeader()
+	void * NtHeader::GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader)
+	{
+		return reinterpret_cast<unsigned char*>(dosHeader) + dosHeader->e_lfanew;
+	}
+	PIMAGE_FILE_HEADER NtHeader::GetFileHeader() const
 	{
 		return &GetPtr32()->FileHeader;
 	}
-	PIMAGE_OPTIONAL_HEADER64 NtHeader::GetOptionalHeader64()
+	PIMAGE_OPTIONAL_HEADER64 NtHeader::GetOptionalHeader64() const
 	{
 		return &GetPtr64()->OptionalHeader;
 	}
-	PIMAGE_OPTIONAL_HEADER32 NtHeader::GetOptionalHeader32()
+	PIMAGE_OPTIONAL_HEADER32 NtHeader::GetOptionalHeader32() const
 	{
 		return &GetPtr32()->OptionalHeader;
 	}
@@ -54,15 +68,18 @@ namespace PeDecoder
 	{
 		return reinterpret_cast<PIMAGE_NT_HEADERS64>(GetPtr());
 	}
-	const unique_ptr<DataDirectoryEntries>& NtHeader::GetDataDirectoryEntries()
+
+	unique_ptr<DataDirectoryEntries> NtHeader::GetDataDirectoryEntries() const
 	{
-		if (!dataDirectoryEntries_)
-		{
-			_STD call_once(dataDirInit_, [&]()
-			{
-				dataDirectoryEntries_ = make_unique<DataDirectoryEntries>(*this);
-			});
-		}
-		return dataDirectoryEntries_;
+		return make_unique<DataDirectoryEntries>(*this);
+	}
+
+	bool NtHeader::Valid() const
+	{
+		return Valid(GetPtr());
+	}
+	NtHeaderType NtHeader::GetHeaderType() const
+	{
+		return GetHeaderType(GetPtr());
 	}
 }  // namespace PeDecoder

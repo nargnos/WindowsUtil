@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "DirectoryBase.h"
-#include "PeImage.h"
 #include "NtHeader.h"
 
-std::pair<PVOID, PDWORD> PeDecoder::Detail::GetDataDirectoryEntry(PeImage & pe, DataDirectoryEntryType index)
+std::pair<PVOID, PDWORD> PeDecoder::Detail::GetDataDirectoryEntry(IPeImage & pe, DataDirectoryEntryType index)
 {
 	_STD pair<PVOID, PDWORD> result;
 	auto entry = pe.GetDirectoryEntry(index);

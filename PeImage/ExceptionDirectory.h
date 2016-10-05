@@ -8,10 +8,6 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Exception>
 	{
 	public:
-		ExceptionDirectory(PeImage& pe) :
-			DirectoryBase(pe)
-		{
-		}
-		~ExceptionDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

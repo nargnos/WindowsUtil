@@ -1,49 +1,54 @@
 #pragma once
-#include <mutex>
-#include "PeImageFwd.h"
-#include "ImageType.h"
-#include "DataDirectoryEntryType.h"
+#include "IPeImage.h"
+#include "DosHeader.h"
+#include "DosStub.h"
+#include "NtHeader.h"
+#include "SectionHeaders.h"
+#include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
-	class PeImage
+	// FIX: 需要限制buffer最大长度（有时候没办法获取,从pe记录中获取的大小不能保证不是恶意的值，在偏移nt头的时候就有可能被恶意值定向到其它地方）
+	// 否则会发生任意位置读写问题
+	class PeImage :
+		public IPeImage
 	{
 	public:
 		PeImage(void* ptr, bool isMapped);
-		~PeImage() = default;
 		// 是否是映射的
-		bool IsMapped() const;
-		bool IsPe() const;
-		void* GetBase() const;
-		ImageType GetImageType() const;
-
+		virtual bool IsMapped() const override;
+		virtual bool IsPe() const override;
+		virtual void* GetBase() const override;
+		virtual ImageType GetImageType() const override;
 		// 必存在结构
-		const unique_ptr<DosHeader>& GetDosHeader() const;
-		const unique_ptr<NtHeader>& GetNtHeader() const;
-		const unique_ptr<SectionHeaders>& GetSections() const;
+		virtual const unique_ptr<DosHeader>& GetDosHeader() const override;
+		virtual unique_ptr<DosStub> GetDosStub() const override;
+		virtual const unique_ptr<NtHeader>& GetNtHeader() const override;
+		virtual const unique_ptr<SectionHeaders>& GetSections() const override;
 
-		bool HasDirectory(DataDirectoryEntryType index);
-		PIMAGE_DATA_DIRECTORY GetDirectoryEntry(DataDirectoryEntryType index);
-		DWORD RvaToOffset(DWORD rva);
-		ULONGLONG RvaToOffset(ULONGLONG rva);
-		DWORD OffsetToRva(DWORD fileOffset);
-		PVOID RvaToDataPtr(DWORD rva);
-		PVOID RvaToDataPtr(ULONGLONG rva);
-		
+		virtual bool HasDirectory(DataDirectoryEntryType index) const override;
+		virtual PIMAGE_DATA_DIRECTORY GetDirectoryEntry(DataDirectoryEntryType index) const override;
+		virtual DWORD RvaToOffset(DWORD rva) const override;
+		virtual ULONGLONG RvaToOffset(ULONGLONG rva) const override;
+		virtual DWORD OffsetToRva(DWORD fileOffset) const override;
+		virtual PVOID RvaToDataPtr(DWORD rva) const override;
+		virtual PVOID RvaToDataPtr(ULONGLONG rva) const override;
 
 	protected:
 		PeImage(const PeImage&) = delete;
 		PeImage& operator=(const PeImage&) = delete;
 
-		mutable unique_ptr<DosHeader> dosHeader_;
-		mutable unique_ptr<NtHeader> ntHeader_;
+
+		unique_ptr<DosHeader> dosHeader_;
+		unique_ptr<NtHeader> ntHeader_;
 		mutable unique_ptr<SectionHeaders> sectionHeaders_;
 
 		unsigned char* base_;
-		mutable _STD once_flag sectionInit_;
 		ImageType imageType_;
 		bool isPe_;
 		bool isMapped_;
 		bool hasNtHeader32_;
+
+
 	};
 
 }  // namespace PeDecoder

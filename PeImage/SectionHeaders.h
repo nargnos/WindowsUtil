@@ -2,9 +2,9 @@
 #include "DataPtr.h"
 #include "DataSize.h"
 #include "SectionIterator.h"
+#include "IPeImage.h"
 namespace PeDecoder
 {
-	class PeImage;
 
 	class SectionHeaders :
 		public Detail::DataPtr<PIMAGE_SECTION_HEADER>,
@@ -13,8 +13,7 @@ namespace PeDecoder
 	public:
 		typedef Detail::SectionIterator iterator;
 		SectionHeaders(TDataPtr ptr, TSizePtr sizePtr, PDWORD sectionAlignmentPtr);
-		explicit SectionHeaders(const PeImage& pe);
-		~SectionHeaders() = default;
+		explicit SectionHeaders(const IPeImage& pe);
 		PDWORD GetSectionAlignment() const;
 
 		TDataPtr RvaToSectionHeader(DWORD rva) const;

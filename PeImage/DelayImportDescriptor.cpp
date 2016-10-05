@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DelayImportDescriptor.h"
 #include "DelayImportDirectory.h"
-#include "PeImage.h"
+#include "IPeImage.h"
 #include "ImportThunk.h"
 
 namespace PeDecoder

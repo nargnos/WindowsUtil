@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SectionHeaders.h"
-#include "PeImage.h"
 #include "NtHeader.h"
 
 namespace PeDecoder
@@ -11,13 +10,13 @@ namespace PeDecoder
 		sectionAlignmentPtr_(sectionAlignmentPtr)
 	{
 	}
-	SectionHeaders::SectionHeaders(const PeImage & pe) :
+	SectionHeaders::SectionHeaders(const IPeImage & pe) :
 		SectionHeaders(nullptr, nullptr, nullptr)
 	{
 		if (pe.IsPe())
 		{
 			auto& ntHeader = pe.GetNtHeader();
-			switch (NtHeader::GetHeaderType(ntHeader->GetPtr32()))
+			switch (ntHeader->GetHeaderType())
 			{
 			case NtHeaderType::NtHeader32:
 			{

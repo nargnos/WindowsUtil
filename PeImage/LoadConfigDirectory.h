@@ -8,10 +8,6 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::LoadConfig>
 	{
 	public:
-		LoadConfigDirectory(PeImage& pe) :
-			DirectoryBase(pe)
-		{
-		}
-		~LoadConfigDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

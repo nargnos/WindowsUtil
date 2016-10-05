@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ExportIteratorNode.h"
 #include "ExportDirectory.h"
-#include "PeImage.h"
+#include "IPeImage.h"
 namespace PeDecoder
 {
 	ExportIteratorNode::ExportIteratorNode(ExportDirectory & directory, DWORD index) :

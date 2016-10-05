@@ -184,11 +184,14 @@
     <ClInclude Include="GetRelocPtr.h" />
     <ClInclude Include="GlobalptrDirectory.h" />
     <ClInclude Include="IatDirectory.h" />
+    <ClInclude Include="IDirectoryManager.h" />
     <ClInclude Include="ImageType.h" />
     <ClInclude Include="ImportDescriptor.h" />
     <ClInclude Include="ImportDirectory.h" />
     <ClInclude Include="ImportDirectoryIterator.h" />
     <ClInclude Include="ImportThunk.h" />
+    <ClInclude Include="IPeImage.h" />
+    <ClInclude Include="IRvaConverter.h" />
     <ClInclude Include="IteratorBase.h" />
     <ClInclude Include="IteratorFriendAccess.h" />
     <ClInclude Include="LoadConfigDirectory.h" />
@@ -197,7 +200,6 @@
     <ClInclude Include="PeDecoder.h" />
     <ClInclude Include="PeImage.h" />
     <ClInclude Include="PeImageFwd.h" />
-    <ClInclude Include="PeRef.h" />
     <ClInclude Include="RelocDirectory.h" />
     <ClInclude Include="RelocDirectoryIterator.h" />
     <ClInclude Include="ResourceDirectory.h" />
@@ -235,9 +237,9 @@
     <ClCompile Include="ImportDescriptor.cpp" />
     <ClCompile Include="ImportDirectory.cpp" />
     <ClCompile Include="ImportDirectoryIterator.cpp" />
+    <ClCompile Include="IPeImage.cpp" />
     <ClCompile Include="NtHeader.cpp" />
     <ClCompile Include="PeImage.cpp" />
-    <ClCompile Include="PeRef.cpp" />
     <ClCompile Include="RelocDirectory.cpp" />
     <ClCompile Include="RelocDirectoryIterator.cpp" />
     <ClCompile Include="ResourceDirectory.cpp" />

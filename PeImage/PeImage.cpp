@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "PeImage.h"
 // 
-#include "NtHeader.h"
-#include "DosHeader.h"
-#include "SectionHeaders.h"
-#include "DataDirectoryEntries.h"
+
+
 
 namespace PeDecoder
 {
@@ -28,7 +26,7 @@ namespace PeDecoder
 		dosHeader_ = make_unique<DosHeader>(dosHeaderPtr);
 
 		// 验证ntheader
-		auto ntHeaderPtr = reinterpret_cast<PIMAGE_NT_HEADERS32>(DosHeader::GetNtHeaderPtr(dosHeaderPtr));
+		auto ntHeaderPtr = reinterpret_cast<PIMAGE_NT_HEADERS32>(NtHeader::GetNtHeaderPtr(dosHeaderPtr));
 		if (!NtHeader::Valid(ntHeaderPtr))
 		{
 			return;
@@ -45,6 +43,10 @@ namespace PeDecoder
 
 		// 检测成功
 		isPe_ = imageType_ != ImageType::UnKnown;
+		if (isPe_)
+		{
+			sectionHeaders_ = make_unique<SectionHeaders>(*this);
+		}
 	}
 	// 是否是映射的
 	bool PeImage::IsMapped() const
@@ -82,27 +84,20 @@ namespace PeDecoder
 	const unique_ptr<SectionHeaders>& PeImage::GetSections() const
 	{
 		assert(IsPe());
-		if (!sectionHeaders_ && IsPe())
-		{
-			_STD call_once(sectionInit_, [this]()
-			{
-				sectionHeaders_ = make_unique<SectionHeaders>(*this);
-			});
-		}
 		return sectionHeaders_;
 	}
 
-	bool PeImage::HasDirectory(DataDirectoryEntryType index)
+	bool PeImage::HasDirectory(DataDirectoryEntryType index) const
 	{
 		return GetNtHeader()->GetDataDirectoryEntries()->HasDirectory(index);
 	}
 
-	PIMAGE_DATA_DIRECTORY PeImage::GetDirectoryEntry(DataDirectoryEntryType index)
+	PIMAGE_DATA_DIRECTORY PeImage::GetDirectoryEntry(DataDirectoryEntryType index) const
 	{
 		return GetNtHeader()->GetDataDirectoryEntries()->GetDirectoryEntry(index);
 	}
 
-	DWORD PeImage::RvaToOffset(DWORD rva)
+	DWORD PeImage::RvaToOffset(DWORD rva) const
 	{
 		if (rva != 0)
 		{
@@ -114,7 +109,7 @@ namespace PeDecoder
 		}
 		return 0;
 	}
-	ULONGLONG PeImage::RvaToOffset(ULONGLONG rva)
+	ULONGLONG PeImage::RvaToOffset(ULONGLONG rva) const
 	{
 		if (rva != 0)
 		{
@@ -127,7 +122,7 @@ namespace PeDecoder
 		return 0;
 	}
 
-	DWORD PeImage::OffsetToRva(DWORD fileOffset)
+	DWORD PeImage::OffsetToRva(DWORD fileOffset) const
 	{
 		if (fileOffset != 0)
 		{
@@ -140,13 +135,18 @@ namespace PeDecoder
 		return 0;
 	}
 
-	PVOID PeImage::RvaToDataPtr(DWORD rva)
+	PVOID PeImage::RvaToDataPtr(DWORD rva) const
 	{
 		return base_ + (isMapped_ ? rva : RvaToOffset(rva));
 	}
-	PVOID PeImage::RvaToDataPtr(ULONGLONG rva)
+	PVOID PeImage::RvaToDataPtr(ULONGLONG rva) const
 	{
 		return base_ + (isMapped_ ? rva : RvaToOffset(rva));
+	}
+
+	unique_ptr<DosStub> PeImage::GetDosStub() const
+	{
+		return _STD make_unique<DosStub>(*this);
 	}
 
 

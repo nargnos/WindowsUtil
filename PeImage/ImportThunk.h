@@ -1,4 +1,5 @@
 #pragma once
+#include "IPeImage.h"
 #include "DataPtr.h"
 #include "GetOriginal.h"
 #include "IteratorBase.h"
@@ -12,7 +13,7 @@ namespace PeDecoder
 		static_assert(_STD is_same<PIMAGE_THUNK_DATA32, TThunkType>::value ||
 			_STD is_same<PIMAGE_THUNK_DATA64, TThunkType>::value, "type error");
 
-		ImportThunkIteratorNode(PeImage& pe, TThunkType thunk, TThunkType originalThunk) :
+		ImportThunkIteratorNode(IPeImage& pe, TThunkType thunk, TThunkType originalThunk) :
 			originalThunk_(originalThunk),
 			thunk_(thunk),
 			pe_(&pe)
@@ -56,8 +57,7 @@ namespace PeDecoder
 			return pe_->IsMapped()? (PVOID)thunk_->u1.Function:pe_->RvaToDataPtr(thunk_->u1.Function);
 		}
 	protected:
-		
-		PeImage* pe_;
+		IPeImage* pe_;
 		TThunkType thunk_;
 		TThunkType originalThunk_;
 	};
@@ -77,7 +77,7 @@ namespace PeDecoder
 	public:
 		friend IteratorFriendAccess;
 
-		ImportThunkIterator(PeImage& pe, TThunkType thunk, TThunkType originalThunk) :
+		ImportThunkIterator(IPeImage& pe, TThunkType thunk, TThunkType originalThunk) :
 			store_(pe, thunk, originalThunk)
 		{
 		}
@@ -125,7 +125,7 @@ namespace PeDecoder
 		typedef ImportThunkIterator<TThunkType> iterator;
 		// @firstThunk: address table
 		// @firstOriginalThunk: name table 有可能是 Original
-		ImportThunk(PeImage& pe, TThunkType firstThunk, TThunkType firstOriginalThunk) :
+		ImportThunk(IPeImage& pe, TThunkType firstThunk, TThunkType firstOriginalThunk) :
 			firstOriginalThunk_(firstOriginalThunk),
 			firstThunk_(firstThunk),
 			pe_(pe)
@@ -141,7 +141,7 @@ namespace PeDecoder
 			return ImportThunkIterator<TThunkType>(pe_, nullptr, nullptr);
 		}
 	protected:
-		PeImage& pe_;
+		IPeImage& pe_;
 		TThunkType firstOriginalThunk_;
 		TThunkType firstThunk_;
 	};

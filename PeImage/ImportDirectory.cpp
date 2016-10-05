@@ -3,11 +3,6 @@
 #include "ImportDirectoryIterator.h"
 namespace PeDecoder
 {
-	ImportDirectory::ImportDirectory(PeImage & pe) :
-		DirectoryBase(pe)
-	{
-
-	}
 	typename ImportDirectory::iterator ImportDirectory::begin()
 	{
 		return iterator(*this, GetPtr());

@@ -8,11 +8,7 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Tls>
 	{
 	public:
-		TlsDirectory(PeImage& pe) :
-			DirectoryBase(pe)
-		{
-		}
-		~TlsDirectory() = default;
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder
 

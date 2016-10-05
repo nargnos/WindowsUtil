@@ -9,11 +9,7 @@ namespace PeDecoder
 		public Detail::DirectoryBase<DataDirectoryEntryType::Resource>
 	{
 	public:
-		ResourceDirectory(PeImage& pe) :
-			DirectoryBase(pe)
-		{
-			
-		}
+		using DirectoryBase::DirectoryBase;
 		ResourceEntryIterator begin();
 		ResourceEntryIterator end();
 

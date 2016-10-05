@@ -1,10 +1,13 @@
 #pragma once
-#include "PeImageFwd.h"
+#include <Windows.h>
 #include "DataDirectoryEntryType.h"
 #include "DataSize.h"
 #include "DataPtr.h"
+
 namespace PeDecoder
 {
+	class NtHeader;
+
 	// 注意这里的GetSize不一定反映真实大小
 	class DataDirectoryEntries :
 		public Detail::DataSize<PDWORD>,
@@ -13,7 +16,7 @@ namespace PeDecoder
 	public:
 		typedef TDataPtr iterator;
 		DataDirectoryEntries(TDataPtr ptr, TSizePtr sizePtr);
-		DataDirectoryEntries(NtHeader& nt);
+		DataDirectoryEntries(const NtHeader& nt);
 		~DataDirectoryEntries() = default;
 		bool IsValid() const;
 		// index越界返回nullptr
