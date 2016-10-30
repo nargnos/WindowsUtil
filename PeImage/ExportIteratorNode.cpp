@@ -8,7 +8,6 @@ namespace PeDecoder
 		directory_(&directory),
 		index_(index)
 	{
-
 	}
 
 	PDWORD ExportIteratorNode::FuncRva()

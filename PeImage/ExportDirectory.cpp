@@ -15,7 +15,6 @@ namespace PeDecoder
 	}
 	const PDWORD ExportDirectory::GetFunctionsPtr() const
 	{
-
 		return funcTable_;
 	}
 	const PDWORD ExportDirectory::GetNamesPtr() const

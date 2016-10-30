@@ -16,7 +16,7 @@ namespace PeDecoder
 		void Decrement();
 		void Advance(int n);
 		difference_type DistanceTo(const ResourceEntryIterator & val);
-		reference Dereference() const;
+		reference Dereference();
 
 		bool InRange() const;
 		ResourceEntry& GetStore();

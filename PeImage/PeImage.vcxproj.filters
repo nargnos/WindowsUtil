@@ -239,6 +239,9 @@
     <ClInclude Include="DosStub.h">
       <Filter>PeImage\DosHeader</Filter>
     </ClInclude>
+    <ClInclude Include="RandomAccessIteratorBase.h">
+      <Filter>PeImage\Common\IteratorTemplate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />

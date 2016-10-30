@@ -33,9 +33,9 @@ namespace PeDecoder
 		assert(InRange());
 		return val.GetStore().ptr_ - GetStore().ptr_;
 	}
-	ResourceEntryIterator::reference ResourceEntryIterator::Dereference() const
+	ResourceEntryIterator::reference ResourceEntryIterator::Dereference()
 	{
-		return const_cast<reference>(GetStore());
+		return GetStore();
 	}
 	bool ResourceEntryIterator::InRange() const
 	{

@@ -13,7 +13,7 @@ namespace PeDecoder
 	protected:
 		bool Equal(const RelocDirectoryIterator & val) const;
 		void Increment();
-		reference Dereference() const;
+		reference Dereference();
 		bool InRange() const;
 
 		const BaseRelocation& GetStore() const;

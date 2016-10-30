@@ -100,9 +100,9 @@ namespace PeDecoder
 		}
 
 
-		ImportThunkIteratorNode<TThunkType>& Dereference() const
+		ImportThunkIteratorNode<TThunkType>& Dereference()
 		{
-			return const_cast<ImportThunkIteratorNode<TThunkType>&>(GetStore());
+			return GetStore();
 		}
 		ImportThunkIteratorNode<TThunkType>& GetStore()
 		{

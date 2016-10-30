@@ -20,7 +20,7 @@ namespace PeDecoder
 		void Decrement();
 		void Advance(int n);
 		difference_type DistanceTo(const ExportDirectoryIterator & val) const;
-		reference Dereference() const;
+		reference Dereference();
 
 		bool InRange() const;
 

@@ -5,6 +5,7 @@
 #include "IteratorBase.h"
 namespace PeDecoder
 {
+
 	class DelayImportDirectoryIterator :
 		public IteratorBase<
 		DelayImportDirectoryIterator,
@@ -18,7 +19,7 @@ namespace PeDecoder
 	private:
 		bool Equal(const DelayImportDirectoryIterator & val) const;
 		void Increment();
-		reference Dereference() const;
+		reference Dereference();
 		DelayImportDescriptor& GetStore();
 		const DelayImportDescriptor& GetStore() const;
 		DelayImportDescriptor store_;

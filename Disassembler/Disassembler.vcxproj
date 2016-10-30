@@ -71,6 +71,9 @@
     <ClInclude Include="Common\Storage.h" />
     <ClInclude Include="Common\ToStringBase.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="!DisAsm未完成" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0767B1B7-78AF-46A0-A4EE-3773353C039E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

@@ -17,7 +17,7 @@ namespace Process
 		{
 			node_=node_->Blink;
 		}
-		LdrDataTableEntryIterator::reference LdrDataTableEntryIterator::Dereference() const
+		LdrDataTableEntryIterator::reference LdrDataTableEntryIterator::Dereference()
 		{
 			return *dereference_(node_);
 		}

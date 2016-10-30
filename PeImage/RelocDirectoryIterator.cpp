@@ -20,10 +20,10 @@ namespace PeDecoder
 		GetStore().ptr_ = PIMAGE_BASE_RELOCATION((unsigned char*)GetStore().ptr_ + GetStore().ptr_->SizeOfBlock);
 	}
 
-	RelocDirectoryIterator::reference RelocDirectoryIterator::Dereference() const
+	RelocDirectoryIterator::reference RelocDirectoryIterator::Dereference()
 	{
 		assert(InRange());
-		return const_cast<reference>(GetStore());
+		return GetStore();
 	}
 
 	bool RelocDirectoryIterator::InRange() const

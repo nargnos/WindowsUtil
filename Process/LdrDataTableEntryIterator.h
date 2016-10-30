@@ -17,7 +17,7 @@ namespace Process
 		private:
 			bool Equal(const LdrDataTableEntryIterator & val) const;
 			void Increment();
-			reference Dereference() const;
+			reference Dereference();
 			_STD function<PLDR_DATA_TABLE_ENTRY_Ex(PLIST_ENTRY)> dereference_;
 			PLIST_ENTRY node_;
 		};

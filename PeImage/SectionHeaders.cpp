@@ -21,7 +21,7 @@ namespace PeDecoder
 			case NtHeaderType::NtHeader32:
 			{
 				auto tmpHeader = ntHeader->GetPtr32();
-				SetPtr(IMAGE_FIRST_SECTION(tmpHeader));
+				SetPtr(static_cast<Detail::Section*>(IMAGE_FIRST_SECTION(tmpHeader)));
 				SetSizePtr(&tmpHeader->FileHeader.NumberOfSections);
 				sectionAlignmentPtr_ = &tmpHeader->OptionalHeader.SectionAlignment;
 			}
@@ -29,7 +29,7 @@ namespace PeDecoder
 			case NtHeaderType::NtHeader64:
 			{
 				auto tmpHeader = ntHeader->GetPtr64();
-				SetPtr(IMAGE_FIRST_SECTION(tmpHeader));
+				SetPtr(static_cast<Detail::Section*>(IMAGE_FIRST_SECTION(tmpHeader)));
 				SetSizePtr(&tmpHeader->FileHeader.NumberOfSections);
 				sectionAlignmentPtr_ = &tmpHeader->OptionalHeader.SectionAlignment;
 			}
@@ -64,18 +64,18 @@ namespace PeDecoder
 
 		auto result = _STD find_if(beginPtr, endPtr, [this, fileOffset, align = *GetSectionAlignment()](const iterator::value_type& val)
 		{
-			return val.OffsetInRange(fileOffset,align);
+			return val.OffsetInRange(fileOffset, align);
 		});
 		return result == endPtr ? nullptr : &*result;
 	}
 
 	SectionHeaders::iterator SectionHeaders::begin() const
 	{
-		return{ GetPtr(),GetSize() };
+		return{ GetPtr(),this };
 	}
 
 	SectionHeaders::iterator SectionHeaders::end() const
 	{
-		return{ GetPtr() + GetSize(),GetSize() };
+		return{ GetPtr() + GetSize(),this };
 	}
 }  // namespace PeDecoder

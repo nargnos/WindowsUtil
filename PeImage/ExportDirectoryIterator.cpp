@@ -39,10 +39,10 @@ namespace PeDecoder
 		return val.GetStore().index_ - GetStore().index_;
 	}
 
-	ExportDirectoryIterator::reference ExportDirectoryIterator::Dereference() const
+	ExportDirectoryIterator::reference ExportDirectoryIterator::Dereference()
 	{
 		assert(InRange());
-		return const_cast<reference>(GetStore());
+		return GetStore();
 	}
 
 	bool ExportDirectoryIterator::InRange() const

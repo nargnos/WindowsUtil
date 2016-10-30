@@ -20,26 +20,28 @@ template<
 
 	根据选择的tag实现对应的接口
 	隐式接口为：
+
+	// 可反向遍历的迭代器都有
+	void Decrement()
+	{
+	}
+	difference_type DistanceTo(const TIterator & val) const
+	{
+	}
+	void Advance(int n)
+	{
+	}
+
+	// 所有
 	bool Equal(const TIterator & val) const
 	{
 	}
 	void Increment()
 	{
 	}
-	void Decrement()
-	{
-	}
-	void Advance(int n)
-	{
-	}
-	difference_type DistanceTo(const TIterator & val) const
-	{
-	}
 	reference Dereference()
 	{
 	}
-	reference Dereference() const
-	{
-	}
+	
 */
 };

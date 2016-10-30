@@ -7,8 +7,7 @@
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
-	// FIX: 需要限制buffer最大长度（有时候没办法获取,从pe记录中获取的大小不能保证不是恶意的值，在偏移nt头的时候就有可能被恶意值定向到其它地方）
-	// 否则会发生任意位置读写问题
+
 	class PeImage :
 		public IPeImage
 	{
@@ -47,8 +46,6 @@ namespace PeDecoder
 		bool isPe_;
 		bool isMapped_;
 		bool hasNtHeader32_;
-
-
 	};
 
 }  // namespace PeDecoder

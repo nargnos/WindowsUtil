@@ -21,9 +21,9 @@ namespace PeDecoder
 			GetStore().dataPtr_ = nullptr;
 		}
 	}
-	ImportDirectoryIterator::reference ImportDirectoryIterator::Dereference() const
+	ImportDirectoryIterator::reference ImportDirectoryIterator::Dereference()
 	{
-		return const_cast<reference>(GetStore());
+		return GetStore();
 	}
 	ImportDescriptor & ImportDirectoryIterator::GetStore()
 	{

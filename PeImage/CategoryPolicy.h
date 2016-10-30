@@ -1,6 +1,6 @@
 #pragma once
 #include "IteratorFriendAccess.h"
-
+#include <utility>
 template<
 	typename TIterator,
 	typename TCategory,
@@ -26,7 +26,7 @@ public:
 
 	TPointer operator->()
 	{
-		return &IteratorFriendAccess::Dereference(Self());
+		return AddressOf();
 	}
 	const TReference operator*() const
 	{
@@ -35,7 +35,7 @@ public:
 
 	const TPointer operator->() const
 	{
-		return &IteratorFriendAccess::Dereference(Self());
+		return AddressOf();
 	}
 
 	bool operator==(const TIterator& val) const
@@ -60,22 +60,7 @@ public:
 		IteratorFriendAccess::Increment(Self());
 		return Self();
 	}
-	TIterator operator+(TDiff val)
-	{
-		assert(val >= 0);
-		return _Advance(val);
-	}
 
-	void operator+=(TDiff val)
-	{
-		assert(val >= 0);
-		IteratorFriendAccess::Advance(Self(), val);
-	}
-
-	TDiff operator-(const TIterator& val) const
-	{
-		return IteratorFriendAccess::DistanceTo(val, Self());
-	}
 protected:
 	TIterator& Self()
 	{
@@ -84,6 +69,14 @@ protected:
 	const TIterator& Self() const
 	{
 		return static_cast<const TIterator&>(*this);
+	}
+	const TPointer AddressOf() const
+	{
+		return _STD addressof(IteratorFriendAccess::Dereference(Self()));
+	}
+	TPointer AddressOf()
+	{
+		return _STD addressof(IteratorFriendAccess::Dereference(Self()));
 	}
 	TIterator& _Advance(TDiff val)
 	{
@@ -102,9 +95,24 @@ template<
 	struct CategoryPolicy<TIterator, _STD bidirectional_iterator_tag, TValueType, TDiff, TPointer, TReference> :
 	public CategoryPolicy<TIterator, _STD forward_iterator_tag, TValueType, TDiff, TPointer, TReference>
 {
+	TIterator operator+(TDiff val)
+	{
+		assert(val >= 0);
+		return _Advance(val);
+	}
+
+	void operator+=(TDiff val)
+	{
+		assert(val >= 0);
+		IteratorFriendAccess::Advance(Self(), val);
+	}
+
+	TDiff operator-(const TIterator& val) const
+	{
+		return IteratorFriendAccess::DistanceTo(val, Self());
+	}
 	TIterator operator--(int)
 	{
-		SectionIterator result(*this);
 		IteratorFriendAccess::Decrement(Self());
 		return result;
 	}
@@ -113,7 +121,6 @@ template<
 		IteratorFriendAccess::Decrement(Self());
 		return Self();
 	}
-	using CategoryPolicy<TIterator, _STD forward_iterator_tag, TValueType, TDiff, TPointer, TReference>::operator-;
 	TIterator operator-(TDiff val)
 	{
 		assert(val >= 0);
@@ -153,10 +160,10 @@ template<
 	}
 	TReference operator[](TDiff index)
 	{
-		return (&IteratorFriendAccess::Dereference(Self()))[index];
+		return AddressOf()[index];
 	}
 	const TReference operator[](TDiff index) const
 	{
-		return (&IteratorFriendAccess::Dereference(Self()))[index];
+		return AddressOf()[index];
 	}
 };

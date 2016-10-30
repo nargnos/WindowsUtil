@@ -200,6 +200,7 @@
     <ClInclude Include="PeDecoder.h" />
     <ClInclude Include="PeImage.h" />
     <ClInclude Include="PeImageFwd.h" />
+    <ClInclude Include="RandomAccessIteratorBase.h" />
     <ClInclude Include="RelocDirectory.h" />
     <ClInclude Include="RelocDirectoryIterator.h" />
     <ClInclude Include="ResourceDirectory.h" />

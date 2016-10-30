@@ -20,7 +20,7 @@ namespace PeDecoder
 	protected:
 		bool Equal(const ImportDirectoryIterator & val) const;
 		void Increment();
-		reference Dereference() const;
+		reference Dereference();
 
 		ImportDescriptor& GetStore();
 		const ImportDescriptor& GetStore() const;

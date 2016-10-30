@@ -39,6 +39,6 @@ struct IteratorFriendAccess
 	template<typename T>
 	static const typename T::reference Dereference(const T& it)
 	{
-		return it.Dereference();
+		return const_cast<T&>(it).Dereference();
 	}
 };

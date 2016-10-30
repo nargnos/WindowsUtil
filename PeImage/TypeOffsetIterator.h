@@ -20,7 +20,7 @@ namespace PeDecoder
 		void Decrement();
 		void Advance(int n);
 		difference_type DistanceTo(const TypeOffsetIterator & val);
-		reference Dereference() const;
+		reference Dereference();
 
 		TypeOffset& GetStore();
 		const TypeOffset& GetStore() const;

@@ -5,9 +5,12 @@
 #include "IPeImage.h"
 namespace PeDecoder
 {
-
+	namespace Detail
+	{
+		struct Section;
+	}
 	class SectionHeaders :
-		public Detail::DataPtr<PIMAGE_SECTION_HEADER>,
+		public Detail::DataPtr<Detail::Section*>,
 		public Detail::DataSize<PWORD>
 	{
 	public:

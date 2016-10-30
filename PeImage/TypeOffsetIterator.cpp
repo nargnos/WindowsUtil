@@ -31,10 +31,10 @@ namespace PeDecoder
 	{
 		return val.GetStore().ptr_ - GetStore().ptr_;
 	}
-	TypeOffsetIterator::reference TypeOffsetIterator::Dereference() const
+	TypeOffsetIterator::reference TypeOffsetIterator::Dereference()
 	{
 		assert(InRange());
-		return const_cast<reference>(GetStore());
+		return GetStore();
 	}
 	TypeOffset& TypeOffsetIterator::GetStore()
 	{

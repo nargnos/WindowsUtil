@@ -7,7 +7,7 @@ namespace PeDecoder
 		class DataSize
 		{
 		public:
-			static_assert(_STD is_pointer<TSizePtr>::value, "TSizePtr not a pointer");
+			static_assert(_STD is_pointer<TSizePtr>::value, "TSizePtr is not a pointer");
 			typedef TSizePtr TSizePtr;
 			typedef _STD remove_pointer_t<TSizePtr> TSizeType;
 			DataSize(TSizePtr sizePtr) :
@@ -20,6 +20,10 @@ namespace PeDecoder
 			{
 				assert(sizePtr_);
 				return sizePtr_;
+			}
+			TSizeType size() const
+			{
+				return GetSize();
 			}
 			TSizeType GetSize() const
 			{

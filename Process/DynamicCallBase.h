@@ -24,7 +24,6 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 			_NON_MEMBER_CALL(GET_FUNCTION_TYPE, , );
 #undef GET_FUNCTION_TYPE
 
-			// FIX: 为了线程同步一个函数耗费太多空间
 			template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename TRet, typename... TArgs>
 			class DynamicCallBase<TFunc, TLoadDll, TDecryptStrPolicy, TRet, TArgs...>
 			{
