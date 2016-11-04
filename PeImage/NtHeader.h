@@ -1,34 +1,35 @@
 #pragma once
-#include <Windows.h>
+#include <windows.h>
 #include <memory>
 #include "NtHeaderType.h"
-#include "DataPtr.h"
+#include "INtHeaderVisitor.h"
+#include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
-	class DataDirectoryEntries;
-	class NtHeader :
-		public Detail::DataPtr<void*>
+	class DosHeader;
+	class NtHeader
 	{
 	public:
-		NtHeader(const PIMAGE_DOS_HEADER dosHeader);
-		NtHeader(const PIMAGE_NT_HEADERS32 ntPtr32);
-		NtHeader(const PIMAGE_NT_HEADERS64 ntPtr64);
+		virtual ~NtHeader() = default;
 
-		static bool Valid(const void* ptr);
 		static NtHeaderType GetHeaderType(const void* ptr);
 		static void* GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader);
+		static bool IsValid(const void* ptr);
+		static unique_ptr<NtHeader> GetNtHeaderInstance(const DosHeader& dosHeader);
 
-		bool Valid() const;
 		NtHeaderType GetHeaderType() const;
+		bool IsValid() const;
 		PIMAGE_FILE_HEADER GetFileHeader() const;
-		PIMAGE_OPTIONAL_HEADER64 GetOptionalHeader64() const;
-		PIMAGE_OPTIONAL_HEADER32 GetOptionalHeader32() const;
-
-		PIMAGE_NT_HEADERS32 GetPtr32() const;
-		PIMAGE_NT_HEADERS64 GetPtr64() const;
-		// 只要是pe，这个结构不需验证ntHeader
 		unique_ptr<DataDirectoryEntries> GetDataDirectoryEntries() const;
+		unsigned char* GetPos() const;
+
+		virtual void ReadDetails(const INtHeaderVisitor & visitor) const = 0;
 	protected:
-		void CreateDataDirectoryEntries() const;
+		explicit NtHeader(const PIMAGE_DOS_HEADER dosHeader);
+
+		PIMAGE_NT_HEADERS32 GetHeader32() const;
+
+
+		void* ptr_;
 	};
 }  // namespace PeDecoder

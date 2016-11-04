@@ -14,7 +14,7 @@ namespace Process
 		using ::IsThreadAFiber;
 		using ::GetFiberData;
 		template<typename T>
-		inline T* GetFiberData()
+		T* GetFiberData()
 		{
 			return static_cast<T*>(::GetFiberData());
 		}
@@ -26,7 +26,7 @@ namespace Process
 		const PNT_TIB GetCurrentFiberContext();
 
 		template<typename T>
-		inline T* GetFiberData(PVOID fiber)
+		T* GetFiberData(PVOID fiber)
 		{
 			assert(fiber != nullptr);
 			return static_cast<T*>(*(PVOID *)fiber);

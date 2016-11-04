@@ -1,15 +1,16 @@
 #pragma once
 #include <Windows.h>
-#include "DataPtr.h"
 namespace PeDecoder
 {
-	class DosHeader:
-		public Detail::DataPtr<PIMAGE_DOS_HEADER>
+	class DosHeader
 	{
 	public:
-		using DataPtr::DataPtr;
-		static bool Valid(const PIMAGE_DOS_HEADER ptr);
+		explicit DosHeader(PIMAGE_DOS_HEADER ptr);
+		static bool IsValid(const PIMAGE_DOS_HEADER ptr);
 
-		bool Valid() const;
+		bool IsValid() const;
+		const PIMAGE_DOS_HEADER RawPtr() const;
+	protected:
+		PIMAGE_DOS_HEADER ptr_;
 	};
 }  // namespace PeDecoder

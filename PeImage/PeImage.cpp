@@ -1,52 +1,35 @@
 #include "stdafx.h"
 #include "PeImage.h"
-// 
-
-
-
+#include "NtHeader.h"
+#include "SectionHeaders.h"
 namespace PeDecoder
 {
 	PeImage::PeImage(void* ptr, bool isMapped) :
-		base_(reinterpret_cast<unsigned char*>(ptr)),
-		isMapped_(isMapped),
-		isPe_(false),
-		imageType_(ImageType::UnKnown)
+		isMapped_(isMapped)
 	{
 		if (ptr == nullptr)
 		{
 			return;
 		}
-		auto dosHeaderPtr = reinterpret_cast<PIMAGE_DOS_HEADER>(base_);
 
-		// 验证dosheader		
-		if (!DosHeader::Valid(dosHeaderPtr))
+		if (!LoadDosHeader(reinterpret_cast<PIMAGE_DOS_HEADER>(ptr)))
 		{
 			return;
 		}
-		dosHeader_ = make_unique<DosHeader>(dosHeaderPtr);
 
-		// 验证ntheader
-		auto ntHeaderPtr = reinterpret_cast<PIMAGE_NT_HEADERS32>(NtHeader::GetNtHeaderPtr(dosHeaderPtr));
-		if (!NtHeader::Valid(ntHeaderPtr))
+		if (!LoadNtHeader())
 		{
 			return;
 		}
-		ntHeader_ = make_unique<NtHeader>(ntHeaderPtr);
 
-		// 设置映像类型
-		static const ImageType imageTypeTable[]{ ImageType::UnKnown,ImageType::UnKnown,ImageType::PE32,ImageType::PE64 };
-
-		auto ntHeaderType = static_cast<unsigned char>(NtHeader::GetHeaderType(ntHeaderPtr));
-		assert(ntHeaderType >= 0 && ntHeaderType < sizeof(imageTypeTable));
-
-		imageType_ = imageTypeTable[ntHeaderType];
-
-		// 检测成功
-		isPe_ = imageType_ != ImageType::UnKnown;
-		if (isPe_)
-		{
-			sectionHeaders_ = make_unique<SectionHeaders>(*this);
-		}
+		assert(ntHeader_->GetHeaderType() == NtHeaderType::NtHeader32 ||
+			ntHeader_->GetHeaderType() == NtHeaderType::NtHeader64);
+		// 设置节表
+		sectionHeaders_ = make_unique<SectionHeaders>(*GetNtHeader());
+	}
+	PeImage::operator bool() const
+	{
+		return IsPe();
 	}
 	// 是否是映射的
 	bool PeImage::IsMapped() const
@@ -56,17 +39,20 @@ namespace PeDecoder
 
 	bool PeImage::IsPe() const
 	{
-		return isPe_;
+		return CheckDosHeader() && CheckNtHeader();
 	}
 
 	void * PeImage::GetBase() const
 	{
-		return base_;
+		return GetDosHeader()->RawPtr();
 	}
 
 	ImageType PeImage::GetImageType() const
 	{
-		return imageType_;
+		assert(CheckDosHeader());
+		assert(CheckNtHeader());
+
+		return NtHeaderTypeToImageType(ntHeader_->GetHeaderType());
 	}
 
 	const unique_ptr<DosHeader>& PeImage::GetDosHeader() const
@@ -137,16 +123,52 @@ namespace PeDecoder
 
 	PVOID PeImage::RvaToDataPtr(DWORD rva) const
 	{
-		return base_ + (isMapped_ ? rva : RvaToOffset(rva));
+		return Base() + (isMapped_ ? rva : RvaToOffset(rva));
 	}
 	PVOID PeImage::RvaToDataPtr(ULONGLONG rva) const
 	{
-		return base_ + (isMapped_ ? rva : RvaToOffset(rva));
+		return Base() + (isMapped_ ? rva : RvaToOffset(rva));
+	}
+
+	bool PeImage::LoadDosHeader(PIMAGE_DOS_HEADER ptr)
+	{
+		dosHeader_ = make_unique<DosHeader>(ptr);
+		return CheckDosHeader();
+	}
+
+	bool PeImage::CheckDosHeader() const
+	{
+		return dosHeader_ && dosHeader_->IsValid();
+	}
+
+	bool PeImage::LoadNtHeader()
+	{
+		assert(CheckDosHeader());
+		ntHeader_ = NtHeader::GetNtHeaderInstance(*dosHeader_);
+		return CheckNtHeader();
+	}
+
+	bool PeImage::CheckNtHeader() const
+	{
+		return ntHeader_ && ntHeader_->IsValid();
+	}
+
+	ImageType PeImage::NtHeaderTypeToImageType(NtHeaderType type)
+	{
+		static const ImageType imageTypeTable[]{ ImageType::UnKnown,ImageType::UnKnown,ImageType::PE32,ImageType::PE64 };
+		auto ntHeaderType = static_cast<unsigned char>(type);
+		assert(ntHeaderType >= 0 && ntHeaderType < sizeof(imageTypeTable));
+		return imageTypeTable[ntHeaderType];
+	}
+
+	unsigned char * PeImage::Base() const
+	{
+		return reinterpret_cast<unsigned char*>(GetDosHeader()->RawPtr());
 	}
 
 	unique_ptr<DosStub> PeImage::GetDosStub() const
 	{
-		return _STD make_unique<DosStub>(*this);
+		return _STD make_unique<DosStub>(*GetDosHeader(), *GetNtHeader());
 	}
 
 

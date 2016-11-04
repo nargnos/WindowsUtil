@@ -1,19 +1,19 @@
 #pragma once
-#include "IPeImage.h"
-#include "DataPtr.h"
+#include <Windows.h>
 namespace PeDecoder
 {
-	class DosStub  :
-		public Detail::DataPtr<unsigned char*>
+	class DosHeader;
+	class NtHeader;
+	class DosStub
 	{
 	public:
-		typedef TDataPtr iterator;
-		DosStub(void* ptr, DWORD size);
-		DosStub(const IPeImage& pe);
+		typedef unsigned char* iterator;
+		DosStub(const DosHeader& dos, const NtHeader& nt);
 		DWORD GetSize() const;
 		iterator begin() const;
 		iterator end() const;
 	protected:
+		unsigned char* ptr_;
 		DWORD size_;
 	};
 }  // namespace PeDecoder

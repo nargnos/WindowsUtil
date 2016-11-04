@@ -1,33 +1,30 @@
 #pragma once
 #include <Windows.h>
 #include "DataDirectoryEntryType.h"
-#include "DataSize.h"
-#include "DataPtr.h"
-
 namespace PeDecoder
 {
 	class NtHeader;
-
 	// 注意这里的GetSize不一定反映真实大小
-	class DataDirectoryEntries :
-		public Detail::DataSize<PDWORD>,
-		public Detail::DataPtr<PIMAGE_DATA_DIRECTORY>
+	class DataDirectoryEntries
 	{
 	public:
-		typedef TDataPtr iterator;
-		DataDirectoryEntries(TDataPtr ptr, TSizePtr sizePtr);
+		DataDirectoryEntries(PIMAGE_DATA_DIRECTORY ptr, PDWORD sizePtr);
 		DataDirectoryEntries(const NtHeader& nt);
-		~DataDirectoryEntries() = default;
 		bool IsValid() const;
-		// index越界返回nullptr
-		bool HasDirectory(DataDirectoryEntryType index);
-		TDataPtr GetDirectoryEntry(DataDirectoryEntryType index);
-		TDataPtr operator[](DataDirectoryEntryType index);
-		iterator begin() const;
-		iterator end() const;
 		// 实际最大大小（跟数组大小不一样）
-		static constexpr TSizeType MaxSize();
+		static DWORD MaxSize();
+		PIMAGE_DATA_DIRECTORY begin() const;
+		PIMAGE_DATA_DIRECTORY end() const;
+		DWORD GetSize() const;
+
+		bool HasDirectory(DataDirectoryEntryType index) const;
+		PIMAGE_DATA_DIRECTORY GetDirectoryEntry(DataDirectoryEntryType index) const;
+		PIMAGE_DATA_DIRECTORY operator[](DataDirectoryEntryType index) const;
 	protected:
+		PIMAGE_DATA_DIRECTORY GetPtr() const;
+		void Set(PIMAGE_DATA_DIRECTORY data, PDWORD size);
+		PDWORD sizePtr_;
+		PIMAGE_DATA_DIRECTORY ptr_;
 	};
 
 }  // namespace PeDecoder

@@ -8,7 +8,7 @@ namespace PeDecoder
 	public:
 		typedef ExportDirectoryIterator iterator;
 
-		ExportDirectory(IPeImage& pe);
+		ExportDirectory(IDataDirectoryUtil& util);
 		~ExportDirectory() = default;
 		const PDWORD GetFunctionsPtr() const;
 		const PDWORD GetNamesPtr() const;

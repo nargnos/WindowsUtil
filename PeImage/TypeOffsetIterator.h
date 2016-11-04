@@ -1,6 +1,5 @@
 #pragma once
 #include "PeImageFwd.h"
-#include "IPeImage.h"
 #include "TypeOffset.h"
 
 #include "GetRelocPtr.h"
@@ -12,7 +11,7 @@ namespace PeDecoder
 	{
 	public:
 		friend IteratorFriendAccess;
-		TypeOffsetIterator(IPeImage& pe, PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr);
+		TypeOffsetIterator(PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr);
 
 	protected:
 		bool Equal(const TypeOffsetIterator & val) const;

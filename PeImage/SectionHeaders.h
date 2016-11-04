@@ -1,26 +1,29 @@
 #pragma once
-#include "DataPtr.h"
-#include "DataSize.h"
 #include "SectionIterator.h"
-#include "IPeImage.h"
 namespace PeDecoder
 {
 	namespace Detail
 	{
 		struct Section;
 	}
-	class SectionHeaders :
-		public Detail::DataPtr<Detail::Section*>,
-		public Detail::DataSize<PWORD>
+	class NtHeader;
+	class SectionHeaders
 	{
 	public:
-		typedef Detail::SectionIterator iterator;
-		SectionHeaders(TDataPtr ptr, TSizePtr sizePtr, PDWORD sectionAlignmentPtr);
-		explicit SectionHeaders(const IPeImage& pe);
-		PDWORD GetSectionAlignment() const;
+		typedef Detail::Section* DataPtr;
+		typedef DataPtr iterator;
 
-		TDataPtr RvaToSectionHeader(DWORD rva) const;
-		TDataPtr OffsetToSectionHeader(DWORD fileOffset) const;
+		SectionHeaders(DataPtr ptr, PWORD sizePtr, PDWORD sectionAlignmentPtr);
+		explicit SectionHeaders(const NtHeader& nt);
+
+		WORD size() const;
+
+		DataPtr RawPtr() const;
+		WORD GetSize() const;
+		DWORD GetSectionAlignment() const;
+
+		DataPtr RvaToSectionHeader(DWORD rva) const;
+		DataPtr OffsetToSectionHeader(DWORD fileOffset) const;
 
 		// 为了兼容c++算法，首字母不大写了
 		iterator begin() const;
@@ -28,8 +31,10 @@ namespace PeDecoder
 		iterator end() const;
 
 	protected:
-		// 必须保存来源，以提供修改
-		PDWORD sectionAlignmentPtr_;
+		void Set(DataPtr ptr, PWORD sizePtr, PDWORD sectionAlignmentPtr);
+		PWORD sizePtr_;
+		PDWORD alignmentPtr_;
+		DataPtr ptr_;
 	};
 
 }  // namespace PeDecoder

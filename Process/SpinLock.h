@@ -9,7 +9,7 @@ public:
 	void lock();
 	void unlock();
 private:
-	inline static void ThreadYield(unsigned int k);
+	static void ThreadYield(unsigned int k);
 	_STD atomic_flag lock_ = ATOMIC_VAR_INIT(false);
 
 	SpinLock(const SpinLock&) = delete;

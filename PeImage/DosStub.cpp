@@ -6,20 +6,16 @@
 namespace PeDecoder
 {
 
-	DosStub::DosStub(void* ptr, DWORD size):
-		DataPtr(reinterpret_cast<unsigned char*>(ptr)),
-		size_(size)
+	DosStub::DosStub(const DosHeader& dos, const NtHeader& nt) :
+		size_(0),
+		ptr_(nullptr)
 	{
-	}
-	DosStub::DosStub(const IPeImage & pe) :
-		DosStub(nullptr, 0)
-	{
-		auto ntPtr = reinterpret_cast<unsigned char*>(pe.GetNtHeader()->GetPtr());  // NtHeader位置
-		auto ptr = reinterpret_cast<unsigned char*>(pe.GetDosHeader()->GetPtr() + 1); // dosStub应该在的位置
+		auto ntPtr = nt.GetPos();  // NtHeader位置
+		auto ptr = reinterpret_cast<unsigned char*>(dos.RawPtr() + 1); // dosStub应该在的位置
 		auto size = ntPtr - ptr; // 实际大小，NtHeader跟DosHeader重叠时（被人为修改）没有DosStub
 		if (size > 0)
 		{
-			SetPtr(ptr);
+			ptr_ = ptr;
 			size_ = size;
 		}
 	}
@@ -30,12 +26,12 @@ namespace PeDecoder
 
 	DosStub::iterator DosStub::begin() const
 	{
-		return GetPtr();
+		return ptr_;
 	}
 
 	DosStub::iterator DosStub::end() const
 	{
-		return GetPtr() + GetSize();
+		return ptr_ + GetSize();
 	}
 
 }  // namespace PeDecoder

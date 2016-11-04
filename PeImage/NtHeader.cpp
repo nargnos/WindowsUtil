@@ -1,32 +1,23 @@
 #include "stdafx.h"
 #include <bitset>
+#include "DosHeader.h"
 #include "NtHeader.h"
+#include "NtHeader32.h"
+#include "NtHeader64.h"
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
 	NtHeader::NtHeader(const PIMAGE_DOS_HEADER dosHeader) :
-		DataPtr(GetNtHeaderPtr(dosHeader))
+		ptr_(GetNtHeaderPtr(dosHeader))
 	{
 	}
-	NtHeader::NtHeader(const PIMAGE_NT_HEADERS32 ntPtr32) :
-		DataPtr(ntPtr32)
+	NtHeaderType NtHeader::GetHeaderType() const
 	{
-		
+		return GetHeaderType(ptr_);
 	}
-	NtHeader::NtHeader(const PIMAGE_NT_HEADERS64 ntPtr64) :
-		DataPtr(ntPtr64)
+	bool NtHeader::IsValid() const
 	{
-	}
-	bool NtHeader::Valid(const void * ptr)
-	{
-		// 根据枚举值查表返回内容
-		static const _STD bitset<8> resultTable(0b11000000);
-
-		auto&& ntHeader = reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<void*>(ptr));
-		auto&& pos = static_cast<unsigned char>(GetHeaderType(ptr)) +
-			(static_cast<unsigned char>(ntHeader->Signature == IMAGE_NT_SIGNATURE) << 2);
-
-		return resultTable.test(pos);
+		return IsValid(ptr_);
 	}
 	NtHeaderType NtHeader::GetHeaderType(const void * ptr)
 	{
@@ -48,38 +39,52 @@ namespace PeDecoder
 	{
 		return reinterpret_cast<unsigned char*>(dosHeader) + dosHeader->e_lfanew;
 	}
+	bool NtHeader::IsValid(const void * ptr)
+	{
+		// 根据枚举值查表返回内容，验证过后GetHeaderType返回必为NtHeader32或NtHeader64之一
+		// 主要是验证NtHeader32或NtHeader64和IMAGE_NT_SIGNATURE标识，Rom先不理
+		static const _STD bitset<8> resultTable(0b11000000);
+
+		auto&& ntHeader = reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<void*>(ptr));
+		auto&& pos = static_cast<unsigned char>(GetHeaderType(ptr)) +
+			(static_cast<unsigned char>(ntHeader->Signature == IMAGE_NT_SIGNATURE) << 2);
+
+		return resultTable.test(pos);
+	}
+	unique_ptr<NtHeader> NtHeader::GetNtHeaderInstance(const DosHeader& dosHeader)
+	{
+		using namespace std;
+		assert(dosHeader.IsValid());
+		
+		auto type = GetHeaderType(GetNtHeaderPtr(dosHeader.RawPtr()));
+		unique_ptr<NtHeader> result;
+		switch (type)
+		{
+		case PeDecoder::NtHeaderType::NtHeader32:
+			result = move(make_unique<NtHeader32>(dosHeader.RawPtr()));
+			break;
+		case PeDecoder::NtHeaderType::NtHeader64:
+			result = move(make_unique<NtHeader64>(dosHeader.RawPtr()));
+			break;
+		default:
+			break;
+		}
+		return result;
+	}
 	PIMAGE_FILE_HEADER NtHeader::GetFileHeader() const
 	{
-		return &GetPtr32()->FileHeader;
+		return &GetHeader32()->FileHeader;
 	}
-	PIMAGE_OPTIONAL_HEADER64 NtHeader::GetOptionalHeader64() const
-	{
-		return &GetPtr64()->OptionalHeader;
-	}
-	PIMAGE_OPTIONAL_HEADER32 NtHeader::GetOptionalHeader32() const
-	{
-		return &GetPtr32()->OptionalHeader;
-	}
-	PIMAGE_NT_HEADERS32 NtHeader::GetPtr32() const
-	{
-		return reinterpret_cast<PIMAGE_NT_HEADERS32>(GetPtr());
-	}
-	PIMAGE_NT_HEADERS64 NtHeader::GetPtr64() const
-	{
-		return reinterpret_cast<PIMAGE_NT_HEADERS64>(GetPtr());
-	}
-
 	unique_ptr<DataDirectoryEntries> NtHeader::GetDataDirectoryEntries() const
 	{
 		return make_unique<DataDirectoryEntries>(*this);
 	}
-
-	bool NtHeader::Valid() const
+	unsigned char * NtHeader::GetPos() const
 	{
-		return Valid(GetPtr());
+		return static_cast<unsigned char *>(ptr_);
 	}
-	NtHeaderType NtHeader::GetHeaderType() const
+	PIMAGE_NT_HEADERS32 NtHeader::GetHeader32() const
 	{
-		return GetHeaderType(GetPtr());
+		return static_cast<PIMAGE_NT_HEADERS32>(ptr_);
 	}
 }  // namespace PeDecoder

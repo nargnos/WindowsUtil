@@ -1,56 +1,47 @@
 #include "stdafx.h"
-#include <tuple>
 #include "DataDirectoryEntries.h"
-#include "NtHeader.h"
+#include "INtHeaderVisitor.h"
+#include "NtHeader32.h"
+#include "NtHeader64.h"
+
 
 namespace PeDecoder
 {
-	_STD tuple<DataDirectoryEntries::TDataPtr, DataDirectoryEntries::TSizePtr> GetDataDirectoryPtrAndSize(const NtHeader & nt)
-	{
-		_STD tuple<DataDirectoryEntries::TDataPtr, DataDirectoryEntries::TSizePtr> result;
-		switch (nt.GetHeaderType())
-		{
-		case NtHeaderType::NtHeader32:
-		{
-			auto tmp = nt.GetOptionalHeader32();
-			_STD make_tuple(tmp->DataDirectory, &tmp->NumberOfRvaAndSizes).swap(result);
-		}
-		break;
-		case NtHeaderType::NtHeader64:
-		{
-			auto tmp = nt.GetOptionalHeader64();
-			_STD make_tuple(tmp->DataDirectory, &tmp->NumberOfRvaAndSizes).swap(result);
-		}
-		break;
-		default:
-			break;
-		}
-		return result;
-	}
-	DataDirectoryEntries::DataDirectoryEntries(TDataPtr ptr, TSizePtr sizePtr) :
-		DataPtr(ptr),
-		DataSize(sizePtr)
+	DataDirectoryEntries::DataDirectoryEntries(PIMAGE_DATA_DIRECTORY ptr, PDWORD sizePtr) :
+		ptr_(ptr),
+		sizePtr_(sizePtr)
 	{
 		assert(ptr);
 		assert(sizePtr);
 	}
 	DataDirectoryEntries::DataDirectoryEntries(const NtHeader & nt) :
-		DataPtr(nullptr),
-		DataSize(nullptr)
+		ptr_(nullptr),
+		sizePtr_(nullptr)
 	{
-		auto val = GetDataDirectoryPtrAndSize(nt);
-		SetPtr(_STD get<0>(val));
-		SetSizePtr(_STD get<1>(val));
+		auto getInfo = MakeNtHeaderVisitor(
+			[this](const NtHeader32 & nt)
+		{
+			const auto& opHeader = nt.GetOptionalHeader();
+			Set(opHeader->DataDirectory, &opHeader->NumberOfRvaAndSizes);
+		},
+			[this](const NtHeader64 & nt)
+		{
+			const auto& opHeader = nt.GetOptionalHeader();
+			Set(opHeader->DataDirectory, &opHeader->NumberOfRvaAndSizes);
+		});
+
+		nt.ReadDetails(getInfo);
 	}
 	bool DataDirectoryEntries::IsValid() const
 	{
 		return GetSize() <= IMAGE_NUMBEROF_DIRECTORY_ENTRIES;
 	}
-	bool DataDirectoryEntries::HasDirectory(DataDirectoryEntryType index)
+
+	bool DataDirectoryEntries::HasDirectory(DataDirectoryEntryType index) const
 	{
 		return GetDirectoryEntry(index) != nullptr;
 	}
-	DataDirectoryEntries::TDataPtr DataDirectoryEntries::GetDirectoryEntry(DataDirectoryEntryType index)
+	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::GetDirectoryEntry(DataDirectoryEntryType index) const
 	{
 		assert(IsValid());
 		if (index < GetSize())
@@ -59,18 +50,26 @@ namespace PeDecoder
 		}
 		return nullptr;
 	}
-	DataDirectoryEntries::TDataPtr DataDirectoryEntries::operator[](DataDirectoryEntryType index)
+	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::operator[](DataDirectoryEntryType index) const
 	{
 		return GetDirectoryEntry(index);
 	}
 
-	DataDirectoryEntries::iterator DataDirectoryEntries::begin() const
+
+	// 实际最大大小（跟数组大小不一样）
+
+	DWORD DataDirectoryEntries::MaxSize()
+	{
+		return _DataDirectoryEntryTypeEnd + 1;
+	}
+
+	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::begin() const
 	{
 		assert(IsValid());
 		return GetPtr();
 	}
 
-	DataDirectoryEntries::iterator DataDirectoryEntries::end() const
+	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::end() const
 	{
 		assert(IsValid());
 		auto size = GetSize();
@@ -78,11 +77,21 @@ namespace PeDecoder
 		return GetPtr() + size;
 	}
 
-	// 实际最大大小（跟数组大小不一样）
-
-	constexpr DataDirectoryEntries::TSizeType DataDirectoryEntries::MaxSize()
+	DWORD DataDirectoryEntries::GetSize() const
 	{
-		return _DataDirectoryEntryTypeEnd + 1;
+		assert(sizePtr_);
+		return *sizePtr_;
+	}
+
+	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::GetPtr() const
+	{
+		return ptr_;
+	}
+
+	void DataDirectoryEntries::Set(PIMAGE_DATA_DIRECTORY data, PDWORD size)
+	{
+		ptr_ = data;
+		sizePtr_ = size;
 	}
 
 }  // namespace PeDecoder

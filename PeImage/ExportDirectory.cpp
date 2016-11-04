@@ -1,17 +1,16 @@
 #include "stdafx.h"
 #include "ExportDirectory.h"
-#include "IPeImage.h"
 #include "ExportDirectoryIterator.h"
 namespace PeDecoder
 {
-	ExportDirectory::ExportDirectory(IPeImage & pe) :
-		DirectoryBase(pe)
+	ExportDirectory::ExportDirectory(IDataDirectoryUtil& util) :
+		DirectoryBase(util)
 	{
 		numberOfNames_ = &GetPtr()->NumberOfNames;
 		numberOfFunctions_ = &GetPtr()->NumberOfFunctions;
-		funcTable_ = reinterpret_cast<PDWORD>(pe.RvaToDataPtr(GetPtr()->AddressOfFunctions));
-		nameTable_ = reinterpret_cast<PDWORD>(pe.RvaToDataPtr(GetPtr()->AddressOfNames));
-		nameOrdinalTable_ = reinterpret_cast<PWORD>(pe.RvaToDataPtr(GetPtr()->AddressOfNameOrdinals));
+		funcTable_ = reinterpret_cast<PDWORD>(util.RvaToDataPtr(GetPtr()->AddressOfFunctions));
+		nameTable_ = reinterpret_cast<PDWORD>(util.RvaToDataPtr(GetPtr()->AddressOfNames));
+		nameOrdinalTable_ = reinterpret_cast<PWORD>(util.RvaToDataPtr(GetPtr()->AddressOfNameOrdinals));
 	}
 	const PDWORD ExportDirectory::GetFunctionsPtr() const
 	{

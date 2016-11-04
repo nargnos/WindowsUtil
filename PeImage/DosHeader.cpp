@@ -2,15 +2,25 @@
 #include "DosHeader.h"
 namespace PeDecoder
 {
-	bool DosHeader::Valid(const PIMAGE_DOS_HEADER ptr)
+	DosHeader::DosHeader(PIMAGE_DOS_HEADER ptr) :
+		ptr_(ptr)
+	{
+
+	}
+	bool DosHeader::IsValid(const PIMAGE_DOS_HEADER ptr)
 	{
 		assert(ptr);
 		return ptr->e_magic == IMAGE_DOS_SIGNATURE;
 	}
 
-	bool DosHeader::Valid() const
+	bool DosHeader::IsValid() const
 	{
-		return Valid(GetPtr());
+		return IsValid(ptr_);
+	}
+
+	const PIMAGE_DOS_HEADER DosHeader::RawPtr() const
+	{
+		return ptr_;
 	}
 
 

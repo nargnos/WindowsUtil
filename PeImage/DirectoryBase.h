@@ -1,5 +1,5 @@
 #pragma once
-#include "IPeImage.h"
+#include "IDataDirectoryUtil.h"
 
 #include "PeImageFwd.h"
 #include "DataDirectoryEntryType.h"
@@ -9,7 +9,7 @@ namespace PeDecoder
 {
 	namespace Detail
 	{
-		_STD pair<PVOID, PDWORD> GetDataDirectoryEntry(IPeImage& pe, DataDirectoryEntryType index);
+		_STD pair<PVOID, PDWORD> GetDataDirectoryEntry(const IDataDirectoryUtil& util, DataDirectoryEntryType index);
 
 		template<DataDirectoryEntryType id,
 			typename TDirectoryPtr = typename DataDirectoryEntryTypeTrait<id>::Type>
@@ -18,30 +18,30 @@ namespace PeDecoder
 			public DataPtr<TDirectoryPtr>
 		{
 		public:
-			DirectoryBase(IPeImage& pe) :
+			DirectoryBase(IDataDirectoryUtil& util) :
 				DataSize(nullptr),
 				DataPtr(nullptr),
-				pe_(pe)
+				util_(util)
 			{
-				auto data = GetDataDirectoryEntry(pe, id);
+				auto data = GetDataDirectoryEntry(util, id);
 				if (data.first != nullptr)
 				{
 					dataPtr_ = reinterpret_cast<typename DataDirectoryEntryTypeTrait<id>::Type>(data.first);
 					sizePtr_ = data.second;
 				}
 			}
-			IPeImage& GetPe()
+			IDataDirectoryUtil& GetUtil()
 			{
-				return pe_;
+				return util_;
 			}
-			const IPeImage& GetPe() const
+			const IDataDirectoryUtil& GetUtil() const
 			{
-				return pe_;
+				return util_;
 			}
-			~DirectoryBase() = default;
+			virtual ~DirectoryBase() = default;
 		protected:
 		private:
-			IPeImage& pe_;
+			IDataDirectoryUtil& util_;
 		};
 	}  // namespace Detail
 

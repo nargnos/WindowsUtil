@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ExportIteratorNode.h"
 #include "ExportDirectory.h"
-#include "IPeImage.h"
 namespace PeDecoder
 {
 	ExportIteratorNode::ExportIteratorNode(ExportDirectory & directory, DWORD index) :
@@ -27,12 +26,12 @@ namespace PeDecoder
 
 	void * ExportIteratorNode::FuncPtr()
 	{
-		return directory_->GetPe().RvaToDataPtr(*FuncRva());
+		return directory_->GetUtil().RvaToDataPtr(*FuncRva());
 	}
 
 	char * ExportIteratorNode::NamePtr()
 	{
-		return reinterpret_cast<char*>(directory_->GetPe().RvaToDataPtr(*NameRva()));
+		return reinterpret_cast<char*>(directory_->GetUtil().RvaToDataPtr(*NameRva()));
 	}
 
 }  // namespace PeDecoder

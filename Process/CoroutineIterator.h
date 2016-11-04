@@ -120,7 +120,7 @@ namespace Process
 
 			};
 			template<typename TRet>
-			inline void* _GetLastFiber(CoroutineStorageHead<TRet>* data)
+			void* _GetLastFiber(CoroutineStorageHead<TRet>* data)
 			{
 				assert(data);
 				assert(data->ContextPtr);

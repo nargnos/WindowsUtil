@@ -221,14 +221,14 @@ namespace PeImageLibTest
 		{
 			{
 				auto& dosHeader = GetPeFile().GetDosHeader();
-				Assert::IsTrue(dosHeader->IsExist());
-				Assert::IsTrue(dosHeader->GetPtr()->e_lfanew == 0x000000E0);
+				Assert::IsTrue(dosHeader->IsValid());
+				Assert::IsTrue(dosHeader->RawPtr()->e_lfanew == 0x000000E0);
 				Assert::IsTrue(GetPeFile().GetDosStub()->GetSize() == 0xA0);
 			}
 			{
 				auto& dosHeader = GetPeMapped().GetDosHeader();
-				Assert::IsTrue(dosHeader->IsExist());
-				auto ptr = dosHeader->GetPtr();
+				Assert::IsTrue(dosHeader->IsValid());
+				auto ptr = dosHeader->RawPtr();
 				ostringstream out;
 				out << "e_lfanew:" << std::hex << ptr->e_lfanew << endl;
 
@@ -247,7 +247,16 @@ namespace PeImageLibTest
 			{
 				auto& nt = GetPeFile().GetNtHeader();
 				Assert::IsTrue(nt->GetFileHeader()->Machine == IMAGE_FILE_MACHINE_I386);
-				Assert::IsTrue(nt->GetOptionalHeader32()->Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
+				auto v = MakeNtHeaderVisitor(
+					[](const NtHeader32& nt)
+				{
+					Assert::IsTrue(nt.GetOptionalHeader()->Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
+				},
+					[](const NtHeader64& nt)
+				{
+					Assert::IsTrue(nt.GetOptionalHeader()->Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
+				});
+				nt->ReadDetails(v);
 				Assert::IsTrue((*nt->GetDataDirectoryEntries())[DataDirectoryEntryType::Import]->VirtualAddress == 0x00002544);
 
 			}

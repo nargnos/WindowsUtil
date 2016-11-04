@@ -221,26 +221,32 @@
     <ClInclude Include="IteratorBase.h">
       <Filter>PeImage\Common\IteratorTemplate</Filter>
     </ClInclude>
-    <ClInclude Include="IRvaConverter.h">
-      <Filter>PeImage\Common\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="IDirectoryManager.h">
-      <Filter>PeImage\Common\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="IPeImage.h">
-      <Filter>PeImage\Common\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="DosHeader.h">
       <Filter>PeImage\DosHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="NtHeader.h">
-      <Filter>PeImage\NtHeader</Filter>
     </ClInclude>
     <ClInclude Include="DosStub.h">
       <Filter>PeImage\DosHeader</Filter>
     </ClInclude>
     <ClInclude Include="RandomAccessIteratorBase.h">
       <Filter>PeImage\Common\IteratorTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="INtHeaderVisitor.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeader32.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeader.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeader64.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="IRvaConverter.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IDataDirectoryUtil.h">
+      <Filter>PeImage\Common\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -335,17 +341,20 @@
     <ClCompile Include="Section.cpp">
       <Filter>PeImage\Sections</Filter>
     </ClCompile>
-    <ClCompile Include="IPeImage.cpp">
-      <Filter>PeImage\Common\Interface</Filter>
-    </ClCompile>
     <ClCompile Include="DosHeader.cpp">
       <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="DosStub.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeader32.cpp">
+      <Filter>PeImage\NtHeader</Filter>
     </ClCompile>
     <ClCompile Include="NtHeader.cpp">
       <Filter>PeImage\NtHeader</Filter>
     </ClCompile>
-    <ClCompile Include="DosStub.cpp">
-      <Filter>PeImage\DosHeader</Filter>
+    <ClCompile Include="NtHeader64.cpp">
+      <Filter>PeImage\NtHeader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

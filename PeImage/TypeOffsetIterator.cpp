@@ -3,7 +3,7 @@
 
 namespace PeDecoder
 {
-	TypeOffsetIterator::TypeOffsetIterator(IPeImage & pe, PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr) :
+	TypeOffsetIterator::TypeOffsetIterator(PIMAGE_BASE_RELOCATION baseReloc, PWORD ptr) :
 		store_(baseReloc, ptr)
 	{
 	}

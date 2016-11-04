@@ -1,8 +1,9 @@
 #pragma once
-#include "IPeImage.h"
+
 #include "DataPtr.h"
 #include "GetOriginal.h"
 #include "IteratorBase.h"
+#include "IDataDirectoryUtil.h"
 namespace PeDecoder
 {
 	template<typename TThunkType>
@@ -13,10 +14,10 @@ namespace PeDecoder
 		static_assert(_STD is_same<PIMAGE_THUNK_DATA32, TThunkType>::value ||
 			_STD is_same<PIMAGE_THUNK_DATA64, TThunkType>::value, "type error");
 
-		ImportThunkIteratorNode(IPeImage& pe, TThunkType thunk, TThunkType originalThunk) :
+		ImportThunkIteratorNode(IDataDirectoryUtil& util, TThunkType thunk, TThunkType originalThunk) :
 			originalThunk_(originalThunk),
 			thunk_(thunk),
-			pe_(&pe)
+			util_(&util)
 		{
 
 		}
@@ -40,7 +41,7 @@ namespace PeDecoder
 		{
 			assert(originalThunk_->u1.AddressOfData != 0);
 			assert(!IsSnapByOrdinal());
-			return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(pe_->RvaToDataPtr(originalThunk_->u1.AddressOfData));
+			return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(util_->RvaToDataPtr(originalThunk_->u1.AddressOfData));
 		}
 		
 		// 需先进行IsSnapByOrdinal()判断
@@ -54,10 +55,10 @@ namespace PeDecoder
 		PVOID GetFuncAddress() const
 		{
 			assert(thunk_->u1.Function != 0);
-			return pe_->IsMapped()? (PVOID)thunk_->u1.Function:pe_->RvaToDataPtr(thunk_->u1.Function);
+			return util_->IsMapped()? (PVOID)thunk_->u1.Function : util_->RvaToDataPtr(thunk_->u1.Function);
 		}
 	protected:
-		IPeImage* pe_;
+		IDataDirectoryUtil* util_;
 		TThunkType thunk_;
 		TThunkType originalThunk_;
 	};
@@ -77,8 +78,8 @@ namespace PeDecoder
 	public:
 		friend IteratorFriendAccess;
 
-		ImportThunkIterator(IPeImage& pe, TThunkType thunk, TThunkType originalThunk) :
-			store_(pe, thunk, originalThunk)
+		ImportThunkIterator(IDataDirectoryUtil& util, TThunkType thunk, TThunkType originalThunk) :
+			store_(util, thunk, originalThunk)
 		{
 		}
 	protected:
@@ -125,23 +126,23 @@ namespace PeDecoder
 		typedef ImportThunkIterator<TThunkType> iterator;
 		// @firstThunk: address table
 		// @firstOriginalThunk: name table 有可能是 Original
-		ImportThunk(IPeImage& pe, TThunkType firstThunk, TThunkType firstOriginalThunk) :
+		ImportThunk(IDataDirectoryUtil& util, TThunkType firstThunk, TThunkType firstOriginalThunk) :
 			firstOriginalThunk_(firstOriginalThunk),
 			firstThunk_(firstThunk),
-			pe_(pe)
+			util_(util)
 		{
 		}
 
 		ImportThunkIterator<TThunkType> begin() const
 		{
-			return ImportThunkIterator<TThunkType>(pe_, firstThunk_, firstOriginalThunk_);
+			return ImportThunkIterator<TThunkType>(util_, firstThunk_, firstOriginalThunk_);
 		}
 		ImportThunkIterator<TThunkType> end() const
 		{
-			return ImportThunkIterator<TThunkType>(pe_, nullptr, nullptr);
+			return ImportThunkIterator<TThunkType>(util_, nullptr, nullptr);
 		}
 	protected:
-		IPeImage& pe_;
+		IDataDirectoryUtil& util_;
 		TThunkType firstOriginalThunk_;
 		TThunkType firstThunk_;
 	};

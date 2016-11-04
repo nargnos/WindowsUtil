@@ -14,12 +14,12 @@ namespace PeDecoder
 	
 	BaseRelocation::interator BaseRelocation::begin()
 	{
-		return interator(relocDirectory_->GetPe(), ptr_, GetBeginPtr(ptr_));
+		return interator(ptr_, GetBeginPtr(ptr_));
 	}
 
 	BaseRelocation::interator BaseRelocation::end()
 	{
-		return interator(relocDirectory_->GetPe(), ptr_, GetEndPtr(ptr_));
+		return interator(ptr_, GetEndPtr(ptr_));
 	}
 	PIMAGE_BASE_RELOCATION BaseRelocation::GetPtr() const
 	{
