@@ -1,5 +1,5 @@
 #pragma once
-#include "PeImageFwd.h"
+
 #include "BaseRelocation.h"
 #include "IteratorBase.h"
 namespace PeDecoder

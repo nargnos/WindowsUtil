@@ -1,11 +1,11 @@
 #pragma once
-#include "PeImageFwd.h"
+
 #include "DelayImportDescriptor.h"
 #include "ImportThunk.h"
 #include "IteratorBase.h"
 namespace PeDecoder
 {
-
+	class DelayImportDirectory;
 	class DelayImportDirectoryIterator :
 		public IteratorBase<
 		DelayImportDirectoryIterator,

@@ -158,9 +158,6 @@
     <ClInclude Include="PeDecoder.h">
       <Filter>PeImage</Filter>
     </ClInclude>
-    <ClInclude Include="PeImageFwd.h">
-      <Filter>PeImage</Filter>
-    </ClInclude>
     <ClInclude Include="RelocDirectory.h">
       <Filter>PeImage\DataDirectory\RelocDirectory</Filter>
     </ClInclude>

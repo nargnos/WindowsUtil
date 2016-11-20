@@ -1,9 +1,9 @@
 #pragma once
-#include "PeImageFwd.h"
+
 #include "DirectoryBase.h"
 namespace PeDecoder
 {
-
+	class DelayImportDirectoryIterator;
 	// UNDONE: 
 	class DelayImportDirectory :
 		public Detail::DirectoryBase<DataDirectoryEntryType::DelayImport>

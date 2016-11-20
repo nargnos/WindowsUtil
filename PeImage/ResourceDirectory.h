@@ -1,9 +1,9 @@
 #pragma once
 
 #include "DirectoryBase.h"
-#include "PeImageFwd.h"
 namespace PeDecoder
 {
+	class ResourceEntryIterator;
 	// UNDONE: 
 	class ResourceDirectory :
 		public Detail::DirectoryBase<DataDirectoryEntryType::Resource>

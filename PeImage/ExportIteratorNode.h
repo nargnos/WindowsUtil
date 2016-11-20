@@ -1,7 +1,8 @@
 #pragma once
-#include "PeImageFwd.h"
+#include <Windows.h>
 namespace PeDecoder
 {
+	class ExportDirectory;
 	class ExportIteratorNode
 	{
 	public:

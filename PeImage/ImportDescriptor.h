@@ -1,7 +1,9 @@
 #pragma once
-#include "PeImageFwd.h"
+#include <Windows.h>
 namespace PeDecoder
 {
+	template<typename> class ImportThunk;
+	class ImportDirectory;
 	// 根据pe类型选择PIMAGE_THUNK_DATA32 PIMAGE_THUNK_DATA64类型的thunk
 	class ImportDescriptor
 	{

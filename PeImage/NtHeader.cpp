@@ -61,10 +61,10 @@ namespace PeDecoder
 		switch (type)
 		{
 		case PeDecoder::NtHeaderType::NtHeader32:
-			result = move(make_unique<NtHeader32>(dosHeader.RawPtr()));
+			result = make_unique<NtHeader32>(dosHeader.RawPtr());
 			break;
 		case PeDecoder::NtHeaderType::NtHeader64:
-			result = move(make_unique<NtHeader64>(dosHeader.RawPtr()));
+			result = make_unique<NtHeader64>(dosHeader.RawPtr());
 			break;
 		default:
 			break;

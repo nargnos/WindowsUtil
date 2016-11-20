@@ -1,7 +1,8 @@
 #pragma once
-#include "PeImageFwd.h"
 namespace PeDecoder
 {
+	class TypeOffsetIterator;
+	class RelocDirectory;
 	class BaseRelocation
 	{
 	public:

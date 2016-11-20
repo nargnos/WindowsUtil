@@ -15,8 +15,8 @@ namespace PeDecoder
 	{
 	public:
 		NtHeaderVisitorBase(TFunc32&& func32, TFunc64&& func64) :
-			func32_(_STD move(func32)),
-			func64_(_STD move(func64))
+			func32_(_STD forward<TFunc32>(func32)),
+			func64_(_STD forward<TFunc64>(func64))
 		{
 
 		}
@@ -37,6 +37,6 @@ namespace PeDecoder
 	template<typename TFunc32, typename TFunc64>
 	auto MakeNtHeaderVisitor(TFunc32&& func32, TFunc64&& func64)
 	{
-		return NtHeaderVisitorBase<TFunc32, TFunc64>(_STD move(func32), _STD move(func64));
+		return NtHeaderVisitorBase<TFunc32, TFunc64>(_STD forward<TFunc32>(func32), _STD forward<TFunc64>(func64));
 	}
 }  // namespace PeDecoder

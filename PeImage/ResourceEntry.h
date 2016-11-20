@@ -1,5 +1,5 @@
 #pragma once
-#include "PeImageFwd.h"
+#include <Windows.h>
 namespace PeDecoder
 {
 
@@ -12,7 +12,7 @@ namespace PeDecoder
 	//												|-> Resource Directory （语言分组->Data）
 	//															|-> 数据入口
 
-
+	class ResourceDirectoryNode;
 	class ResourceEntry
 	{
 	public:

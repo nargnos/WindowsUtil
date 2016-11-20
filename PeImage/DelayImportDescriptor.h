@@ -1,7 +1,9 @@
 #pragma once
-#include "PeImageFwd.h"
+
 namespace PeDecoder
 {
+	template<typename> class ImportThunk;
+	class DelayImportDirectory;
 	class DelayImportDescriptor
 	{
 	public:

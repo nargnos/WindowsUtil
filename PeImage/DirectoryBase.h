@@ -1,7 +1,6 @@
 #pragma once
 #include "IDataDirectoryUtil.h"
 
-#include "PeImageFwd.h"
 #include "DataDirectoryEntryType.h"
 #include "DataPtr.h"
 #include "DataSize.h"

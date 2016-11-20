@@ -1,5 +1,5 @@
 #pragma once
-#include "PeImageFwd.h"
+
 #include "ImportDescriptor.h"
 #include "ImportThunk.h"
 #include "IteratorBase.h"

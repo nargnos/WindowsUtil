@@ -56,7 +56,7 @@ namespace PeDecoder
 
 		unique_ptr<DosHeader> dosHeader_;
 		unique_ptr<NtHeader> ntHeader_;
-		mutable unique_ptr<SectionHeaders> sectionHeaders_;
+		unique_ptr<SectionHeaders> sectionHeaders_;
 
 		bool isMapped_;
 	};

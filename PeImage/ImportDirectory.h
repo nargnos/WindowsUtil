@@ -1,8 +1,9 @@
 #pragma once
-#include "PeImageFwd.h"
+
 #include "DirectoryBase.h"
 namespace PeDecoder
 {
+	class ImportDirectoryIterator;
 	// UNDONE: 
 	class ImportDirectory :
 		public Detail::DirectoryBase<DataDirectoryEntryType::Import>

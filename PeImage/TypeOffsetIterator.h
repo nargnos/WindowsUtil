@@ -1,5 +1,4 @@
 #pragma once
-#include "PeImageFwd.h"
 #include "TypeOffset.h"
 
 #include "GetRelocPtr.h"

@@ -6,6 +6,7 @@
 #include "IDataDirectoryUtil.h"
 namespace PeDecoder
 {
+	template<typename> class ImportThunkIterator;
 	template<typename TThunkType>
 	class ImportThunkIteratorNode
 	{

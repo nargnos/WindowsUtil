@@ -2,6 +2,7 @@
 #include "DirectoryBase.h"
 namespace PeDecoder
 {
+	class ExportDirectoryIterator;
 	class ExportDirectory :
 		public Detail::DirectoryBase<DataDirectoryEntryType::Export>
 	{

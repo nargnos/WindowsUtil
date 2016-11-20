@@ -2,6 +2,8 @@
 #include "Common.h"
 namespace Hook
 {
+	// TODO: 这部分可以打包成类
+
 	// 非线程安全
 	// 修改指定模块的导入表存储的函数指针，只会对直接调用的函数有效
 	// @module: 目标MODULE, NULL表示自身程序
