@@ -18,7 +18,7 @@ namespace PeDecoder
 		return IsValid(ptr_);
 	}
 
-	const PIMAGE_DOS_HEADER DosHeader::RawPtr() const
+	PIMAGE_DOS_HEADER DosHeader::RawPtr() const
 	{
 		return ptr_;
 	}

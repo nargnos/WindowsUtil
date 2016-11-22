@@ -214,6 +214,7 @@ namespace PeImageLibTest
 			Logger::WriteMessage("¶ÁÈ¡µÄÓ³ÉäpeÎª£º");
 			Logger::WriteMessage(str);
 			Assert::IsTrue(peMapped_.IsPe());
+			Assert::IsTrue(peFile_.IsPe());
 
 		}
 
@@ -221,9 +222,10 @@ namespace PeImageLibTest
 		{
 			{
 				auto& dosHeader = GetPeFile().GetDosHeader();
+				DosStub dosStub(GetPeFile());
 				Assert::IsTrue(dosHeader->IsValid());
 				Assert::IsTrue(dosHeader->RawPtr()->e_lfanew == 0x000000E0);
-				Assert::IsTrue(GetPeFile().GetDosStub()->GetSize() == 0xA0);
+				Assert::IsTrue(dosStub.GetSize() == 0xA0);
 			}
 			{
 				auto& dosHeader = GetPeMapped().GetDosHeader();
@@ -232,11 +234,11 @@ namespace PeImageLibTest
 				ostringstream out;
 				out << "e_lfanew:" << std::hex << ptr->e_lfanew << endl;
 
-				auto dosStub = GetPeMapped().GetDosStub();
+				DosStub dosStub(GetPeMapped());
 				DWORD size = 0;
 				if (dosStub)
 				{
-					size = dosStub->GetSize();
+					size = dosStub.GetSize();
 				}
 				out << std::dec << "stub size:" << size;
 				Logger::WriteMessage(out.str().c_str());
@@ -246,25 +248,18 @@ namespace PeImageLibTest
 		{
 			{
 				auto& nt = GetPeFile().GetNtHeader();
-				Assert::IsTrue(nt->GetFileHeader()->Machine == IMAGE_FILE_MACHINE_I386);
-				auto v = MakeNtHeaderVisitor(
-					[](const NtHeader32& nt)
-				{
-					Assert::IsTrue(nt.GetOptionalHeader()->Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
-				},
-					[](const NtHeader64& nt)
-				{
-					Assert::IsTrue(nt.GetOptionalHeader()->Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
-				});
-				nt->ReadDetails(v);
-				Assert::IsTrue((*nt->GetDataDirectoryEntries())[DataDirectoryEntryType::Import]->VirtualAddress == 0x00002544);
+				Assert::IsTrue(nt->GetMachineType() == MachineType::I386);
+				Assert::IsTrue(nt->GetSubsystem() == SubsystemType::WindowsCui);
+
+				DataDirectoryEntries entries(GetPeFile());
+				Assert::IsTrue(entries[DataDirectoryEntryType::Import]->VirtualAddress == 0x00002544);
 
 			}
 			{
 				auto& nt = GetPeMapped().GetNtHeader();
-				auto& de = nt->GetDataDirectoryEntries();
+				DataDirectoryEntries entries(GetPeMapped());
 				ostringstream out;
-				for each (auto& var in *de)
+				for each (auto& var in entries)
 				{
 					out << std::hex << "ADDR:" << var.VirtualAddress << " SIZE:" << var.Size << endl;
 				}
@@ -324,7 +319,7 @@ namespace PeImageLibTest
 			{
 				PeDecoder::ImportDirectory importDir(GetPeFile());
 				Assert::IsTrue(importDir.IsExist());
-				Assert::IsTrue(GetPeFile().GetImageType()== ImageType::PE32);
+				Assert::IsTrue(GetPeFile().GetImageType() == ImageType::PE32);
 				auto it = importDir.begin();
 				Assert::AreEqual(it->GetName(), "USER32.dll");
 				auto thunkIt = it->GetThunk32().begin();

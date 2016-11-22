@@ -1,35 +1,27 @@
 #pragma once
 #include <windows.h>
 #include <memory>
-#include "NtHeaderType.h"
-#include "INtHeaderVisitor.h"
-#include "DataDirectoryEntries.h"
+#include "INtHeader.h"
 namespace PeDecoder
 {
-	class DosHeader;
-	class NtHeader
+	class NtHeaderFactory;
+	class NtHeader :
+		public INtHeader
 	{
 	public:
 		virtual ~NtHeader() = default;
-
 		static NtHeaderType GetHeaderType(const void* ptr);
 		static void* GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader);
-		static bool IsValid(const void* ptr);
-		static unique_ptr<NtHeader> GetNtHeaderInstance(const DosHeader& dosHeader);
-
-		NtHeaderType GetHeaderType() const;
-		bool IsValid() const;
-		PIMAGE_FILE_HEADER GetFileHeader() const;
-		unique_ptr<DataDirectoryEntries> GetDataDirectoryEntries() const;
-		unsigned char* GetPos() const;
-
-		virtual void ReadDetails(const INtHeaderVisitor & visitor) const = 0;
+		virtual NtHeaderType GetHeaderType() const override;
+		virtual MachineType GetMachineType() const override;
+		virtual FileHeaderCharacteristics GetFileHeaderCharacteristics() const override;
+		virtual bool IsValid() const override;
+		virtual PIMAGE_FILE_HEADER GetFileHeader() const override;
+		virtual WORD GetNumberOfSections() const override;
+		virtual unsigned char* RawPtr() const override;
 	protected:
-		explicit NtHeader(const PIMAGE_DOS_HEADER dosHeader);
-
+		explicit NtHeader(void* ntHeaderRawPtr);
 		PIMAGE_NT_HEADERS32 GetHeader32() const;
-
-
 		void* ptr_;
 	};
 }  // namespace PeDecoder

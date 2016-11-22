@@ -1,12 +1,9 @@
 #pragma once
 #include "ImageType.h"
 #include "IDataDirectoryUtil.h"
-#include "DosHeader.h"
-#include "DosStub.h"
-#include "NtHeader.h"
-#include "NtHeader32.h"
-#include "NtHeader64.h"
-#include "SectionHeaders.h"
+#include "IDosHeader.h"
+#include "INtHeader.h"
+#include "ISectionHeaders.h"
 
 namespace PeDecoder
 {
@@ -16,16 +13,13 @@ namespace PeDecoder
 	public:
 		PeImage(void* ptr, bool isMapped);
 		static ImageType NtHeaderTypeToImageType(NtHeaderType type);
-		// 是否是映射的
-		
 		bool IsPe() const;
 		explicit operator bool() const;
 		void* GetBase() const;
 		// 必存在结构
-		const unique_ptr<DosHeader>& GetDosHeader() const;
-		const unique_ptr<NtHeader>& GetNtHeader() const;
-		const unique_ptr<SectionHeaders>& GetSections() const;
-		unique_ptr<DosStub> GetDosStub() const;
+		const unique_ptr<IDosHeader>& GetDosHeader() const;
+		const unique_ptr<INtHeader>& GetNtHeader() const;
+		const unique_ptr<ISectionHeaders>& GetSections() const;
 
 		DWORD OffsetToRva(DWORD fileOffset) const;
 
@@ -54,9 +48,9 @@ namespace PeDecoder
 
 		unsigned char* Base() const;
 
-		unique_ptr<DosHeader> dosHeader_;
-		unique_ptr<NtHeader> ntHeader_;
-		unique_ptr<SectionHeaders> sectionHeaders_;
+		unique_ptr<IDosHeader> dosHeader_;
+		unique_ptr<INtHeader> ntHeader_;
+		unique_ptr<ISectionHeaders> sectionHeaders_;
 
 		bool isMapped_;
 	};

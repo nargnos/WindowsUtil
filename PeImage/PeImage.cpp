@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "PeImage.h"
-#include "NtHeader.h"
-#include "SectionHeaders.h"
+#include "NtHeaderFactory.h"
+#include "DosHeaderFactory.h"
+#include "SectionHeadersFactory.h"
+#include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
 	PeImage::PeImage(void* ptr, bool isMapped) :
@@ -24,8 +26,8 @@ namespace PeDecoder
 
 		assert(ntHeader_->GetHeaderType() == NtHeaderType::NtHeader32 ||
 			ntHeader_->GetHeaderType() == NtHeaderType::NtHeader64);
-		// …Ë÷√Ω⁄±Ì
-		sectionHeaders_ = make_unique<SectionHeaders>(*GetNtHeader());
+
+		sectionHeaders_ = SectionHeadersFactory::CreateSectionHeadersInstance(*this);
 	}
 	PeImage::operator bool() const
 	{
@@ -55,19 +57,19 @@ namespace PeDecoder
 		return NtHeaderTypeToImageType(ntHeader_->GetHeaderType());
 	}
 
-	const unique_ptr<DosHeader>& PeImage::GetDosHeader() const
+	const unique_ptr<IDosHeader>& PeImage::GetDosHeader() const
 	{
 		assert(IsPe());
 		return dosHeader_;
 	}
 
-	const unique_ptr<NtHeader>& PeImage::GetNtHeader() const
+	const unique_ptr<INtHeader>& PeImage::GetNtHeader() const
 	{
 		assert(IsPe());
 		return ntHeader_;
 	}
 
-	const unique_ptr<SectionHeaders>& PeImage::GetSections() const
+	const unique_ptr<ISectionHeaders>& PeImage::GetSections() const
 	{
 		assert(IsPe());
 		return sectionHeaders_;
@@ -75,12 +77,12 @@ namespace PeDecoder
 
 	bool PeImage::HasDirectory(DataDirectoryEntryType index) const
 	{
-		return GetNtHeader()->GetDataDirectoryEntries()->HasDirectory(index);
+		return DataDirectoryEntries(*this).HasDirectory(index);
 	}
 
 	PIMAGE_DATA_DIRECTORY PeImage::GetDirectoryEntry(DataDirectoryEntryType index) const
 	{
-		return GetNtHeader()->GetDataDirectoryEntries()->GetDirectoryEntry(index);
+		return DataDirectoryEntries(*this).GetDirectoryEntry(index);
 	}
 
 	DWORD PeImage::RvaToOffset(DWORD rva) const
@@ -132,7 +134,7 @@ namespace PeDecoder
 
 	bool PeImage::LoadDosHeader(PIMAGE_DOS_HEADER ptr)
 	{
-		dosHeader_ = make_unique<DosHeader>(ptr);
+		dosHeader_ = DosHeaderFactory::CreateDosHeaderInstance(ptr);
 		return CheckDosHeader();
 	}
 
@@ -144,7 +146,7 @@ namespace PeDecoder
 	bool PeImage::LoadNtHeader()
 	{
 		assert(CheckDosHeader());
-		ntHeader_ = NtHeader::GetNtHeaderInstance(*dosHeader_);
+		ntHeader_ = NtHeaderFactory::CreateNtHeaderInstance(*dosHeader_);
 		return CheckNtHeader();
 	}
 
@@ -164,11 +166,6 @@ namespace PeDecoder
 	unsigned char * PeImage::Base() const
 	{
 		return reinterpret_cast<unsigned char*>(GetDosHeader()->RawPtr());
-	}
-
-	unique_ptr<DosStub> PeImage::GetDosStub() const
-	{
-		return _STD make_unique<DosStub>(*GetDosHeader(), *GetNtHeader());
 	}
 
 

@@ -2,13 +2,14 @@
 #include <Windows.h>
 namespace PeDecoder
 {
-	class DosHeader;
-	class NtHeader;
+	class PeImage;
 	class DosStub
 	{
 	public:
 		typedef unsigned char* iterator;
-		DosStub(const DosHeader& dos, const NtHeader& nt);
+		explicit DosStub(const PeImage& pe);
+		bool IsExist() const;
+		explicit operator bool() const;
 		DWORD GetSize() const;
 		iterator begin() const;
 		iterator end() const;

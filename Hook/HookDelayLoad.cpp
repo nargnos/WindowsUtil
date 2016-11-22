@@ -52,9 +52,9 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	writeAddress = func->GetAddressThunk();
 	result = func->GetFuncAddress();
 #else
-	auto& thunk = dll->GetThunk32();
+	auto& thunk = dll->GetThunk64();
 	auto thunkEnd = thunk.end();
-	auto func = PeDecoder::FindThunk<PeDecoder::ImportThunkIterator32, PeDecoder::ImportThunkIteratorNode32>(
+	auto func = PeDecoder::FindThunk<PeDecoder::ImportThunkIterator64, PeDecoder::ImportThunkIteratorNode64>(
 		thunk.begin(), thunkEnd, procName);
 	if (func == thunkEnd)
 	{

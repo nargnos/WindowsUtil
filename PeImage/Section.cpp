@@ -6,7 +6,7 @@ std::array<BYTE, PeDecoder::Detail::Section::Size>& PeDecoder::Detail::Section::
 	return *reinterpret_cast<_STD array<BYTE, Size>*>(const_cast<BYTE*>(Name));
 }
 
-PeDecoder::Detail::SectionCharacteristics PeDecoder::Detail::Section::GetCharacteristics() const
+PeDecoder::Detail::SectionCharacteristics PeDecoder::Detail::Section::GetFileHeaderCharacteristics() const
 {
 	return static_cast<SectionCharacteristics>(Characteristics);
 }

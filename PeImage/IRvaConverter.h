@@ -1,7 +1,10 @@
 #pragma once
 #include <windows.h>
-__interface IRvaConverter
+namespace PeDecoder
 {
-	PVOID RvaToDataPtr(DWORD rva) const;
-	PVOID RvaToDataPtr(ULONGLONG rva) const;
-};
+	__interface IRvaConverter
+	{
+		PVOID RvaToDataPtr(DWORD rva) const;
+		PVOID RvaToDataPtr(ULONGLONG rva) const;
+	};
+}  // namespace PeDecoder

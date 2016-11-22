@@ -70,6 +70,9 @@
     <Filter Include="PeImage\Common\Interface">
       <UniqueIdentifier>{378aebb0-bce4-4d1a-9a29-3fbd8224ea1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PeImage\NtHeader\Types">
+      <UniqueIdentifier>{146e805a-27c5-4e1e-8368-99c2a902309c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -152,9 +155,6 @@
     <ClInclude Include="LoadConfigDirectory.h">
       <Filter>PeImage\DataDirectory\LoadConfigDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="NtHeaderType.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
     <ClInclude Include="PeDecoder.h">
       <Filter>PeImage</Filter>
     </ClInclude>
@@ -203,9 +203,6 @@
     <ClInclude Include="PeImage.h">
       <Filter>PeImage</Filter>
     </ClInclude>
-    <ClInclude Include="SectionIterator.h">
-      <Filter>PeImage\Sections</Filter>
-    </ClInclude>
     <ClInclude Include="Section.h">
       <Filter>PeImage\Sections</Filter>
     </ClInclude>
@@ -227,9 +224,6 @@
     <ClInclude Include="RandomAccessIteratorBase.h">
       <Filter>PeImage\Common\IteratorTemplate</Filter>
     </ClInclude>
-    <ClInclude Include="INtHeaderVisitor.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
     <ClInclude Include="NtHeader32.h">
       <Filter>PeImage\NtHeader</Filter>
     </ClInclude>
@@ -245,9 +239,50 @@
     <ClInclude Include="IDataDirectoryUtil.h">
       <Filter>PeImage\Common\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="DllCharacteristics.h">
+      <Filter>PeImage\NtHeader\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHeaderCharacteristics.h">
+      <Filter>PeImage\NtHeader\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="MachineType.h">
+      <Filter>PeImage\NtHeader\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeaderType.h">
+      <Filter>PeImage\NtHeader\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SubsystemType.h">
+      <Filter>PeImage\NtHeader\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="INtHeader.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IOptionalHeader.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IFileHeader.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="INtHeaderVisitor.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeaderFactory.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="IDosHeader.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DosHeaderFactory.h">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ISectionHeaders.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionHeadersFactory.h">
+      <Filter>PeImage\Sections</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArchitectureDirectory.cpp">
       <Filter>PeImage\DataDirectory\ArchitectureDirectory</Filter>
     </ClCompile>
@@ -332,9 +367,6 @@
     <ClCompile Include="DirectoryBase.cpp">
       <Filter>PeImage\DataDirectory</Filter>
     </ClCompile>
-    <ClCompile Include="SectionIterator.cpp">
-      <Filter>PeImage\Sections</Filter>
-    </ClCompile>
     <ClCompile Include="Section.cpp">
       <Filter>PeImage\Sections</Filter>
     </ClCompile>
@@ -352,6 +384,16 @@
     </ClCompile>
     <ClCompile Include="NtHeader64.cpp">
       <Filter>PeImage\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeaderFactory.cpp">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="DosHeaderFactory.cpp">
+      <Filter>PeImage\DosHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="SectionHeadersFactory.cpp">
+      <Filter>PeImage\Sections</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

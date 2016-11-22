@@ -54,7 +54,7 @@ namespace PeDecoder
 			constexpr static int NameSize = IMAGE_SIZEOF_SHORT_NAME;
 
 			_STD array<BYTE, Size>& GetNameArray() const;
-			SectionCharacteristics GetCharacteristics() const;
+			SectionCharacteristics GetFileHeaderCharacteristics() const;
 			bool RvaInRange(DWORD rva, DWORD sectionAlignment) const;
 			bool OffsetInRange(DWORD fileOffset, DWORD sectionAlignment) const;
 		};

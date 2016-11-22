@@ -1,39 +1,32 @@
 #pragma once
-#include "SectionIterator.h"
+#include "ISectionHeaders.h"
 namespace PeDecoder
-{
-	namespace Detail
-	{
-		struct Section;
-	}
-	class NtHeader;
-	class SectionHeaders
+{	
+	class PeImage;
+	class SectionHeaders:
+		public ISectionHeaders
 	{
 	public:
 		typedef Detail::Section* DataPtr;
 		typedef DataPtr iterator;
 
-		SectionHeaders(DataPtr ptr, PWORD sizePtr, PDWORD sectionAlignmentPtr);
-		explicit SectionHeaders(const NtHeader& nt);
+		explicit SectionHeaders(const PeImage& pe);
 
-		WORD size() const;
+		virtual DataPtr RawPtr() const override;
+		virtual WORD GetSize() const override;
+		virtual DWORD GetSectionAlignment() const override;
 
-		DataPtr RawPtr() const;
-		WORD GetSize() const;
-		DWORD GetSectionAlignment() const;
-
-		DataPtr RvaToSectionHeader(DWORD rva) const;
-		DataPtr OffsetToSectionHeader(DWORD fileOffset) const;
+		virtual DataPtr RvaToSectionHeader(DWORD rva) const override;
+		virtual DataPtr OffsetToSectionHeader(DWORD fileOffset) const override;
 
 		// 为了兼容c++算法，首字母不大写了
-		iterator begin() const;
+		virtual iterator begin() const override;
 		// 结尾的下一元素地址
-		iterator end() const;
+		virtual iterator end() const override;
 
 	protected:
-		void Set(DataPtr ptr, PWORD sizePtr, PDWORD sectionAlignmentPtr);
-		PWORD sizePtr_;
-		PDWORD alignmentPtr_;
+		WORD size_;
+		DWORD alignment_;
 		DataPtr ptr_;
 	};
 

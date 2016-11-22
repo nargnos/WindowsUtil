@@ -1,0 +1,21 @@
+#pragma once
+#include <Windows.h>
+enum class FileHeaderCharacteristics :WORD
+{
+	RelocsStripped = IMAGE_FILE_RELOCS_STRIPPED,
+	ExecutableImage = IMAGE_FILE_EXECUTABLE_IMAGE,
+	LineNumsStripped = IMAGE_FILE_LINE_NUMS_STRIPPED,
+	LocalSymsStripped = IMAGE_FILE_LOCAL_SYMS_STRIPPED,
+	AggresiveWsTrim = IMAGE_FILE_AGGRESIVE_WS_TRIM,
+	LargeAddressAware = IMAGE_FILE_LARGE_ADDRESS_AWARE,
+	BytesReversedLo = IMAGE_FILE_BYTES_REVERSED_LO,
+	Bit32Machine = IMAGE_FILE_32BIT_MACHINE,
+	DebugStripped = IMAGE_FILE_DEBUG_STRIPPED,
+	RemovableRunFromSwap = IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP,
+	NetRunFromSwap = IMAGE_FILE_NET_RUN_FROM_SWAP,
+	System = IMAGE_FILE_SYSTEM,
+	Dll = IMAGE_FILE_DLL,
+	UpSystemOnly = IMAGE_FILE_UP_SYSTEM_ONLY,
+	BytesReversedHi = IMAGE_FILE_BYTES_REVERSED_HI,
+
+};

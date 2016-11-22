@@ -1,44 +1,20 @@
 #include "stdafx.h"
 #include "SectionHeaders.h"
+#include "PeImage.h"
 #include "NtHeader.h"
-#include "NtHeader32.h"
-#include "NtHeader64.h"
-#include "INtHeaderVisitor.h"
 namespace PeDecoder
 {
-
-
-	SectionHeaders::SectionHeaders(DataPtr ptr, PWORD sizePtr, PDWORD sectionAlignmentPtr) :
-		ptr_(ptr),
-		sizePtr_(sizePtr),
-		alignmentPtr_(sectionAlignmentPtr)
+	SectionHeaders::SectionHeaders(const PeImage & pe)
 	{
-	}
-	SectionHeaders::SectionHeaders(const NtHeader & nt) :
-		SectionHeaders(nullptr, nullptr, nullptr)
-	{
+		auto& nt = *pe.GetNtHeader();
 		assert(nt.IsValid());
-		auto visitor = MakeNtHeaderVisitor(
-			[this](const NtHeader32 & nt)
-		{
-			auto ptr = nt.RawPtr();
-			Set(static_cast<Detail::Section*>(IMAGE_FIRST_SECTION(ptr)),
-				&ptr->FileHeader.NumberOfSections,
-				&ptr->OptionalHeader.SectionAlignment);
-		},
-			[this](const NtHeader64 & nt)
-		{
-			auto ptr = nt.RawPtr();
-			Set(static_cast<Detail::Section*>(IMAGE_FIRST_SECTION(ptr)),
-				&ptr->FileHeader.NumberOfSections,
-				&ptr->OptionalHeader.SectionAlignment);
-		});
-		nt.ReadDetails(visitor);
+		size_ = nt.GetNumberOfSections();
+		alignment_ = nt.GetSectionAlignment();
+		ptr_ = static_cast<Detail::Section*>(nt.GetSectionHeaderPtr());
 	}
 	DWORD SectionHeaders::GetSectionAlignment() const
 	{
-		assert(alignmentPtr_);
-		return *alignmentPtr_;
+		return alignment_;
 	}
 	SectionHeaders::DataPtr SectionHeaders::RvaToSectionHeader(DWORD rva) const
 	{
@@ -72,23 +48,12 @@ namespace PeDecoder
 	{
 		return{ RawPtr() + GetSize() };
 	}
-	void SectionHeaders::Set(DataPtr ptr, PWORD sizePtr, PDWORD sectionAlignmentPtr)
-	{
-		sizePtr_ = sizePtr;
-		ptr_ = ptr;
-		alignmentPtr_ = sectionAlignmentPtr;
-	}
 	SectionHeaders::DataPtr SectionHeaders::RawPtr() const
 	{
 		return ptr_;
 	}
 	WORD SectionHeaders::GetSize() const
 	{
-		assert(sizePtr_);
-		return *sizePtr_;
-	}
-	WORD SectionHeaders::size() const
-	{
-		return GetSize();
+		return size_;
 	}
 }  // namespace PeDecoder
