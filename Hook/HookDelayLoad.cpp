@@ -29,9 +29,9 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	assert(delay);
 	auto dlEnd = delay.end();
 	// ÕÒdll
-	auto dll = _STD find_if(delay.begin(), dlEnd, [dllName](PeDecoder::DelayImportDescriptor& node)
+	auto dll = _STD find_if(delay.begin(), dlEnd, [dllName](auto& node)
 	{
-		return strcmp(node.GetName(), dllName) == 0;
+		return strcmp(node->GetName(), dllName) == 0;
 	});
 	if (dll == dlEnd)
 	{
@@ -40,29 +40,14 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	auto type = pe.GetImageType();
 	PVOID writeAddress;
 	PVOID result;
-#ifdef WIN32
-	auto& thunk = dll->GetThunk32();
-	auto thunkEnd = thunk.end();
-	auto func = PeDecoder::FindThunk<PeDecoder::ImportThunkIterator32, PeDecoder::ImportThunkIteratorNode32>(
-		thunk.begin(), thunkEnd, procName);
+	auto thunkEnd = dll->end();
+	auto func = PeDecoder::FindThunk(dll->begin(), thunkEnd, procName);
 	if (func == thunkEnd)
 	{
 		return nullptr;
 	}
-	writeAddress = func->GetAddressThunk();
+	writeAddress = func->GetThunkPtr();
 	result = func->GetFuncAddress();
-#else
-	auto& thunk = dll->GetThunk64();
-	auto thunkEnd = thunk.end();
-	auto func = PeDecoder::FindThunk<PeDecoder::ImportThunkIterator64, PeDecoder::ImportThunkIteratorNode64>(
-		thunk.begin(), thunkEnd, procName);
-	if (func == thunkEnd)
-	{
-		return nullptr;
-	}
-	writeAddress = func->GetAddressThunk();
-	result = func->GetFuncAddress();
-#endif // WIN32
 
 	DWORD size = sizeof(PVOID);
 	if (Process::Overwrite::WriteProcessMemory(NtCurrentProcess(), writeAddress, &hookFunc, size, NULL))

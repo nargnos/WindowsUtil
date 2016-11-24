@@ -1,26 +1,62 @@
 #pragma once
-
-#include "DataPtr.h"
+#include "IImportThunk.h"
 #include "GetOriginal.h"
 #include "IteratorBase.h"
 #include "IDataDirectoryUtil.h"
 namespace PeDecoder
 {
-	template<typename> class ImportThunkIterator;
+	class ImportThunkIterator;
 	template<typename TThunkType>
-	class ImportThunkIteratorNode
+	class ImportThunk:
+		public IImportThunk
 	{
 	public:
-		friend class ImportThunkIterator<TThunkType>;
 		static_assert(_STD is_same<PIMAGE_THUNK_DATA32, TThunkType>::value ||
-			_STD is_same<PIMAGE_THUNK_DATA64, TThunkType>::value, "type error");
-
-		ImportThunkIteratorNode(IDataDirectoryUtil& util, TThunkType thunk, TThunkType originalThunk) :
+			_STD is_same<PIMAGE_THUNK_DATA64, TThunkType>::value, "PIMAGE_THUNK_DATA32 PIMAGE_THUNK_DATA64");
+		friend ImportThunkIterator;
+		ImportThunk(const IDataDirectoryUtil& util, TThunkType thunk, TThunkType originalThunk) :
 			originalThunk_(originalThunk),
 			thunk_(thunk),
 			util_(&util)
 		{
 
+		}
+		// 判断是否是用ID导入的
+		// false表示这个结构可用GetImportByName取得名字
+		virtual bool IsSnapByOrdinal() const override
+		{
+			assert(GetNameThunk());
+			return GetThunkOrdinal<TThunkType>::IsSnapByOrdinal(GetNameThunk());
+		}
+		// 需先进行IsSnapByOrdinal()判断
+		// 取当前导入函数名的存储结构
+		virtual PIMAGE_IMPORT_BY_NAME GetImportByName() const override
+		{
+			assert(GetNameThunk());
+			assert(GetNameThunk()->u1.AddressOfData != 0);
+			assert(!IsSnapByOrdinal());
+			return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(util_->RvaToDataPtr(GetNameThunk()->u1.AddressOfData));
+		}
+		
+		virtual PVOID GetFuncAddress() const override
+		{
+			assert(GetAddressThunk());
+			assert(GetAddressThunk()->u1.Function != 0);
+			return util_->IsMapped()? (PVOID)GetAddressThunk()->u1.Function : util_->RvaToDataPtr(GetAddressThunk()->u1.Function);
+		}
+		virtual void ReadDetails(IReadThunkDetail& visitor) const override
+		{
+			visitor.Visit(*this);
+		}
+		// AddressThunk
+		virtual void* GetThunkPtr() const override
+		{
+			return GetAddressThunk();
+		}
+		// NameThunk
+		virtual void* GetOriginalThunkPtr() const override
+		{
+			return GetNameThunk();
 		}
 		TThunkType GetAddressThunk() const
 		{
@@ -30,135 +66,35 @@ namespace PeDecoder
 		{
 			return originalThunk_;
 		}
-		// 判断是否是用ID导入的
-		// false表示这个结构可用GetImportByName取得名字
-		bool IsSnapByOrdinal() const
-		{
-			return GetThunkOrdinal<TThunkType>::IsSnapByOrdinal(originalThunk_);
-		}
-		// 需先进行IsSnapByOrdinal()判断
-		// 取当前导入函数名的存储结构
-		PIMAGE_IMPORT_BY_NAME GetImportByName() const
-		{
-			assert(originalThunk_->u1.AddressOfData != 0);
-			assert(!IsSnapByOrdinal());
-			return reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(util_->RvaToDataPtr(originalThunk_->u1.AddressOfData));
-		}
-		
 		// 需先进行IsSnapByOrdinal()判断
 		// 取当前导入函数的ID
 		typename GetThunkOrdinal<TThunkType>::TResult GetOrdinal() const
 		{
 			return GetThunkOrdinal<TThunkType>::GetOrdinal(originalThunk_);
 		}
-		
-
-		PVOID GetFuncAddress() const
+		virtual ~ImportThunk()
 		{
-			assert(thunk_->u1.Function != 0);
-			return util_->IsMapped()? (PVOID)thunk_->u1.Function : util_->RvaToDataPtr(thunk_->u1.Function);
+			util_ = nullptr;
+			thunk_ = nullptr;
+			originalThunk_ = nullptr;
 		}
+
 	protected:
-		IDataDirectoryUtil* util_;
+		const IDataDirectoryUtil* util_;
 		TThunkType thunk_;
 		TThunkType originalThunk_;
+
 	};
-
-	using ImportThunkIteratorNode32 = ImportThunkIteratorNode<PIMAGE_THUNK_DATA32>;
-	using ImportThunkIteratorNode64 = ImportThunkIteratorNode<PIMAGE_THUNK_DATA64>;
-
-	// node类型为ImportThunkIteratorNode<TThunkType>
-	// 类型有PIMAGE_THUNK_DATA32 PIMAGE_THUNK_DATA64
-	template<typename TThunkType>
-	class ImportThunkIterator :
-		public IteratorBase<
-		ImportThunkIterator<TThunkType>,
-		_STD forward_iterator_tag,
-		ImportThunkIteratorNode<TThunkType>>
-	{
-	public:
-		friend IteratorFriendAccess;
-
-		ImportThunkIterator(IDataDirectoryUtil& util, TThunkType thunk, TThunkType originalThunk) :
-			store_(util, thunk, originalThunk)
-		{
-		}
-	protected:
-		bool Equal(const ImportThunkIterator & val) const
-		{
-			return GetStore().originalThunk_ == val.GetStore().originalThunk_ &&
-				GetStore().thunk_ == val.GetStore().thunk_;
-		}
-		void Increment()
-		{
-			++GetStore().originalThunk_;
-			++GetStore().thunk_;
-			if (GetStore().originalThunk_->u1.AddressOfData == 0)
-			{
-				// 到末尾了
-				GetStore().originalThunk_ = nullptr;
-				GetStore().thunk_ = nullptr;
-			}
-		}
-
-
-		ImportThunkIteratorNode<TThunkType>& Dereference()
-		{
-			return GetStore();
-		}
-		ImportThunkIteratorNode<TThunkType>& GetStore()
-		{
-			return store_;
-		}
-		const ImportThunkIteratorNode<TThunkType>& GetStore() const
-		{
-			return store_;
-		}
-		ImportThunkIteratorNode<TThunkType> store_;
-	};
-
-	using ImportThunkIterator32 = ImportThunkIterator<PIMAGE_THUNK_DATA32>;
-	using ImportThunkIterator64 = ImportThunkIterator<PIMAGE_THUNK_DATA64>;
-
-	template<typename TThunkType>
-	class ImportThunk
-	{
-	public:
-		typedef ImportThunkIterator<TThunkType> iterator;
-		// @firstThunk: address table
-		// @firstOriginalThunk: name table 有可能是 Original
-		ImportThunk(IDataDirectoryUtil& util, TThunkType firstThunk, TThunkType firstOriginalThunk) :
-			firstOriginalThunk_(firstOriginalThunk),
-			firstThunk_(firstThunk),
-			util_(util)
-		{
-		}
-
-		ImportThunkIterator<TThunkType> begin() const
-		{
-			return ImportThunkIterator<TThunkType>(util_, firstThunk_, firstOriginalThunk_);
-		}
-		ImportThunkIterator<TThunkType> end() const
-		{
-			return ImportThunkIterator<TThunkType>(util_, nullptr, nullptr);
-		}
-	protected:
-		IDataDirectoryUtil& util_;
-		TThunkType firstOriginalThunk_;
-		TThunkType firstThunk_;
-	};
-	using ImportThunk32 = ImportThunk<PIMAGE_THUNK_DATA32>;
-	using ImportThunk64 = ImportThunk<PIMAGE_THUNK_DATA64>;
 
 	// 辅助查找iat的函数
-	template<typename TThunkIterator, typename TThunkIteratorNode>
+	template<typename TThunkIterator>
 	TThunkIterator FindThunk(TThunkIterator begin, TThunkIterator end, LPCSTR procName)
 	{
-		return _STD find_if(begin, end, [procName](TThunkIteratorNode& node)
+		return _STD find_if(begin, end, [procName](auto& node)
 		{
-			if (!node.IsSnapByOrdinal())
+			if (!node->IsSnapByOrdinal())
 			{
-				return strcmp(reinterpret_cast<PCHAR>(node.GetImportByName()->Name), procName) == 0;
+				return strcmp(reinterpret_cast<PCHAR>(node->GetImportByName()->Name), procName) == 0;
 			}
 			return false;
 		});

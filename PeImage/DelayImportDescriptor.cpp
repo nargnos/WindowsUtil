@@ -3,29 +3,23 @@
 #include "DelayImportDirectory.h"
 #include "IDataDirectoryUtil.h"
 #include "ImportThunk.h"
-
+#include "ImportThunkFactory.h"
 namespace PeDecoder
 {
-	DelayImportDescriptor::DelayImportDescriptor(DelayImportDirectory & delayImportDirectory, PImgDelayDescr ptr) :
+	DelayImportDescriptor::DelayImportDescriptor(const DelayImportDirectory & delayImportDirectory, PImgDelayDescr ptr) :
 		delayImportDirectory_(&delayImportDirectory),
 		dataPtr_(ptr)
 	{
 	}
-	DelayImportDescriptor::Thunk32 DelayImportDescriptor::GetThunk32() const
+	ImportThunkIterator DelayImportDescriptor::begin() const
 	{
-		auto& util = delayImportDirectory_->GetUtil();
-		auto addressTable =reinterpret_cast<PIMAGE_THUNK_DATA32>( util.RvaToDataPtr(GetPtr()->rvaIAT));
-		auto nameTable = reinterpret_cast<PIMAGE_THUNK_DATA32>(util.RvaToDataPtr(GetPtr()->rvaINT));
-
-		return Thunk32(delayImportDirectory_->GetUtil(), addressTable, nameTable);
+		assert(delayImportDirectory_);
+		return ImportThunkFactory::CreateDelayThunkIterator(delayImportDirectory_->GetUtil(), GetPtr());
 	}
-	DelayImportDescriptor::Thunk64 DelayImportDescriptor::GetThunk64() const
+	ImportThunkIterator DelayImportDescriptor::end() const
 	{
-		auto& util = delayImportDirectory_->GetUtil();
-		auto addressTable = reinterpret_cast<PIMAGE_THUNK_DATA64>(util.RvaToDataPtr(GetPtr()->rvaIAT));
-		auto nameTable = reinterpret_cast<PIMAGE_THUNK_DATA64>(util.RvaToDataPtr(GetPtr()->rvaINT));
-
-		return Thunk64(delayImportDirectory_->GetUtil(), addressTable, nameTable);
+		assert(delayImportDirectory_);
+		return ImportThunkFactory::CreateDelayThunkIterator(delayImportDirectory_->GetUtil(), nullptr);
 	}
 	PCHAR DelayImportDescriptor::GetName()
 	{
@@ -34,6 +28,12 @@ namespace PeDecoder
 	}
 	PImgDelayDescr DelayImportDescriptor::GetPtr() const
 	{
+		assert(dataPtr_);
 		return dataPtr_;
+	}
+	DelayImportDescriptor::~DelayImportDescriptor()
+	{
+		dataPtr_ = nullptr;
+		delayImportDirectory_ = nullptr;
 	}
 }  // namespace PeDecoder

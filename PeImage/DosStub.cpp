@@ -36,12 +36,18 @@ namespace PeDecoder
 	}
 	DosStub::iterator DosStub::begin() const
 	{
+		assert(ptr_);
 		return ptr_;
 	}
 
 	DosStub::iterator DosStub::end() const
 	{
-		return ptr_ + GetSize();
+		return begin() + GetSize();
+	}
+
+	DosStub::~DosStub()
+	{
+		ptr_ = nullptr;
 	}
 
 }  // namespace PeDecoder

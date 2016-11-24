@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DelayImportDirectory.h"
-#include "DelayImportDirectoryIterator.h"
+#include "DelayImportDescriptorIterator.h"
 namespace PeDecoder
 {
 	DelayImportDirectory::iterator DelayImportDirectory::begin()

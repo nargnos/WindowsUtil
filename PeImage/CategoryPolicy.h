@@ -26,7 +26,7 @@ public:
 
 	TPointer operator->()
 	{
-		return AddressOf();
+		return GetAddress<TPointer>(Self());
 	}
 	const TReference operator*() const
 	{
@@ -35,7 +35,7 @@ public:
 
 	const TPointer operator->() const
 	{
-		return AddressOf();
+		return GetAddress<TPointer>(Self());
 	}
 
 	bool operator==(const TIterator& val) const
@@ -62,6 +62,25 @@ public:
 	}
 
 protected:
+	// 是ref指代类型的指针就用这个
+	// 否则需要自定义取指函数
+	template<typename TPtr, typename TSelf>
+	static _STD enable_if_t<_STD is_pointer<TPtr>::value &&
+		_STD is_same<_STD remove_pointer_t<TPtr>&, TReference>::value, TPtr>
+		GetAddress(TSelf&& self)
+	{
+		return _STD addressof(IteratorFriendAccess::Dereference(_STD forward<TSelf>(self)));
+	}
+
+	template<typename TPtr, typename TSelf>
+	static _STD enable_if_t<!(_STD is_pointer<TPtr>::value &&
+		_STD is_same<_STD remove_pointer_t<TPtr>&, TReference>::value), TPtr>
+		GetAddress(TSelf&& self)
+	{
+		return IteratorFriendAccess::AddressOf(_STD forward<TSelf>(self));
+	}
+
+
 	TIterator& Self()
 	{
 		return static_cast<TIterator&>(*this);
@@ -69,14 +88,6 @@ protected:
 	const TIterator& Self() const
 	{
 		return static_cast<const TIterator&>(*this);
-	}
-	const TPointer AddressOf() const
-	{
-		return _STD addressof(IteratorFriendAccess::Dereference(Self()));
-	}
-	TPointer AddressOf()
-	{
-		return _STD addressof(IteratorFriendAccess::Dereference(Self()));
 	}
 	TIterator& _Advance(TDiff val)
 	{

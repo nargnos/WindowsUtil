@@ -1,23 +1,22 @@
 #pragma once
 #include <Windows.h>
+#include <memory>
+#include "ImportThunkIterator.h"
 namespace PeDecoder
 {
-	template<typename> class ImportThunk;
 	class ImportDirectory;
-	// 根据pe类型选择PIMAGE_THUNK_DATA32 PIMAGE_THUNK_DATA64类型的thunk
+
 	class ImportDescriptor
 	{
 	public:
-		using Thunk32 = ImportThunk<PIMAGE_THUNK_DATA32>;
-		using Thunk64 = ImportThunk<PIMAGE_THUNK_DATA64>;
-		friend class ImportDirectoryIterator;
+		friend class ImportDescriptorIterator;
 		ImportDescriptor(ImportDirectory& importDirectory, PIMAGE_IMPORT_DESCRIPTOR ptr);
 
-		Thunk32 GetThunk32() const;
-		Thunk64 GetThunk64() const;
+		ImportThunkIterator begin() const;
+		ImportThunkIterator end() const;
 		PCHAR GetName() const;
-		PIMAGE_IMPORT_DESCRIPTOR GetPtr() const;
-
+		PIMAGE_IMPORT_DESCRIPTOR RawPtr() const;
+		virtual ~ImportDescriptor();
 	protected:
 		PIMAGE_IMPORT_DESCRIPTOR dataPtr_;
 		ImportDirectory* importDirectory_;

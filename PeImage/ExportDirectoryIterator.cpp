@@ -4,59 +4,62 @@
 #include "ExportDirectory.h"
 namespace PeDecoder
 {
-	ExportDirectoryIterator::ExportDirectoryIterator(ExportDirectory & directory, DWORD index) :
-		store_(directory, index)
+	ExportDirectoryIterator::ExportDirectoryIterator(const ExportDirectory & directory, DWORD index) :
+		directory_(&directory),
+		index_(index)
 	{
 
 	}
 
+	ExportDirectoryIterator::~ExportDirectoryIterator()
+	{
+		directory_ = nullptr;
+	}
+
 	bool ExportDirectoryIterator::Equal(const ExportDirectoryIterator & val) const
 	{
-		return val.GetStore().directory_ == GetStore().directory_ && val.GetStore().index_ == GetStore().index_;
+		return val.directory_ == directory_ && val.index_ == index_;
 	}
 
 	void ExportDirectoryIterator::Increment()
 	{
 		assert(InRange());
-		++GetStore().index_;
+		++index_;
 	}
 
 	void ExportDirectoryIterator::Decrement()
 	{
 		assert(InRange());
-		--GetStore().index_;
+		--index_;
 	}
 
 	void ExportDirectoryIterator::Advance(int n)
 	{
 		assert(InRange());
-		GetStore().index_ += n;
+		index_ += n;
 	}
 
 	ExportDirectoryIterator::difference_type ExportDirectoryIterator::DistanceTo(const ExportDirectoryIterator & val) const
 	{
-		assert(val.GetStore().directory_ == GetStore().directory_);
-		return val.GetStore().index_ - GetStore().index_;
+		assert(val.directory_ ==directory_);
+		return val.index_ - index_;
 	}
 
 	ExportDirectoryIterator::reference ExportDirectoryIterator::Dereference()
 	{
 		assert(InRange());
-		return GetStore();
+		assert(directory_);
+		return _STD make_unique<ExportIteratorNode>(*directory_, index_);
+	}
+
+	ExportDirectoryIterator::pointer ExportDirectoryIterator::AddressOf()
+	{
+		return Dereference();
 	}
 
 	bool ExportDirectoryIterator::InRange() const
 	{
-		return GetStore().index_ >= 0 && GetStore().index_ < *GetStore().directory_->GetNumberOfNamesPtr();
+		return index_ >= 0 && index_ < *directory_->GetNumberOfNamesPtr();
 	}
 
-	ExportIteratorNode & ExportDirectoryIterator::GetStore()
-	{
-		return store_;
-	}
-
-	const ExportIteratorNode & ExportDirectoryIterator::GetStore() const
-	{
-		return store_;
-	}
 }  // namespace PeDecoder

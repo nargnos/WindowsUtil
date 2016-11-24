@@ -25,6 +25,7 @@ template<
 	void Decrement()
 	{
 	}
+	// val-自身 距离
 	difference_type DistanceTo(const TIterator & val) const
 	{
 	}
@@ -42,6 +43,9 @@ template<
 	reference Dereference()
 	{
 	}
-	
+	// 当用指针代理的时候用的自定义
+	pointer AddressOf()
+	{
+	}
 */
 };

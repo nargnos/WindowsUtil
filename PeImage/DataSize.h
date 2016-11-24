@@ -15,7 +15,10 @@ namespace PeDecoder
 			{
 
 			}
-			virtual ~DataSize() = default;
+			virtual ~DataSize()
+			{
+				sizePtr_ = nullptr;
+			}
 			TSizePtr GetSizePtr() const
 			{
 				assert(sizePtr_);

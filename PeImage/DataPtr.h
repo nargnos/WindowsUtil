@@ -18,7 +18,10 @@ namespace PeDecoder
 
 			}
 
-			virtual ~DataPtr() = default;
+			virtual ~DataPtr()
+			{
+				dataPtr_ = nullptr;
+			}
 			TPtrProxy GetPtr() const
 			{
 				assert(dataPtr_);

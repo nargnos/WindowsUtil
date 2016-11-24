@@ -23,7 +23,7 @@ namespace PeDecoder
 		virtual iterator begin() const override;
 		// 结尾的下一元素地址
 		virtual iterator end() const override;
-
+		virtual ~SectionHeaders();
 	protected:
 		WORD size_;
 		DWORD alignment_;

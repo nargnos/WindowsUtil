@@ -37,6 +37,11 @@ namespace PeDecoder
 		return GetDirectoryEntry(index);
 	}
 
+	DataDirectoryEntries::~DataDirectoryEntries()
+	{
+		ptr_ = nullptr;
+	}
+
 
 	DWORD DataDirectoryEntries::MaxSize()
 	{
@@ -64,6 +69,7 @@ namespace PeDecoder
 
 	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::GetPtr() const
 	{
+		assert(ptr_);
 		return ptr_;
 	}
 

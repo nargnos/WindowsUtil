@@ -261,7 +261,7 @@ namespace PeImageLibTest
 				ostringstream out;
 				for each (auto& var in entries)
 				{
-					out << std::hex << "ADDR:" << var.VirtualAddress << " SIZE:" << var.Size << endl;
+					out  << "ADDR: " << std::hex<< var.VirtualAddress << "h SIZE:" << var.Size <<"h"<< endl;
 				}
 				Logger::WriteMessage(out.str().c_str());
 			}
@@ -303,7 +303,7 @@ namespace PeImageLibTest
 					out << "Export:" << endl << "----------" << endl;
 					for each (auto& var in exportDir)
 					{
-						auto name = (char*)GetPeMapped().RvaToDataPtr(*var.NameRva());
+						auto name = (char*)GetPeMapped().RvaToDataPtr(*var->NameRva());
 						out << name << endl;
 					}
 					Logger::WriteMessage(out.str().c_str());
@@ -321,8 +321,9 @@ namespace PeImageLibTest
 				Assert::IsTrue(importDir.IsExist());
 				Assert::IsTrue(GetPeFile().GetImageType() == ImageType::PE32);
 				auto it = importDir.begin();
+				
 				Assert::AreEqual(it->GetName(), "USER32.dll");
-				auto thunkIt = it->GetThunk32().begin();
+				auto thunkIt = it->begin();
 				Assert::IsFalse(thunkIt->IsSnapByOrdinal());
 				Assert::AreEqual(thunkIt->GetImportByName()->Name, "MessageBoxA");
 			}
@@ -336,43 +337,41 @@ namespace PeImageLibTest
 				auto type = GetPeMapped().GetImageType();
 
 				ostringstream out;
-				for each (auto& var in importDir)
+				auto thunkVisitor = MakeThunkVisitor([&](const ImportThunk32& val)
 				{
-					out << endl << "# " << var.GetName() << endl;
-					out << "----------" << endl;
-					if (type == ImageType::PE32)
+					if (!val.IsSnapByOrdinal())
 					{
-						for each (auto& val in var.GetThunk32())
-						{
-							if (!val.IsSnapByOrdinal())
-							{
-								auto name = val.GetImportByName();
-								out << (PCHAR)name->Name << " - "
-									<< val.GetFuncAddress() << endl;
-							}
-							else
-							{
-								out << val.GetOrdinal() << " - " << val.GetFuncAddress() << endl;
-							}
-
-						}
+						auto name = val.GetImportByName();
+						out << (PCHAR)name->Name << " - "
+							<< val.GetFuncAddress() << endl;
 					}
 					else
 					{
-						for each (auto& val in var.GetThunk64())
-						{
-							if (!val.IsSnapByOrdinal())
-							{
-								auto name = val.GetImportByName();
-								out << (PCHAR)name->Name << " - "
-									<< val.GetFuncAddress() << endl;
-							}
-							else
-							{
-								out << val.GetOrdinal() << " - " << val.GetFuncAddress() << endl;
-							}
-						}
+						out << val.GetOrdinal() << " - " << val.GetFuncAddress() << endl;
 					}
+				}, [&](const ImportThunk64& val)
+				{
+					if (!val.IsSnapByOrdinal())
+					{
+						auto name = val.GetImportByName();
+						out << (PCHAR)name->Name << " - "
+							<< val.GetFuncAddress() << endl;
+					}
+					else
+					{
+						out << val.GetOrdinal() << " - " << val.GetFuncAddress() << endl;
+					}
+				});
+
+				for each (auto& var in importDir)
+				{
+					out << endl << "# " << var->GetName() << endl;
+					out << "----------" << endl;
+					for (auto& i : *var)
+					{
+						i->ReadDetails(thunkVisitor);
+					}
+
 					out << "----------" << endl;
 				}
 

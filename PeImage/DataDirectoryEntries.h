@@ -19,6 +19,7 @@ namespace PeDecoder
 		bool HasDirectory(DataDirectoryEntryType index) const;
 		PIMAGE_DATA_DIRECTORY GetDirectoryEntry(DataDirectoryEntryType index) const;
 		PIMAGE_DATA_DIRECTORY operator[](DataDirectoryEntryType index) const;
+		virtual ~DataDirectoryEntries();
 	protected:
 		PIMAGE_DATA_DIRECTORY GetPtr() const;
 		DWORD size_;

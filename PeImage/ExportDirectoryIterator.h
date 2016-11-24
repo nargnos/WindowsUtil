@@ -8,12 +8,15 @@ namespace PeDecoder
 		public IteratorBase<
 		ExportDirectoryIterator,
 		_STD random_access_iterator_tag,
-		ExportIteratorNode>
+		_STD unique_ptr<ExportIteratorNode>,
+		ptrdiff_t,
+		_STD unique_ptr<ExportIteratorNode>,
+		_STD unique_ptr<ExportIteratorNode>>
 	{
 	public:
 		friend IteratorFriendAccess;
-		ExportDirectoryIterator(ExportDirectory& directory, DWORD index);
-	
+		ExportDirectoryIterator(const ExportDirectory& directory, DWORD index);
+		virtual ~ExportDirectoryIterator();
 	protected:
 		bool Equal(const ExportDirectoryIterator & val) const;
 		void Increment();
@@ -21,11 +24,9 @@ namespace PeDecoder
 		void Advance(int n);
 		difference_type DistanceTo(const ExportDirectoryIterator & val) const;
 		reference Dereference();
-
+		pointer AddressOf();
 		bool InRange() const;
-
-		ExportIteratorNode& GetStore();
-		const ExportIteratorNode& GetStore() const;
-		ExportIteratorNode store_;
+		const ExportDirectory* directory_;
+		DWORD index_;
 	};
 }  // namespace PeDecoder

@@ -7,15 +7,15 @@ namespace PeDecoder
 	{
 	public:
 		friend class ExportDirectoryIterator;
-		ExportIteratorNode(ExportDirectory& directory, DWORD index);
+		ExportIteratorNode(const ExportDirectory& directory, DWORD index);
 		PDWORD FuncRva();
 		PDWORD NameRva();
 		PWORD NameOrdinals();
 		void* FuncPtr();
 		char* NamePtr();
-
+		virtual ~ExportIteratorNode();
 	protected:
-		ExportDirectory* directory_;
+		const ExportDirectory* directory_;
 		DWORD index_;
 	};
 }  // namespace PeDecoder

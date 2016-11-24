@@ -10,7 +10,7 @@ namespace PeDecoder
 		typedef ExportDirectoryIterator iterator;
 
 		ExportDirectory(IDataDirectoryUtil& util);
-		~ExportDirectory() = default;
+		virtual ~ExportDirectory();
 		const PDWORD GetFunctionsPtr() const;
 		const PDWORD GetNamesPtr() const;
 		const PWORD GetNameOrdinalsPtr() const;

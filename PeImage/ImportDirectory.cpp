@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ImportDirectory.h"
-#include "ImportDirectoryIterator.h"
+#include "ImportDescriptorIterator.h"
 namespace PeDecoder
 {
 	typename ImportDirectory::iterator ImportDirectory::begin()
@@ -9,7 +9,7 @@ namespace PeDecoder
 	}
 	typename ImportDirectory::iterator ImportDirectory::end()
 	{
-		return iterator(*this, nullptr);
+		return iterator(*this, ImportDescriptorIterator::FindEndDescriptor(GetPtr()));
 	}
-	
+
 }  // namespace PeDecoder

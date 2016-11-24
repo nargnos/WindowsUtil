@@ -48,8 +48,13 @@ namespace PeDecoder
 	{
 		return{ RawPtr() + GetSize() };
 	}
+	SectionHeaders::~SectionHeaders()
+	{
+		ptr_ = nullptr;
+	}
 	SectionHeaders::DataPtr SectionHeaders::RawPtr() const
 	{
+		assert(ptr_);
 		return ptr_;
 	}
 	WORD SectionHeaders::GetSize() const

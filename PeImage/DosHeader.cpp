@@ -15,12 +15,19 @@ namespace PeDecoder
 
 	bool DosHeader::IsValid() const
 	{
-		return IsValid(ptr_);
+		return IsValid(RawPtr());
 	}
 
 	PIMAGE_DOS_HEADER DosHeader::RawPtr() const
 	{
+		assert(ptr_);
 		return ptr_;
+	}
+
+	DosHeader::~DosHeader()
+	{
+		// 其实不需要，不过要防止别人误用的情况就设个检查，其它类同
+		ptr_ = nullptr;
 	}
 
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 namespace PeDecoder
 {
 
@@ -11,10 +12,12 @@ namespace PeDecoder
 		typedef DWORD TResult;
 		static bool IsSnapByOrdinal(PIMAGE_THUNK_DATA32 thunk)
 		{
+			assert(thunk);
 			return IMAGE_SNAP_BY_ORDINAL32(thunk->u1.Ordinal);
 		}
 		static TResult GetOrdinal(PIMAGE_THUNK_DATA32 ptr)
 		{
+			assert(ptr);
 			return IMAGE_ORDINAL32(ptr->u1.Ordinal);
 		}
 	};
@@ -25,10 +28,12 @@ namespace PeDecoder
 		typedef ULONGLONG TResult;
 		static bool IsSnapByOrdinal(PIMAGE_THUNK_DATA64 thunk)
 		{
+			assert(thunk);
 			return IMAGE_SNAP_BY_ORDINAL64(thunk->u1.Ordinal);
 		}
 		static TResult GetOrdinal(PIMAGE_THUNK_DATA64 ptr)
 		{
+			assert(ptr);
 			return IMAGE_ORDINAL64(ptr->u1.Ordinal);
 		}
 	};

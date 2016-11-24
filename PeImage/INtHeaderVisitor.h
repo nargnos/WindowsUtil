@@ -1,8 +1,12 @@
 #pragma once
+#include "VisitorBase.h"
 namespace PeDecoder
 {
-	class NtHeader32;
-	class NtHeader64;
+	template<typename>
+	class NtHeaderImpl;
+	using NtHeader32 = NtHeaderImpl<PIMAGE_NT_HEADERS32>;
+	using NtHeader64 = NtHeaderImpl<PIMAGE_NT_HEADERS64>;
+
 	__interface INtHeaderVisitor
 	{
 		void Visit(const NtHeader32& nt) const;
@@ -10,33 +14,8 @@ namespace PeDecoder
 	};
 
 	template<typename TFunc32, typename TFunc64>
-	class NtHeaderVisitorBase:
-		public INtHeaderVisitor
-	{
-	public:
-		NtHeaderVisitorBase(TFunc32&& func32, TFunc64&& func64) :
-			func32_(_STD forward<TFunc32>(func32)),
-			func64_(_STD forward<TFunc64>(func64))
-		{
-
-		}
-		virtual ~NtHeaderVisitorBase() = default;
-
-		virtual void Visit(const NtHeader32 & nt) const override
-		{
-			func32_(nt);
-		}
-		virtual void Visit(const NtHeader64 & nt) const override
-		{
-			func64_(nt);
-		}
-	private:
-		TFunc32 func32_;
-		TFunc64 func64_;
-	};
-	template<typename TFunc32, typename TFunc64>
 	auto MakeNtHeaderVisitor(TFunc32&& func32, TFunc64&& func64)
 	{
-		return NtHeaderVisitorBase<TFunc32, TFunc64>(_STD forward<TFunc32>(func32), _STD forward<TFunc64>(func64));
+		return VisitorBase<INtHeaderVisitor, NtHeader32, TFunc32, NtHeader64, TFunc64>(_STD forward<TFunc32>(func32), _STD forward<TFunc64>(func64));
 	}
 }  // namespace PeDecoder

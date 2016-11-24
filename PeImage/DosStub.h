@@ -13,6 +13,7 @@ namespace PeDecoder
 		DWORD GetSize() const;
 		iterator begin() const;
 		iterator end() const;
+		virtual ~DosStub();
 	protected:
 		unsigned char* ptr_;
 		DWORD size_;

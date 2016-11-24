@@ -4,12 +4,11 @@
 #include "INtHeader.h"
 namespace PeDecoder
 {
-	class NtHeaderFactory;
 	class NtHeader :
 		public INtHeader
 	{
 	public:
-		virtual ~NtHeader() = default;
+		virtual ~NtHeader();
 		static NtHeaderType GetHeaderType(const void* ptr);
 		static void* GetNtHeaderPtr(const PIMAGE_DOS_HEADER dosHeader);
 		virtual NtHeaderType GetHeaderType() const override;

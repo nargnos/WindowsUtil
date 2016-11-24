@@ -2,11 +2,13 @@
 #include <bitset>
 #include "DosHeader.h"
 #include "NtHeader.h"
-#include "NtHeader32.h"
-#include "NtHeader64.h"
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
+	NtHeader::~NtHeader()
+	{
+		ptr_ = nullptr;
+	}
 	NtHeaderType NtHeader::GetHeaderType(const void* ptr)
 	{
 		switch (reinterpret_cast<const IMAGE_NT_HEADERS32*>(ptr)->OptionalHeader.Magic)
@@ -61,6 +63,7 @@ namespace PeDecoder
 	}
 	unsigned char * NtHeader::RawPtr() const
 	{
+		assert(ptr_);
 		return static_cast<unsigned char *>(ptr_);
 	}
 	NtHeader::NtHeader(void * ntHeaderRawPtr) :
@@ -69,6 +72,6 @@ namespace PeDecoder
 	}
 	PIMAGE_NT_HEADERS32 NtHeader::GetHeader32() const
 	{
-		return static_cast<PIMAGE_NT_HEADERS32>(ptr_);
+		return reinterpret_cast<PIMAGE_NT_HEADERS32>(RawPtr());
 	}
 }  // namespace PeDecoder

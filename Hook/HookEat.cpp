@@ -22,9 +22,9 @@ PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWOR
 	assert(exp);
 	auto end = exp.end();
 	auto proc = _STD lower_bound(exp.begin(), end, procName, []
-	(PeDecoder::ExportIteratorNode& node, LPCSTR val)
+	(auto& node, LPCSTR val)
 	{
-		return strcmp(node.NamePtr(), val) < 0;
+		return strcmp(node->NamePtr(), val) < 0;
 	});
 	if (end == proc || strcmp(proc->NamePtr(), procName) != 0)
 	{

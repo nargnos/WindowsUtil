@@ -41,4 +41,15 @@ struct IteratorFriendAccess
 	{
 		return const_cast<T&>(it).Dereference();
 	}
+
+	template<typename T>
+	static typename T::pointer AddressOf(T& it)
+	{
+		return it.AddressOf();
+	}
+	template<typename T>
+	static const typename T::pointer AddressOf(const T& it)
+	{
+		return const_cast<T&>(it).AddressOf();
+	}
 };

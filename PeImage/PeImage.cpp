@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "PeImage.h"
-#include "NtHeaderFactory.h"
-#include "DosHeaderFactory.h"
-#include "SectionHeadersFactory.h"
+#include "HeaderFactory.h"
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
@@ -27,7 +25,7 @@ namespace PeDecoder
 		assert(ntHeader_->GetHeaderType() == NtHeaderType::NtHeader32 ||
 			ntHeader_->GetHeaderType() == NtHeaderType::NtHeader64);
 
-		sectionHeaders_ = SectionHeadersFactory::CreateSectionHeadersInstance(*this);
+		sectionHeaders_ = HeaderFactory::CreateSectionHeadersInstance(*this);
 	}
 	PeImage::operator bool() const
 	{
@@ -134,7 +132,7 @@ namespace PeDecoder
 
 	bool PeImage::LoadDosHeader(PIMAGE_DOS_HEADER ptr)
 	{
-		dosHeader_ = DosHeaderFactory::CreateDosHeaderInstance(ptr);
+		dosHeader_ = HeaderFactory::CreateDosHeaderInstance(ptr);
 		return CheckDosHeader();
 	}
 
@@ -146,7 +144,7 @@ namespace PeDecoder
 	bool PeImage::LoadNtHeader()
 	{
 		assert(CheckDosHeader());
-		ntHeader_ = NtHeaderFactory::CreateNtHeaderInstance(*dosHeader_);
+		ntHeader_ = HeaderFactory::CreateNtHeaderInstance(*dosHeader_);
 		return CheckNtHeader();
 	}
 

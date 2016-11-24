@@ -1,5 +1,5 @@
 #pragma once
-
+#include "ImportThunkIterator.h"
 namespace PeDecoder
 {
 	template<typename> class ImportThunk;
@@ -7,19 +7,17 @@ namespace PeDecoder
 	class DelayImportDescriptor
 	{
 	public:
-		using Thunk32 = ImportThunk<PIMAGE_THUNK_DATA32>;
-		using Thunk64 = ImportThunk<PIMAGE_THUNK_DATA64>;
+		friend class DelayImportDescriptorIterator;
+		DelayImportDescriptor(const DelayImportDirectory& delayImportDirectory, PImgDelayDescr ptr);
 
-		friend class DelayImportDirectoryIterator;
-		DelayImportDescriptor(DelayImportDirectory& delayImportDirectory, PImgDelayDescr ptr);
-
-		Thunk32 GetThunk32() const;
-		Thunk64 GetThunk64() const;
+		ImportThunkIterator begin() const;
+		ImportThunkIterator end() const;
 		PCHAR GetName();
 		PImgDelayDescr GetPtr() const;
+		virtual ~DelayImportDescriptor();
 	private:
 		PImgDelayDescr dataPtr_;
-		DelayImportDirectory* delayImportDirectory_;
+		const DelayImportDirectory* delayImportDirectory_;
 	};
 }  // namespace PeDecoder
 

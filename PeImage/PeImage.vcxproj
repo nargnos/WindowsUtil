@@ -84,6 +84,7 @@
       </AdditionalIncludeDirectories>
       <EnablePREfast>true</EnablePREfast>
       <BrowseInformation>true</BrowseInformation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,6 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +150,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,11 +175,10 @@
     <ClInclude Include="DebugDirectory.h" />
     <ClInclude Include="DelayImportDescriptor.h" />
     <ClInclude Include="DelayImportDirectory.h" />
-    <ClInclude Include="DelayImportDirectoryIterator.h" />
+    <ClInclude Include="DelayImportDescriptorIterator.h" />
     <ClInclude Include="DirectoryBase.h" />
     <ClInclude Include="DllCharacteristics.h" />
     <ClInclude Include="DosHeader.h" />
-    <ClInclude Include="DosHeaderFactory.h" />
     <ClInclude Include="DosStub.h" />
     <ClInclude Include="ExceptionDirectory.h" />
     <ClInclude Include="ExportDirectory.h" />
@@ -186,6 +189,7 @@
     <ClInclude Include="GetOriginal.h" />
     <ClInclude Include="GetRelocPtr.h" />
     <ClInclude Include="GlobalptrDirectory.h" />
+    <ClInclude Include="HeaderFactory.h" />
     <ClInclude Include="IatDirectory.h" />
     <ClInclude Include="IDataDirectoryUtil.h" />
     <ClInclude Include="IDosHeader.h" />
@@ -193,21 +197,21 @@
     <ClInclude Include="ImageType.h" />
     <ClInclude Include="ImportDescriptor.h" />
     <ClInclude Include="ImportDirectory.h" />
-    <ClInclude Include="ImportDirectoryIterator.h" />
+    <ClInclude Include="ImportDescriptorIterator.h" />
     <ClInclude Include="ImportThunk.h" />
     <ClInclude Include="INtHeader.h" />
     <ClInclude Include="INtHeaderVisitor.h" />
     <ClInclude Include="IOptionalHeader.h" />
+    <ClInclude Include="IReadThunkDetail.h" />
     <ClInclude Include="IRvaConverter.h" />
     <ClInclude Include="ISectionHeaders.h" />
     <ClInclude Include="IteratorBase.h" />
     <ClInclude Include="IteratorFriendAccess.h" />
+    <ClInclude Include="IImportThunk.h" />
     <ClInclude Include="LoadConfigDirectory.h" />
     <ClInclude Include="MachineType.h" />
-    <ClInclude Include="NtHeader32.h" />
+    <ClInclude Include="NtHeaderImpl.h" />
     <ClInclude Include="NtHeader.h" />
-    <ClInclude Include="NtHeader64.h" />
-    <ClInclude Include="NtHeaderFactory.h" />
     <ClInclude Include="NtHeaderType.h" />
     <ClInclude Include="PeDecoder.h" />
     <ClInclude Include="PeImage.h" />
@@ -220,15 +224,17 @@
     <ClInclude Include="ResourceUtil.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="SectionHeaders.h" />
-    <ClInclude Include="SectionHeadersFactory.h" />
     <ClInclude Include="SecurityDirectory.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SubsystemType.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ImportThunkIterator.h" />
+    <ClInclude Include="ImportThunkFactory.h" />
     <ClInclude Include="TlsDirectory.h" />
     <ClInclude Include="ResourceEntryIterator.h" />
     <ClInclude Include="TypeOffset.h" />
     <ClInclude Include="TypeOffsetIterator.h" />
+    <ClInclude Include="VisitorBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArchitectureDirectory.cpp" />
@@ -239,22 +245,20 @@
     <ClCompile Include="DebugDirectory.cpp" />
     <ClCompile Include="DelayImportDescriptor.cpp" />
     <ClCompile Include="DelayImportDirectory.cpp" />
-    <ClCompile Include="DelayImportDirectoryIterator.cpp" />
+    <ClCompile Include="DelayImportDescriptorIterator.cpp" />
     <ClCompile Include="DirectoryBase.cpp" />
     <ClCompile Include="DosHeader.cpp" />
-    <ClCompile Include="DosHeaderFactory.cpp" />
     <ClCompile Include="DosStub.cpp" />
     <ClCompile Include="ExportDirectory.cpp" />
     <ClCompile Include="ExportDirectoryIterator.cpp" />
     <ClCompile Include="ExportIteratorNode.cpp" />
     <ClCompile Include="GetRelocPtr.cpp" />
+    <ClCompile Include="HeaderFactory.cpp" />
     <ClCompile Include="ImportDescriptor.cpp" />
     <ClCompile Include="ImportDirectory.cpp" />
-    <ClCompile Include="ImportDirectoryIterator.cpp" />
+    <ClCompile Include="ImportDescriptorIterator.cpp" />
     <ClCompile Include="NtHeader.cpp" />
-    <ClCompile Include="NtHeader32.cpp" />
-    <ClCompile Include="NtHeader64.cpp" />
-    <ClCompile Include="NtHeaderFactory.cpp" />
+    <ClCompile Include="NtHeaderImpl.cpp" />
     <ClCompile Include="PeImage.cpp" />
     <ClCompile Include="RelocDirectory.cpp" />
     <ClCompile Include="RelocDirectoryIterator.cpp" />
@@ -264,7 +268,6 @@
     <ClCompile Include="ResourceUtil.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="SectionHeaders.cpp" />
-    <ClCompile Include="SectionHeadersFactory.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -272,6 +275,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ResourceEntryIterator.cpp" />
+    <ClCompile Include="ImportThunkFactory.cpp" />
+    <ClCompile Include="ImportThunkIterator.cpp" />
     <ClCompile Include="TypeOffset.cpp" />
     <ClCompile Include="TypeOffsetIterator.cpp" />
   </ItemGroup>

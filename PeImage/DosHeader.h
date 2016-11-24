@@ -11,6 +11,7 @@ namespace PeDecoder
 
 		virtual bool IsValid() const override;
 		virtual PIMAGE_DOS_HEADER RawPtr() const override;
+		virtual ~DosHeader();
 	protected:
 		PIMAGE_DOS_HEADER ptr_;
 	};

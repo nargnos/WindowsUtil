@@ -25,6 +25,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Process", "Process\Process.vcxproj", "{E357A6C8-2EFC-42CE-8F56-4F6FC66CA97A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProcessLibTest", "ProcessLibTest\ProcessLibTest.vcxproj", "{7847B099-2B66-4B67-902B-E26BAD633170}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DFC84587-5400-4BCE-902B-2E469F15CAAC} = {DFC84587-5400-4BCE-902B-2E469F15CAAC}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hook", "Hook\Hook.vcxproj", "{7109F70A-97FF-4C36-AC1A-A5C4FAB5507B}"
 EndProject

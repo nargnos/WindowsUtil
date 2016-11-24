@@ -32,9 +32,9 @@ namespace Process
 			auto end = exportDir.end();
 
 			auto result = _STD find_if(exportDir.begin(), end, [&comp]
-			(PeDecoder::ExportIteratorNode& node)
+			(auto& node)
 			{
-				return comp(node.NamePtr());
+				return comp(node->NamePtr());
 			});
 
 			if (end == result)
@@ -60,9 +60,9 @@ namespace Process
 			auto end = exportDir.end();
 
 			auto result = _STD lower_bound(exportDir.begin(), end, lpProcName, [&comp]
-			(PeDecoder::ExportIteratorNode& node, const void* val)
+			(auto& node, const void* val)
 			{
-				return comp(node.NamePtr(), val) < 0;
+				return comp(node->NamePtr(), val) < 0;
 			});
 
 			if (result == end || comp(result->NamePtr(), lpProcName) != FALSE)

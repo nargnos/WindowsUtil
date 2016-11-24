@@ -146,12 +146,6 @@
     <ClInclude Include="ImportDirectory.h">
       <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="ImportDirectoryIterator.h">
-      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
-    </ClInclude>
-    <ClInclude Include="ImportThunk.h">
-      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
-    </ClInclude>
     <ClInclude Include="LoadConfigDirectory.h">
       <Filter>PeImage\DataDirectory\LoadConfigDirectory</Filter>
     </ClInclude>
@@ -197,9 +191,6 @@
     <ClInclude Include="ExportIteratorNode.h">
       <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="DelayImportDirectoryIterator.h">
-      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
-    </ClInclude>
     <ClInclude Include="PeImage.h">
       <Filter>PeImage</Filter>
     </ClInclude>
@@ -224,13 +215,7 @@
     <ClInclude Include="RandomAccessIteratorBase.h">
       <Filter>PeImage\Common\IteratorTemplate</Filter>
     </ClInclude>
-    <ClInclude Include="NtHeader32.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
     <ClInclude Include="NtHeader.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
-    <ClInclude Include="NtHeader64.h">
       <Filter>PeImage\NtHeader</Filter>
     </ClInclude>
     <ClInclude Include="IRvaConverter.h">
@@ -266,20 +251,41 @@
     <ClInclude Include="INtHeaderVisitor.h">
       <Filter>PeImage\Common\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="NtHeaderFactory.h">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClInclude>
     <ClInclude Include="IDosHeader.h">
       <Filter>PeImage\Common\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="DosHeaderFactory.h">
-      <Filter>PeImage\DosHeader</Filter>
     </ClInclude>
     <ClInclude Include="ISectionHeaders.h">
       <Filter>PeImage\Common\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="SectionHeadersFactory.h">
-      <Filter>PeImage\Sections</Filter>
+    <ClInclude Include="ImportDescriptorIterator.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHeaderImpl.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportThunk.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportThunkFactory.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="IImportThunk.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IReadThunkDetail.h">
+      <Filter>PeImage\Common\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="VisitorBase.h">
+      <Filter>PeImage\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportThunkIterator.h">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="DelayImportDescriptorIterator.h">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="HeaderFactory.h">
+      <Filter>PeImage\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -322,9 +328,6 @@
     <ClCompile Include="ImportDirectory.cpp">
       <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
     </ClCompile>
-    <ClCompile Include="ImportDirectoryIterator.cpp">
-      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
-    </ClCompile>
     <ClCompile Include="PeImage.cpp">
       <Filter>PeImage</Filter>
     </ClCompile>
@@ -361,9 +364,6 @@
     <ClCompile Include="ExportIteratorNode.cpp">
       <Filter>PeImage\DataDirectory\ExportDirectory</Filter>
     </ClCompile>
-    <ClCompile Include="DelayImportDirectoryIterator.cpp">
-      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
-    </ClCompile>
     <ClCompile Include="DirectoryBase.cpp">
       <Filter>PeImage\DataDirectory</Filter>
     </ClCompile>
@@ -376,24 +376,27 @@
     <ClCompile Include="DosStub.cpp">
       <Filter>PeImage\DosHeader</Filter>
     </ClCompile>
-    <ClCompile Include="NtHeader32.cpp">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClCompile>
     <ClCompile Include="NtHeader.cpp">
       <Filter>PeImage\NtHeader</Filter>
     </ClCompile>
-    <ClCompile Include="NtHeader64.cpp">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClCompile>
-    <ClCompile Include="NtHeaderFactory.cpp">
-      <Filter>PeImage\NtHeader</Filter>
-    </ClCompile>
-    <ClCompile Include="DosHeaderFactory.cpp">
-      <Filter>PeImage\DosHeader</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="SectionHeadersFactory.cpp">
-      <Filter>PeImage\Sections</Filter>
+    <ClCompile Include="ImportDescriptorIterator.cpp">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHeaderImpl.cpp">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportThunkFactory.cpp">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportThunkIterator.cpp">
+      <Filter>PeImage\DataDirectory\ImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="DelayImportDescriptorIterator.cpp">
+      <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="HeaderFactory.cpp">
+      <Filter>PeImage\Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
