@@ -85,9 +85,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="app.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
@@ -96,5 +93,8 @@
     <Image Include="app.ico">
       <Filter>资源文件</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="未完成.txt" />
   </ItemGroup>
 </Project>

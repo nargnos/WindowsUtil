@@ -9,7 +9,7 @@
 using Process::EnvironmentBlock::PTEB_Ex;
 using Process::EnvironmentBlock::PEB_Ex;
 
-PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hookFunc, OUT PVOID * unhookAddress)
+PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hookFunc, _Outptr_opt_ PVOID * unhookAddress)
 {
 	using namespace PeDecoder;
 	if (dllName == nullptr || procName == nullptr || hookFunc == nullptr)

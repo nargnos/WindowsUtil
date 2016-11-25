@@ -4,9 +4,11 @@
 #include "stdafx.h"
 #include <Windows.h>
 #include <WinBase.h>
+#include <iostream>
+#include <cassert>
 #include <Hook\HookIat.h>
 #include <Hook\HookEat.h>
-#include <iostream>
+#include <Hook\IatHook.h>
 using std::cout;
 using std::endl;
 
@@ -127,10 +129,62 @@ void TestEatHook()
 	}
 
 }
+void TestIatHookClass()
+{
+	do
+	{
 
+		auto hook = Hook::IatHook::Instance(NULL);
+		assert(hook == Hook::IatHook::Instance(NULL));
+		if (!hook->CanIatHook())
+		{
+			break;
+		}
+		assert(!hook->Hook(user32dll, "Not Exist", MessageBoxAHook));
+		if (!hook->Hook(user32dll, mboxName, MessageBoxAHook))
+		{
+			break;
+		}
+		assert(!hook->Hook(user32dll, mboxName, MessageBoxAHook));
+		assert(Hook::IatHook::Instance(NULL)->IsHooked(user32dll, mboxName));
+		MessageBoxA(NULL, newText, newTitle, MB_OK);
+		// 使用旧函数
+		reinterpret_cast<MBox*>(hook->GetOldFunction(user32dll, mboxName))(0, "原函数调用测试", "XXX", MB_OK);
+		if (!hook->UnHook(user32dll, mboxName))
+		{
+			break;
+		}
+		// 已恢复
+		MessageBoxA(NULL, "已恢复", mboxName, MB_OK);
+		assert(!Hook::IatHook::Instance(NULL)->IsHooked(user32dll, mboxName));
+
+
+
+		// hook shell32 iat -> user32 ShowWindow
+		auto shell32Ptr = Hook::IatHook::Instance(L"shell32.dll");
+		auto shell32 = (*shell32Ptr)[user32dll];
+		auto showWindow = shell32["ShowWindow"];
+		auto notExist = shell32["XXXXX"];
+		assert(!notExist);
+		notExist = ShowWindowHook;
+		assert(&notExist == nullptr);
+		showWindow = ShowWindowHook;
+		oldShowWindow = (SW*)(&showWindow);
+		if (oldShowWindow)
+		{
+			ShellAboutA(NULL, "这个函数会调用到ShowWindow", "=======", NULL);
+
+			// hook的是shell32的iat所以这里不会触发,如果hook了自身的iat情况就会相反
+			ShowWindow(0, 0);
+			return;
+		}
+	} while (false);
+	MessageBoxA(NULL, "失败", "失败", MB_OK);
+}
 int main()
 {
-	// TestIatHook();
+	// TestIatHookClass();
+	//TestIatHook();
 	// TestEatHook();
 	// delayimport要修改编译选项，先不测了
 	return 0;

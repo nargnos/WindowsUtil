@@ -156,6 +156,7 @@
     <ClInclude Include="HookDelayLoad.h" />
     <ClInclude Include="HookEat.h" />
     <ClInclude Include="HookIat.h" />
+    <ClInclude Include="IatHook.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="HookDelayLoad.cpp" />
     <ClCompile Include="HookEat.cpp" />
     <ClCompile Include="HookIat.cpp" />
+    <ClCompile Include="IatHook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PeImage\PeImage.vcxproj">

@@ -175,6 +175,9 @@
     <ClCompile Include="DisAsmTest.cpp" />
     <ClCompile Include="WinApiDynamicCallTest.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="失效，待修改.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

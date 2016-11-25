@@ -42,6 +42,9 @@
     <ClInclude Include="HookApi.h">
       <Filter>Api</Filter>
     </ClInclude>
+    <ClInclude Include="IatHook.h">
+      <Filter>Iat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HookIat.cpp">
@@ -58,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="Common.cpp">
       <Filter>头文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IatHook.cpp">
+      <Filter>Iat</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
