@@ -367,7 +367,7 @@ namespace PeImageLibTest
 				{
 					out << endl << "# " << var->GetName() << endl;
 					out << "----------" << endl;
-					for (auto& i : *var)
+					for (auto& i : var)
 					{
 						i->ReadDetails(thunkVisitor);
 					}

@@ -184,7 +184,7 @@ void TestIatHookClass()
 int main()
 {
 	// TestIatHookClass();
-	//TestIatHook();
+	// TestIatHook();
 	// TestEatHook();
 	// delayimport要修改编译选项，先不测了
 	return 0;

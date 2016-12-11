@@ -44,4 +44,14 @@ namespace PeDecoder
 		directory_ = nullptr;
 	}
 
+	ExportIteratorNode * ExportIteratorNode::operator->()
+	{
+		return this;
+	}
+
+	const ExportIteratorNode * ExportIteratorNode::operator->() const
+	{
+		return this;
+	}
+
 }  // namespace PeDecoder

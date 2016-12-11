@@ -7,6 +7,8 @@
 
 namespace PeDecoder
 {
+	// UNDONE: 等重定位的相关类完善后再写修改pe的部分，还需要补充那些不常用的解析类，写完再写载入pe运行的部分
+
 	class PeImage :
 		public IDataDirectoryUtil
 	{

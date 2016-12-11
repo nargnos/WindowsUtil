@@ -49,7 +49,7 @@ namespace PeDecoder
 	{
 		assert(InRange());
 		assert(directory_);
-		return _STD make_unique<ExportIteratorNode>(*directory_, index_);
+		return ExportIteratorNode(*directory_, index_);
 	}
 
 	ExportDirectoryIterator::pointer ExportDirectoryIterator::AddressOf()

@@ -171,6 +171,7 @@
     <ClInclude Include="FindLoadedModuleHandle.h" />
     <ClInclude Include="GetProcAddress.h" />
     <ClInclude Include="Coroutine.h" />
+    <ClInclude Include="Guard.h" />
     <ClInclude Include="Kernel32.h" />
     <ClInclude Include="LdrDataTable.h" />
     <ClInclude Include="LdrDataTableEntryIterator.h" />

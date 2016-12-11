@@ -36,5 +36,13 @@ namespace PeDecoder
 		dataPtr_ = nullptr;
 		importDirectory_ = nullptr;
 	}
+	ImportDescriptor * ImportDescriptor::operator->()
+	{
+		return this;
+	}
+	const ImportDescriptor * ImportDescriptor::operator->() const
+	{
+		return this;
+	}
 }  // namespace PeDecoder
 

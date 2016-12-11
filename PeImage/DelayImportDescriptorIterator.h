@@ -11,10 +11,10 @@ namespace PeDecoder
 		public IteratorBase<
 		DelayImportDescriptorIterator,
 		_STD forward_iterator_tag,
-		_STD unique_ptr<DelayImportDescriptor>,
+		DelayImportDescriptor,
 		ptrdiff_t,
-		_STD unique_ptr<DelayImportDescriptor>,
-		_STD unique_ptr<DelayImportDescriptor>>
+		DelayImportDescriptor,
+		DelayImportDescriptor>
 	{
 	public:
 		friend IteratorFriendAccess;

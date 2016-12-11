@@ -198,6 +198,9 @@
     <ClInclude Include="NamePipeBase.h">
       <Filter>Other\WinApiWrapper\InterProcess\Pipe\Detail</Filter>
     </ClInclude>
+    <ClInclude Include="Guard.h">
+      <Filter>Other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

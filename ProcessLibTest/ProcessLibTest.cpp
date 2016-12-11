@@ -10,7 +10,7 @@
 #include <Process\GetProcAddress.h>
 #include <Process\NtDll.h>
 #include <Process\User32.h>
-
+#include <Process\Guard.h>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ProcessLibTest
@@ -71,7 +71,30 @@ namespace ProcessLibTest
 			mbox(0, "Hello World!", "Goodbye World!", MB_OK);
 		}
 		
-
+		TEST_METHOD(TestGuard)
+		{
+			_STD vector<int> ret;
+			Guard([&]() {ret.push_back(1); Logger::WriteMessage("A"); });
+			auto ld = [&]()
+			{
+				Guard g([&]() {ret.push_back(3); Logger::WriteMessage("C"); });
+				return[&, g_ = _STD move(g)](){ret.push_back(2); Logger::WriteMessage("B"); };
+			};
+			ld()();
+			Guard t0([&]()
+			{
+				int num = 1;
+				for (auto& i : ret)
+				{
+					Assert::IsTrue(i == num++);
+				}
+				
+				Logger::WriteMessage("End");
+			});
+			Guard t1([&]() {ret.push_back(5); Logger::WriteMessage("E"); });
+			Guard t2([&]() {ret.push_back(4); Logger::WriteMessage("D"); });
+			
+		}
 	};
 
 }

@@ -15,6 +15,8 @@ namespace PeDecoder
 		PCHAR GetName();
 		PImgDelayDescr GetPtr() const;
 		virtual ~DelayImportDescriptor();
+		DelayImportDescriptor* operator->();
+		const DelayImportDescriptor* operator->() const;
 	private:
 		PImgDelayDescr dataPtr_;
 		const DelayImportDirectory* delayImportDirectory_;

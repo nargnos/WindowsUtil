@@ -25,7 +25,7 @@ namespace PeDecoder
 	DelayImportDescriptorIterator::reference DelayImportDescriptorIterator::Dereference()
 	{
 		assert(dataPtr_);
-		return _STD make_unique<DelayImportDescriptor>(*delayImportDirectory_, dataPtr_);
+		return DelayImportDescriptor(*delayImportDirectory_, dataPtr_);
 	}
 	DelayImportDescriptorIterator::pointer DelayImportDescriptorIterator::AddressOf()
 	{

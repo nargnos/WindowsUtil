@@ -36,4 +36,12 @@ namespace PeDecoder
 		dataPtr_ = nullptr;
 		delayImportDirectory_ = nullptr;
 	}
+	DelayImportDescriptor * DelayImportDescriptor::operator->()
+	{
+		return this;
+	}
+	const DelayImportDescriptor * DelayImportDescriptor::operator->() const
+	{
+		return this;
+	}
 }  // namespace PeDecoder

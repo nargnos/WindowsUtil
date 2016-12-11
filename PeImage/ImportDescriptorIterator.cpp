@@ -37,11 +37,11 @@ namespace PeDecoder
 	{
 		++current_;
 	}
-	unique_ptr<ImportDescriptor> ImportDescriptorIterator::Dereference()
+	ImportDescriptorIterator::reference ImportDescriptorIterator::Dereference()
 	{
 		return AddressOf();
 	}
-	unique_ptr<ImportDescriptor> ImportDescriptorIterator::AddressOf()
+	ImportDescriptorIterator::pointer ImportDescriptorIterator::AddressOf()
 	{
 		assert(current_);
 		assert(importDirectory_);
@@ -49,7 +49,7 @@ namespace PeDecoder
 #ifdef _DEBUG
 		assert(CheckRange());
 #endif // _DEBUG
-		return _STD make_unique<ImportDescriptor>(*importDirectory_, current_);
+		return ImportDescriptor(*importDirectory_, current_);
 	}
 #ifdef _DEBUG
 	bool ImportDescriptorIterator::CheckRange() const

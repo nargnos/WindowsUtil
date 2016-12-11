@@ -17,6 +17,9 @@ namespace PeDecoder
 		PCHAR GetName() const;
 		PIMAGE_IMPORT_DESCRIPTOR RawPtr() const;
 		virtual ~ImportDescriptor();
+		ImportDescriptor* operator->();
+		const ImportDescriptor* operator->() const;
+
 	protected:
 		PIMAGE_IMPORT_DESCRIPTOR dataPtr_;
 		ImportDirectory* importDirectory_;

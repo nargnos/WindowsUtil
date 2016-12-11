@@ -14,6 +14,9 @@ namespace PeDecoder
 		void* FuncPtr();
 		char* NamePtr();
 		virtual ~ExportIteratorNode();
+		ExportIteratorNode* operator->();
+		const ExportIteratorNode* operator->() const;
+
 	protected:
 		const ExportDirectory* directory_;
 		DWORD index_;

@@ -11,10 +11,10 @@ namespace PeDecoder
 		public IteratorBase<
 		ImportDescriptorIterator,
 		_STD forward_iterator_tag,
-		unique_ptr<ImportDescriptor>,
+		ImportDescriptor,
 		ptrdiff_t,
-		unique_ptr<ImportDescriptor>,
-		unique_ptr<ImportDescriptor>>
+		ImportDescriptor,
+		ImportDescriptor>
 	{
 	public:
 		friend IteratorFriendAccess;
@@ -25,8 +25,8 @@ namespace PeDecoder
 	protected:
 		bool Equal(const TIterator & val) const;
 		void Increment();
-		unique_ptr<ImportDescriptor> AddressOf();
-		unique_ptr<ImportDescriptor> Dereference();
+		pointer AddressOf();
+		reference Dereference();
 
 		ImportDirectory* importDirectory_;
 		PIMAGE_IMPORT_DESCRIPTOR current_;

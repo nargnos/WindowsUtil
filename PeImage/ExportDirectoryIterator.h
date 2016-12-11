@@ -8,10 +8,10 @@ namespace PeDecoder
 		public IteratorBase<
 		ExportDirectoryIterator,
 		_STD random_access_iterator_tag,
-		_STD unique_ptr<ExportIteratorNode>,
+		ExportIteratorNode,
 		ptrdiff_t,
-		_STD unique_ptr<ExportIteratorNode>,
-		_STD unique_ptr<ExportIteratorNode>>
+		ExportIteratorNode,
+		ExportIteratorNode>
 	{
 	public:
 		friend IteratorFriendAccess;
