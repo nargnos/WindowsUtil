@@ -13,7 +13,7 @@ bool WINAPI Process::Overwrite::VirtualProtectEx(IN HANDLE hProcess, IN LPVOID l
 	{
 		return false;
 	}
-	ULONG oldProtect;
+	ULONG oldProtect = 0;
 	NTSTATUS status = ntProtectVirtualMemory(hProcess,
 		&lpAddress,
 		&dwSize,

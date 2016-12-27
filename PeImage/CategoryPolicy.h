@@ -155,7 +155,7 @@ template<
 {
 	bool operator<(const TIterator& val) const
 	{
-		return IteratorFriendAccess::DistanceTo(Self(), val) > 0;
+		return IteratorFriendAccess::DistanceTo(Self(), val)> 0;
 	}
 	bool operator<=(const TIterator& val) const
 	{

@@ -9,6 +9,7 @@
 #include <Hook\HookIat.h>
 #include <Hook\HookEat.h>
 #include <Hook\IatHook.h>
+#include <Hook\HookApi.h>
 using std::cout;
 using std::endl;
 
@@ -181,8 +182,112 @@ void TestIatHookClass()
 	} while (false);
 	MessageBoxA(NULL, "失败", "失败", MB_OK);
 }
+
+void TestHookApi()
+{
+	bool ret = false;
+	if (Hook::IsLongDistance(MessageBoxA, MessageBoxAHook))
+	{
+		ret = Hook::HookApi_FF25(MessageBoxA, MessageBoxAHook, 0, nullptr);
+	}
+	else
+	{
+		ret = Hook::HookApi_E9(MessageBoxA, MessageBoxAHook, 0, nullptr);
+	}
+	if (ret)
+	{
+		MessageBoxA(NULL, newText, newTitle, MB_OK);
+	}
+	else
+	{
+		MessageBoxA(NULL, "失败", "失败", MB_OK);
+	}
+}
+void TestHookApi2()
+{
+	// 32位和64位 MessageBoxA 的机器码，根据这个计算备份长度
+	/* 32
+
+		8B FF                mov         edi,edi
+		55                   push        ebp
+		8B EC                mov         ebp,esp				e9 32位备份到此为止
+		6A 00                push        0
+		FF 75 14             push        dword ptr [ebp+14h]	ff25 32位备份到此为止
+		FF 75 10             push        dword ptr [ebp+10h]
+		FF 75 0C             push        dword ptr [ebp+0Ch]
+		FF 75 08             push        dword ptr [ebp+8]
+		E8 18 00 00 00       call        74908860
+		5D                   pop         ebp
+		C2 10 00             ret         10h
+	*/
+	/* 64
+
+		48 83 EC 38          sub         rsp,38h
+		45 33 DB             xor         r11d,r11d							e9 64位备份到此为止
+		44 39 1D FA 38 03 00 cmp         dword ptr [7FF8AD8DB928h],r11d		ff25 64位备份到此为止
+		74 2E                je          00007FF8AD8A805E
+		65 48 8B 04 25 30 00 00 00 mov         rax,qword ptr gs:[30h]
+		4C 8B 50 48          mov         r10,qword ptr [rax+48h]
+		33 C0                xor         eax,eax
+		F0 4C 0F B1 15 18 4A 03 00 lock cmpxchg qword ptr [7FF8AD8DCA60h],r10
+		4C 8B 15 19 4A 03 00 mov         r10,qword ptr [7FF8AD8DCA68h]
+		41 8D 43 01          lea         eax,[r11+1]
+		4C 0F 44 D0          cmove       r10,rax
+		4C 89 15 0A 4A 03 00 mov         qword ptr [7FF8AD8DCA68h],r10
+		83 4C 24 28 FF       or          dword ptr [rsp+28h],0FFFFFFFFh
+		66 44 89 5C 24 20    mov         word ptr [rsp+20h],r11w
+		E8 D2 02 00 00       call        00007FF8AD8A8340
+		48 83 C4 38          add         rsp,38h
+		C3                   ret
+*/
+	PVOID old = nullptr;
+	bool ret = false;
+	PVOID target = ShellAboutA; // MessageBoxAHook
+	
+	if (Hook::IsLongDistance(MessageBoxA, target))
+	{
+#if _WIN64
+		ret = Hook::HookApi_FF25(MessageBoxA, target, 14, &old);
+#else
+		ret = Hook::HookApi_FF25(MessageBoxA, target, 10, &old);
+#endif // _WIN64
+
+	}
+	else
+	{
+#if _WIN64
+		// 这里hook函数估计会离api过远
+		ret = Hook::HookApi_E9(MessageBoxA, target, 7, &old);
+#else
+		ret = Hook::HookApi_E9(MessageBoxA, target, 5, &old);
+#endif // _WIN64
+
+	}
+	
+	if (ret)
+	{
+		// ShellAboutA 最后一个参数是指针，MB_OK = 0 当作空指针给它
+		MessageBoxA(NULL, newText, newTitle, MB_OK);
+		reinterpret_cast<MBox*>(old)(0, "原函数调用测试", "XXX", MB_OK);
+		delete[] old;
+	}
+	else
+	{
+		MessageBoxA(NULL, "失败", "失败", MB_OK);
+	}
+}
+
 int main()
 {
+	//if (false)
+	//{
+	//	TestHookApi();
+	//}
+	//else
+	//{
+	//	TestHookApi2();
+	//}
+
 	// TestIatHookClass();
 	// TestIatHook();
 	// TestEatHook();

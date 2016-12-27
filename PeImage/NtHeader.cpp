@@ -45,6 +45,7 @@ namespace PeDecoder
 	{
 		// 根据枚举值查表返回内容，验证过后GetHeaderType返回必为NtHeader32或NtHeader64之一
 		// 主要是验证NtHeader32或NtHeader64和IMAGE_NT_SIGNATURE标识，Rom先不理
+		// FIX: 这里写得不够清楚，而且引入一个可以不用的库
 		static const _STD bitset<8> resultTable(0b11000000);
 
 		auto&& ntHeader = reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<unsigned char*>(RawPtr()));

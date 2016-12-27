@@ -1,11 +1,12 @@
-#include "Common.h"
 #include "HookApi.h"
+#include <cmath>
+#include <cassert>
+#include <PeImage\PeDecoder.h>
+#include <Process\EnvironmentBlock.h>
+#include <Process\WriteProcessMemory.h>
+#include <Process\VirtualProtect.h>
 namespace Hook
 {
-#ifndef UNDONE
-	//using Process::Overwrite::VirtualProtect;
-	//using Process::Hook::GetInstructionLen;
-
 	// jmp xxx
 #define E9_JMP_LEN 5
 	// jmp [xxx], 需要加上对应地址的长度
@@ -23,6 +24,9 @@ namespace Hook
 
 	void _EmitE9Jmp(PVOID pos, PVOID des)
 	{
+		assert(pos != nullptr);
+		assert(des != nullptr);
+
 		PBYTE& apiAddr = (PBYTE&)pos;
 		apiAddr[0] = 0xe9;
 		*(PDWORD)(&apiAddr[1]) = (PBYTE)des - (PBYTE)pos - E9_JMP_LEN;
@@ -30,6 +34,9 @@ namespace Hook
 
 	void _EmitFF25Jmp(PVOID pos, PVOID des)
 	{
+		assert(pos != nullptr);
+		assert(des != nullptr);
+
 		PBYTE& apiAddr = (PBYTE&)pos;
 		apiAddr[0] = 0xff;
 		apiAddr[1] = 0x25;
@@ -47,12 +54,17 @@ namespace Hook
 
 	}
 
-
 	bool IsFF25Jmp(PVOID addr)
 	{
+		assert(addr != nullptr);
 		return ((PBYTE)addr)[0] == 0xff && ((PBYTE)addr)[1] == 0x25;
 	}
 
+	bool IsE9Jmp(PVOID addr)
+	{
+		assert(addr != nullptr);
+		return ((PBYTE)addr)[0] == 0xe9;
+	}
 
 	// offset为指令开始位置
 	// 为jmp的目标立即数添加指针Δ
@@ -77,178 +89,198 @@ namespace Hook
 	}
 
 
-	int GetCodeBackupLen(PVOID api, int minLen)
+	//	int GetCodeBackupLen(PVOID api, int minLen)
+	//	{
+	//#ifdef _WIN64
+	//		GetInstructionLen gil(false);
+	//#else
+	//		GetInstructionLen gil(true);
+	//#endif
+	//		int len = 0;  // 实际指令备份长度
+	//		int loopTimes = 0;
+	//		// 获取函数头备份长度
+	//		while (len < minLen)
+	//		{
+	//			if (loopTimes++ > minLen)
+	//			{
+	//				return 0;
+	//			}
+	//			len += gil.GetLen((PBYTE)api + len);
+	//		}
+	//		return len;
+	//	}
+
+	//	PVOID HookApi(PVOID api, PVOID hook)
+	//	{
+	//#ifdef _WIN64
+	//		GetInstructionLen gil(false);
+	//#else
+	//		GetInstructionLen gil(true);
+	//#endif
+	//		int len = 0;
+	//		int tmpLen = 0;  // 假定每一个指令都是1BYTE时累计的长度
+	//		if (IsFF25Jmp(api))
+	//		{
+	//			len = BACKUPLEN;
+	//		}
+	//		else
+	//		{
+	//			// 获取函数头备份长度
+	//			while (len < BACKUPLEN)
+	//			{
+	//				len += gil.GetLen((PBYTE)api + len);
+	//				if (tmpLen++ >= BACKUPLEN)
+	//				{
+	//					// 读取失败，可能取指令长度部分有BUG或其它原因
+	//					return nullptr;
+	//				}
+	//			}
+	//		}
+	//		auto result = _HookApi(api, hook, len);
+	//
+	//
+	//		// 重定位函数头跳转,以实现重复hook(别的hook程序可能不行)
+	//		if (result)
+	//		{
+	//			tmpLen = 0;
+	//			while (tmpLen < len)
+	//			{
+	//				// 修复跳转
+	//				if (_RelocJmp((PBYTE)result, api, tmpLen))
+	//				{
+	//					break;
+	//				}
+	//				tmpLen += gil.GetLen((PBYTE)result + tmpLen);
+	//			}
+	//		}
+	//		return result;
+	//	}
+
+
+	bool IsLongDistance(PVOID addr1, PVOID addr2)
 	{
-#ifdef _WIN64
-		GetInstructionLen gil(false);
-#else
-		GetInstructionLen gil(true);
-#endif
-		int len = 0;  // 实际指令备份长度
-		int loopTimes = 0;
-		// 获取函数头备份长度
-		while (len < minLen)
-		{
-			if (loopTimes++ > minLen)
-			{
-				return 0;
-			}
-			len += gil.GetLen((PBYTE)api + len);
-		}
-		return len;
+		assert(addr1 != nullptr);
+		assert(addr2 != nullptr);
+		LONGLONG distance = (PBYTE)addr1 - (PBYTE)addr2;
+		return abs(distance) >= 0x7fff0000;
 	}
 
-	PVOID _HookApi(PVOID api, PVOID hook, int backupLen)
+
+	bool Backup(PVOID api, PVOID hook, PBYTE buffer, int backupLen, int bufferLen)
 	{
-		assert(backupLen >= BACKUPLEN);
-		PBYTE result = new BYTE[backupLen + BACKUPLEN];
+		using namespace Process;
+		assert(bufferLen >= backupLen + BACKUPLEN);
 		// 备份原函数
-		memcpy(result, api, backupLen);
+		memcpy(buffer, api, backupLen);
+		DWORD oldProtect = 0;
 
-		DWORD oldProtect;
 		// 设置备份地址访问性
-		if (!Process::Overwrite::VirtualProtect(result, backupLen + BACKUPLEN, PAGE_EXECUTE_READWRITE, &oldProtect))
+		if (!Overwrite::VirtualProtect(buffer, bufferLen, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
-			return nullptr;
+			return false;
+		}
+		
+		// 设置备份代码跳转(跳回,需要考虑距离
+		auto jmpBackAddr = (PBYTE)api + backupLen;
+		if (IsLongDistance(buffer, jmpBackAddr))
+		{
+			_EmitFF25Jmp(buffer + backupLen, jmpBackAddr);
+		}
+		else
+		{
+			_EmitE9Jmp(buffer + backupLen, jmpBackAddr);
 		}
 
+		return true;
+	}
+
+
+	/*
+	result -> | api(backupLen) | jmp api+backuplen -> 连起来就是原始代码
+	api -> |jmp hook|  -> 如果需要调用原始代码就不能用这个地址
+	*/
+	bool _HookApi(PVOID api, PVOID hook, int backupLen, PVOID * oldFunc, int minBackupLen, void(*emitFunc)(PVOID,PVOID))
+	{
+		using namespace Process;
+		assert(api != nullptr);
+		assert(hook != nullptr);
+
+		if (oldFunc != nullptr)
+		{
+			assert(backupLen >= minBackupLen);
+
+			*oldFunc = nullptr;
+			auto backupBufferLen = backupLen + BACKUPLEN;
+			auto backup = new BYTE[backupBufferLen];
+
+			// 备份原函数
+			if (!Backup(api, hook, backup, backupLen, backupBufferLen))
+			{
+				delete[] backup;
+				return false;
+			}
+
+			// 备份完毕
+			*oldFunc = backup;
+		}
+		else
+		{
+			backupLen = minBackupLen;
+		}
+
+		DWORD oldProtect = 0;
 		// 设置api函数访问性
 		if (!Process::Overwrite::VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
-			return nullptr;
+			if (oldFunc != nullptr)
+			{
+				delete[] * oldFunc;
+				*oldFunc = nullptr;
+			}
+			return false;
 		}
-		// 设置跳转->Hook
-		_EmitFF25Jmp(api, hook);
-
-		// 设置备份代码跳转(跳回
-		_EmitFF25Jmp(result + backupLen, ((PBYTE)api) + backupLen);
+		// set hook
+		emitFunc(api, hook);
 
 		// 恢复访问性
 		if (!Process::Overwrite::VirtualProtect(api, backupLen, oldProtect, &oldProtect))
 		{
 			// 设置失败，恢复函数
-			memcpy(api, result, backupLen);
-			delete[] result;
-			return nullptr;
+			if (oldFunc != nullptr)
+			{
+				memcpy(api, *oldFunc, backupLen);
+				delete[] * oldFunc;
+				*oldFunc = nullptr;
+			}
+			return false;
 		}
-		return result;
+		return true;
 	}
-
-	PVOID HookApi(PVOID api, PVOID hook)
+	
+	
+	bool HookApi_FF25(PVOID api, PVOID hook, int backupLen, PVOID * oldFunc)
 	{
-#ifdef _WIN64
-		GetInstructionLen gil(false);
-#else
-		GetInstructionLen gil(true);
-#endif
-		int len = 0;
-		int tmpLen = 0;  // 假定每一个指令都是1BYTE时累计的长度
-		if (IsFF25Jmp(api))
-		{
-			len = BACKUPLEN;
-		}
-		else
-		{
-			// 获取函数头备份长度
-			while (len < BACKUPLEN)
-			{
-				len += gil.GetLen((PBYTE)api + len);
-				if (tmpLen++ >= BACKUPLEN)
-				{
-					// 读取失败，可能取指令长度部分有BUG或其它原因
-					return nullptr;
-				}
-			}
-		}
-		auto result = _HookApi(api, hook, len);
-
-
-		// 重定位函数头跳转,以实现重复hook(别的hook程序可能不行)
-		if (result)
-		{
-			tmpLen = 0;
-			while (tmpLen < len)
-			{
-				// 修复跳转
-				if (_RelocJmp((PBYTE)result, api, tmpLen))
-				{
-					break;
-				}
-				tmpLen += gil.GetLen((PBYTE)result + tmpLen);
-			}
-		}
-		return result;
+		return _HookApi(api, hook, backupLen, oldFunc, BACKUPLEN, _EmitFF25Jmp);
 	}
-
-
-
 	// 使用e9 jmp的版本,当距离过远不适用
-	PVOID _HookApi_E9Jmp(PVOID api, PVOID hook, int backupLen)
+	bool HookApi_E9(PVOID api, PVOID hook, int backupLen, PVOID * oldFunc)
 	{
-		PBYTE result = new BYTE[backupLen + BACKUPLEN];  // 使用当前字长的最大长度, 后面跳回需要用
-														 // 备份原函数
-		memcpy(result, api, backupLen);
-
-		DWORD oldProtect;
-		// 设置备份地址访问性
-		if (!Process::Overwrite::VirtualProtect(result, backupLen + BACKUPLEN, PAGE_EXECUTE_READWRITE, &oldProtect))
-		{
-			return nullptr;
-		}
-
-		// 设置api函数访问性
-		if (!Process::Overwrite::VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
-		{
-			return nullptr;
-		}
-		// hook e9
-		_EmitE9Jmp(api, hook);
-		// 设置跳回,需要考虑距离
-		LONGLONG distance = (PBYTE)result - (PBYTE)api;
-		distance = distance > 0 ? distance : -distance;
-		if (distance < 0x7fff0000)
-		{
-			_EmitE9Jmp(result + backupLen, (PBYTE)api + backupLen);
-		}
-		else
-		{
-			_EmitFF25Jmp(result + backupLen, (PBYTE)api + backupLen);
-		}
-
-
-
-		// 恢复访问性
-		if (!Process::Overwrite::VirtualProtect(api, backupLen, oldProtect, &oldProtect))
-		{
-			// 设置失败，恢复函数
-			memcpy(api, result, backupLen);
-			delete[] result;
-			return nullptr;
-		}
-		return result;
+		assert(!IsLongDistance(api, hook));
+		return _HookApi(api, hook, backupLen, oldFunc, E9_JMP_LEN, _EmitE9Jmp);
 	}
-
-	PVOID HookApiOnce(PVOID api, PVOID hook)
-	{
-		if (((PBYTE)api)[0] == 0xe9 || IsFF25Jmp(api))
-		{
-			return nullptr;
-		}
-		LONGLONG distance = (PBYTE)hook - (PBYTE)api;
-		distance = distance > 0 ? distance : -distance;
-		int codeLen = 0;
-		if (distance < 0x7fff0000)
-		{
-			// e9 jmp
-			codeLen = GetCodeBackupLen(api, E9_JMP_LEN);
-			return _HookApi_E9Jmp(api, hook, codeLen);
-		}
-		else
-		{
-			// ff25 jmp
-			codeLen = GetCodeBackupLen(api, BACKUPLEN);
-			return _HookApi(api, hook, codeLen);
-		}
-	}
-#endif // UNDONE
+	//bool HookApi(PVOID api, PVOID hook, int backupLen, PVOID * oldFunc)
+	//{
+	//	if (IsE9Jmp(api) || IsFF25Jmp(api))
+	//	{
+	//		return false;
+	//	}
+	//	if (IsLongDistance(api, hook))
+	//	{
+	//		return HookApi_FF25(api, hook, backupLen, oldFunc);
+	//	}
+	//	else
+	//	{
+	//		return HookApi_E9(api, hook, backupLen, oldFunc);
+	//	}
+	//}
 }  // namespace Hook

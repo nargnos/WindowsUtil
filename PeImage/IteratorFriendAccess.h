@@ -27,6 +27,7 @@ struct IteratorFriendAccess
 	template<typename T>
 	static typename T::difference_type DistanceTo(const T& it, const T & val)
 	{
+		static_assert(_STD is_signed<decltype(it.DistanceTo(val))>::value, "is_signed");
 		return it.DistanceTo(val);
 	}
 

@@ -27,6 +27,6 @@ namespace PeDecoder
 		pointer AddressOf();
 		bool InRange() const;
 		const ExportDirectory* directory_;
-		DWORD index_;
+		difference_type index_;
 	};
 }  // namespace PeDecoder
