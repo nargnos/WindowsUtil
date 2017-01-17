@@ -182,13 +182,14 @@ namespace Hook
 		
 		// 设置备份代码跳转(跳回,需要考虑距离
 		auto jmpBackAddr = (PBYTE)api + backupLen;
-		if (IsLongDistance(buffer, jmpBackAddr))
+		auto jmpCode = buffer + backupLen;
+		if (IsLongDistance(jmpCode, jmpBackAddr))
 		{
-			_EmitFF25Jmp(buffer + backupLen, jmpBackAddr);
+			_EmitFF25Jmp(jmpCode, jmpBackAddr);
 		}
 		else
 		{
-			_EmitE9Jmp(buffer + backupLen, jmpBackAddr);
+			_EmitE9Jmp(jmpCode, jmpBackAddr);
 		}
 
 		return true;
@@ -230,11 +231,11 @@ namespace Hook
 
 		DWORD oldProtect = 0;
 		// 设置api函数访问性
-		if (!Process::Overwrite::VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
+		if (!Overwrite::VirtualProtect(api, backupLen, PAGE_EXECUTE_READWRITE, &oldProtect))
 		{
 			if (oldFunc != nullptr)
 			{
-				delete[] * oldFunc;
+				delete[] *oldFunc;
 				*oldFunc = nullptr;
 			}
 			return false;
@@ -243,13 +244,13 @@ namespace Hook
 		emitFunc(api, hook);
 
 		// 恢复访问性
-		if (!Process::Overwrite::VirtualProtect(api, backupLen, oldProtect, &oldProtect))
+		if (!Overwrite::VirtualProtect(api, backupLen, oldProtect, &oldProtect))
 		{
 			// 设置失败，恢复函数
 			if (oldFunc != nullptr)
 			{
 				memcpy(api, *oldFunc, backupLen);
-				delete[] * oldFunc;
+				delete[] *oldFunc;
 				*oldFunc = nullptr;
 			}
 			return false;
