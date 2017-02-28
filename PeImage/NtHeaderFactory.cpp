@@ -1,15 +1,9 @@
 #include "stdafx.h"
-#include "HeaderFactory.h"
-#include "SectionHeaders.h"
+#include "NtHeaderFactory.h"
 #include "NtHeaderImpl.h"
-#include "DosHeader.h"
 namespace PeDecoder
 {
-	std::unique_ptr<ISectionHeaders> HeaderFactory::CreateSectionHeadersInstance(const PeImage & pe)
-	{
-		return _STD make_unique<SectionHeaders>(pe);
-	}
-	std::unique_ptr<INtHeader> HeaderFactory::CreateNtHeaderInstance(const IDosHeader & dosHeader)
+	std::unique_ptr<INtHeader> NtHeaderFactory::Create(const IDosHeader & dosHeader)
 	{
 		using namespace std;
 		assert(dosHeader.IsValid());
@@ -28,9 +22,5 @@ namespace PeDecoder
 			break;
 		}
 		return result;
-	}
-	std::unique_ptr<IDosHeader> HeaderFactory::CreateDosHeaderInstance(const PIMAGE_DOS_HEADER rawptr)
-	{
-		return _STD make_unique<DosHeader>(rawptr);
 	}
 }  // namespace PeDecoder

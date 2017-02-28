@@ -13,15 +13,20 @@ PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWOR
 	{
 		return nullptr;
 	}
-	PeImage dll(module, true);
-	if (!dll.IsPe() && !dll.HasDirectory(DataDirectoryEntryType::Export))
+	auto dll = PeImage::Create(module, true);
+
+	if (!dll)
 	{
 		return nullptr;
 	}
-	PeDecoder::ExportDirectory exp(dll);
-	assert(exp);
-	auto end = exp.end();
-	auto proc = _STD lower_bound(exp.begin(), end, procName, []
+	auto exp = ExportDirectory::Create(dll);
+	if (!exp)
+	{
+		return nullptr;
+	}
+
+	auto end = exp->end();
+	auto proc = _STD lower_bound(exp->begin(), end, procName, []
 	(auto& node, LPCSTR val)
 	{
 		return strcmp(node->NamePtr(), val) < 0;
@@ -36,7 +41,7 @@ PVOID Hook::HookEat(HMODULE module, LPCSTR procName, LPCVOID hookFunc, OUT PDWOR
 	// base + setRva = hookAddress
 
 	DWORD setRva;
-	auto imageType = dll.GetImageType();
+	auto imageType = dll->GetImageType();
 #ifdef WIN32
 	assert(imageType == PeDecoder::ImageType::PE32);
 	setRva = (DWORD)hookFunc - (DWORD)module;

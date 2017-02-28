@@ -3,14 +3,14 @@
 #include "ExportDirectoryIterator.h"
 namespace PeDecoder
 {
-	ExportDirectory::ExportDirectory(IDataDirectoryUtil& util) :
+	ExportDirectory::ExportDirectory(const _STD shared_ptr<IPeImage>& util) :
 		DirectoryBase(util)
 	{
 		numberOfNames_ = &GetPtr()->NumberOfNames;
 		numberOfFunctions_ = &GetPtr()->NumberOfFunctions;
-		funcTable_ = reinterpret_cast<PDWORD>(util.RvaToDataPtr(GetPtr()->AddressOfFunctions));
-		nameTable_ = reinterpret_cast<PDWORD>(util.RvaToDataPtr(GetPtr()->AddressOfNames));
-		nameOrdinalTable_ = reinterpret_cast<PWORD>(util.RvaToDataPtr(GetPtr()->AddressOfNameOrdinals));
+		funcTable_ = reinterpret_cast<PDWORD>(util->RvaToDataPtr(GetPtr()->AddressOfFunctions));
+		nameTable_ = reinterpret_cast<PDWORD>(util->RvaToDataPtr(GetPtr()->AddressOfNames));
+		nameOrdinalTable_ = reinterpret_cast<PWORD>(util->RvaToDataPtr(GetPtr()->AddressOfNameOrdinals));
 	}
 	ExportDirectory::~ExportDirectory()
 	{

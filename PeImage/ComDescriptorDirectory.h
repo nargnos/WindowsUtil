@@ -5,10 +5,11 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class ComDescriptorDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::ComDescriptor>
+		public Detail::DirectoryBase<ComDescriptorDirectory, DataDirectoryEntryType::ComDescriptor>
 	{
 	public:
-		
+		friend TBase;
+	protected:
 		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

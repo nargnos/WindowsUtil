@@ -5,6 +5,7 @@
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
+	
 	NtHeader::~NtHeader()
 	{
 		ptr_ = nullptr;

@@ -5,9 +5,11 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class GlobalptrDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::Globalptr>
+		public Detail::DirectoryBase<GlobalptrDirectory, DataDirectoryEntryType::Globalptr>
 	{
 	public:
+		friend TBase;
+	protected:
 		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

@@ -2,7 +2,7 @@
 #include "DirectoryBase.h"
 #include "NtHeader.h"
 
-std::pair<PVOID, PDWORD> PeDecoder::Detail::GetDataDirectoryEntry(const IDataDirectoryUtil& util, DataDirectoryEntryType index)
+std::pair<PVOID, PDWORD> PeDecoder::Detail::GetDataDirectoryEntry(const IPeImage& util, DataDirectoryEntryType index)
 {
 	_STD pair<PVOID, PDWORD> result(nullptr, nullptr);
 	auto entry = util.GetDirectoryEntry(index);

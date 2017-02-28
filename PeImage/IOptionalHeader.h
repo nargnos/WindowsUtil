@@ -16,6 +16,6 @@ namespace PeDecoder
 		PIMAGE_SECTION_HEADER GetSectionHeaderPtr() const;
 		SubsystemType GetSubsystem() const;
 		DllCharacteristics GetDllCharacteristics() const;
-		void ReadDetails(const INtHeaderVisitor & visitor) const;
+		void Accept(const INtHeaderVisitor & visitor) const;
 	};
 }  // namespace PeDecoder

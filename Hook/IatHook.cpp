@@ -14,13 +14,15 @@ using namespace PeDecoder;
 namespace Hook
 {
 	IatHook::IatHook(HMODULE module) :
-		module_(_STD make_unique<PeImage>(module == NULL ? (HMODULE)NtCurrentPeb->ImageBaseAddress : module, true))
+		module_(PeImage::Create(module == NULL ? (HMODULE)NtCurrentPeb->ImageBaseAddress : module, true))
 	{
-		canHook_ = module_->IsPe() && module_->HasDirectory(DataDirectoryEntryType::Import);
-		if (canHook_)
+		if (!module_)
 		{
-			importDirectory_ = _STD make_unique<ImportDirectory>(*module_);
+			return;
 		}
+		importDirectory_ = ImportDirectory::Create<_STD unique_ptr>(module_);
+		canHook_ = (bool)importDirectory_;
+		
 	}
 	IatHook::FunctionBackup IatHook::Find(const std::string & dllName, const std::string & procName)const
 	{

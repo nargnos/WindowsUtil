@@ -5,9 +5,11 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class SecurityDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::Security>
+		public Detail::DirectoryBase<SecurityDirectory, DataDirectoryEntryType::Security>
 	{
 	public:
+		friend TBase;
+	protected:
 		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

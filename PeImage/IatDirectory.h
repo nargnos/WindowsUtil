@@ -4,9 +4,11 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class IatDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::Iat>
+		public Detail::DirectoryBase<IatDirectory, DataDirectoryEntryType::Iat>
 	{
 	public:
+		friend TBase;
+	protected:
 		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

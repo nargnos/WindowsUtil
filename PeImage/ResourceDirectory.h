@@ -6,14 +6,14 @@ namespace PeDecoder
 	class ResourceEntryIterator;
 	// UNDONE: 
 	class ResourceDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::Resource>
+		public Detail::DirectoryBase<ResourceDirectory, DataDirectoryEntryType::Resource>
 	{
 	public:
-		using DirectoryBase::DirectoryBase;
 		ResourceEntryIterator begin();
 		ResourceEntryIterator end();
-
+		
+		friend TBase;
 	protected:
-
+		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

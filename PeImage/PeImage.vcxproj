@@ -189,9 +189,9 @@
     <ClInclude Include="GetOriginal.h" />
     <ClInclude Include="GetRelocPtr.h" />
     <ClInclude Include="GlobalptrDirectory.h" />
-    <ClInclude Include="HeaderFactory.h" />
+    <ClInclude Include="NtHeaderFactory.h" />
     <ClInclude Include="IatDirectory.h" />
-    <ClInclude Include="IDataDirectoryUtil.h" />
+    <ClInclude Include="IPeImage.h" />
     <ClInclude Include="IDosHeader.h" />
     <ClInclude Include="IFileHeader.h" />
     <ClInclude Include="ImageType.h" />
@@ -203,7 +203,6 @@
     <ClInclude Include="INtHeaderVisitor.h" />
     <ClInclude Include="IOptionalHeader.h" />
     <ClInclude Include="IReadThunkDetail.h" />
-    <ClInclude Include="IRvaConverter.h" />
     <ClInclude Include="ISectionHeaders.h" />
     <ClInclude Include="IteratorBase.h" />
     <ClInclude Include="IteratorFriendAccess.h" />
@@ -253,7 +252,7 @@
     <ClCompile Include="ExportDirectoryIterator.cpp" />
     <ClCompile Include="ExportIteratorNode.cpp" />
     <ClCompile Include="GetRelocPtr.cpp" />
-    <ClCompile Include="HeaderFactory.cpp" />
+    <ClCompile Include="NtHeaderFactory.cpp" />
     <ClCompile Include="ImportDescriptor.cpp" />
     <ClCompile Include="ImportDirectory.cpp" />
     <ClCompile Include="ImportDescriptorIterator.cpp" />

@@ -6,9 +6,9 @@
 
 namespace PeDecoder
 {
-	DataDirectoryEntries::DataDirectoryEntries(const PeImage & pe)
+	DataDirectoryEntries::DataDirectoryEntries(const _STD shared_ptr<IPeImage> & pe) :pe_(pe)
 	{
-		auto& nt = *pe.GetNtHeader();
+		auto& nt = *pe->GetNtHeader();
 		ptr_ = nt.GetDataDirectory();
 		size_ = nt.GetDataDirectorySize();
 	}
@@ -20,17 +20,25 @@ namespace PeDecoder
 
 	bool DataDirectoryEntries::HasDirectory(DataDirectoryEntryType index) const
 	{
-		return GetDirectoryEntry(index) != nullptr;
+		return HasDirectory(GetPtr(), index);
+	}
+	bool DataDirectoryEntries::HasDirectory(PIMAGE_DATA_DIRECTORY first,DataDirectoryEntryType index)
+	{
+		return GetDirectoryEntry(first,index) != nullptr;
+	}
+	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::GetDirectoryEntry(PIMAGE_DATA_DIRECTORY first, DataDirectoryEntryType index)
+	{
+		if (index < MaxSize())
+		{
+			return &first[index];
+		}
+		// 经过修改的结构可能元素不齐，返回null表示无这个结构
+		return nullptr;
 	}
 	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::GetDirectoryEntry(DataDirectoryEntryType index) const
 	{
 		assert(IsValid());
-		if (index < MaxSize() && index < GetSize())
-		{
-			return &GetPtr()[index];
-		}
-		// 经过修改的结构可能元素不齐，返回null表示无这个结构
-		return nullptr;
+		return GetDirectoryEntry(GetPtr(), index);
 	}
 	PIMAGE_DATA_DIRECTORY DataDirectoryEntries::operator[](DataDirectoryEntryType index) const
 	{

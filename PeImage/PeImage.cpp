@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PeImage.h"
-#include "HeaderFactory.h"
+#include "DosHeader.h"
+#include "NtHeaderFactory.h"
+#include "SectionHeaders.h"
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
@@ -21,11 +23,10 @@ namespace PeDecoder
 		{
 			return;
 		}
-
 		assert(ntHeader_->GetHeaderType() == NtHeaderType::NtHeader32 ||
 			ntHeader_->GetHeaderType() == NtHeaderType::NtHeader64);
 
-		sectionHeaders_ = HeaderFactory::CreateSectionHeadersInstance(*this);
+		sectionHeaders_ = SectionHeaders::Create(*this);
 	}
 	PeImage::operator bool() const
 	{
@@ -75,12 +76,12 @@ namespace PeDecoder
 
 	bool PeImage::HasDirectory(DataDirectoryEntryType index) const
 	{
-		return DataDirectoryEntries(*this).HasDirectory(index);
+		return DataDirectoryEntries::HasDirectory(GetNtHeader()->GetDataDirectory(), index);
 	}
 
 	PIMAGE_DATA_DIRECTORY PeImage::GetDirectoryEntry(DataDirectoryEntryType index) const
 	{
-		return DataDirectoryEntries(*this).GetDirectoryEntry(index);
+		return DataDirectoryEntries::GetDirectoryEntry(GetNtHeader()->GetDataDirectory(), index);
 	}
 
 	DWORD PeImage::RvaToOffset(DWORD rva) const
@@ -132,7 +133,7 @@ namespace PeDecoder
 
 	bool PeImage::LoadDosHeader(PIMAGE_DOS_HEADER ptr)
 	{
-		dosHeader_ = HeaderFactory::CreateDosHeaderInstance(ptr);
+		dosHeader_ = DosHeader::Create(ptr);
 		return CheckDosHeader();
 	}
 
@@ -144,7 +145,7 @@ namespace PeDecoder
 	bool PeImage::LoadNtHeader()
 	{
 		assert(CheckDosHeader());
-		ntHeader_ = HeaderFactory::CreateNtHeaderInstance(*dosHeader_);
+		ntHeader_ = NtHeaderFactory::Create(*dosHeader_);
 		return CheckNtHeader();
 	}
 
@@ -153,9 +154,21 @@ namespace PeDecoder
 		return ntHeader_ && ntHeader_->IsValid();
 	}
 
+	_STD shared_ptr<PeImage> PeImage::Create(void * peptr, bool isMapped)
+	{
+		_STD shared_ptr<PeImage> result(new PeImage(peptr, isMapped));
+		if (!result->IsPe())
+		{
+			result = nullptr;
+		}
+		return result;
+	}
+
 	ImageType PeImage::NtHeaderTypeToImageType(NtHeaderType type)
 	{
-		static const ImageType imageTypeTable[]{ ImageType::UnKnown,ImageType::UnKnown,ImageType::PE32,ImageType::PE64 };
+		static const ImageType imageTypeTable[]
+		{ ImageType::UnKnown,ImageType::UnKnown,ImageType::PE32,ImageType::PE64 };
+
 		auto ntHeaderType = static_cast<unsigned char>(type);
 		assert(ntHeaderType >= 0 && ntHeaderType < sizeof(imageTypeTable));
 		return imageTypeTable[ntHeaderType];

@@ -20,16 +20,19 @@ PVOID Hook::HookIat(HMODULE module, LPCSTR dllName, LPCSTR procName, LPCVOID hoo
 	{
 		module = (HMODULE)NtCurrentPeb->ImageBaseAddress;
 	}
-	PeImage pe(module, true);
-	if (!pe.IsPe() && !pe.HasDirectory(DataDirectoryEntryType::Import))
+	auto pe = PeImage::Create(module, true);
+
+	if (!pe)
 	{
 		return nullptr;
 	}
-
-	ImportDirectory imp(pe);
-	assert(imp);
-	auto endImp = imp.end();
-	auto dllImp = _STD find_if(imp.begin(), endImp, [dllName](auto& node)
+	auto imp = ImportDirectory::Create(pe);
+	if (!imp)
+	{
+		return nullptr;
+	}
+	auto endImp = imp->end();
+	auto dllImp = _STD find_if(imp->begin(), endImp, [dllName](auto& node)
 	{
 		return _stricmp(node->GetName(), dllName) == 0;
 	});

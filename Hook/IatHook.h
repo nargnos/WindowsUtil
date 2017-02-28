@@ -4,7 +4,7 @@
 #include <unordered_map>
 namespace PeDecoder
 {
-	class PeImage;
+	__interface IPeImage;
 	class ImportDirectory;
 }  // namespace PeDecoder
 namespace Hook
@@ -38,7 +38,7 @@ namespace Hook
 		FunctionBackup Find(const _STD string & dllName, const _STD string & procName)const;
 		bool CheckFunctionBackup(const FunctionBackup& val);
 		_STD unordered_map<_STD string, BackupType> backup_;
-		_STD unique_ptr<PeDecoder::PeImage> module_;
+		_STD shared_ptr<PeDecoder::IPeImage> module_;
 		_STD unique_ptr<PeDecoder::ImportDirectory> importDirectory_;
 		bool canHook_;
 	};

@@ -1,5 +1,6 @@
 #pragma once
 #include "NtHeader.h"
+#include "NtHeaderType.h"
 #include "SubsystemType.h"
 #include "DllCharacteristics.h"
 namespace PeDecoder
@@ -11,7 +12,7 @@ namespace PeDecoder
 	public:
 		static_assert(_STD is_same<TNtHeaderType, PIMAGE_NT_HEADERS32>::value ||
 			_STD is_same<TNtHeaderType, PIMAGE_NT_HEADERS64>::value, "PIMAGE_NT_HEADERS32 PIMAGE_NT_HEADERS64");
-
+		
 		explicit NtHeaderImpl(const TNtHeaderType nt32) :NtHeader(nt32)
 		{}
 		TNtHeaderType RawNtHeaderPtr() const
@@ -22,7 +23,7 @@ namespace PeDecoder
 		{
 			return &RawNtHeaderPtr()->OptionalHeader;
 		}
-		virtual void ReadDetails(const INtHeaderVisitor & visitor) const override
+		virtual void Accept(const INtHeaderVisitor & visitor) const override
 		{
 			visitor.Visit(*this);
 		}

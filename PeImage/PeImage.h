@@ -1,6 +1,11 @@
 #pragma once
+#include <windows.h>
+#include <WinBase.h>
+#include <cassert>
+#include <memory>
+#include <mutex>
 #include "ImageType.h"
-#include "IDataDirectoryUtil.h"
+#include "IPeImage.h"
 #include "IDosHeader.h"
 #include "INtHeader.h"
 #include "ISectionHeaders.h"
@@ -10,22 +15,24 @@ namespace PeDecoder
 	// UNDONE: 等重定位的相关类完善后再写修改pe的部分，还需要补充那些不常用的解析类，写完再写载入pe运行的部分
 
 	class PeImage :
-		public IDataDirectoryUtil
+		public IPeImage
 	{
 	public:
-		PeImage(void* ptr, bool isMapped);
+		static _STD shared_ptr<PeImage> Create(void* peptr, bool isMapped);
+
 		static ImageType NtHeaderTypeToImageType(NtHeaderType type);
-		bool IsPe() const;
+
+		virtual bool IsPe() const;
 		explicit operator bool() const;
-		void* GetBase() const;
+		virtual void* GetBase() const;
 		// 必存在结构
-		const unique_ptr<IDosHeader>& GetDosHeader() const;
-		const unique_ptr<INtHeader>& GetNtHeader() const;
-		const unique_ptr<ISectionHeaders>& GetSections() const;
+		virtual const unique_ptr<IDosHeader>& GetDosHeader() const;
+		virtual const unique_ptr<INtHeader>& GetNtHeader() const;
+		virtual const unique_ptr<ISectionHeaders>& GetSections() const;
 
-		DWORD OffsetToRva(DWORD fileOffset) const;
+		virtual DWORD OffsetToRva(DWORD fileOffset) const;
 
-		bool HasDirectory(DataDirectoryEntryType index) const;
+		virtual bool HasDirectory(DataDirectoryEntryType index) const;
 
 		virtual bool IsMapped() const override;
 		virtual ImageType GetImageType() const override;
@@ -35,6 +42,7 @@ namespace PeDecoder
 		virtual PVOID RvaToDataPtr(ULONGLONG rva) const override;
 
 	protected:
+		PeImage(void* ptr, bool isMapped);
 		PeImage(const PeImage&) = delete;
 		PeImage& operator=(const PeImage&) = delete;
 
@@ -46,7 +54,6 @@ namespace PeDecoder
 
 		bool LoadNtHeader();
 		bool CheckNtHeader() const;
-
 
 		unsigned char* Base() const;
 

@@ -4,14 +4,14 @@
 #include "ImportThunk.h"
 namespace PeDecoder
 {
-	ImportThunkIterator::ImportThunkIterator(const IDataDirectoryUtil & util, PIMAGE_THUNK_DATA32 thunk, PIMAGE_THUNK_DATA32 originalThunk) :
+	ImportThunkIterator::ImportThunkIterator(const IPeImage & util, PIMAGE_THUNK_DATA32 thunk, PIMAGE_THUNK_DATA32 originalThunk) :
 		thunk_(reinterpret_cast<unsigned char*>(thunk)),
 		originalThunk_(reinterpret_cast<unsigned char*>(originalThunk)),
 		incrementSize_(sizeof(IMAGE_THUNK_DATA32)),
 		util_(&util)
 	{
 	}
-	ImportThunkIterator::ImportThunkIterator(const IDataDirectoryUtil & util, PIMAGE_THUNK_DATA64 thunk, PIMAGE_THUNK_DATA64 originalThunk) :
+	ImportThunkIterator::ImportThunkIterator(const IPeImage & util, PIMAGE_THUNK_DATA64 thunk, PIMAGE_THUNK_DATA64 originalThunk) :
 		thunk_(reinterpret_cast<unsigned char*>(thunk)),
 		originalThunk_(reinterpret_cast<unsigned char*>(originalThunk)),
 		incrementSize_(sizeof(IMAGE_THUNK_DATA64)),
@@ -27,7 +27,7 @@ namespace PeDecoder
 		incrementSize_ = 0;
 	}
 
-	ImportThunkIterator::ImportThunkIterator(const IDataDirectoryUtil & util):
+	ImportThunkIterator::ImportThunkIterator(const IPeImage & util):
 		thunk_(nullptr),
 		originalThunk_(nullptr),
 		incrementSize_(0),

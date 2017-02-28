@@ -4,14 +4,15 @@
 #include "NtHeader.h"
 namespace PeDecoder
 {
-	SectionHeaders::SectionHeaders(const PeImage & pe)
+	SectionHeaders::SectionHeaders(const PeImage& pe)
 	{
-		auto& nt = *pe.GetNtHeader();
-		assert(nt.IsValid());
-		size_ = nt.GetNumberOfSections();
-		alignment_ = nt.GetSectionAlignment();
-		ptr_ = static_cast<Detail::Section*>(nt.GetSectionHeaderPtr());
+		auto& nt = pe.GetNtHeader();
+		assert(nt->IsValid());
+		size_ = nt->GetNumberOfSections();
+		alignment_ = nt->GetSectionAlignment();
+		ptr_ = static_cast<Detail::Section*>(nt->GetSectionHeaderPtr());
 	}
+
 	DWORD SectionHeaders::GetSectionAlignment() const
 	{
 		return alignment_;
@@ -51,6 +52,10 @@ namespace PeDecoder
 	SectionHeaders::~SectionHeaders()
 	{
 		ptr_ = nullptr;
+	}
+	std::unique_ptr<ISectionHeaders> SectionHeaders::Create(const PeImage& pe)
+	{
+		return unique_ptr<SectionHeaders>(new SectionHeaders(pe));
 	}
 	SectionHeaders::DataPtr SectionHeaders::RawPtr() const
 	{

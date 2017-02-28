@@ -6,13 +6,16 @@ namespace PeDecoder
 	class RelocDirectoryIterator;
 	// UNDONE: 
 	class RelocDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::BaseReloc>
+		public Detail::DirectoryBase<RelocDirectory, DataDirectoryEntryType::BaseReloc>
 	{
 	public:
 		typedef RelocDirectoryIterator iterator;
-		using DirectoryBase::DirectoryBase;
+		
 		iterator begin();
 		iterator end();
+		friend TBase;
+	protected:
+		using DirectoryBase::DirectoryBase;
 	};
 	
 }  // namespace PeDecoder

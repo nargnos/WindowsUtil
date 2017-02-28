@@ -4,12 +4,12 @@ namespace PeDecoder
 {
 	class ExportDirectoryIterator;
 	class ExportDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::Export>
+		public Detail::DirectoryBase<ExportDirectory, DataDirectoryEntryType::Export>
 	{
 	public:
 		typedef ExportDirectoryIterator iterator;
 
-		ExportDirectory(IDataDirectoryUtil& util);
+		friend TBase;
 		virtual ~ExportDirectory();
 		const PDWORD GetFunctionsPtr() const;
 		const PDWORD GetNamesPtr() const;
@@ -19,6 +19,7 @@ namespace PeDecoder
 		iterator begin();
 		iterator end();
 	protected:
+		explicit ExportDirectory(const _STD shared_ptr<IPeImage>& util);
 		PDWORD numberOfFunctions_;
 		PDWORD numberOfNames_;
 		PDWORD funcTable_;

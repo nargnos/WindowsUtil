@@ -218,12 +218,6 @@
     <ClInclude Include="NtHeader.h">
       <Filter>PeImage\NtHeader</Filter>
     </ClInclude>
-    <ClInclude Include="IRvaConverter.h">
-      <Filter>PeImage\Common\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="IDataDirectoryUtil.h">
-      <Filter>PeImage\Common\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="DllCharacteristics.h">
       <Filter>PeImage\NtHeader\Types</Filter>
     </ClInclude>
@@ -284,8 +278,11 @@
     <ClInclude Include="DelayImportDescriptorIterator.h">
       <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
     </ClInclude>
-    <ClInclude Include="HeaderFactory.h">
-      <Filter>PeImage\Common</Filter>
+    <ClInclude Include="NtHeaderFactory.h">
+      <Filter>PeImage\NtHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="IPeImage.h">
+      <Filter>PeImage\Common\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -395,8 +392,8 @@
     <ClCompile Include="DelayImportDescriptorIterator.cpp">
       <Filter>PeImage\DataDirectory\DelayImportDirectory</Filter>
     </ClCompile>
-    <ClCompile Include="HeaderFactory.cpp">
-      <Filter>PeImage\Common</Filter>
+    <ClCompile Include="NtHeaderFactory.cpp">
+      <Filter>PeImage\NtHeader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

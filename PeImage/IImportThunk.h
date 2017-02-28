@@ -8,7 +8,7 @@ namespace PeDecoder
 		bool IsSnapByOrdinal() const;
 		PIMAGE_IMPORT_BY_NAME GetImportByName() const;
 		PVOID GetFuncAddress() const;
-		void ReadDetails(IReadThunkDetail& visitor) const;
+		void Accept(IReadThunkDetail& visitor) const;
 		// AddressThunk
 		void* GetThunkPtr() const;
 		// NameThunk

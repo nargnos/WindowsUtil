@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "IDataDirectoryUtil.h"
+#include "IPeImage.h"
 #include "IImportThunk.h"
 #include "IteratorBase.h"
 
@@ -20,9 +20,9 @@ namespace PeDecoder
 	public:
 		friend IteratorFriendAccess;
 		friend ImportThunkFactory;
-		explicit ImportThunkIterator(const IDataDirectoryUtil& util);
-		ImportThunkIterator(const IDataDirectoryUtil& util, PIMAGE_THUNK_DATA32 thunk, PIMAGE_THUNK_DATA32 originalThunk);
-		ImportThunkIterator(const IDataDirectoryUtil& util, PIMAGE_THUNK_DATA64 thunk, PIMAGE_THUNK_DATA64 originalThunk);
+		explicit ImportThunkIterator(const IPeImage& util);
+		ImportThunkIterator(const IPeImage& util, PIMAGE_THUNK_DATA32 thunk, PIMAGE_THUNK_DATA32 originalThunk);
+		ImportThunkIterator(const IPeImage& util, PIMAGE_THUNK_DATA64 thunk, PIMAGE_THUNK_DATA64 originalThunk);
 		virtual ~ImportThunkIterator();
 	protected:
 		bool Equal(const TIterator & val) const;
@@ -30,7 +30,7 @@ namespace PeDecoder
 		void Increment();
 		reference Dereference();
 		pointer AddressOf();
-		const IDataDirectoryUtil* util_;
+		const IPeImage* util_;
 		unsigned char* thunk_;
 		unsigned char* originalThunk_;
 		unsigned char incrementSize_;

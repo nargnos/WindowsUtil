@@ -18,20 +18,20 @@ namespace Process
 		{
 			assert(module != NULL);
 			assert(comp);
-			PeDecoder::PeImage pe(module, true);
-			if (!pe.IsPe())
+			auto pe = PeDecoder::PeImage::Create(module, true);
+			if (!pe)
 			{
 				return nullptr;
 			}
-			PeDecoder::ExportDirectory exportDir(pe);
-			
+			auto exportDir = PeDecoder::ExportDirectory::Create(pe);
+
 			if (!exportDir)
 			{
 				return nullptr;
 			}
-			auto end = exportDir.end();
+			auto end = exportDir->end();
 
-			auto result = _STD find_if(exportDir.begin(), end, [&comp]
+			auto result = _STD find_if(exportDir->begin(), end, [&comp]
 			(auto& node)
 			{
 				return comp(node->NamePtr());
@@ -47,19 +47,20 @@ namespace Process
 		void * GetProcAddress(HMODULE module, const void * lpProcName, const std::function<int(LPCSTR, const void*)>& comp)
 		{
 			assert(module != NULL);
-			PeDecoder::PeImage pe(module, true);
-			if (!pe.IsPe())
+			auto pe = PeDecoder::PeImage::Create(module, true);
+			if (!pe)
 			{
 				return nullptr;
 			}
-			PeDecoder::ExportDirectory exportDir(pe);
+			auto exportDir = PeDecoder::ExportDirectory::Create(pe);
+
 			if (!exportDir)
 			{
 				return nullptr;
 			}
-			auto end = exportDir.end();
+			auto end = exportDir->end();
 
-			auto result = _STD lower_bound(exportDir.begin(), end, lpProcName, [&comp]
+			auto result = _STD lower_bound(exportDir->begin(), end, lpProcName, [&comp]
 			(auto& node, const void* val)
 			{
 				return comp(node->NamePtr(), val) < 0;

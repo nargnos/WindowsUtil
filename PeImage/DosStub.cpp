@@ -7,12 +7,13 @@
 namespace PeDecoder
 {
 
-	DosStub::DosStub(const PeImage& pe) :
+	DosStub::DosStub(const _STD shared_ptr<IPeImage>& pe) :
 		size_(0),
-		ptr_(nullptr)
+		ptr_(nullptr),
+		pe_(pe)
 	{
-		auto& dos = *pe.GetDosHeader();
-		auto& nt = *pe.GetNtHeader();
+		auto& dos = *pe->GetDosHeader();
+		auto& nt = *pe->GetNtHeader();
 		auto ntPtr = nt.RawPtr();  // NtHeader位置
 		auto ptr = reinterpret_cast<unsigned char*>(dos.RawPtr() + 1); // dosStub应该在的位置
 		auto size = ntPtr - ptr; // 实际大小，NtHeader跟DosHeader重叠时（被人为修改）没有DosStub

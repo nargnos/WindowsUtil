@@ -5,9 +5,12 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class LoadConfigDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::LoadConfig>
+		public Detail::DirectoryBase<LoadConfigDirectory, DataDirectoryEntryType::LoadConfig>
 	{
+
 	public:
+		friend TBase;
+	protected:
 		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder

@@ -206,29 +206,29 @@ namespace PeImageLibTest
 	{
 	public:
 		PeImageTest() :
-			peMapped_(GetModuleHandle(L"user32.dll"), true),
-			peFile_(peBuffer_, false)
+			peMapped_(PeImage::Create(GetModuleHandle(L"user32.dll"), true)),
+			peFile_(PeImage::Create(peBuffer_, false))
 		{
 			wchar_t str[MAX_PATH];
 			GetModuleFileName(GetModuleHandle(L"user32.dll"), str, sizeof(str));
 			Logger::WriteMessage("读取的映射pe为：");
 			Logger::WriteMessage(str);
-			Assert::IsTrue(peMapped_.IsPe());
-			Assert::IsTrue(peFile_.IsPe());
+			Assert::IsTrue((bool)peMapped_);
+			Assert::IsTrue((bool)peFile_);
 
 		}
 
 		TEST_METHOD(ReadDosHeader)
 		{
 			{
-				auto& dosHeader = GetPeFile().GetDosHeader();
+				auto& dosHeader = GetPeFile()->GetDosHeader();
 				DosStub dosStub(GetPeFile());
 				Assert::IsTrue(dosHeader->IsValid());
 				Assert::IsTrue(dosHeader->RawPtr()->e_lfanew == 0x000000E0);
 				Assert::IsTrue(dosStub.GetSize() == 0xA0);
 			}
 			{
-				auto& dosHeader = GetPeMapped().GetDosHeader();
+				auto& dosHeader = GetPeMapped()->GetDosHeader();
 				Assert::IsTrue(dosHeader->IsValid());
 				auto ptr = dosHeader->RawPtr();
 				ostringstream out;
@@ -247,21 +247,21 @@ namespace PeImageLibTest
 		TEST_METHOD(ReadNtHeader)
 		{
 			{
-				auto& nt = GetPeFile().GetNtHeader();
+				auto& nt = GetPeFile()->GetNtHeader();
 				Assert::IsTrue(nt->GetMachineType() == MachineType::I386);
 				Assert::IsTrue(nt->GetSubsystem() == SubsystemType::WindowsCui);
-
+				
 				DataDirectoryEntries entries(GetPeFile());
 				Assert::IsTrue(entries[DataDirectoryEntryType::Import]->VirtualAddress == 0x00002544);
 
 			}
 			{
-				auto& nt = GetPeMapped().GetNtHeader();
+				auto& nt = GetPeMapped()->GetNtHeader();
 				DataDirectoryEntries entries(GetPeMapped());
 				ostringstream out;
 				for each (auto& var in entries)
 				{
-					out  << "ADDR: " << std::hex<< var.VirtualAddress << "h SIZE:" << var.Size <<"h"<< endl;
+					out << "ADDR: " << std::hex << var.VirtualAddress << "h SIZE:" << var.Size << "h" << endl;
 				}
 				Logger::WriteMessage(out.str().c_str());
 			}
@@ -269,7 +269,7 @@ namespace PeImageLibTest
 		TEST_METHOD(ReadSections)
 		{
 			{
-				auto& sections = GetPeFile().GetSections();
+				auto& sections = GetPeFile()->GetSections();
 				auto it = sections->begin();
 				Assert::AreEqual(reinterpret_cast<char*>(it->Name), ".text");
 				++it;
@@ -277,7 +277,7 @@ namespace PeImageLibTest
 
 			}
 			{
-				auto& sections = GetPeMapped().GetSections();
+				auto& sections = GetPeMapped()->GetSections();
 				ostringstream out;
 				for each (auto& var in *sections)
 				{
@@ -289,21 +289,21 @@ namespace PeImageLibTest
 		TEST_METHOD(ReadExportDirectory)
 		{
 			{
-				PeDecoder::ExportDirectory exportDir(GetPeFile());
-				Assert::IsTrue(exportDir.IsExist());
-				auto it = exportDir.begin();
-				Assert::AreEqual(reinterpret_cast<char*>(GetPeFile().RvaToDataPtr(*it->NameRva())), "ShowMessageBox");
+				auto exportDir = ExportDirectory::Create(GetPeFile());
+				Assert::IsTrue((bool)exportDir);
+				auto it = exportDir->begin();
+				Assert::AreEqual(reinterpret_cast<char*>(GetPeFile()->RvaToDataPtr(*it->NameRva())), "ShowMessageBox");
 			}
 			{
-				PeDecoder::ExportDirectory exportDir(GetPeMapped());
-
+				auto exportDir = ExportDirectory::Create(GetPeMapped());
+				Assert::IsTrue((bool)exportDir);
 				if (exportDir)
 				{
 					ostringstream out;
 					out << "Export:" << endl << "----------" << endl;
-					for each (auto& var in exportDir)
+					for each (auto& var in *exportDir)
 					{
-						auto name = (char*)GetPeMapped().RvaToDataPtr(*var->NameRva());
+						auto name = (char*)GetPeMapped()->RvaToDataPtr(*var->NameRva());
 						out << name << endl;
 					}
 					Logger::WriteMessage(out.str().c_str());
@@ -317,24 +317,24 @@ namespace PeImageLibTest
 		TEST_METHOD(ReadImportDirectory)
 		{
 			{
-				PeDecoder::ImportDirectory importDir(GetPeFile());
-				Assert::IsTrue(importDir.IsExist());
-				Assert::IsTrue(GetPeFile().GetImageType() == ImageType::PE32);
-				auto it = importDir.begin();
-				
+				auto importDir = ImportDirectory::Create(GetPeFile());
+				Assert::IsTrue((bool)importDir);
+				Assert::IsTrue(GetPeFile()->GetImageType() == ImageType::PE32);
+				auto it = importDir->begin();
+
 				Assert::AreEqual(it->GetName(), "USER32.dll");
 				auto thunkIt = it->begin();
 				Assert::IsFalse(thunkIt->IsSnapByOrdinal());
 				Assert::AreEqual(thunkIt->GetImportByName()->Name, "MessageBoxA");
 			}
 			{
-				PeDecoder::ImportDirectory importDir(GetPeMapped());
+				auto importDir = ImportDirectory::Create(GetPeMapped());
 				if (!importDir)
 				{
 					Logger::WriteMessage("Export Not Exist");
 					return;
 				}
-				auto type = GetPeMapped().GetImageType();
+				auto type = GetPeMapped()->GetImageType();
 
 				ostringstream out;
 				auto thunkVisitor = MakeThunkVisitor([&](const ImportThunk32& val)
@@ -363,13 +363,13 @@ namespace PeImageLibTest
 					}
 				});
 
-				for each (auto& var in importDir)
+				for each (auto& var in *importDir)
 				{
 					out << endl << "# " << var->GetName() << endl;
 					out << "----------" << endl;
 					for (auto& i : var)
 					{
-						i->ReadDetails(thunkVisitor);
+						i->Accept(thunkVisitor);
 					}
 
 					out << "----------" << endl;
@@ -382,12 +382,11 @@ namespace PeImageLibTest
 		TEST_METHOD(ReadRelocDirectory)
 		{
 			// 文件形式未编译重定向表
-
-			PeDecoder::RelocDirectory reloc(GetPeMapped());
+			auto reloc = RelocDirectory::Create(GetPeMapped());
 			if (reloc)
 			{
 				ostringstream out;
-				for each (auto& var in reloc)
+				for each (auto& var in *reloc)
 				{
 					out << "Rva: " << (void*)var.GetPtr()->VirtualAddress <<
 						" Size of Block:" << std::hex << var.GetPtr()->SizeOfBlock << "h" <<
@@ -404,10 +403,11 @@ namespace PeImageLibTest
 		}
 		TEST_METHOD(ReadResourceDirectory)
 		{
-			PeDecoder::ResourceDirectory res(GetPeMapped());
+			auto res = ResourceDirectory::Create(GetPeMapped());
+
 			if (res)
 			{
-				for each (auto& var in res)
+				for each (auto& var in *res)
 				{
 					if (var.NameIsString())
 					{
@@ -416,16 +416,16 @@ namespace PeImageLibTest
 			}
 		}
 	private:
-		PeImage& GetPeMapped()
+		const _STD shared_ptr<PeImage>& GetPeMapped()const
 		{
 			return peMapped_;
 		}
-		PeImage& GetPeFile()
+		const _STD shared_ptr<PeImage>& GetPeFile()const
 		{
 			return peFile_;
 		}
-		PeImage peMapped_;
-		PeImage peFile_;
+		_STD shared_ptr<PeImage> peMapped_;
+		_STD shared_ptr<PeImage> peFile_;
 
 	};
 }

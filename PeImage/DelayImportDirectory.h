@@ -6,13 +6,16 @@ namespace PeDecoder
 	class DelayImportDescriptorIterator;
 	// UNDONE: 
 	class DelayImportDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::DelayImport>
+		public Detail::DirectoryBase<DelayImportDirectory, DataDirectoryEntryType::DelayImport>
 	{
 	public:
 		typedef DelayImportDescriptorIterator iterator;
-		using DirectoryBase::DirectoryBase;
 		iterator begin();
 		iterator end();
+	
+		friend TBase;
+	protected:
+		using DirectoryBase::DirectoryBase;
 	};
 	
 }  // namespace PeDecoder

@@ -13,6 +13,11 @@ namespace PeDecoder
 		return ptr->e_magic == IMAGE_DOS_SIGNATURE;
 	}
 
+	_STD unique_ptr<IDosHeader> DosHeader::Create(const PIMAGE_DOS_HEADER rawptr)
+	{
+		return _STD unique_ptr<IDosHeader>(new DosHeader(rawptr));
+	}
+
 	bool DosHeader::IsValid() const
 	{
 		return IsValid(RawPtr());

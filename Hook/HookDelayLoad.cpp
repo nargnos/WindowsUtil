@@ -20,16 +20,19 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	{
 		module = (HMODULE)NtCurrentPeb->ImageBaseAddress;
 	}
-	PeImage pe(module, true);
-	if (!pe.IsPe() || !pe.HasDirectory(DataDirectoryEntryType::DelayImport))
+	auto pe = PeImage::Create(module, true);
+	if (!pe)
 	{
 		return nullptr;
 	}
-	DelayImportDirectory delay(pe);
-	assert(delay);
-	auto dlEnd = delay.end();
+	auto delay = DelayImportDirectory::Create(pe);
+	if (!delay)
+	{
+		return nullptr;
+	}
+	auto dlEnd = delay->end();
 	// ÕÒdll
-	auto dll = _STD find_if(delay.begin(), dlEnd, [dllName](auto& node)
+	auto dll = _STD find_if(delay->begin(), dlEnd, [dllName](auto& node)
 	{
 		return strcmp(node->GetName(), dllName) == 0;
 	});
@@ -37,7 +40,7 @@ PVOID Hook::HookDelayLoad(HMODULE module, LPCSTR dllName, LPCSTR procName, PVOID
 	{
 		return nullptr;
 	}
-	auto type = pe.GetImageType();
+	auto type = pe->GetImageType();
 	PVOID writeAddress;
 	PVOID result;
 	auto thunkEnd = dll->end();

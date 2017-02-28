@@ -5,9 +5,11 @@ namespace PeDecoder
 {
 	// UNDONE: 
 	class ArchitectureDirectory :
-		public Detail::DirectoryBase<DataDirectoryEntryType::Architecture>
+		public Detail::DirectoryBase<ArchitectureDirectory, DataDirectoryEntryType::Architecture>
 	{
 	public:
+		friend TBase;
+	protected:
 		using DirectoryBase::DirectoryBase;
 	};
 }  // namespace PeDecoder
