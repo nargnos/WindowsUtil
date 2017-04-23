@@ -38,8 +38,8 @@ namespace Process
 
 				const LoadKernel32 & Instance()
 				{
-					static auto instance_ = _STD unique_ptr<LoadKernel32>(new LoadKernel32());
-					return *instance_;
+					static LoadKernel32 instance;
+					return instance;
 				}
 
 			}  // namespace Detail

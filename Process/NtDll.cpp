@@ -10,8 +10,8 @@ namespace Process
 			{
 				const LoadNtDll& Instance()
 				{
-					static auto instance_ = _STD unique_ptr<LoadNtDll>(new LoadNtDll());
-					return *instance_;
+					static LoadNtDll instance;
+					return instance;
 				}
 				LoadNtDll::LoadNtDll() :
 					LoadDllBase(L"ntdll.dll"),

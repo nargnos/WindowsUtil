@@ -20,7 +20,7 @@ namespace Process
 					public LoadDllBase<DefaultGetDllModulePolicy>
 				{
 				public:
-					friend LoadUser32& Instance();
+					friend const LoadUser32& Instance();
 					~LoadUser32() = default;
 					// ”√¿¥≤‚ ‘µƒ
 					DynamicCall<int WINAPI(

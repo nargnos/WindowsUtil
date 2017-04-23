@@ -6,7 +6,8 @@ namespace Process
 {
 	namespace Overwrite
 	{
-		void * GetProcAddress(HMODULE module, LPCSTR lpProcName)
+		_Ret_maybenull_ void* GetProcAddress(_In_ _Notnull_ HMODULE module,
+			_In_ _Notnull_ LPCSTR lpProcName)
 		{
 			return GetProcAddress(module, lpProcName, [](LPCSTR node, const void* val)
 			{
@@ -14,7 +15,8 @@ namespace Process
 			});
 		}
 
-		void * GetProcAddress(HMODULE module, const std::function<bool(LPCSTR)>& comp)
+		_Ret_maybenull_ void* GetProcAddress(_In_ _Notnull_ HMODULE module,
+			const _STD function<bool(LPCSTR)>& comp)
 		{
 			assert(module != NULL);
 			assert(comp);
@@ -44,9 +46,12 @@ namespace Process
 			return result->FuncPtr();
 		}
 
-		void * GetProcAddress(HMODULE module, const void * lpProcName, const std::function<int(LPCSTR, const void*)>& comp)
+		_Ret_maybenull_ void* GetProcAddress(_In_ _Notnull_ HMODULE module,
+			_In_ _Notnull_ const void* lpProcName,
+			const _STD function<int(LPCSTR, const void*)>& comp)
 		{
 			assert(module != NULL);
+			assert(lpProcName != nullptr);
 			auto pe = PeDecoder::PeImage::Create(module, true);
 			if (!pe)
 			{

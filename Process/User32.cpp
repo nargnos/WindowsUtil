@@ -13,10 +13,10 @@ namespace Process
 					MessageBoxA(*this, "MessageBoxA")
 				{
 				}
-				LoadUser32 & Instance()
+				const LoadUser32 & Instance()
 				{
-					static auto instance_ = _STD unique_ptr<LoadUser32>(new LoadUser32());
-					return *instance_;
+					static LoadUser32 instance;
+					return instance;
 				}
 			}  // namespace Detail
 

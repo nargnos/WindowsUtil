@@ -59,10 +59,12 @@ template<typename TFunc, typename TLoadDll, typename TDecryptStrPolicy, typename
 							_STD call_once(flag_, [this, &dll]()
 							{
 								auto funcName = TDecryptStrPolicy::Decrypt(funcName_);
-								func_ = reinterpret_cast<TFunc*>(
-									Process::Overwrite::GetProcAddress(dll,
-										TDecryptStrPolicy::GetStr(funcName))
-									);
+								auto ptr = Process::Overwrite::GetProcAddress(dll,
+									TDecryptStrPolicy::GetStr(funcName));
+								if (ptr != nullptr)
+								{
+									func_ = reinterpret_cast<TFunc*>(ptr);
+								}
 							});
 
 							return func_ ? true : false;

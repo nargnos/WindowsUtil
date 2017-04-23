@@ -7,7 +7,8 @@
 namespace PeDecoder
 {
 	PeImage::PeImage(void* ptr, bool isMapped) :
-		isMapped_(isMapped)
+		isMapped_(isMapped),
+		isPe_(false)
 	{
 		if (ptr == nullptr)
 		{
@@ -25,7 +26,7 @@ namespace PeDecoder
 		}
 		assert(ntHeader_->GetHeaderType() == NtHeaderType::NtHeader32 ||
 			ntHeader_->GetHeaderType() == NtHeaderType::NtHeader64);
-
+		isPe_ = true;
 		sectionHeaders_ = SectionHeaders::Create(*this);
 	}
 	PeImage::operator bool() const
@@ -40,7 +41,7 @@ namespace PeDecoder
 
 	bool PeImage::IsPe() const
 	{
-		return CheckDosHeader() && CheckNtHeader();
+		return isPe_; // CheckDosHeader() && CheckNtHeader();
 	}
 
 	void * PeImage::GetBase() const

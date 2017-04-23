@@ -1,11 +1,10 @@
 #include "stdafx.h"
-#include <bitset>
 #include "DosHeader.h"
 #include "NtHeader.h"
 #include "DataDirectoryEntries.h"
 namespace PeDecoder
 {
-	
+
 	NtHeader::~NtHeader()
 	{
 		ptr_ = nullptr;
@@ -46,14 +45,12 @@ namespace PeDecoder
 	{
 		// 根据枚举值查表返回内容，验证过后GetHeaderType返回必为NtHeader32或NtHeader64之一
 		// 主要是验证NtHeader32或NtHeader64和IMAGE_NT_SIGNATURE标识，Rom先不理
-		// FIX: 这里写得不够清楚，而且引入一个可以不用的库
-		static const _STD bitset<8> resultTable(0b11000000);
+		static const bool map[]{ false, false, false, false, false, false, true, true };
+		auto ntHeader = reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<unsigned char*>(RawPtr()));
 
-		auto&& ntHeader = reinterpret_cast<const PIMAGE_NT_HEADERS32>(const_cast<unsigned char*>(RawPtr()));
-		auto&& pos = static_cast<unsigned char>(GetHeaderType()) +
+		auto pos = static_cast<unsigned char>(GetHeaderType()) +
 			(static_cast<unsigned char>(ntHeader->Signature == IMAGE_NT_SIGNATURE) << 2);
-
-		return resultTable.test(pos);
+		return map[pos];
 	}
 	PIMAGE_FILE_HEADER NtHeader::GetFileHeader() const
 	{

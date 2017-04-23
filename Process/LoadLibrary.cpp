@@ -6,7 +6,7 @@ namespace Process
 {
 	namespace Overwrite
 	{
-		VOID NTAPI _RtlInitUnicodeString(IN OUT PUNICODE_STRING destinationString, IN PCWSTR sourceString)
+		VOID NTAPI _RtlInitUnicodeString(_Out_ PUNICODE_STRING destinationString, _In_ PCWSTR sourceString)
 		{
 			CONST SIZE_T maxSize = (MAXUINT16 & ~1) - sizeof(UNICODE_NULL);
 
@@ -28,7 +28,7 @@ namespace Process
 
 			destinationString->Buffer = (PWCHAR)sourceString;
 		}
-		HINSTANCE WINAPI LoadLibraryExW(LPCWSTR lpLibFileName, HANDLE ignore, DWORD dwFlags)
+		_Ret_maybenull_ HINSTANCE WINAPI LoadLibraryExW(_In_ LPCWSTR lpLibFileName, _Reserved_ HANDLE ignore, _In_ DWORD dwFlags)
 		{
 			HINSTANCE hInst = EnvironmentBlock::FindLoadedModuleHandle(lpLibFileName);
 			if (hInst)
@@ -56,7 +56,7 @@ namespace Process
 			}
 			return hInst;
 		}
-		HINSTANCE WINAPI LoadLibraryW(LPCWSTR lpLibFileName)
+		_Ret_maybenull_ HINSTANCE WINAPI LoadLibraryW(_In_ LPCWSTR lpLibFileName)
 		{
 			return LoadLibraryExW(lpLibFileName, NULL, 0);
 		}

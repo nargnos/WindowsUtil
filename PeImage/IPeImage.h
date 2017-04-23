@@ -22,6 +22,8 @@ namespace PeDecoder
 		PIMAGE_DATA_DIRECTORY GetDirectoryEntry(DataDirectoryEntryType index) const;
 		PVOID RvaToDataPtr(DWORD rva) const;
 		PVOID RvaToDataPtr(ULONGLONG rva) const;
+		DWORD RvaToOffset(DWORD rva) const;
+		ULONGLONG RvaToOffset(ULONGLONG rva) const;
 		void* GetBase() const;
 	};
 }  // namespace PeDecoder

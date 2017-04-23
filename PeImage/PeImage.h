@@ -41,13 +41,14 @@ namespace PeDecoder
 		virtual PVOID RvaToDataPtr(DWORD rva) const override;
 		virtual PVOID RvaToDataPtr(ULONGLONG rva) const override;
 
+		virtual DWORD RvaToOffset(DWORD rva) const override;
+		virtual ULONGLONG RvaToOffset(ULONGLONG rva) const override;
 	protected:
 		PeImage(void* ptr, bool isMapped);
 		PeImage(const PeImage&) = delete;
 		PeImage& operator=(const PeImage&) = delete;
 
-		DWORD RvaToOffset(DWORD rva) const;
-		ULONGLONG RvaToOffset(ULONGLONG rva) const;
+
 
 		bool LoadDosHeader(PIMAGE_DOS_HEADER ptr);
 		bool CheckDosHeader() const;
@@ -62,6 +63,7 @@ namespace PeDecoder
 		unique_ptr<ISectionHeaders> sectionHeaders_;
 
 		bool isMapped_;
+		bool isPe_;
 	};
 
 }  // namespace PeDecoder

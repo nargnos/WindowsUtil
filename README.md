@@ -1,14 +1,20 @@
 ﻿_平时用到的一些工具类, 这部分内容涉及面比较广, 慢慢补全_  
 _未完成, 某些代码需要重新实现, pe部分编译后不够小, 需要改得更简洁_  
-_下面是旧描述，更新完代码后再重新写描述_
+_用编译器内部函数代替汇编(比如取fs，为的是64位编译方便），可能某些旧版编译器不支持，而且用的C++14，VC6会编译不过，自己改改吧_  
+_里面可能会包含一些无用代码文件（未完成待补足的代码），都已排除出vs项目外，以vs项目包含的文件为主_   
+_相关函数接口会慢慢补sal_  
+_等完成再把文档全面补充_  
 
-
-#PE
-###PE解析
+# 简要说明  
+## PE部分  
+### PE解析  
+_用法见PeImageTest.cpp_  
 ```c++
 #include <PE\PeDecoder.h>  
 ```
-可以调用子文件夹的迭代器头文件, 可解析PE文件的:  
+**目前可以解析：**
+* Dos头
+* Nt头  
 * 节表  
 * 导入表  
 * 导出表  
@@ -16,19 +22,28 @@ _下面是旧描述，更新完代码后再重新写描述_
 * 重定位表  
 * 延迟导入表  
 
-_缺读取器的结构有_  
-_Debug,Exception,Security,Architecture,Tls,LoadConfig,BoundImport,ComDescriptor._  
-_pedecoder可以返回结构指针, 缺少读取器是因为不常用, 以后用到再补_
+**缺读取器的结构有：**  
+* Debug
+* Exception
+* Security
+* Architecture
+* Tls
+* LoadConfig
+* BoundImport
+* ComDescriptor 
 
-###PE修改
-_未完成, 如果需要修改,现在可以用decoder返回的地址修改_
+_pedecoder可以返回结构指针, 缺少读取器是因为不常用, 以后用到再补_  
+_之后需要用C++.Net封装迁移到C#_  
 
+### PE修改  
+_未完成, 先写完解析再写, 如果需要修改,现在可以用decoder返回的地址修改_
 
-
-#进程
-###解析PEB
+## 系统部分  
+_包含Dll调用等，有些杂，项目名用得不准确，后面会单独分_  
+### 解析PEB  
+_用法见ProcessLibTest.cpp_  
 ```c++
-#include <Process\EnvironmentBlock\EnvironmentBlock.h>  
+#include <Process\LdrDataTable.h>  
 ```
 包含：  
 1.PEB、TEB结构定义  
@@ -39,69 +54,64 @@ _定义来自reactos源码_
 
 3.搜索LdrDataTable,取得已经载入的DLL的句柄的函数  
 
-###Hook
-####导入表(IAT) Hook
+
+### 动态调用  
 ```c++
-#include <Process\Hook\IatHook.h>  
+#include <Process\Kernel32.h> 
+#include <Process\NtDll.h>
+```
+_首次调用时才会载入相关dll和函数，使用搜索Ldr的方式找NtDll，LoadLibrary和GetProcAddress都是用重写的API_   
+_预先定义了常用函数的一些仿函数，想到更简单的方法再替换_  
+
+
+### 重写WinApi   
+```c++
+#include <Process\GetProcAddress.h>  
+#include <Process\LoadLibrary.h>
+#include <Process\OpenProcess.h>
+#include <Process\ReadProcessMemory>
+#include <Process\SetThreadContext>
+#include <Process\VirtualAlloc>
+#include <Process\VirtualFree>
+#include <Process\VirtualProtect>
+#include <Process\VirtualQuery>
+#include <Process\WriteProcessMemory>
+```
+_仅重写常用的几个函数，用的是NtDll（PEB获得）里的函数_  
+_GetProcAddress用前面的PE库解析_   
+_启动远程线程等函数等写到再添加, 所以这部分待续_  
+
+
+## Hook
+### 导入表(IAT) Hook
+```c++
+#include <Hook\IatHook.h>  
 ```
 
-####导出表(EAT) Hook
+### 导出表(EAT) Hook
 ```c++
-#include <Process\Hook\EatHook.h>  
+#include <Hook\EatHook.h>  
 ```
 _不支持64位_  
 
-####延迟导入表(DelayLoad) Hook
+### 延迟导入表(DelayLoad) Hook
 ```c++
-#include <Process\Hook\DelayLoadHook.h>  
+#include <Hook\DelayLoadHook.h>  
 ```
 _使用vs2015后,相关结构定义的头文件在sdk中改名了,所以用的是新的那一个定义,旧版本编译时可能会找不到相关定义_  
+_延迟导入表因为这个原因修改过，没做新的测试_  
 
-####API Hook
+### API Hook
 ```c++
-#include <Process\Hook\ApiHook.h> 
-// ...
-oldFunctionAddress =(decltype(&MessageBoxA))HookApi32(MessageBoxA, MessageBoxA_Hook1);
-
+#include <Hook\ApiHook.h> 
 ```
-包含了一个返回指令长度的Opcode解析器 (Process\Hook\Opcode)  
-支持多次Hook同一个函数, 也有只hook一次的精简版本  
-_UnHook 待续(通常不需要)_
+_现在是可用的，需要自己确定备份长度，可能有bug自己测一测_  
+_这部分未写完整，需要写一个反汇编引擎实现自动判断修改长度_   
+_之前写的引擎因为Intel的CPU文档解析例子跟Opcode表有冲突先暂停等文档修复再处理，已移除出项目，等写好再加回来（可能会久点，大部分忘了，有空再Load那段知识）_  
+_UnHook 待续(通常不需要)_  
 
 
-###动态调用
-```c++
-#include <Process\LazyLoad\LazyLoadSystemApi.h> 
-// 直接使用已经定义的Kernel32_Dll、NtDll_Dll、User32_Dll来动态调用函数，
-// 不全，只注册了常用的一些函数, 使用方法类似:
-Kernel32_Dll._GetSystemInfo(&sysinfo);
-// ... 
-NtDll_Dll._NtFreeVirtualMemory(hProcess,
-					&lpAddress,
-					&dwSize,
-					dwFreeType);
-// ...
+## 其它
+临时起意封装的一些WinApi，没什么意义  
+_有 Coroutine\ Fiber\ ThreadPool 等_  
 
-```
-
-
-###重写WinApi
-在上面动态调用的例子中, 如果只需要基础的LoadLibrary和GetProcAddress, 可以
-```c++
-#include <Process\LazyLoad\LazyLoad.h>  
-```
-里面包含了重写的两个函数和一些扩展. _LoadLibraryW使用ntdll.dll(读取PEB取到的句柄)的LdrLoadDll来载入dll,
-已存在dll的句柄都是通过读取peb获得的. _GetProcAddress使用的是解析pe获取的函数地址.  
-
-代码、dll注入相关的一些函数重写了(不需要重写版本可以使用Kernel32_Dll的动态调用版本).
-```c++
-#include <Process\OverwriteWinApi\OverwriteWinApi.h>  
-```
-_代码修改自reactos_  
-包括打开进程、读写释放远程进程内存、设置内存保护标记、设置线程上下文信息等  
-_启动远程线程等函数等写到再添加, 所以这部分待续_
-
-
-#其它
-###DisAsm
-_未完成, 太费时, 先在apihook中编写了一个只解析指令长度的版本(这个版本有bug，等新的完成再替换掉)_

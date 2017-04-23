@@ -403,6 +403,7 @@ namespace PeImageLibTest
 		}
 		TEST_METHOD(ReadResourceDirectory)
 		{
+			// UNDONE:
 			auto res = ResourceDirectory::Create(GetPeMapped());
 
 			if (res)
